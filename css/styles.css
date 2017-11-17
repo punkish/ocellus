@@ -27,16 +27,15 @@ header {
     padding: 0.5em;
     border: 1px solid grey;
     padding-right: 0px;
-    height: 50px;
+    height: 29px;
     margin: 0 auto;
-/*     margin-left: 4em; */
 }
 
 button {
     font-size: 1em;
     border: 1px solid grey;
     border-left: 0px solid;
-    margin-left: -45px;
+    margin-left: -41px;
     height: 50px;
     border-radius: 0 0.5em 0.5em 0;
 }
