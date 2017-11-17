@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ocellus</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="JavaScript-autoComplete/auto-complete.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/png" href="Skeleton-2.0.4/images/favicon.png">
+</head>
+<body>
+    <header align="center">
+        <div id="title"><a href="/">ocellus</a></div>
+        <div id="form">
+            <input name="q" id="q" type="search" placeholder="search" autofocus> 
+            <button id="btn-images">go</button>
+        </div>
+        <div id="throbber">Loading&#8230;</div>
+    </header>
+    
+    <div class="wrapper">
+        <div id="masonry" class="masonry animate-bottom"></div>
+        <div id="pager">
+            <a href="" id="prev" class="pager">prev</a>
+            <a href="" id="next" class="pager">next</a>
+        </div>
+    </div>
+
+    <footer>
+        <img src="img/fish.jpg">
+        <!-- <img src="img/14744326316_1ec1cf39de_h.png" width="100%"> -->
+    </footer>
+
+    <script src="JavaScript-autoComplete/auto-complete.min.js"></script>
+    <script src="js/family.min.js"></script>
+    <script src="js/ocellus.js"></script>
+    <script>
+        
+
+        new autoComplete({
+            selector: q,
+            minChars: 2,
+            source: function(term, suggest){
+                term = term.toLowerCase();
+                let matches = [];
+                let j = family.length;
+                for (let i = 0; i < j; i++) {
+                    if (~family[i].toLowerCase().indexOf(term)) {
+                        matches.push(family[i]);
+                    }
+                }
+                suggest(matches);
+            }
+        });
+
+        btn.addEventListener('click', getImagesFromButton);
+    </script>
+</body>
+</html>

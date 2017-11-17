@@ -1,0 +1,267 @@
+body {
+    font: 1.2em/1.67 'Open Sans', Helvetica, Sans-serif;
+    margin: 0;
+    background: #fff;
+}
+
+/* header and title */
+header {
+    color: #444;
+    font-family: 'Helvetica Neue', Helvetica, Sans-serif;
+    font-weight: 200;
+    text-align: center;
+}
+
+#title {
+    text-transform: uppercase;
+}
+
+#title a {
+    text-decoration: none;
+}
+/* end header */
+
+#q {
+    font-size: 1em;
+    border-radius: 0.5em;
+    padding: 0.5em;
+    border: 1px solid grey;
+    padding-right: 0px;
+    height: 50px;
+    margin: 0 auto;
+/*     margin-left: 4em; */
+}
+
+button {
+    font-size: 1em;
+    border: 1px solid grey;
+    border-left: 0px solid;
+    margin-left: -45px;
+    height: 50px;
+    border-radius: 0 0.5em 0.5em 0;
+}
+
+button.off {
+    color: #444;
+    background-color: #dde2e7;
+}
+
+button.on {
+    color: #fff;
+    background-color: #444546;
+}
+
+/* throbber */
+/* https://codepen.io/jlong/pen/bdzyn */
+@-webkit-keyframes throbber {
+    0% { background: #dde2e7; }
+    10% { background: #6b9dc8; }
+    40% { background: #dde2e7; }
+}
+@-moz-keyframes throbber {
+    0% { background: #dde2e7; }
+    10% { background: #6b9dc8; }
+    40% { background: #dde2e7; }
+}
+@-o-keyframes throbber {
+    0% { background: #dde2e7; }
+    10% { background: #6b9dc8; }
+    40% { background: #dde2e7; }
+}
+@keyframes throbber {
+    0% { background: #dde2e7; }
+    10% { background: #6b9dc8; }
+    40% { background: #dde2e7; }
+}
+  
+/* Styles for old versions of IE */
+#throbber {
+    font-family: sans-serif;
+    font-weight: 100;
+    visibility: hidden;
+}
+  
+/* :not(:required) hides these rules from IE9 and below */
+#throbber:not(:required) {
+    -webkit-animation: throbber 2000ms 300ms infinite ease-out;
+    -khtml-animation: throbber 2000ms 300ms infinite ease-out;
+    -moz-animation: throbber 2000ms 300ms infinite ease-out;
+    -ms-animation: throbber 2000ms 300ms infinite ease-out;
+    -o-animation: throbber 2000ms 300ms infinite ease-out;
+    animation: throbber 2000ms 300ms infinite ease-out;
+    background: #dde2e7;
+    display: inline-block;
+    position: relative;
+    text-indent: -9999px;
+    width: 0.9em;
+    height: 1.5em;
+    margin: 0 1.6em;
+}
+#throbber:not(:required):before, 
+#throbber:not(:required):after {
+    background: #dde2e7;
+    content: '\x200B';
+    display: inline-block;
+    width: 0.9em;
+    height: 1.5em;
+    position: absolute;
+    top: 0;
+}
+#throbber:not(:required):before {
+    -webkit-animation: throbber 2000ms 150ms infinite ease-out;
+    -khtml-animation: throbber 2000ms 150ms infinite ease-out;
+    -moz-animation: throbber 2000ms 150ms infinite ease-out;
+    -ms-animation: throbber 2000ms 150ms infinite ease-out;
+    -o-animation: throbber 2000ms 150ms infinite ease-out;
+    animation: throbber 2000ms 150ms infinite ease-out;
+    left: -1.6em;
+}
+#throbber:not(:required):after {
+    -webkit-animation: throbber 2000ms 450ms infinite ease-out;
+    -khtml-animation: throbber 2000ms 450ms infinite ease-out;
+    -moz-animation: throbber 2000ms 450ms infinite ease-out;
+    -ms-animation: throbber 2000ms 450ms infinite ease-out;
+    -o-animation: throbber 2000ms 450ms infinite ease-out;
+    animation: throbber 2000ms 450ms infinite ease-out;
+    right: -1.6em;
+}
+
+.wrapper {
+    width: 95%;
+    margin: 3em auto;
+    background-color: white;
+    opacity: 0.95;
+}
+
+.masonry {
+    margin: 1.5em 0;
+    padding: 0;
+    -moz-column-gap: 0.5em;
+    -webkit-column-gap: 0.5em;
+    column-gap: 0.5em;
+    font-size: .85em;
+}
+
+.item {
+    display: inline-block;
+    background: #fff;
+    padding: 1em;
+    margin: 0 0 0.5em;
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    border: 1px solid grey;
+/*     box-shadow: 2px 2px 4px 0 #ccc; */
+}
+
+/* Add animation to "page content" */
+.animate-bottom {
+    position: relative;
+    -webkit-animation-name: animatebottom;
+    -webkit-animation-duration: 1s;
+    animation-name: animatebottom;
+    animation-duration: 1s
+}
+
+@-webkit-keyframes animatebottom {
+    from { bottom:-100px; opacity:0 } 
+    to { bottom:0px; opacity:1 }
+}
+
+@keyframes animatebottom { 
+    from{ bottom:-100px; opacity:0 } 
+    to{ bottom:0; opacity:1 }
+}
+
+figure img {
+    width: 100%;
+}
+
+#pager {
+    margin: 0 auto;
+    visibility: hidden;
+    border-top: 1px solid grey;;
+    z-index: 1;
+    text-align: center;
+    margin-bottom: 6em;
+}
+
+#prev {
+    margin-right: 1em;
+}
+
+#next {
+    margin-left: 1em;
+}
+
+#prev:visited,
+#next:visited {
+    color: blue;
+}
+
+footer {
+    background: none repeat scroll 0 0 #fff;
+    bottom: 0;
+    position: fixed;
+    text-align: center;
+    width: 100%;
+}
+
+footer img {
+    margin: auto;
+}
+
+@media only screen and (min-width: 300px) {
+    .masonry {
+        -moz-column-count: 1;
+        -webkit-column-count: 1;
+        column-count: 1;
+    }
+    
+    footer img {
+        width: 100%;
+    }
+}
+
+@media only screen and (min-width: 400px) {
+    .masonry {
+        -moz-column-count: 2;
+        -webkit-column-count: 2;
+        column-count: 2;
+    }
+}
+
+@media only screen and (min-width: 700px) {
+    .masonry {
+        -moz-column-count: 3;
+        -webkit-column-count: 3;
+        column-count: 3;
+    }
+    
+    footer img {
+        width: 640px;;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .masonry {
+        -moz-column-count: 4;
+        -webkit-column-count: 4;
+        column-count: 4;
+    }
+}
+
+@media only screen and (min-width: 1100px) {
+    .masonry {
+        -moz-column-count: 5;
+        -webkit-column-count: 5;
+        column-count: 5;
+    }
+}
+
+/* @media only screen and (min-width: 1280px) {
+    .wrapper {
+        width: 1260px;
+    }
+} */
