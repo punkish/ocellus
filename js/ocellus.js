@@ -5,6 +5,8 @@ const pager = document.getElementById('pager');
 const prev = document.getElementById('prev');
 const next = document.getElementById('next');
 const q = document.getElementById('q');
+const footer = document.getElementById('footer');
+
 // let baseUrl = "http://localhost:3030/v1/records?size=30&communities=biosyslit&type=image&summary=false&images=true&";
 let baseUrl = "http://zenodeo.punkish.org/v1/records?size=30&communities=biosyslit&type=image&summary=false&images=true&";
 
@@ -78,6 +80,7 @@ const getImages = function(event, qry, page) {
                 masonry.style.visibility = 'visible';
                 btn.className = 'off';
                 throbber.style.visibility = 'hidden';
+                footer.style.position = 'relative';
 
                 prev.href = (page === 1) ? '?' + qStr1 + 1 : '?' + qStr1 + (page - 1);
                 next.href = '?' + qStr1 + (parseInt(page) + 1);

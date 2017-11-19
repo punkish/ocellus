@@ -14,7 +14,7 @@
     <header align="center">
         <div id="title"><a href="/">ocellus</a></div>
         <div>
-            <input name="q" id="q" type="text" placeholder="search" autofocus> 
+            <input name="q" id="q" type="text" required placeholder="search" autofocus> 
             <button id="btn-images">go</button>
         </div>
         <div id="throbber">Loading&#8230;</div>
@@ -28,17 +28,15 @@
         </div>
     </div>
 
-    <footer>
+    <footer id="footer">
         <img src="img/fish.jpg">
-        <!-- <img src="img/14744326316_1ec1cf39de_h.png" width="100%"> -->
     </footer>
 
     <script src="JavaScript-autoComplete/auto-complete.min.js"></script>
     <script src="js/family.min.js"></script>
     <script src="js/ocellus.js"></script>
     <script>
-        
-
+    window.onload = function() {
         new autoComplete({
             selector: q,
             minChars: 2,
@@ -55,7 +53,10 @@
             }
         });
 
+        footer.style.position = 'fixed';
         btn.addEventListener('click', getImagesFromButton);
+        q.focus();
+    }
     </script>
 </body>
 </html>
