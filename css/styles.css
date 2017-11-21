@@ -28,43 +28,6 @@ header {
 
 /* @end */
 
-
-/*
-#q {
-    font-size: 1em;
-    border-radius: 0.5em;
-    padding: 0.5em;
-    border: 1px solid grey;
-    padding-right: 0px;
-    height: 29px;
-    margin: 0 auto;
-}
-
-#q:focus {
-    box-shadow: 0 0 15px 5px #b0e0ee;
-	border: 2px solid #bebede;
-}
-
-button {
-    font-size: 1em;
-    border: 1px solid grey;
-    border-left: 0px solid;
-    margin-left: -41px;
-    height: 50px;
-    border-radius: 0 0.5em 0.5em 0;
-}
-
-button.off {
-    color: #444;
-    background-color: #dde2e7;
-}
-
-button.on {
-    color: #fff;
-    background-color: #444546;
-}
-*/
-
 /* @group search-box */
 
 /*Clearing Floats*/
@@ -142,7 +105,8 @@ button.on {
     font: bold 15px/40px 'lucida sans', 'trebuchet MS', 'Tahoma';
     color: #fff;
     text-transform: uppercase;
-    background: #d83c3c;
+    /* background: #d83c3c; */
+    background-color: #6b9dc8;
     border-radius: 0 3px 3px 0;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, .3);
 }
@@ -163,7 +127,7 @@ button.on {
     position: absolute;
     border-width: 8px 8px 8px 0;
     border-style: solid solid solid none;
-    border-color: transparent #d83c3c transparent;
+    border-color: transparent #6b9dc8 transparent;
     top: 12px;
     left: -6px;
 }

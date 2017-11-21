@@ -1,25 +1,11 @@
-// const loc = 'local';
-const loc = 'remote';
+// const loc = 'http://localhost:3030';
+const loc = 'http://zenodeo.punkish.org';
 
 //const layout = 'masonry';
 const layout = 'grid';
 
-let baseUrl = '';
-if (loc === 'local') {
-    baseUrl = 'http://localhost:3030/v1/records?size=30&communities=biosyslit&type=image&summary=false&images=true&';
-}
-else if (loc === 'remote') {
-    baseUrl = 'http://zenodeo.punkish.org/v1/records?size=30&communities=biosyslit&type=image&summary=false&images=true&';
-}
-
-let view;
-if (layout === 'masonry') {
-    view = document.getElementById('masonry');
-}
-else if (layout === 'grid') {
-    view = document.getElementById('grid');
-}
-
+const baseUrl = loc + '/v1/records?size=30&communities=biosyslit&type=image&summary=false&images=true&';
+const view = document.getElementById(layout);
 const btn = document.getElementById('btn-images');
 const throbber = document.getElementById('throbber');
 const pager = document.getElementById('pager');
@@ -52,10 +38,6 @@ const getImagesFromPager = function(event) {
 const getImagesFromButton = function(event) {
     let qry = q.value.toLowerCase();
     let page = 1;
-
-    // make the button darker so it is apparent   
-    // that it was pressed
-    // btn.className = 'on';
 
     getImages(event, qry, page);
 };
@@ -105,7 +87,6 @@ const getImages = function(event, qry, page) {
                 var res = JSON.parse(x.responseText);
                 view.innerHTML = makeLayout(res);
                 view.style.visibility = 'visible';
-                // btn.className = 'off';
                 throbber.style.visibility = 'hidden';
                 footer.style.position = 'relative';
 
