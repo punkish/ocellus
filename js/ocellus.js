@@ -1,25 +1,48 @@
+// const loc = 'local';
+const loc = 'remote';
+
+//const layout = 'masonry';
+const layout = 'grid';
+
+let baseUrl = '';
+if (loc === 'local') {
+    baseUrl = 'http://localhost:3030/v1/records?size=30&communities=biosyslit&type=image&summary=false&images=true&';
+}
+else if (loc === 'remote') {
+    baseUrl = 'http://zenodeo.punkish.org/v1/records?size=30&communities=biosyslit&type=image&summary=false&images=true&';
+}
+
+let view;
+if (layout === 'masonry') {
+    view = document.getElementById('masonry');
+}
+else if (layout === 'grid') {
+    view = document.getElementById('grid');
+}
+
 const btn = document.getElementById('btn-images');
 const throbber = document.getElementById('throbber');
-const masonry = document.getElementById('masonry');
 const pager = document.getElementById('pager');
 const prev = document.getElementById('prev');
 const next = document.getElementById('next');
 const q = document.getElementById('q');
 const footer = document.getElementById('footer');
 
-// let baseUrl = "http://localhost:3030/v1/records?size=30&communities=biosyslit&type=image&summary=false&images=true&";
-let baseUrl = "http://zenodeo.punkish.org/v1/records?size=30&communities=biosyslit&type=image&summary=false&images=true&";
-
-const getImagesFromPager = function(event) {
-
-    masonry.style.visibility = 'hidden';
-    smoothScroll(0);
-
+const getQueryStr = function(qStr) {
     let qryStr = {};
-    this.search.substr(1).split('&').forEach(function(el) {
+    qStr.substr(1).split('&').forEach(function(el) {
         qryStr[el.split('=')[0]] = el.split('=')[1];
     });
 
+    return qryStr;
+};
+
+const getImagesFromPager = function(event) {
+
+    view.style.visibility = 'hidden';
+    smoothScroll(0);
+
+    let qryStr = getQueryStr(this.search);
     let qry = qryStr['q'];
     let page = qryStr['page'];
 
@@ -35,6 +58,27 @@ const getImagesFromButton = function(event) {
     btn.className = 'on';
 
     getImages(event, qry, page);
+};
+
+const makeLayout = function(res) {
+    var html = "";
+    
+    for (var record in res) {
+        html += "<figure class='item'>";
+        var images = res[record];
+        var j = images.length;
+        for (var i = 0; i < j; i++) {
+            html += `<img src='${images[i]}'>`;
+        }
+
+        html += `<figcaption>
+            rec ID: <a href='https://zenodo.org/record/${record.split('/').pop()}' target='_blank'>
+                ${record.split('/').pop()}</a>
+            </figcaption>
+        </figure>`;
+    }
+
+    return html;
 };
 
 const getImages = function(event, qry, page) {
@@ -59,25 +103,8 @@ const getImages = function(event, qry, page) {
         if (x.readyState === 4) {
             if (x.status === 200) {
                 var res = JSON.parse(x.responseText);
-                var html = "";
-
-                for (var record in res) {
-                    html += "<figure class='item'>";
-                    var images = res[record];
-                    var j = images.length;
-                    for (var i = 0; i < j; i++) {
-                        html += `<img src='${images[i]}'>`;
-                    }
-
-                    html += `<figcaption>
-                        rec ID: <a href='https://zenodo.org/record/${record.split('/').pop()}' target='_blank'>
-                            ${record.split('/').pop()}</a>
-                        </figcaption>
-                    </figure>`;
-                }
-
-                masonry.innerHTML = html;
-                masonry.style.visibility = 'visible';
+                view.innerHTML = makeLayout(res);
+                view.style.visibility = 'visible';
                 btn.className = 'off';
                 throbber.style.visibility = 'hidden';
                 footer.style.position = 'relative';
@@ -101,8 +128,11 @@ const getImages = function(event, qry, page) {
     x.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     x.send();
 
-    event.preventDefault();
-    event.stopPropagation();
+    if (event !== null) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    
     return false;
 };
 

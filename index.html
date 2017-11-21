@@ -13,7 +13,7 @@
 <body>
     <header align="center">
         <div id="title"><a href="/">ocellus</a></div>
-        <div>
+        <div class="form-wrapper cf">
             <input name="q" id="q" type="text" required placeholder="search" autofocus> 
             <button id="btn-images">go</button>
         </div>
@@ -22,11 +22,22 @@
     
     <div class="wrapper">
         <div id="masonry" class="masonry animate-bottom"></div>
+        <div id="grid" class="grid animate-bottom"></div>
         <div id="pager">
             <a href="" id="prev" class="pager">prev</a>
             <a href="" id="next" class="pager">next</a>
         </div>
     </div>
+
+    <!-- <div id="large">
+        <div class="arrow-left"></div>
+        <figure>
+            <img src="https://www.zenodo.org/api/files/456d82d7-fa49-42cf-8576-23a10e49d9b6/big_70352.jpg">
+            <figcaption>
+                rec ID: <a href='https://zenodo.org/record/973234' target='_blank'>973234</a>
+            </figcaption>
+        </figure>
+    </div> -->
 
     <footer id="footer">
         <img src="img/fish.jpg">
@@ -55,7 +66,17 @@
 
         footer.style.position = 'fixed';
         btn.addEventListener('click', getImagesFromButton);
-        q.focus();
+
+        if (location.search) {
+            let qryStr = getQueryStr(location.search);
+            let qry = qryStr['q'];
+            let page = qryStr['page'];
+            getImages(null, qry, page);
+            q.value = qry;
+        }
+        else {
+            q.focus();
+        }
     }
     </script>
 </body>
