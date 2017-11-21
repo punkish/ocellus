@@ -55,7 +55,7 @@ const getImagesFromButton = function(event) {
 
     // make the button darker so it is apparent   
     // that it was pressed
-    btn.className = 'on';
+    // btn.className = 'on';
 
     getImages(event, qry, page);
 };
@@ -105,7 +105,7 @@ const getImages = function(event, qry, page) {
                 var res = JSON.parse(x.responseText);
                 view.innerHTML = makeLayout(res);
                 view.style.visibility = 'visible';
-                btn.className = 'off';
+                // btn.className = 'off';
                 throbber.style.visibility = 'hidden';
                 footer.style.position = 'relative';
 
