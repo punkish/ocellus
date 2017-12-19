@@ -222,6 +222,12 @@ const smoothScroll = function(stopY) {
 
 window.onload = function() {
     html.className = 'on';
+    cacheMsgCheck.checked = false;
+    cacheMsg.className = 'off';
+    // qReqdMsg.className = 'off';
+    throbber.className = 'off';
+    about.className = 'off';
+    pager.className = 'off';
 
     new autoComplete({
         selector: q,
@@ -271,13 +277,6 @@ window.onload = function() {
     
     //btnImages.addEventListener('click', prompt);
     btnImages.addEventListener('click', getImagesFromButton);
-    
-    cacheMsgCheck.checked = false;
-    cacheMsg.className = 'off';
-    // qReqdMsg.className = 'off';
-    throbber.className = 'off';
-    about.className = 'off';
-    pager.className = 'off';
 
     if (location.search) {
         let qryStr = getQueryStr(location.search);
