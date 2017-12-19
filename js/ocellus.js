@@ -15,6 +15,9 @@ const about = document.getElementById('about');
 const closeAbout = document.getElementById('closeAbout');
 const pager = document.getElementById('pager');
 const wrapper = document.getElementById('wrapper');
+const html = document.getElementById('html');
+
+html.className = 'off';
 
 const getQueryStr = function(qStr) {
     let qryStr = {};
@@ -218,6 +221,8 @@ const smoothScroll = function(stopY) {
 };
 
 window.onload = function() {
+    html.className = 'on';
+
     new autoComplete({
         selector: q,
         minChars: 3,
