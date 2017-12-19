@@ -76,8 +76,6 @@ const makeLayout = function(res) {
     return [html, imgCount];
 };
 
-//let images;
-
 const showLarge = function(event) {
     large.innerHTML = `<figure class="largeItem">
     ${this.innerHTML}
@@ -124,16 +122,8 @@ const getImages = function(event, qry, page) {
                     next.addEventListener('click', getImagesFromPager);
                 }
 
-                //toggle('off', 'off', 'on', 'relative', null);
                 throbber.className = 'off';
                 footer.style.position = 'relative';
-
-                //images = document.getElementsByClassName('z');
-                // images = document.getElementsByTagName('figure');
-                // let j = images.length;
-                // for (let i = 0; i < j; i++) {
-                //     images[i].addEventListener('click', showLarge);
-                // }
 
                 history.pushState('', '', '?' + qStr2);
             }
