@@ -15,7 +15,7 @@ const about = document.getElementById('about');
 const closeAbout = document.getElementById('closeAbout');
 const pager = document.getElementById('pager');
 const wrapper = document.getElementById('wrapper');
-const html = document.getElementById('html');
+//const html = document.getElementById('html');
 
 html.className = 'off';
 
@@ -53,7 +53,7 @@ const makeLayout = function(res) {
 
     //const imageresizer = 'http://res.cloudinary.com/ocellus/image/fetch/w_300/';
     //https://api.imageresizer.io/v1/images?key=ba0311d2c817056e2c258f7c2f0b537f034b8412&url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2F6%2F65%2FTesla_Model_S_Indoors.jpg
-    //const imageresizer = 'https://ocellus.imageresizer.io/zenodo/';
+    const imageresizer = 'https://ocellus.imageresizer.io/zenodo/';
 
     let imgCount = 0;
     let recordCount = 0;
@@ -65,8 +65,8 @@ const makeLayout = function(res) {
         let j = images.length;
         imgCount = imgCount + j;
         for (let i = 0; i < j; i++) {
-            html += `<a href="${images[i]}" target="_blank"><img class="z" src="${images[i]}"></a>`;
-            //html += `<a href="${images[i]}" target="_blank"><img class="z" src="${imageresizer}${images[i].replace('https://www.zenodo.org/api/files/', '')}"></a>`;
+            //html += `<a href="${images[i]}" target="_blank"><img class="z" src="${images[i]}"></a>`;
+            html += `<a href="${images[i]}" target="_blank"><img class="z" src="${imageresizer}${images[i].replace('https://www.zenodo.org/api/files/', '')}"></a>`;
         }
 
         html += `<figcaption>
@@ -79,7 +79,7 @@ const makeLayout = function(res) {
     return [html, imgCount];
 };
 
-let images;
+//let images;
 
 const showLarge = function(event) {
     large.innerHTML = `<figure class="largeItem">
@@ -117,7 +117,6 @@ const getImages = function(event, qry, page) {
             if (x.status === 200) {
                 var res = JSON.parse(x.responseText);
                 const [html, imgCount] = makeLayout(res);
-                view.innerHTML = '';
                 view.innerHTML = html;
 
                 if (imgCount >= 30) {
@@ -133,11 +132,11 @@ const getImages = function(event, qry, page) {
                 footer.style.position = 'relative';
 
                 //images = document.getElementsByClassName('z');
-                images = document.getElementsByTagName('figure');
-                let j = images.length;
-                for (let i = 0; i < j; i++) {
-                    images[i].addEventListener('click', showLarge);
-                }
+                // images = document.getElementsByTagName('figure');
+                // let j = images.length;
+                // for (let i = 0; i < j; i++) {
+                //     images[i].addEventListener('click', showLarge);
+                // }
 
                 history.pushState('', '', '?' + qStr2);
             }
@@ -221,10 +220,9 @@ const smoothScroll = function(stopY) {
 };
 
 window.onload = function() {
-    html.className = 'on';
+    //html.className = 'on';
     cacheMsgCheck.checked = false;
     cacheMsg.className = 'off';
-    // qReqdMsg.className = 'off';
     throbber.className = 'off';
     about.className = 'off';
     pager.className = 'off';
@@ -275,7 +273,6 @@ window.onload = function() {
         wrapper.className = 'on';
     });
     
-    //btnImages.addEventListener('click', prompt);
     btnImages.addEventListener('click', getImagesFromButton);
 
     if (location.search) {
