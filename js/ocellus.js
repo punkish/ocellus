@@ -118,6 +118,7 @@ const getImages = function(event, qry, page) {
             if (x.status === 200) {
                 var res = JSON.parse(x.responseText);
                 const [html, imgCount] = makeLayout(res);
+                view.innerHTML = '';
                 view.innerHTML = html;
 
                 if (imgCount >= 30) {
