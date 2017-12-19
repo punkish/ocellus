@@ -26,7 +26,7 @@ const getQueryStr = function(qStr) {
 };
 
 const getImagesFromPager = function(event) {
-    //toggle('off', 'off', 'off', 'fixed', null);
+
     smoothScroll(0);
 
     let qryStr = getQueryStr(this.search);
@@ -37,7 +37,6 @@ const getImagesFromPager = function(event) {
 };
 
 const getImagesFromButton = function(event) {
-    //toggle('off', 'off', 'off', 'fixed', null);
 
     let qry = q.value.toLowerCase();
     let page = 1;
@@ -46,7 +45,7 @@ const getImagesFromButton = function(event) {
 };
 
 const makeLayout = function(res) {
-    let html = "";
+    let html = '';
 
     //const imageresizer = 'http://res.cloudinary.com/ocellus/image/fetch/w_300/';
     //https://api.imageresizer.io/v1/images?key=ba0311d2c817056e2c258f7c2f0b537f034b8412&url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2F6%2F65%2FTesla_Model_S_Indoors.jpg
@@ -73,14 +72,8 @@ const makeLayout = function(res) {
         </figure>`;
     }
 
-    return [html, imgCount];
-};
-
-const showLarge = function(event) {
-    large.innerHTML = `<figure class="largeItem">
-    ${this.innerHTML}
-    </figure>`;
-    large.className = 'on';
+    //return [html, imgCount];
+    return html;
 };
 
 const getImages = function(event, qry, page) {
@@ -111,16 +104,16 @@ const getImages = function(event, qry, page) {
         if (x.readyState === 4) {
             if (x.status === 200) {
                 var res = JSON.parse(x.responseText);
-                const [html, imgCount] = makeLayout(res);
+                const html = makeLayout(res);
                 view.innerHTML = html;
 
-                if (imgCount >= 30) {
+                //if (imgCount >= 30) {
                     prev.href = (page === 1) ? '?' + qStr1 + 1 : '?' + qStr1 + (page - 1);
                     next.href = '?' + qStr1 + (parseInt(page) + 1);
                     pager.className = 'on';
                     prev.addEventListener('click', getImagesFromPager);
                     next.addEventListener('click', getImagesFromPager);
-                }
+                //}
 
                 throbber.className = 'off';
                 footer.style.position = 'relative';
