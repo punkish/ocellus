@@ -9,66 +9,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="JavaScript-autoComplete/auto-complete.css">
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="icon" type="image/png" href="Skeleton-2.0.4/images/favicon.png">
+    <link rel="icon" type="image/png" href="img/ocellus.png">
 </head>
 <body>
-    <header align="center">
-        <div id="title"><a href="/">ocellus</a></div>
-        <div class="form-wrapper cf">
+<header>
+    <div id="title">
+        <a href="/">ocellus</a><br>
+        <a id="aboutLink" href="/about">about</a>
+    </div>
+
+    <div id="fform" class="cf">
+        <div id="q-wrapper">
             <input name="q" id="q" type="text" required placeholder="search" autofocus> 
             <button id="btn-images">go</button>
+            <input id="cacheMsgCheck" name="refreshCache" type="checkbox">
         </div>
-        <div id="throbber">Loading&#8230;</div>
-    </header>
-    
-    <div class="wrapper">
-        <div id="masonry" class="masonry animate-bottom"></div>
-        <div id="grid" class="grid animate-bottom"></div>
+        <br clear="both">
+        <div id="cacheMsg" style="display: block;">This will query BLR and overwrite any cached results. You probably <em><b>do not</b></em> want this.</div>
+    </div>
+</header>
+
+<div id="content">
+    <!-- <div id="throbber">Loading&#8230;</div> -->
+    <div id="throbber"></div>
+
+    <div id="about">
+        <div id="closeAbout">close</div>
+        <p>Ocellus is a frontend to more than 150K images in the <a href="http://biolitrepo.org" target="_blank">Biodiversity Literature Repository</a> (BLR) on <a href="https://zenodo.org" target="_blank">Zenodo</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API to the <a href="https://zenodo.org/api" target="_blank">Zenodo API</a>, that performs a fulltext search on BLR. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, or provide any term and Ocellus will retrieve related images.</p>
+        
+        <p>For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country. The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up">Internet Archive</a> and has no known copyright restrictions. Please contact <a href="mailto:ocellus@plazi.org">Plazi</a> for more information or to provide feedback.</p>
+    </div>
+
+    <div id="wrapper">
+        <div id="grid" class="grid"></div>
+        
         <div id="pager">
             <a href="" id="prev" class="pager">prev</a>
             <a href="" id="next" class="pager">next</a>
         </div>
     </div>
+</div>
 
-    <footer id="footer">
-        <img src="img/fish.jpg">
-    </footer>
+<footer id="footer"><img src="img/fish.jpg"></footer>
 
-    <script src="JavaScript-autoComplete/auto-complete.min.js"></script>
-    <script src="js/family.min.js"></script>
-    <script src="js/ocellus.js"></script>
-    <script>
-    window.onload = function() {
-        new autoComplete({
-            selector: q,
-            minChars: 2,
-            source: function(term, suggest){
-                term = term.toLowerCase();
-                let matches = [];
-                let j = family.length;
-                for (let i = 0; i < j; i++) {
-                    if (~family[i].toLowerCase().indexOf(term)) {
-                        matches.push(family[i]);
-                    }
-                }
-                suggest(matches);
-            }
-        });
-
-        footer.style.position = 'fixed';
-        btn.addEventListener('click', getImagesFromButton);
-
-        if (location.search) {
-            let qryStr = getQueryStr(location.search);
-            let qry = qryStr['q'];
-            let page = qryStr['page'];
-            getImages(null, qry, page);
-            q.value = qry;
-        }
-        else {
-            q.focus();
-        }
-    }
-    </script>
+<script src="JavaScript-autoComplete/auto-complete.min.js"></script>
+<script src="js/family.min.js"></script>
+<script src="js/ocellus.js"></script>
 </body>
 </html>
