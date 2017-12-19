@@ -53,7 +53,7 @@ const makeLayout = function(res) {
 
     //const imageresizer = 'http://res.cloudinary.com/ocellus/image/fetch/w_300/';
     //https://api.imageresizer.io/v1/images?key=ba0311d2c817056e2c258f7c2f0b537f034b8412&url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2F6%2F65%2FTesla_Model_S_Indoors.jpg
-    const imageresizer = 'https://ocellus.imageresizer.io/zenodo/';
+    //const imageresizer = 'https://ocellus.imageresizer.io/zenodo/';
 
     let imgCount = 0;
     let recordCount = 0;
@@ -65,9 +65,8 @@ const makeLayout = function(res) {
         let j = images.length;
         imgCount = imgCount + j;
         for (let i = 0; i < j; i++) {
-            //html += `<img class="z" src="${images[i]}">`;
-            html += `<a href="${images[i]}" target="_blank"><img class="z" src="${imageresizer}${images[i].replace('https://www.zenodo.org/api/files/', '')}"></a>`;
-            //html += '<img class="z" src="img/oo_35888.png">';
+            html += `<a href="${images[i]}" target="_blank"><img class="z" src="${images[i]}"></a>`;
+            //html += `<a href="${images[i]}" target="_blank"><img class="z" src="${imageresizer}${images[i].replace('https://www.zenodo.org/api/files/', '')}"></a>`;
         }
 
         html += `<figcaption>
