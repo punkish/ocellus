@@ -1,5 +1,5 @@
-const loc = 'http://localhost:3030';
-//const loc = 'http://zenodeo.punkish.org';
+//const loc = 'http://localhost:3030';
+const loc = 'http://zenodeo.punkish.org';
 const layout = 'grid';
 const baseUrl = loc + '/v1/records?size=30&communities=biosyslit&type=image&summary=false&images=true&';
 const view = document.getElementById(layout);
