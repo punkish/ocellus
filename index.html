@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="html">
 <head>
     <meta charset="utf-8">
     <title>ocellus</title>
@@ -12,48 +12,47 @@
     <link rel="icon" type="image/png" href="img/ocellus.png">
 </head>
 <body>
-<header>
-    <div id="title">
-        <a href="/">ocellus</a><br>
-        <a id="aboutLink" href="/about">about</a>
-    </div>
-
-    <div id="fform" class="cf">
-        <div id="q-wrapper">
-            <input name="q" id="q" type="text" required placeholder="search" autofocus> 
-            <button id="btn-images">go</button>
-            <input id="cacheMsgCheck" name="refreshCache" type="checkbox">
+    <header>
+        <div id="title">
+            <a href="/">ocellus</a><br>
+            <a id="aboutLink" href="/about">about</a>
         </div>
-        <br clear="both">
-        <div id="cacheMsg" style="display: block;">This will query BLR and overwrite any cached results. You probably <em><b>do not</b></em> want this.</div>
-    </div>
-</header>
 
-<div id="content">
-    <!-- <div id="throbber">Loading&#8230;</div> -->
-    <div id="throbber"></div>
+        <form id="fform" class="cf">
+            <div id="q-wrapper">
+                <input name="q" id="q" type="text" required placeholder="search" autofocus> 
+                <button id="btn-images" type="submit">go</button>
+                <input id="cacheMsgCheck" name="refreshCache" type="checkbox">
+            </div>
+            <br clear="both">
+            <div id="cacheMsg" class="off">This will query BLR and overwrite any cached results. You probably <em><b>do not</b></em> want this.</div>
+        </form>
+    </header>
 
-    <div id="about">
-        <div id="closeAbout">close</div>
-        <p>Ocellus is a frontend to more than 150K images in the <a href="http://biolitrepo.org" target="_blank">Biodiversity Literature Repository</a> (BLR) on <a href="https://zenodo.org" target="_blank">Zenodo</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API to the <a href="https://zenodo.org/api" target="_blank">Zenodo API</a>, that performs a fulltext search on BLR. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, or provide any term and Ocellus will retrieve related images.</p>
-        
-        <p>For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country. The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up">Internet Archive</a> and has no known copyright restrictions. Please contact <a href="mailto:ocellus@plazi.org">Plazi</a> for more information or to provide feedback.</p>
-    </div>
+    <div id="content">
+        <div id="throbber" class="off">Loading&#8230;</div>
 
-    <div id="wrapper">
-        <div id="grid" class="grid"></div>
-        
-        <div id="pager">
-            <a href="" id="prev" class="pager">prev</a>
-            <a href="" id="next" class="pager">next</a>
+        <div id="about" class="off">
+            <div id="closeAbout">close</div>
+            <p>Ocellus is a frontend to more than 150K images in the <a href="http://biolitrepo.org" target="_blank">Biodiversity Literature Repository</a> (BLR) on <a href="https://zenodo.org" target="_blank">Zenodo</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API to the <a href="https://zenodo.org/api" target="_blank">Zenodo API</a>, that performs a fulltext search on BLR. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, or provide any term and Ocellus will retrieve related images.</p>
+            
+            <p>For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country. The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up">Internet Archive</a> and has no known copyright restrictions. Please contact <a href="mailto:ocellus@plazi.org">Plazi</a> for more information or to provide feedback.</p>
+        </div>
+
+        <div id="wrapper">
+            <div id="grid" class="grid"></div>
+            
+            <div id="pager" class="off">
+                <a href="" id="prev" class="pager">prev</a>
+                <a href="" id="next" class="pager">next</a>
+            </div>
         </div>
     </div>
-</div>
 
-<footer id="footer"><img src="img/fish.jpg"></footer>
+    <footer id="footer"><img src="img/fish.jpg"></footer>
 
-<script src="JavaScript-autoComplete/auto-complete.min.js"></script>
-<script src="js/family.min.js"></script>
-<script src="js/ocellus.js"></script>
+    <script src="JavaScript-autoComplete/auto-complete.min.js"></script>
+    <script src="js/family.min.js"></script>
+    <script src="js/ocellus.js"></script>
 </body>
 </html>

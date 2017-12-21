@@ -15,6 +15,13 @@ const about = document.getElementById('about');
 const closeAbout = document.getElementById('closeAbout');
 const pager = document.getElementById('pager');
 const wrapper = document.getElementById('wrapper');
+const html = document.getElementById('html');
+
+cacheMsgCheck.checked = false;
+// cacheMsg.className = 'off';
+// throbber.className = 'off';
+// about.className = 'off';
+// pager.className = 'off';
 
 const getQueryStr = function(qStr) {
     let qryStr = {};
@@ -29,19 +36,21 @@ const getImagesFromPager = function(event) {
 
     smoothScroll(0);
 
-    let qryStr = getQueryStr(this.search);
-    let qry = qryStr['q'];
-    let page = qryStr['page'];
+    const qryStr = getQueryStr(this.search);
+    const qry = qryStr['q'];
+    const page = qryStr['page'];
+    const refreshCache = qryStr['refreshCache'];
 
-    getImages(event, qry, page);
+    getImages(event, qry, page, refreshCache);
 };
 
 const getImagesFromButton = function(event) {
 
-    let qry = q.value.toLowerCase();
-    let page = 1;
+    const qry = q.value.toLowerCase();
+    const page = 1;
+    const refreshCache = cacheMsgCheck.checked;
 
-    getImages(event, qry, page);
+    getImages(event, qry, page, refreshCache);
 };
 
 const makeLayout = function(res) {
@@ -72,11 +81,12 @@ const makeLayout = function(res) {
         </figure>`;
     }
 
-    //return [html, imgCount];
-    return html;
+    return [html, imgCount];
+    //return html;
 };
 
-const getImages = function(event, qry, page) {
+const getImages = function(event, qry, page, refreshCache) {
+
     if (!q.value) {
         q.className = 'reqd';
         q.placeholder = 'a search term is required';
@@ -84,36 +94,37 @@ const getImages = function(event, qry, page) {
         return;
     }
     else {
+        q.className = 'normal';
         throbber.className = 'on';
     }
     
     // we attach qStr1 to 'prev' and 'next' links 
     // with the correctly decremented or  
     // incremented page number
-    let qStr1 = 'q=' + qry + '&page=';
+    let qStr1 = 'q=' + qry + '&refreshCache=' + refreshCache + '&page=';
 
     // qStr2 is used for `history`
     let qStr2 = qStr1 + page;
 
     // the complete url to the api
     let url = baseUrl + qStr2;
-    
+    console.log(`url: ${url}`);
     let x = new XMLHttpRequest();
 
     x.onload = function(event) {
         if (x.readyState === 4) {
             if (x.status === 200) {
                 var res = JSON.parse(x.responseText);
-                const html = makeLayout(res);
+                const [html, imgCount] = makeLayout(res);
                 view.innerHTML = html;
 
-                //if (imgCount >= 30) {
+                if (imgCount >= 30) {
                     prev.href = (page === 1) ? '?' + qStr1 + 1 : '?' + qStr1 + (page - 1);
                     next.href = '?' + qStr1 + (parseInt(page) + 1);
                     pager.className = 'on';
                     prev.addEventListener('click', getImagesFromPager);
                     next.addEventListener('click', getImagesFromPager);
-                //}
+                }
 
                 throbber.className = 'off';
                 footer.style.position = 'relative';
@@ -200,24 +211,22 @@ const smoothScroll = function(stopY) {
 };
 
 window.onload = function() {
-    cacheMsgCheck.checked = false;
-    cacheMsg.className = 'off';
-    throbber.className = 'off';
-    about.className = 'off';
-    pager.className = 'off';
-
     new autoComplete({
         selector: q,
         minChars: 3,
-        source: function(term, suggest){
+        source: function(term, suggest) {
+
             term = term.toLowerCase();
             let matches = [];
             let j = family.length;
+
             for (let i = 0; i < j; i++) {
                 if (~family[i].toLowerCase().indexOf(term)) {
                     matches.push(family[i]);
                 }
             }
+
+            q.className = 'normal';
             suggest(matches);
         }
     });
@@ -253,6 +262,7 @@ window.onload = function() {
     });
     
     btnImages.addEventListener('click', getImagesFromButton);
+    btnImages.addEventListener('submit', getImagesFromButton);
 
     if (location.search) {
         let qryStr = getQueryStr(location.search);

@@ -4,53 +4,62 @@ body {
     font-size: 0.8em;
     line-height: 1.2em;
     margin: 0 auto;
-    }
+}
     
-    header {
+header {
     color: #444;
     text-align: center;
-    }
+}
+
+a:visited {
+    color: blue;
+}
+
+a:hover {
+    background-color: rgb(189, 187, 187);
+}
     
-    #title {
+#title {
     margin-top: 1em;
     text-transform: uppercase;
-    }
+}
     
-    #title a {
+#title a {
     text-decoration: none;
-    }
+}
     
-    #aboutLink {
+#aboutLink {
     text-transform: none;
     font-size: xx-small;
-    }
-    
-    #fform {
+}
+
+#fform {
     margin: 10px auto;
     width: 290px;
     border: 0px solid;
         
-    }
+}
     
-    #q {
-    width: 220px;
+#q {
+    width: 210px;
     height: 21px;
     float: left;
     border: 0px solid;
     padding: 5px;
-    }
+}
     
-    #q:focus {
-    outline: 0;
+#q.normal,
+#q:focus {
+    outline: 1px solid rgb(107, 157, 200);
     box-shadow: 0 0 5px rgba(107, 157, 200, .8) inset;
-    }
-    
-    #q.reqd {
-    outline: 1;
+}
+
+#q.reqd {
+    outline-width: 1px;
     box-shadow: 0 0 5px rgba(247, 11, 3, 0.8) inset;
-    }
+}
     
-    #btn-images {
+#btn-images {
     width: 40px;
     height: 30px;
     float: left;
@@ -58,269 +67,271 @@ body {
     color: white;
     text-transform: uppercase;
     background-color: #6b9dc8;
-    }
+}
     
-    #btn-images:hover {
+#btn-images:hover {
     background-color: #e54040;
-    }
+}
     
-    #cacheMsgCheck {
+#cacheMsgCheck {
     float: left;
-    }
+}
     
-    #q-wrapper {
+#q-wrapper {
     border: 5px solid #ccc;
-    width: 290px;
+    width: 280px;
     height: 30px;
     padding: 0px;
     border-radius: 5px;
     float: left;
     clear: both;
     background-color: #6b9dc8;
-    }
+}
     
-    #qReqdMsg, 
-    #cacheMsg {
+#qReqdMsg, 
+#cacheMsg {
     margin-top: 1em;
     text-align: left;
     font-size: 1em;
-    }
+}
     
-    #content {
+#content {
     padding: 1em;
     margin: 1em auto;
-    }
+}
     
-    #about {
+#about {
     text-align: left;
-    }
+}
     
-    #closeAbout {
+#closeAbout {
     font-size: 0.7em;
     cursor: pointer;
-    }
+}
     
-    .on {
+.on {
     visibility: visible;
     display: block;
-    }
+}
     
-    .off {
+.off {
     visibility: hidden;
     display: none;
-    }
+}
     
-    #wrapper {
-        width: 99%;
-        margin: 0 auto;
-        background-color: white;
-        opacity: 0.95;
-    }
+#wrapper {
+    width: 99%;
+    margin: 0 auto;
+    background-color: white;
+    opacity: 0.95;
+}
     
-    .grid {
-        margin: 0em 0;
-        padding: 0;
-        font-size: .85em;
-        display: flex;
-        flex-wrap: wrap;
-    }
+.grid {
+    margin: 0em 0;
+    padding: 0;
+    font-size: .85em;
+    display: flex;
+    flex-wrap: wrap;
+}
     
-    .item {
-        display: inline-block;
-        background: #fff;
-        padding: 1em;
-        margin:  0 0 0;
-        width: 100%;
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        -webkit-box-sizing: border-box;
-        border: none;
-        /* box-shadow: 2px 2px 4px 0 #ccc; */
-    }
+.item {
+    display: inline-block;
+    background: #fff;
+    padding: 1em;
+    margin:  0 0 0;
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    border: none;
+    /* box-shadow: 2px 2px 4px 0 #ccc; */
+}
+
+.item:hover {
+    border: 1px solid #ccc;
+}
+
+/* Add animation to "page content" */
+.animate-bottom {
+    position: relative;
+    -webkit-animation-name: animatebottom;
+    -webkit-animation-duration: 1s;
+    animation-name: animatebottom;
+    animation-duration: 1s
+}
+
+@-webkit-keyframes animatebottom {
+    from { bottom:-100px; opacity:0 } 
+    to { bottom:0px; opacity:1 }
+}
+
+@keyframes animatebottom { 
+    from{ bottom:-100px; opacity:0 } 
+    to{ bottom:0; opacity:1 }
+}
+
+figure img {
+    width: 100%;
+}
     
-    .item:hover {
-        border: 1px solid #ccc;
-    }
-    
-    /* Add animation to "page content" */
-    .animate-bottom {
-        position: relative;
-        -webkit-animation-name: animatebottom;
-        -webkit-animation-duration: 1s;
-        animation-name: animatebottom;
-        animation-duration: 1s
-    }
-    
-    @-webkit-keyframes animatebottom {
-        from { bottom:-100px; opacity:0 } 
-        to { bottom:0px; opacity:1 }
-    }
-    
-    @keyframes animatebottom { 
-        from{ bottom:-100px; opacity:0 } 
-        to{ bottom:0; opacity:1 }
-    }
-    
-    figure img {
-        width: 100%;
-    }
-    
-    #pager {
+#pager {
     margin: 0 auto;
     z-index: 1;
     text-align: center;
     margin-top: 1em;
     margin-bottom: 6em;
-    }
+}
     
-    #prev {
+#prev {
     margin-right: 1em;
-    }
+}
     
-    #next {
+#next {
     margin-left: 1em;
-    }
+}
     
-    #prev:visited,
-    #next:visited {
+#prev:visited,
+#next:visited {
     color: blue;
-    }
+}
     
-    footer {
+footer {
     bottom: 0;
     text-align: center;
     position: fixed;
     width: 100%;
-    }
+}
     
-    footer img {
+footer img {
     width: 100%;
     max-width: 480px;
+}
+    
+/* @group throbber */
+
+/* https://codepen.io/jlong/pen/bdzyn */
+@-webkit-keyframes throbber {
+    0% { background: #dde2e7; }
+    10% { background: #6b9dc8; }
+    40% { background: #dde2e7; }
+}
+@-moz-keyframes throbber {
+    0% { background: #dde2e7; }
+    10% { background: #6b9dc8; }
+    40% { background: #dde2e7; }
+}
+/*
+@-o-keyframes throbber {
+    0% { background: #dde2e7; }
+    10% { background: #6b9dc8; }
+    40% { background: #dde2e7; }
+}
+*/
+@keyframes throbber {
+    0% { background: #dde2e7; }
+    10% { background: #6b9dc8; }
+    40% { background: #dde2e7; }
+}
+    
+/* Styles for old versions of IE */
+#throbber {
+    font-family: sans-serif;
+    font-weight: 100;
+}
+    
+/* :not(:required) hides these rules from IE9 and below */
+#throbber:not(:required) {
+    -webkit-animation: throbber 2000ms 300ms infinite ease-out;
+    -khtml-animation: throbber 2000ms 300ms infinite ease-out;
+    -moz-animation: throbber 2000ms 300ms infinite ease-out;
+    -ms-animation: throbber 2000ms 300ms infinite ease-out;
+    -o-animation: throbber 2000ms 300ms infinite ease-out;
+    animation: throbber 2000ms 300ms infinite ease-out;
+    background: #dde2e7;
+    display: inline-block;
+    position: relative;
+    text-indent: -9999px;
+    width: 0.9em;
+    height: 1.5em;
+    margin: 0 1.6em;
+}
+#throbber:not(:required):before, 
+#throbber:not(:required):after {
+    background: #dde2e7;
+    content: '\x200B';
+    display: inline-block;
+    width: 0.9em;
+    height: 1.5em;
+    position: absolute;
+    top: 0;
+}
+#throbber:not(:required):before {
+    -webkit-animation: throbber 2000ms 150ms infinite ease-out;
+    -khtml-animation: throbber 2000ms 150ms infinite ease-out;
+    -moz-animation: throbber 2000ms 150ms infinite ease-out;
+    -ms-animation: throbber 2000ms 150ms infinite ease-out;
+    -o-animation: throbber 2000ms 150ms infinite ease-out;
+    animation: throbber 2000ms 150ms infinite ease-out;
+    left: -1.6em;
+}
+#throbber:not(:required):after {
+    -webkit-animation: throbber 2000ms 450ms infinite ease-out;
+    -khtml-animation: throbber 2000ms 450ms infinite ease-out;
+    -moz-animation: throbber 2000ms 450ms infinite ease-out;
+    -ms-animation: throbber 2000ms 450ms infinite ease-out;
+    -o-animation: throbber 2000ms 450ms infinite ease-out;
+    animation: throbber 2000ms 450ms infinite ease-out;
+    right: -1.6em;
+}
+
+/* @end */
+
+/* Larger than mobile */
+@media (min-width: 400px) {
+    .grid .item {
+        width: 50%;
+    }
+}
+
+/* Larger than phablet */
+@media (min-width: 550px) {
+    .grid .item {
+        width: 50%;
+    }
+}
+
+/* Larger than tablet */
+@media (min-width: 750px) {
+    #about {
+        width: 50%;
+        margin: 0 auto;
+    }
+
+    #content {
+        width: 90%;
+        text-align: center;
+        padding: 0em;
     }
     
-    /* @group throbber */
-    
-    /* https://codepen.io/jlong/pen/bdzyn */
-    @-webkit-keyframes throbber {
-        0% { background: #dde2e7; }
-        10% { background: #6b9dc8; }
-        40% { background: #dde2e7; }
-    }
-    @-moz-keyframes throbber {
-        0% { background: #dde2e7; }
-        10% { background: #6b9dc8; }
-        40% { background: #dde2e7; }
-    }
-    @-o-keyframes throbber {
-        0% { background: #dde2e7; }
-        10% { background: #6b9dc8; }
-        40% { background: #dde2e7; }
-    }
-    @keyframes throbber {
-        0% { background: #dde2e7; }
-        10% { background: #6b9dc8; }
-        40% { background: #dde2e7; }
-    }
-        
-    /* Styles for old versions of IE */
     #throbber {
-        font-family: sans-serif;
-        font-weight: 100;
-    }
-        
-    /* :not(:required) hides these rules from IE9 and below */
-    #throbber:not(:required) {
-        -webkit-animation: throbber 2000ms 300ms infinite ease-out;
-        -khtml-animation: throbber 2000ms 300ms infinite ease-out;
-        -moz-animation: throbber 2000ms 300ms infinite ease-out;
-        -ms-animation: throbber 2000ms 300ms infinite ease-out;
-        -o-animation: throbber 2000ms 300ms infinite ease-out;
-        animation: throbber 2000ms 300ms infinite ease-out;
-        background: #dde2e7;
-        display: inline-block;
-        position: relative;
-        text-indent: -9999px;
-        width: 0.9em;
-        height: 1.5em;
-        margin: 0 1.6em;
-    }
-    #throbber:not(:required):before, 
-    #throbber:not(:required):after {
-        background: #dde2e7;
-        content: '\x200B';
-        display: inline-block;
-        width: 0.9em;
-        height: 1.5em;
-        position: absolute;
-        top: 0;
-    }
-    #throbber:not(:required):before {
-        -webkit-animation: throbber 2000ms 150ms infinite ease-out;
-        -khtml-animation: throbber 2000ms 150ms infinite ease-out;
-        -moz-animation: throbber 2000ms 150ms infinite ease-out;
-        -ms-animation: throbber 2000ms 150ms infinite ease-out;
-        -o-animation: throbber 2000ms 150ms infinite ease-out;
-        animation: throbber 2000ms 150ms infinite ease-out;
-        left: -1.6em;
-    }
-    #throbber:not(:required):after {
-        -webkit-animation: throbber 2000ms 450ms infinite ease-out;
-        -khtml-animation: throbber 2000ms 450ms infinite ease-out;
-        -moz-animation: throbber 2000ms 450ms infinite ease-out;
-        -ms-animation: throbber 2000ms 450ms infinite ease-out;
-        -o-animation: throbber 2000ms 450ms infinite ease-out;
-        animation: throbber 2000ms 450ms infinite ease-out;
-        right: -1.6em;
+        border: 1px solid;
     }
     
-    /* @end */
-    
-    /* Larger than mobile */
-    @media (min-width: 400px) {
-        .grid .item {
-            width: 50%;
-        }
+    .grid .item {
+        width: 33%;
     }
-    
-    /* Larger than phablet */
-    @media (min-width: 550px) {
-        .grid .item {
-            width: 50%;
-        }
+}
+
+/* Larger than desktop */
+@media (min-width: 1000px) {
+    .grid .item {
+        width: 25%;
     }
-    
-    /* Larger than tablet */
-    @media (min-width: 750px) {
-        #about {
-            width: 50%;
-            margin: 0 auto;
-        }
-    
-        #content {
-            width: 90%;
-            text-align: center;
-            padding: 0em;
-        }
-        
-        #throbber {
-            border: 1px solid;
-        }
-        
-        .grid .item {
-            width: 33%;
-        }
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 1200px) {
+    .grid .item {
+        width: 20%;
     }
-    
-    /* Larger than desktop */
-    @media (min-width: 1000px) {
-        .grid .item {
-            width: 25%;
-        }
-    }
-    
-    /* Larger than Desktop HD */
-    @media (min-width: 1200px) {
-        .grid .item {
-            width: 20%;
-        }
-    }
+}
