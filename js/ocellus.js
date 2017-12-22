@@ -1,65 +1,55 @@
 //const loc = 'http://localhost:3030';
 const loc = 'http://zenodeo.punkish.org';
-const layout = 'grid';
 const baseUrl = loc + '/v1/records?size=30&communities=biosyslit&type=image&summary=false&images=true&';
-const view = document.getElementById(layout);
-const cacheMsg = document.getElementById('cacheMsg');
-const qReqdMsg = document.getElementById('qReqdMsg');
-const cacheMsgCheck = document.getElementById('cacheMsgCheck');
-const q = document.getElementById('q');
-const qWrapper = document.getElementById('q-wrapper');
-const throbber = document.getElementById('throbber');
-const btnImages = document.getElementById('btn-images');
-const aboutLink = document.getElementById('aboutLink');
-const about = document.getElementById('about');
-const closeAbout = document.getElementById('closeAbout');
-const pager = document.getElementById('pager');
-const wrapper = document.getElementById('wrapper');
-const html = document.getElementById('html');
+const imageresizer = 'https://ocellus.imageresizer.io/zenodo/';
+const zenodoApi = 'https://www.zenodo.org/api/files/';
+const zenodoRecord = 'https://zenodo.org/record/';
 
-cacheMsgCheck.checked = false;
-// cacheMsg.className = 'off';
-// throbber.className = 'off';
-// about.className = 'off';
-// pager.className = 'off';
+let els = {};
+['grid', 'cacheMsg', 'qReqdMsg', 'cacheMsgCheck', 'q', 'qWrapper', 'throbber', 'btnImages', 'aboutLink', 'about', 'closeAbout', 'prev', 'next', 'pager', 'wrapper', 'html', 'footer'].forEach(function(el) {
+    els[el] = document.getElementById(el);
+});
 
 const getQueryStr = function(qStr) {
     let qryStr = {};
-    qStr.substr(1).split('&').forEach(function(el) {
-        qryStr[el.split('=')[0]] = el.split('=')[1];
-    });
+    qStr.substr(1)
+        .split('&')
+        .forEach(function(el) {
+            qryStr[el.split('=')[0]] = el.split('=')[1];
+        });
 
     return qryStr;
 };
 
+const getQueryParamsAndImages = function(event, search) {
+    const qryStr = getQueryStr(search);
+    els['q'].value = qryStr['q'];
+    getImages(
+        event, 
+        qryStr['q'],            // qry 
+        qryStr['page'],         // page, 
+        qryStr['refreshCache']  // refreshCache
+    );
+}
+
 const getImagesFromPager = function(event) {
-
+    els['grid'].innerHTML = '';
+    els['footer'].className = 'fixed';
     smoothScroll(0);
-
-    const qryStr = getQueryStr(this.search);
-    const qry = qryStr['q'];
-    const page = qryStr['page'];
-    const refreshCache = qryStr['refreshCache'];
-
-    getImages(event, qry, page, refreshCache);
+    getQueryParamsAndImages(event, this.search);
 };
 
 const getImagesFromButton = function(event) {
-
-    const qry = q.value.toLowerCase();
-    const page = 1;
-    const refreshCache = cacheMsgCheck.checked;
-
-    getImages(event, qry, page, refreshCache);
+    getImages(
+        event, 
+        els['q'].value.toLowerCase(),  // qry
+        1,                             // page
+        els['cacheMsgCheck'].checked   // refreshCache
+    );
 };
 
 const makeLayout = function(res) {
     let html = '';
-
-    //const imageresizer = 'http://res.cloudinary.com/ocellus/image/fetch/w_300/';
-    //https://api.imageresizer.io/v1/images?key=ba0311d2c817056e2c258f7c2f0b537f034b8412&url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2F6%2F65%2FTesla_Model_S_Indoors.jpg
-    const imageresizer = 'https://ocellus.imageresizer.io/zenodo/';
-
     let imgCount = 0;
     let recordCount = 0;
     
@@ -70,38 +60,42 @@ const makeLayout = function(res) {
         let j = images.length;
         imgCount = imgCount + j;
         for (let i = 0; i < j; i++) {
-            //html += `<a href="${images[i]}" target="_blank"><img class="z" src="${images[i]}"></a>`;
-            html += `<a href="${images[i]}" target="_blank"><img class="z" src="${imageresizer}${images[i].replace('https://www.zenodo.org/api/files/', '')}"></a>`;
+            html += `<a href="${images[i]}" target="_blank"><img class="z" src="${imageresizer}${images[i].replace(zenodoApi, '')}"></a>`;
         }
 
         html += `<figcaption>
-            rec ID: <a href='https://zenodo.org/record/${record.split('/').pop()}' target='_blank'>
+            rec ID: <a href='${zenodoRecord}${record.split('/').pop()}' target='_blank'>
                 ${record.split('/').pop()}</a>
             </figcaption>
         </figure>`;
     }
 
     return [html, imgCount];
-    //return html;
 };
 
 const getImages = function(event, qry, page, refreshCache) {
 
-    if (!q.value) {
-        q.className = 'reqd';
-        q.placeholder = 'a search term is required';
-        q.focus();
+    if (!els['q'].value) {
+        els['q'].className = 'reqd';
+        els['q'].placeholder = 'a search term is required';
+        els['q'].focus();
         return;
     }
     else {
-        q.className = 'normal';
-        throbber.className = 'on';
+        els['q'].className = 'normal';
+        els['throbber'].className = 'on';
     }
     
     // we attach qStr1 to 'prev' and 'next' links 
     // with the correctly decremented or  
     // incremented page number
-    let qStr1 = 'q=' + qry + '&refreshCache=' + refreshCache + '&page=';
+    let qStr1 = 'q=' + qry;
+
+    if (refreshCache) {
+        qStr1 = qStr1 + + '&refreshCache=' + refreshCache;
+    }
+
+    qStr1 = qStr1 + '&page=';
 
     // qStr2 is used for `history`
     let qStr2 = qStr1 + page;
@@ -116,18 +110,18 @@ const getImages = function(event, qry, page, refreshCache) {
             if (x.status === 200) {
                 var res = JSON.parse(x.responseText);
                 const [html, imgCount] = makeLayout(res);
-                view.innerHTML = html;
+                els['grid'].innerHTML = html;
 
                 if (imgCount >= 30) {
-                    prev.href = (page === 1) ? '?' + qStr1 + 1 : '?' + qStr1 + (page - 1);
-                    next.href = '?' + qStr1 + (parseInt(page) + 1);
-                    pager.className = 'on';
-                    prev.addEventListener('click', getImagesFromPager);
-                    next.addEventListener('click', getImagesFromPager);
+                    els['prev'].href = (page === 1) ? '?' + qStr1 + 1 : '?' + qStr1 + (page - 1);
+                    els['next'].href = '?' + qStr1 + (parseInt(page) + 1);
+                    els['pager'].className = 'on';
+                    els['prev'].addEventListener('click', getImagesFromPager);
+                    els['next'].addEventListener('click', getImagesFromPager);
                 }
 
-                throbber.className = 'off';
-                footer.style.position = 'relative';
+                els['throbber'].className = 'off';
+                els['footer'].className = 'relative';
 
                 history.pushState('', '', '?' + qStr2);
             }
@@ -179,7 +173,7 @@ const smoothScroll = function(stopY) {
         return;
     }
 
-    const speed = Math.round(distance / 100);
+    let speed = Math.round(distance / 100);
     if (speed >= 10) {
         speed = 10;
     }
@@ -226,52 +220,52 @@ window.onload = function() {
                 }
             }
 
-            q.className = 'normal';
+            els['q'].className = 'normal';
             suggest(matches);
         }
     });
 
-    cacheMsgCheck.addEventListener('click', function() {
-        if (cacheMsg.className === 'on') {
-            cacheMsg.className = 'off';
-            qWrapper.style.backgroundColor = '#6b9dc8';
+    // When the page is loaded for the first time, 
+    // the cacheMsgCheck checkbox should be unchecked
+    els['cacheMsgCheck'].checked = false;
+
+    els['cacheMsgCheck'].addEventListener('click', function() {
+        if (els['cacheMsg'].className === 'on') {
+            els['cacheMsg'].className = 'off';
+            els['qWrapper'].style.backgroundColor = '#6b9dc8';
         }
         else {
-            cacheMsg.className = 'on';
-            qWrapper.style.backgroundColor = '#e54040';
+            els['cacheMsg'].className = 'on';
+            els['qWrapper'].style.backgroundColor = '#e54040';
         }
     });
     
     aboutLink.addEventListener('click', function(event) {
-        if (about.className === 'off') {
-            wrapper.className = 'off';
-            about.className = 'on';
+        if (els['about'].className === 'off') {
+            els['wrapper'].className = 'off';
+            els['about'].className = 'on';
         }
-        else if (about.className === 'on') {
-            about.className = 'off';
-            wrapper.className = 'on';
+        else if (els['about'].className === 'on') {
+            els['about'].className = 'off';
+            els['wrapper'].className = 'on';
         }
     
         event.preventDefault();
         event.stopPropagation();
     });
     
-    closeAbout.addEventListener('click', function(event) {
-        about.className = 'off';
-        wrapper.className = 'on';
+    els['closeAbout'].addEventListener('click', function(event) {
+        els['about'].className = 'off';
+        els['wrapper'].className = 'on';
     });
     
-    btnImages.addEventListener('click', getImagesFromButton);
-    btnImages.addEventListener('submit', getImagesFromButton);
+    els['btnImages'].addEventListener('click', getImagesFromButton);
+    els['btnImages'].addEventListener('submit', getImagesFromButton);
 
     if (location.search) {
-        let qryStr = getQueryStr(location.search);
-        let qry = qryStr['q'];
-        let page = qryStr['page'];
-        q.value = qry;
-        getImages(null, qry, page);
+        getQueryParamsAndImages(null, location.search);
     }
     else {
-        q.focus();
+        els['q'].focus();
     }
 }
