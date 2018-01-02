@@ -1,9 +1,9 @@
 //const loc = 'http://localhost:3030';
-const loc = 'http://zenodeo.punkish.org';
+const loc = 'https://zenodeo.punkish.org';
 const baseUrl = loc + '/v1/records?size=30&communities=biosyslit&type=image&summary=false&images=true&';
 //const imageresizer = 'https://ocellus.imageresizer.io/zenodo/';
 //const imageresizer = 'http://cache.localhost/';
-const imageresizer = 'http://ocacher.punkish.org/';
+const imageresizer = 'https://ocacher.punkish.org/';
 const zenodoApi = 'https://www.zenodo.org/api/files/';
 const zenodoRecord = 'https://zenodo.org/record/';
 
