@@ -1,12 +1,12 @@
 //const loc = 'http://localhost:3030';
 const loc = 'https://zenodeo.punkish.org';
 const baseUrl = loc + '/v1/records?size=30&communities=biosyslit&type=image&summary=false&images=true&';
-//const imageresizer = 'https://ocellus.imageresizer.io/zenodo/';
-//const imageresizer = 'http://cache.localhost/';
 const imageresizer = 'https://ocacher.punkish.org/';
 const zenodoApi = 'https://www.zenodo.org/api/files/';
 const zenodoRecord = 'https://zenodo.org/record/';
-
+const fch = '30px';
+let figcaptions = [];
+let fclength;
 let els = {};
 ['grid', 'cacheMsg', 'qReqdMsg', 'cacheMsgCheck', 'q', 'qWrapper', 'throbber', 'btnImages', 'aboutLink', 'about', 'closeAbout', 'prev', 'next', 'pager', 'wrapper', 'html', 'footer'].forEach(function(el) {
     els[el] = document.getElementById(el);
@@ -57,17 +57,25 @@ const makeLayout = function(res) {
     
     for (let record in res) {
         recordCount = recordCount + 1;
-        html += "<figure class='item'>";
-        let images = res[record];
-        let j = images.length;
+
+        const images = res[record]["images"];
+        const title = res[record]["title"];
+        const creators = res[record]["creators"];
+
+        const j = images.length;
         imgCount = imgCount + j;
+
+        html += "<figure class='item'>";
+
         for (let i = 0; i < j; i++) {
             html += `<a href="${images[i]}" target="_blank"><img class="z" src="${imageresizer}${images[i].replace(zenodoApi, '')}"></a>`;
         }
 
-        html += `<figcaption>
-            rec ID: <a href='${zenodoRecord}${record.split('/').pop()}' target='_blank'>
-                ${record.split('/').pop()}</a>
+        const recId = record.split('/').pop();
+
+        html += `<figcaption class="transition-050 opacity85 text">
+        <b class="transition-050">rec ID: ${recId}</b>
+            <span class="transition-050 desc">${title}. <a href='${zenodoRecord}${recId}' target='_blank'>more</a></span>
             </figcaption>
         </figure>`;
     }
@@ -125,6 +133,14 @@ const getImages = function(event, qry, page, refreshCache) {
                 els['throbber'].className = 'off';
                 els['footer'].className = 'relative';
 
+                const figs = document.querySelectorAll('figcaption b');
+                
+                let i = 0;
+                let j = figs.length;
+                for (; i < j; i++) {
+                    figs[i].addEventListener('click', toggleFigcaption);
+                }
+
                 history.pushState('', '', '?' + qStr2);
             }
         }
@@ -144,6 +160,28 @@ const getImages = function(event, qry, page, refreshCache) {
     }
     
     return false;
+};
+
+const toggleFigcaption = function() {
+    if (figcaptions.length == 0) {
+        figcaptions = document.querySelectorAll('figcaption');
+        fclength = figcaptions.length;
+    }
+
+    let fc = this.parentElement.style.maxHeight;
+    
+    if (fc === fch || fc === '') {
+        let i = 0;
+        for (; i < fclength; i++) {
+            figcaptions[i].style.maxHeight = fch;
+        }
+
+        this.parentElement.style.maxHeight =  '100%';
+    }
+    else {
+        this.parentElement.style.maxHeight =  fch;
+    }
+    
 };
 
 const currentYPosition = function() {

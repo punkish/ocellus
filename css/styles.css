@@ -1,7 +1,7 @@
 body {
     font-family: 'Helvetica Neue', Helvetica, Sans-serif;
-    font-weight: 200;
-    font-size: 0.8em;
+    font-weight: 400;
+    font-size: 0.9em;
     line-height: 1.2em;
     margin: 0 auto;
 }
@@ -33,7 +33,7 @@ a:hover {
     font-size: xx-small;
 }
 
-#fform {
+#formContainer {
     margin: 10px auto;
     width: 290px;
     border: 0px solid;
@@ -118,14 +118,27 @@ a:hover {
     visibility: hidden;
     display: none;
 }
-    
+
+.transition-050 {
+    -moz-transition: 0.50s;
+    -webkit-transition: 0.50s;
+    -ms-transition: 0.50s;
+    -o-transition: 0.50s;
+    transition: 0.50s;
+}
+
+.opacity85{ 
+    opacity: 0.85; 
+    filter: alpha(opacity=85); 
+}
+
 #wrapper {
     width: 99%;
     margin: 0 auto;
     background-color: white;
     opacity: 0.95;
 }
-    
+
 .grid {
     margin: 0em 0;
     padding: 0;
@@ -133,22 +146,52 @@ a:hover {
     display: flex;
     flex-wrap: wrap;
 }
-    
+
 .item {
-    display: inline-block;
-    background: #fff;
-    padding: 1em;
-    margin:  0 0 0;
     width: 100%;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    border: none;
-    /* box-shadow: 2px 2px 4px 0 #ccc; */
+    padding: 0.25em;
+    margin:  0 0 0;
 }
 
-.item:hover {
-    border: 1px solid #ccc;
+figure {
+    position: relative;
+    overflow: hidden;
+    border:1px solid #ccc;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+figure img {
+    width: 100%;
+}
+
+figcaption {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    max-height: 30px;
+    padding: 5px;
+    text-align: left;
+    line-height: 1.5em;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+figcaption b {
+    cursor: pointer;
+}
+
+.text {
+    color: #000;
+    background-color: #fff;
+    font-size:1.2em;
+}
+
+.desc {
+    display: block;
+    padding: 0px;
 }
 
 /* Add animation to "page content" */
@@ -168,10 +211,6 @@ a:hover {
 @keyframes animatebottom { 
     from{ bottom:-100px; opacity:0 } 
     to{ bottom:0; opacity:1 }
-}
-
-figure img {
-    width: 100%;
 }
     
 #pager {
