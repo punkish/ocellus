@@ -4,11 +4,15 @@ const baseUrl = loc + '/v1/records?size=30&communities=biosyslit&type=image&summ
 const imageresizer = 'https://ocacher.punkish.org/';
 const zenodoApi = 'https://www.zenodo.org/api/files/';
 const zenodoRecord = 'https://zenodo.org/record/';
+
+//const layout = 'grid';
+const layout = 'masonry';
 const fch = '30px';
 let figcaptions = [];
 let fclength;
+
 let els = {};
-['grid', 'cacheMsg', 'qReqdMsg', 'cacheMsgCheck', 'q', 'qWrapper', 'throbber', 'btnImages', 'aboutLink', 'about', 'closeAbout', 'prev', 'next', 'pager', 'wrapper', 'html', 'footer'].forEach(function(el) {
+['numOfFoundRecords','grid', 'masonry', 'cacheMsg', 'qReqdMsg', 'cacheMsgCheck', 'q', 'qWrapper', 'throbber', 'btnImages', 'aboutLink', 'about', 'closeAbout', 'prev', 'next', 'pager', 'wrapper', 'html', 'footer'].forEach(function(el) {
     els[el] = document.getElementById(el);
 });
 
@@ -50,17 +54,18 @@ const getImagesFromButton = function(event) {
     );
 };
 
-const makeLayout = function(res) {
+const makeLayout = function(imagesOfRecords) {
     let html = '';
     let imgCount = 0;
-    let recordCount = 0;
-    
-    for (let record in res) {
-        recordCount = recordCount + 1;
+    //let recordCount = 0;
+    //const imagesOfRecords = data.imagesOfRecords;
 
-        const images = res[record]["images"];
-        const title = res[record]["title"];
-        const creators = res[record]["creators"];
+    for (let record in imagesOfRecords) {
+        //recordCount = recordCount + 1;
+
+        const images = imagesOfRecords[record]["images"];
+        const title = imagesOfRecords[record]["title"];
+        const creators = imagesOfRecords[record]["creators"];
 
         const j = images.length;
         imgCount = imgCount + j;
@@ -74,13 +79,14 @@ const makeLayout = function(res) {
         const recId = record.split('/').pop();
 
         html += `<figcaption class="transition-050 opacity85 text">
-        <b class="transition-050">rec ID: ${recId}</b>
-            <span class="transition-050 desc">${title}. <a href='${zenodoRecord}${recId}' target='_blank'>more</a></span>
-            </figcaption>
-        </figure>`;
+                    rec ID: <a class="transition-050">${recId}</a>
+                    <div class="transition-050 desc">${title}. <a href='${zenodoRecord}${recId}' target='_blank'>more</a></div>
+                </figcaption>
+            </figure>`;
     }
 
     return [html, imgCount];
+    //return html;
 };
 
 const getImages = function(event, qry, page, refreshCache) {
@@ -118,9 +124,14 @@ const getImages = function(event, qry, page, refreshCache) {
     x.onload = function(event) {
         if (x.readyState === 4) {
             if (x.status === 200) {
-                var res = JSON.parse(x.responseText);
-                const [html, imgCount] = makeLayout(res);
-                els['grid'].innerHTML = html;
+                var data = JSON.parse(x.responseText);
+                const [html, imgCount] = makeLayout(data.imagesOfRecords);
+                //const html = makeLayout(data.imagesOfRecords);
+                //els['grid'].innerHTML = html;
+                
+                els['numOfFoundRecords'].innerHTML = `${data.numOfFoundRecords} records found…`;
+                els['numOfFoundRecords'].className = 'on';
+                els[layout].innerHTML = html;
 
                 if (imgCount >= 30) {
                     els['prev'].href = (page === 1) ? '?' + qStr1 + 1 : '?' + qStr1 + (page - 1);
@@ -133,7 +144,7 @@ const getImages = function(event, qry, page, refreshCache) {
                 els['throbber'].className = 'off';
                 els['footer'].className = 'relative';
 
-                const figs = document.querySelectorAll('figcaption b');
+                const figs = document.querySelectorAll('figcaption > a');
                 
                 let i = 0;
                 let j = figs.length;

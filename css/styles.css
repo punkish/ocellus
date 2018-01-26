@@ -58,7 +58,7 @@ a:hover {
     outline-width: 1px;
     box-shadow: 0 0 5px rgba(247, 11, 3, 0.8) inset;
 }
-    
+
 #btnImages {
     width: 40px;
     height: 30px;
@@ -147,6 +147,15 @@ a:hover {
     flex-wrap: wrap;
 }
 
+.masonry {
+    margin: 1.5em 0;
+    padding: 0;
+    -moz-column-gap: 0.5em;
+    -webkit-column-gap: 0.5em;
+    column-gap: 0.5em;
+    font-size: .85em;
+}
+
 .item {
     width: 100%;
     padding: 0.25em;
@@ -181,6 +190,12 @@ figcaption {
 
 figcaption b {
     cursor: pointer;
+}
+
+figcaption a {
+    text-decoration: underline;
+    text-decoration-color: blue;
+    text-decoration-style: wavy;
 }
 
 .text {
@@ -333,14 +348,26 @@ footer img {
 /* @end */
 
 /* Larger than mobile */
-@media (min-width: 400px) {
+@media (min-width: 300px) {
+    .masonry {
+        -moz-column-count: 1;
+        -webkit-column-count: 1;
+        column-count: 1;
+    }
+
     .grid .item {
-        width: 50%;
+        width: 100%;
     }
 }
 
 /* Larger than phablet */
 @media (min-width: 550px) {
+    .masonry {
+        -moz-column-count: 2;
+        -webkit-column-count: 2;
+        column-count: 2;
+    }
+
     .grid .item {
         width: 50%;
     }
@@ -362,6 +389,12 @@ footer img {
     #throbber {
         border: 1px solid;
     }
+
+    .masonry {
+        -moz-column-count: 3;
+        -webkit-column-count: 3;
+        column-count: 3;
+    }
     
     .grid .item {
         width: 33%;
@@ -370,6 +403,12 @@ footer img {
 
 /* Larger than desktop */
 @media (min-width: 1000px) {
+    .masonry {
+        -moz-column-count: 4;
+        -webkit-column-count: 4;
+        column-count: 4;
+    }
+
     .grid .item {
         width: 25%;
     }
@@ -377,7 +416,24 @@ footer img {
 
 /* Larger than Desktop HD */
 @media (min-width: 1200px) {
+    .masonry {
+        -moz-column-count: 5;
+        -webkit-column-count: 5;
+        column-count: 5;
+    }
+
     .grid .item {
         width: 20%;
     }
 }
+
+/* autocomplete */
+.autocomplete-suggestions {
+    text-align: left; cursor: default; border: 1px solid #ccc; border-top: 0; background: #fff; box-shadow: -1px 1px 3px rgba(0,0,0,.1);
+
+    /* core styles should not be changed */
+    position: absolute; display: none; z-index: 9999; max-height: 254px; overflow: hidden; overflow-y: auto; box-sizing: border-box;
+}
+.autocomplete-suggestion { position: relative; padding: 0 .6em; line-height: 23px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1.02em; color: #333; }
+.autocomplete-suggestion b { font-weight: normal; color: #1f8dd6; }
+.autocomplete-suggestion.selected { background: #f0f0f0; }
