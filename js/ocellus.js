@@ -2,7 +2,7 @@
 const loc = 'https://zenodeo.punkish.org';
 const baseUrl = loc + '/v1/records?size=30&communities=biosyslit&type=image&summary=false&images=true&';
 const imageresizer = 'https://ocacher.punkish.org/';
-const zenodoApi = 'https://www.zenodo.org/api/files/';
+const zenodoApi = 'https://zenodo.org/api/files/';
 const zenodoRecord = 'https://zenodo.org/record/';
 
 //const layout = 'grid';
