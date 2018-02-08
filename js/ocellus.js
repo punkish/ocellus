@@ -125,34 +125,41 @@ const getImages = function(event, qry, page, refreshCache) {
         if (x.readyState === 4) {
             if (x.status === 200) {
                 var data = JSON.parse(x.responseText);
-                const [html, imgCount] = makeLayout(data.imagesOfRecords);
-                //const html = makeLayout(data.imagesOfRecords);
-                //els['grid'].innerHTML = html;
+                if (data.total) {
+                    const [html, imgCount] = makeLayout(data.result);
+                    //const html = makeLayout(data.imagesOfRecords);
+                    //els['grid'].innerHTML = html;
                 
-                els['numOfFoundRecords'].innerHTML = `${data.numOfFoundRecords} records found…`;
-                els['numOfFoundRecords'].className = 'on';
-                els[layout].innerHTML = html;
+                    els['numOfFoundRecords'].innerHTML = `${data.total} records found`;
+                    els['numOfFoundRecords'].className = 'on';
+                    els[layout].innerHTML = html;
 
-                if (imgCount >= 30) {
-                    els['prev'].href = (page === 1) ? '?' + qStr1 + 1 : '?' + qStr1 + (page - 1);
-                    els['next'].href = '?' + qStr1 + (parseInt(page) + 1);
-                    els['pager'].className = 'on';
-                    els['prev'].addEventListener('click', getImagesFromPager);
-                    els['next'].addEventListener('click', getImagesFromPager);
-                }
+                    if (imgCount >= 30) {
+                        els['prev'].href = (page === 1) ? '?' + qStr1 + 1 : '?' + qStr1 + (page - 1);
+                        els['next'].href = '?' + qStr1 + (parseInt(page) + 1);
+                        els['pager'].className = 'on';
+                        els['prev'].addEventListener('click', getImagesFromPager);
+                        els['next'].addEventListener('click', getImagesFromPager);
+                    }
 
-                els['throbber'].className = 'off';
-                els['footer'].className = 'relative';
+                    els['throbber'].className = 'off';
+                    els['footer'].className = 'relative';
 
-                const figs = document.querySelectorAll('figcaption > a');
+                    const figs = document.querySelectorAll('figcaption > a');
                 
-                let i = 0;
-                let j = figs.length;
-                for (; i < j; i++) {
-                    figs[i].addEventListener('click', toggleFigcaption);
-                }
+                    let i = 0;
+                    let j = figs.length;
+                    for (; i < j; i++) {
+                        figs[i].addEventListener('click', toggleFigcaption);
+                    }
 
-                history.pushState('', '', '?' + qStr2);
+                    history.pushState('', '', '?' + qStr2);
+                }
+                else {
+                    els['numOfFoundRecords'].innerHTML = 'no records found';
+                    els['numOfFoundRecords'].className = 'on';
+                    els['throbber'].className = 'off';
+                }
             }
         }
     };
