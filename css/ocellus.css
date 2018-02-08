@@ -224,11 +224,10 @@ figcaption a {
 }
 
 footer {
+    bottom: 0;
     text-align: center;
-    bottom: 40px;
     width: 100%;
-    height: 40px;
-    background: url('../img/fish.jpg') no-repeat;
+    height: 65px;
 }
 
 footer.fixed {
