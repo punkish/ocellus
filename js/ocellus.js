@@ -263,6 +263,25 @@ const smoothScroll = function(stopY) {
 };
 
 window.onload = function() {
+    new autoComplete({
+        selector: q,
+        minChars: 3,
+        source: function(term, suggest) {
+
+            term = term.toLowerCase();
+            let matches = [];
+            let j = family.length;
+
+            for (let i = 0; i < j; i++) {
+                if (~family[i].toLowerCase().indexOf(term)) {
+                    matches.push(family[i]);
+                }
+            }
+
+            els['q'].className = 'normal';
+            suggest(matches);
+        }
+    });
 
     // When the page is loaded for the first time, 
     // the cacheMsgCheck checkbox should be unchecked
