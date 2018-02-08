@@ -1,0 +1,334 @@
+body {
+    font-family: 'Helvetica Neue', Helvetica, Sans-serif;
+    font-weight: 200;
+    font-size: 2em;
+    margin: 0 auto;
+}
+    
+header {
+    color: #444;
+    text-align: center;
+}
+
+a:visited {
+    color: blue;
+}
+
+a:hover {
+    background-color: rgb(189, 187, 187);
+}
+    
+#home {
+    margin: 0px;
+    text-decoration: none;
+    color: black;
+    font-weight: 400;
+}
+#aboutLink {
+    font-size: small;
+    border: 0px solid;
+    color: blue;
+}
+
+sup {
+    font-size: 0.7em;
+}
+
+#cacheMsgCheck {
+    float: left;
+}
+    
+/* #qWrapper {
+    border: 5px solid #ccc;
+    width: 280px;
+    height: 30px;
+    padding: 0px;
+    border-radius: 5px;
+    float: left;
+    clear: both;
+    background-color: #6b9dc8;
+} */
+    
+#qReqdMsg, 
+#cacheMsg {
+    margin-top: 1em;
+    text-align: left;
+    font-size: 1em;
+}
+    
+#content {
+    padding: 1em;
+    margin: 1em auto;
+}
+    
+#about {
+    text-align: left;
+    line-height: 1.2em;
+    width: 50%;
+    margin: 0 auto;
+    font-size: 0.8em;
+}
+    
+#closeAbout {
+    font-size: 0.7em;
+    cursor: pointer;
+}
+   
+#numOfFoundRecords {
+    font-size: large;
+    font-family: serif;
+}
+.on {
+    visibility: visible;
+    display: block;
+}
+    
+.off {
+    visibility: hidden;
+    display: none;
+}
+
+.transition-050 {
+    -moz-transition: 0.50s;
+    -webkit-transition: 0.50s;
+    -ms-transition: 0.50s;
+    -o-transition: 0.50s;
+    transition: 0.50s;
+}
+
+.opacity85{ 
+    opacity: 0.85; 
+    filter: alpha(opacity=85); 
+}
+
+#wrapper {
+    width: 99%;
+    margin: 0 auto;
+    background-color: white;
+    opacity: 0.95;
+}
+
+.grid {
+    margin: 0em 0;
+    padding: 0;
+    font-size: .85em;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.masonry {
+    margin: 1.5em 0;
+    padding: 0;
+    -moz-column-gap: 0.5em;
+    -webkit-column-gap: 0.5em;
+    column-gap: 0.5em;
+    font-size: .85em;
+}
+
+.item {
+    width: 100%;
+    padding: 0.25em;
+    margin:  0 0 0;
+}
+
+figure {
+    position: relative;
+    overflow: hidden;
+    border:1px solid #ccc;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+figure img {
+    width: 100%;
+}
+
+figcaption {
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+    max-height: 30px;
+    padding: 5px;
+    text-align: left;
+    line-height: 1.5em;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font-size: 0.8em !important;
+    font-weight: 400;
+    opacity: 1 !important;
+    border: 1px solid grey;
+}
+
+figcaption b {
+    cursor: pointer;
+}
+
+figcaption a {
+    text-decoration: underline;
+    text-decoration-color: blue;
+    text-decoration-style: wavy;
+}
+
+.text {
+    color: #000;
+    background-color: #fff;
+    font-size:1.2em;
+}
+
+.desc {
+    display: block;
+    padding: 0px;
+}
+
+/* Add animation to "page content" */
+.animate-bottom {
+    position: relative;
+    -webkit-animation-name: animatebottom;
+    -webkit-animation-duration: 1s;
+    animation-name: animatebottom;
+    animation-duration: 1s
+}
+
+@-webkit-keyframes animatebottom {
+    from { bottom:-100px; opacity:0 } 
+    to { bottom:0px; opacity:1 }
+}
+
+@keyframes animatebottom { 
+    from{ bottom:-100px; opacity:0 } 
+    to{ bottom:0; opacity:1 }
+}
+    
+#pager {
+    margin: 0 auto;
+    z-index: 1;
+    text-align: center;
+    margin-top: 1em;
+    margin-bottom: 6em;
+}
+    
+#prev {
+    margin-right: 1em;
+}
+    
+#next {
+    margin-left: 1em;
+}
+    
+#prev:visited,
+#next:visited {
+    color: blue;
+}
+
+footer {
+    text-align: center;
+    bottom: 40px;
+    width: 100%;
+    height: 40px;
+    background: url('../img/fish.jpg') no-repeat;
+}
+
+footer.fixed {
+    position: fixed;
+}
+
+footer.relative {
+    position: relative;
+}
+    
+footer img {
+    width: 100%;
+    max-width: 480px;
+}
+
+.autocomplete-suggestions {
+    border: 1px solid lightgrey !important;
+    margin-top: 2px;
+}
+
+.autocomplete-suggestion {
+    font-size: 0.8em;
+}
+
+/* Larger than mobile */
+@media (min-width: 300px) {
+    .masonry {
+        -moz-column-count: 1;
+        -webkit-column-count: 1;
+        column-count: 1;
+    }
+
+    .grid .item {
+        width: 100%;
+    }
+}
+
+/* Larger than phablet */
+@media (min-width: 550px) {
+    .masonry {
+        -moz-column-count: 2;
+        -webkit-column-count: 2;
+        column-count: 2;
+    }
+
+    .grid .item {
+        width: 50%;
+    }
+}
+
+/* Larger than tablet */
+@media (min-width: 750px) {
+    #about {
+        width: 50%;
+        margin: 0 auto;
+    }
+
+    #content {
+        width: 90%;
+        text-align: center;
+        padding: 0em;
+    }
+    
+    #throbber {
+        border: 1px solid;
+    }
+
+    .masonry {
+        -moz-column-count: 3;
+        -webkit-column-count: 3;
+        column-count: 3;
+    }
+    
+    .grid .item {
+        width: 33%;
+    }
+}
+
+/* Larger than desktop */
+@media (min-width: 1000px) {
+    .masonry {
+        -moz-column-count: 4;
+        -webkit-column-count: 4;
+        column-count: 4;
+    }
+
+    .grid .item {
+        width: 25%;
+    }
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 1200px) {
+    .masonry {
+        -moz-column-count: 5;
+        -webkit-column-count: 5;
+        column-count: 5;
+    }
+
+    .grid .item {
+        width: 20%;
+    }
+}

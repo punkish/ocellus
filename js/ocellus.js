@@ -1,5 +1,5 @@
-//const loc = 'http://localhost:3030';
-const loc = 'https://zenodeo.punkish.org';
+const loc = 'http://localhost:3030';
+//const loc = 'https://zenodeo.punkish.org';
 const baseUrl = loc + '/v1/records?size=30&communities=biosyslit&type=image&summary=false&images=true&';
 const imageresizer = 'https://ocacher.punkish.org/';
 const zenodoApi = 'https://www.zenodo.org/api/files/';
@@ -12,7 +12,7 @@ let figcaptions = [];
 let fclength;
 
 let els = {};
-['numOfFoundRecords','grid', 'masonry', 'cacheMsg', 'qReqdMsg', 'cacheMsgCheck', 'q', 'qWrapper', 'throbber', 'btnImages', 'aboutLink', 'about', 'closeAbout', 'prev', 'next', 'pager', 'wrapper', 'html', 'footer'].forEach(function(el) {
+["numOfFoundRecords","grid","masonry","cacheMsg","qReqdMsg","cacheMsgCheck","q","qWrapper","throbber","btnImages","aboutLink","about","closeAbout","prev","next","pager","wrapper","html","footer"].forEach(function(el) {
     els[el] = document.getElementById(el);
 });
 
@@ -256,25 +256,6 @@ const smoothScroll = function(stopY) {
 };
 
 window.onload = function() {
-    new autoComplete({
-        selector: q,
-        minChars: 3,
-        source: function(term, suggest) {
-
-            term = term.toLowerCase();
-            let matches = [];
-            let j = family.length;
-
-            for (let i = 0; i < j; i++) {
-                if (~family[i].toLowerCase().indexOf(term)) {
-                    matches.push(family[i]);
-                }
-            }
-
-            els['q'].className = 'normal';
-            suggest(matches);
-        }
-    });
 
     // When the page is loaded for the first time, 
     // the cacheMsgCheck checkbox should be unchecked
@@ -292,6 +273,7 @@ window.onload = function() {
     });
     
     aboutLink.addEventListener('click', function(event) {
+        console.log('hello')
         if (els['about'].className === 'off') {
             els['wrapper'].className = 'off';
             els['about'].className = 'on';

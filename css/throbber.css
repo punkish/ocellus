@@ -1,0 +1,21 @@
+.throbber {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background-size: 30px 30px;
+    background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.1) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1) 75%, transparent 75%, transparent);
+    animation: barberpole 0.5s linear infinite;
+}
+
+@keyframes barberpole {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 60px 30px;
+    }
+}

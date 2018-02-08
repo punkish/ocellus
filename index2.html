@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" id="html">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="image viewer for the Biodiversity Literature Repository">
+    <meta name="author" content="Puneet Kishor">
+    <meta name="copyright" content="CC0 Public Domain Dedication">
+    
+    <title>ocellus</title>
+    
+    <link rel="icon" type="image/png" href="img/ocellus.png">
+
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="JavaScript-autoComplete/auto-complete.css">
+    <link rel="stylesheet" href="css/fancysearch.css">
+    <link rel="stylesheet" href="css/ocellus.css">
+    <link rel="stylesheet" href="css/throbber.css">
+</head>
+<body>
+    
+<form class="fs-form">
+    <div  class="container">
+        <div class="row" style="padding-top: 5px;">
+            <div class="one column" style="text-align: center;">
+                <a href="/" id="home">ocellus<sup>2</sup></a><br>
+            </div>
+            <div class="eleven columns">
+                
+                <div id="fs" class="fs"></div>
+                <button id="go" type="submit" class="fs-button-primary">go</button>
+                <!-- <a href="#about" id="aboutLink">about</a> -->
+                
+                <!-- <input id="cacheMsgCheck" name="refreshCache" type="checkbox">
+
+                <p id="cacheMsg" class="off">This will query BLR and overwrite any cached results. You probably <em><b>do not</b></em> want this.</p> -->
+            </div>
+            
+        </div>
+        
+    </div>
+    <div class="throbber"></div>
+</form>
+
+<div id="content" class="row">
+    <h3 id="numOfFoundRecords" class="off"></h3>
+
+    <div id="about" class="off">
+        <div id="closeAbout">close</div>
+        <p>Ocellus is a frontend to more than 150K images in the <a href="http://biolitrepo.org" target="_blank">Biodiversity Literature Repository</a> (BLR) on <a href="https://zenodo.org" target="_blank">Zenodo</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API to the <a href="https://zenodo.org/api" target="_blank">Zenodo API</a>, that performs a fulltext search on BLR. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, or provide any term and Ocellus will retrieve related images.</p>
+        
+        <p>For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country. The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up">Internet Archive</a> and has no known copyright restrictions. Please contact <a href="mailto:ocellus@plazi.org">Plazi</a> for more information or to provide feedback.</p>
+    </div>
+
+    <div id="wrapper">
+        <div id="grid" class="grid"></div>
+        <div id="masonry" class="masonry"></div>
+        
+        <div id="pager" class="off">
+            <a href="" id="prev" class="pager">prev</a>
+            <a href="" id="next" class="pager">next</a>
+        </div>
+    </div>
+</div>
+
+<footer id="footer" class="fixed">
+    <a href="#about" id="aboutLink">about</a> 
+    <!-- <img src="img/fish.jpg"> -->
+</footer>
+
+<script src="JavaScript-autoComplete/auto-complete.js"></script>
+<script src="js/fancysearch.js"></script> 
+<script src="js/ocellus2.js"></script> 
+<script type="text/javascript">
+const facets = [
+{   "key": "title",
+    "actualKey": "title", 
+    "values": [], 
+    "noDuplicates": true },
+{   "key": "authors", 
+    "actualKey": "creators.name",
+    "values": "http://localhost:3030/v1/authors", 
+    "noDuplicates": false },
+{   "key": "keywords", 
+    "actualKey": "keywords",
+    "values": "http://localhost:3030/v1/keywords", 
+    "noDuplicates": false },
+{   "key": "families", 
+    "actualKey": "title",
+    "values": "http://localhost:3030/v1/families", 
+    "noDuplicates": false },
+{   "key": "taxa", 
+    "actualKey": "title",
+    "values": "http://localhost:3030/v1/taxa", 
+    "noDuplicates": false },
+{   "key": "year", 
+    "actualKey": "publicationdate",
+    "values": [], 
+    "noDuplicates": true }
+];
+
+window.onload = function() {
+
+    const fs = new fancySearch();
+    fs.init(document.getElementById('fs'), facets);
+
+    const oc = new ocellus();
+    oc.init(facets);
+
+    document.getElementById('go').addEventListener('click', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        document.querySelector('div.throbber').style.opacity = 1;
+        let query = fs.result();
+        
+        //console.log(query);
+        oc.goGetIt(query);
+    }); 
+};
+</script>
+</body>
+</html>
