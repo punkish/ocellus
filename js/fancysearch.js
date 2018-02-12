@@ -101,11 +101,13 @@ const fancySearch = function() {
             container: fsw
         });
 
+        
         fsb.addEventListener('click', function(event) {
             event.preventDefault();
             event.stopPropagation();
     
             result(resultCb);
+            fsb.disabled = true;
         });
 
         makeFsKvElements();
