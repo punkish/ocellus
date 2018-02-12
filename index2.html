@@ -23,13 +23,12 @@
 <form class="fs-form">
     <div  class="container">
         <div class="row" style="padding-top: 5px;">
-            <div class="one column" style="text-align: center;">
+            <div class="one column" style="text-align: center;padding-top: 15px;">
                 <a href="/" id="home">ocellus<sup>2</sup></a><br>
             </div>
             <div class="eleven columns">
+                <div id="fs-container"></div>
                 
-                <div id="fs" class="fs"></div>
-                <button id="go" type="submit" class="fs-button-primary">go</button>
                 <!-- <a href="#about" id="aboutLink">about</a> -->
                 
                 <!-- <input id="cacheMsgCheck" name="refreshCache" type="checkbox">
@@ -77,47 +76,46 @@ const facets = [
 {   "key": "title",
     "actualKey": "title", 
     "values": [], 
+    "prompt": "Enter text to search in the 'title' field",
     "noDuplicates": true },
 {   "key": "authors", 
     "actualKey": "creators.name",
     "values": "https://zenodeo.punkish.org/v1/authors", 
+    "prompt": "Type at least three letters to get author names",
     "noDuplicates": false },
 {   "key": "keywords", 
     "actualKey": "keywords",
     "values": "https://zenodeo.punkish.org/v1/keywords", 
+    "prompt": "Type at least three letters to get keywords",
     "noDuplicates": false },
 {   "key": "families", 
     "actualKey": "title",
     "values": "https://zenodeo.punkish.org/v1/families", 
+    "prompt": "Type at least three letters to get families",
     "noDuplicates": false },
 {   "key": "taxa", 
     "actualKey": "title",
     "values": "https://zenodeo.punkish.org/v1/taxa", 
+    "prompt": "Type at least three letters to get taxa",
     "noDuplicates": false },
 {   "key": "year", 
     "actualKey": "publicationdate",
     "values": [], 
+    "prompt": "Enter year to get publications from that year",
     "noDuplicates": true }
 ];
 
 window.onload = function() {
 
-    const fs = new fancySearch();
-    fs.init(document.getElementById('fs'), facets);
-
     const oc = new ocellus();
     oc.init(facets);
 
-    document.getElementById('go').addEventListener('click', function(event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        document.querySelector('div.throbber').style.opacity = 1;
-        let query = fs.result();
-        
-        //console.log(query);
-        oc.goGetIt(query);
-    }); 
+    const fs = new fancySearch();
+    fs.init(
+        document.getElementById('fs-container'), 
+        facets,
+        oc.goGetIt
+    );
 };
 </script>
 </body>

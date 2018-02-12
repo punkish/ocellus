@@ -24,6 +24,12 @@ a:hover {
     color: black;
     font-weight: 400;
 }
+/* #fs-help {
+    text-transform: uppercase;
+    font-size: xx-small;
+    color: blue;
+    font-weight: 400;
+} */
 #aboutLink {
     font-size: small;
     border: 0px solid;

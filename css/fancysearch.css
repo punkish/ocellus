@@ -1,21 +1,40 @@
+body {
+    font-size: 2em;
+    font-family: serif;
+}
+code {
+	font-family: Menlo, Monaco, 'Courier New', monospace;
+    font-size: 80%;
+    overflow-x: auto;
+    max-width: 300px !important;
+}
+p, li {
+    font-size: 200%;
+}
 form.fs-form {
     background-color: lightgrey;
     padding-top: 5px;
 }
 
-.fs-button-primary {
-    border-radius: 0 5px 5px 0;
-    background-color: grey !important;
-    border: 1px solid grey !important;
-    color: white !important;
-    font-family: sans-serif;
-    padding-left: 15px;
-    padding-right: 15px;
-    margin-left: 0;
-    margin-right: 5px;
-    float: left;
+#fs-container {
     position: relative;
-    right: 0;
+    width: 100%;
+    height: auto;
+}
+
+#fs-help {
+    position: relative;
+    top: 0;
+    text-transform: uppercase;
+    font-size: xx-small;
+    color: blue;
+    font-weight: 400;
+}
+
+#fs-widget {
+    position: relative;
+    top: 0;
+    height: 40px;
 }
 
 .fs {
@@ -35,6 +54,21 @@ form.fs-form {
     float: left;
     position: relative;
     background-color: white;
+}
+
+.fs-button-primary {
+    border-radius: 0 5px 5px 0;
+    background-color: grey !important;
+    border: 1px solid grey !important;
+    color: white !important;
+    font-family: sans-serif;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-left: 0;
+    margin-right: 5px;
+    float: left;
+    position: relative;
+    right: 0;
 }
 
 .fs-param-empty {
