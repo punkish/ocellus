@@ -59,16 +59,14 @@ const getImagesFromPager = function(event) {
 };
 
 const getImagesFromButton = function(event) {
-    const qryStr = getQueryStr(search);
-    els['q'].value = qryStr['q'];
-    
+
     getImages(
         event, 
         els['q'].value.toLowerCase(),  // qry
         1,                             // page
         els['cacheMsgCheck'].checked,  // refreshCache
-        qryStr['tnsource'] || '',
-        qryStr['layout'] || ''
+        '',
+        ''
     );
 };
 
