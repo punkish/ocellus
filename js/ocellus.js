@@ -162,7 +162,7 @@ const getImages = function(event, qry, page, refreshCache, tnsource, layout) {
                 
                     els['numOfFoundRecords'].innerHTML = `${data.total} records found`;
                     els['numOfFoundRecords'].className = 'on';
-                    els[layout].innerHTML = html;
+                    els['masonry'].innerHTML = html;
 
                     if (imgCount >= 30) {
                         els['prev'].href = (page === 1) ? '?' + qStr1 + 1 : '?' + qStr1 + (page - 1);
