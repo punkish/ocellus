@@ -17,19 +17,27 @@ a:visited {
 a:hover {
     background-color: rgb(189, 187, 187);
 }
-    
+
+form.fs-form {
+    background-color: lightgrey;
+    padding-top: 5px;
+}
+
+.home-container {
+    text-align: center;
+    padding-top: 20px; 
+    padding-bottom: 0;
+    line-height: 0.8em;
+    margin-right: 5px;
+}
 #home {
     margin: 0px;
+    
     text-decoration: none;
     color: black;
     font-weight: 400;
 }
-/* #fs-help {
-    text-transform: uppercase;
-    font-size: xx-small;
-    color: blue;
-    font-weight: 400;
-} */
+
 #aboutLink {
     font-size: small;
     border: 0px solid;
@@ -42,6 +50,7 @@ sup {
 
 #cacheMsgCheck {
     float: left;
+    margin-top: 30px;
 }
     
 /* #qWrapper {
@@ -168,13 +177,14 @@ figcaption {
     border: 1px solid grey;
 }
 
-figcaption b {
-    cursor: pointer;
-}
-
 figcaption a {
+    cursor: pointer;
     text-decoration: underline;
     text-decoration-color: blue;
+    text-decoration-style: double;
+}
+
+figcaption a.transition-050 {
     text-decoration-style: wavy;
 }
 

@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="image viewer for the Biodiversity Literature Repository">
+    <meta name="version" content="2.0">
     <meta name="author" content="Puneet Kishor">
     <meta name="copyright" content="CC0 Public Domain Dedication">
     
@@ -23,19 +24,17 @@
 <form class="fs-form">
     <div  class="container">
         <div class="row" style="padding-top: 5px;">
-            <div class="one column" style="text-align: center;padding-top: 15px;">
+            <div class="two columns home-container">
                 <a href="/" id="home">ocellus<sup>2</sup></a><br>
+                <a href="#about" id="aboutLink">about</a>
             </div>
-            <div class="eleven columns">
+            <div class="nine columns">
                 <div id="fs-container"></div>
-                
-                <!-- <a href="#about" id="aboutLink">about</a> -->
-                
-                <!-- <input id="cacheMsgCheck" name="refreshCache" type="checkbox">
-
-                <p id="cacheMsg" class="off">This will query BLR and overwrite any cached results. You probably <em><b>do not</b></em> want this.</p> -->
+                <div id="messages" class="msg on"></div>
             </div>
-            
+            <div class="one column">
+                <input id="cacheMsgCheck" name="refreshCache" type="checkbox">
+            </div>
         </div>
         
     </div>
@@ -64,7 +63,6 @@
 </div>
 
 <footer id="footer" class="fixed">
-    <!-- <a href="#about" id="aboutLink">about</a>  -->
     <img src="img/fish.jpg">
 </footer>
 
@@ -72,6 +70,8 @@
 <script src="js/fancysearch.js"></script> 
 <script src="js/ocellus2.js"></script> 
 <script type="text/javascript">
+//const api = 'https://zenodeo.punkish.org';
+const api = 'http://localhost:3030';
 const facets = [
 {   "key": "title",
     "actualKey": "title", 
@@ -80,23 +80,23 @@ const facets = [
     "noDuplicates": true },
 {   "key": "authors", 
     "actualKey": "creators.name",
-    "values": "https://zenodeo.punkish.org/v1/authors", 
-    "prompt": "Type at least three letters to get author names",
+    "values": `${api}/v1/authors`, 
+    "prompt": "Type at least three letters to list the author names",
     "noDuplicates": false },
 {   "key": "keywords", 
     "actualKey": "keywords",
-    "values": "https://zenodeo.punkish.org/v1/keywords", 
-    "prompt": "Type at least three letters to get keywords",
+    "values": `${api}/v1/keywords`, 
+    "prompt": "Type at least three letters to list the keywords",
     "noDuplicates": false },
 {   "key": "families", 
     "actualKey": "title",
-    "values": "https://zenodeo.punkish.org/v1/families", 
-    "prompt": "Type at least three letters to get families",
+    "values": `${api}/v1/families`, 
+    "prompt": "Type at least three letters to list the families",
     "noDuplicates": false },
 {   "key": "taxa", 
     "actualKey": "title",
-    "values": "https://zenodeo.punkish.org/v1/taxa", 
-    "prompt": "Type at least three letters to get taxa",
+    "values": `${api}/v1/taxa`, 
+    "prompt": "Type at least three letters to list the taxa",
     "noDuplicates": false },
 {   "key": "year", 
     "actualKey": "publicationdate",
@@ -112,9 +112,10 @@ window.onload = function() {
 
     const fs = new fancySearch();
     fs.init(
-        document.getElementById('fs-container'), 
-        facets,
-        oc.goGetIt
+        document.getElementById('fs-container'), // div selector
+        facets,                                  // facets, declared above
+        oc.goGetIt                               // function to deal with the 
+                                                 //     fancySearch query
     );
 };
 </script>

@@ -5,8 +5,10 @@ const imageresizer = 'https://ocacher.punkish.org/';
 const zenodoApi = 'https://zenodo.org/api/files/';
 const zenodoRecord = 'https://zenodo.org/record/';
 
-//const layout = 'grid';
-const layout = 'masonry';
+let tnsource = 'zenodo';
+let layout = 'masonry';
+
+// figcaption height
 const fch = '30px';
 let figcaptions = [];
 let fclength;
@@ -24,17 +26,28 @@ const getQueryStr = function(qStr) {
             qryStr[el.split('=')[0]] = el.split('=')[1];
         });
 
+    if (qryStr['tnsource']) {
+        tnsource = qryStr['tnsource'];
+    }
+
+    if (qryStr['layout']) {
+        tnsource = qryStr['layout'];
+    }
+
     return qryStr;
 };
 
 const getQueryParamsAndImages = function(event, search) {
     const qryStr = getQueryStr(search);
     els['q'].value = qryStr['q'];
+
     getImages(
         event, 
         qryStr['q'],            // qry 
         qryStr['page'],         // page, 
-        qryStr['refreshCache']  // refreshCache
+        qryStr['refreshCache'], // refreshCache
+        qryStr['tnsource'] || '',
+        qryStr['layout'] || ''
     );
 }
 
@@ -50,7 +63,9 @@ const getImagesFromButton = function(event) {
         event, 
         els['q'].value.toLowerCase(),  // qry
         1,                             // page
-        els['cacheMsgCheck'].checked   // refreshCache
+        els['cacheMsgCheck'].checked,  // refreshCache
+        qryStr['tnsource'] || '',
+        qryStr['layout'] || ''
     );
 };
 
@@ -66,6 +81,7 @@ const makeLayout = function(imagesOfRecords) {
         const images = imagesOfRecords[record]["images"];
         const title = imagesOfRecords[record]["title"];
         const creators = imagesOfRecords[record]["creators"];
+        const thumb250 = imagesOfRecords[record]["thumb250"];
 
         const j = images.length;
         imgCount = imgCount + j;
@@ -73,7 +89,12 @@ const makeLayout = function(imagesOfRecords) {
         html += "<figure class='item'>";
 
         for (let i = 0; i < j; i++) {
-            html += `<a href="${images[i]}" target="_blank"><img class="z" src="${imageresizer}${images[i].replace(zenodoApi, '')}"></a>`;
+            if (tnsource === 'zenodo') {
+                html += `<a href="${images[i]}" target="_blank"><img class="z" src="${thumb250}"></a>`;
+            }
+            else {
+                html += `<a href="${images[i]}" target="_blank"><img class="z" src="${imageresizer}${images[i].replace(zenodoApi, '')}"></a>`;
+            }
         }
 
         const recId = record.split('/').pop();
@@ -89,7 +110,7 @@ const makeLayout = function(imagesOfRecords) {
     //return html;
 };
 
-const getImages = function(event, qry, page, refreshCache) {
+const getImages = function(event, qry, page, refreshCache, tnsource, layout) {
 
     if (!els['q'].value) {
         els['q'].className = 'reqd';
@@ -115,6 +136,14 @@ const getImages = function(event, qry, page, refreshCache) {
 
     // qStr2 is used for `history`
     let qStr2 = qStr1 + page;
+
+    if (tnsource) {
+        qStr2 = qStr2 + '&tnsource=' + tnsource;
+    }
+
+    if (layout) {
+        qStr2 = qStr2 + '&layout=' + layout;
+    }
 
     // the complete url to the api
     let url = baseUrl + qStr2;
