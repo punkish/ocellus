@@ -31,7 +31,7 @@ const getQueryStr = function(qStr) {
     }
 
     if (qryStr['layout']) {
-        tnsource = qryStr['layout'];
+        layout = qryStr['layout'];
     }
 
     return qryStr;
@@ -65,8 +65,8 @@ const getImagesFromButton = function(event) {
         els['q'].value.toLowerCase(),  // qry
         1,                             // page
         els['cacheMsgCheck'].checked,  // refreshCache
-        '',
-        ''
+        tnsource,
+        layout
     );
 };
 
@@ -137,13 +137,14 @@ const getImages = function(event, qry, page, refreshCache, tnsource, layout) {
 
     // qStr2 is used for `history`
     let qStr2 = qStr1 + page;
+    let qStr3 = qStr2;
 
-    if (tnsource) {
-        qStr2 = qStr2 + '&tnsource=' + tnsource;
+    if (tnsource !== 'zenodo') {
+        qStr3 = qStr3 + '&tnsource=' + tnsource;
     }
 
-    if (layout) {
-        qStr2 = qStr2 + '&layout=' + layout;
+    if (layout !== 'masonry') {
+        qStr3 = qStr3 + '&layout=' + layout;
     }
 
     // the complete url to the api
@@ -162,7 +163,7 @@ const getImages = function(event, qry, page, refreshCache, tnsource, layout) {
                 
                     els['numOfFoundRecords'].innerHTML = `${data.total} records found`;
                     els['numOfFoundRecords'].className = 'on';
-                    els['masonry'].innerHTML = html;
+                    els[layout].innerHTML = html;
 
                     if (imgCount >= 30) {
                         els['prev'].href = (page === 1) ? '?' + qStr1 + 1 : '?' + qStr1 + (page - 1);
@@ -183,7 +184,7 @@ const getImages = function(event, qry, page, refreshCache, tnsource, layout) {
                         figs[i].addEventListener('click', toggleFigcaption);
                     }
 
-                    history.pushState('', '', '?' + qStr2);
+                    history.pushState('', '', '?' + qStr3);
                 }
                 else {
                     els['numOfFoundRecords'].innerHTML = 'no records found';
