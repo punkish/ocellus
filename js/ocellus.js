@@ -6,7 +6,7 @@ const zenodoApi = 'https://zenodo.org/api/files/';
 const zenodoRecord = 'https://zenodo.org/record/';
 
 let tnsource = 'zenodo';
-let layout = 'masonry';
+let defaultLayout = 'masonry';
 
 // figcaption height
 const fch = '30px';
@@ -139,8 +139,15 @@ const getImages = function(event, qry, page, refreshCache, tnsource, layout) {
     let qStr2 = qStr1 + page;
     let qStr3 = qStr2;
 
-    if (tnsource !== 'zenodo') {
-        qStr3 = qStr3 + '&tnsource=' + tnsource;
+    if (tnsource) {
+        if (tnsource !== 'zenodo') {
+            qStr3 = qStr3 + '&tnsource=' + tnsource;
+        }
+    }
+    
+
+    if (!layout) {
+        layout = defaultLayout;
     }
 
     if (layout !== 'masonry') {
