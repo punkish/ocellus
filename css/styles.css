@@ -186,6 +186,7 @@ figcaption {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+    overflow-x: auto;
 }
 
 figcaption b {
