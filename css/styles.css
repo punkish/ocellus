@@ -353,7 +353,7 @@ footer img {
 }
 
 /* overide Skeleton styles */
-button {
+/* button {
     height: 0 !important;
     line-height: 0 !important;
     white-space: nowrap;
@@ -369,7 +369,7 @@ button {
 }
 button:hover {
     background-color: grey !important;
-}
+} */
 /* end carousel */
     
 /* @group throbber */
