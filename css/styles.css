@@ -162,7 +162,7 @@ a:hover {
     margin:  0 0 0;
 }
 
-figure {
+.masonry figure {
     position: relative;
     overflow: hidden;
     border:1px solid #ccc;
@@ -171,11 +171,11 @@ figure {
     box-sizing: border-box;
 }
 
-figure img {
+.masonry figure img {
     width: 100%;
 }
 
-figcaption {
+.masonry figcaption {
     position: absolute;
     bottom: 0px;
     width: 100%;
@@ -189,11 +189,11 @@ figcaption {
     overflow-x: auto;
 }
 
-figcaption b {
+.masonry figcaption b {
     cursor: pointer;
 }
 
-figcaption a {
+.masonry figcaption a {
     text-decoration: underline;
     text-decoration-color: blue;
     text-decoration-style: wavy;
@@ -268,6 +268,109 @@ footer img {
     width: 100%;
     max-width: 480px;
 }
+
+/* 
+ * carousel, based on
+ *
+ * https://codepo8.github.io/simple-carousel/carousel-images.html
+ */
+ #carousel {
+    width: 100%;
+    max-width: 1200px;
+    position: relative;
+    margin: 0em;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 10px #ccc;
+    overflow: hidden;
+    padding-bottom: 75%;
+}
+#carouselbox .content {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#carouselbox .content figure {
+    text-align: center;
+    font-size: small;
+    z-index: 2;
+}
+#carouselbox .active figure {
+    position: absolute;
+    top: 2000px;
+    left: 0px;
+}
+#carouselbox .active figure.current {
+    top: 0px;
+    height: calc(100% - 40px);
+    border: 1px solid #444;
+    padding: 5px;
+}
+#carouselbox .active figure img {
+    max-width: 100%;
+    max-height: calc(100% - 50px);
+    height: auto;
+    opacity: 0;
+}
+#carouselbox .active figure img[data-src] {
+    opacity: 1;
+	transition: opacity 1s;
+}
+#carouselbox .active figcaption {
+    padding: 0px;
+    text-align: left;
+    line-height: 1.5em;
+    height: auto;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+#carouselbox .buttons {
+    display: none;
+    height: 25px !important;
+}
+#carouselbox .active .buttons {
+    display: block;
+    padding: 5px 0;
+    text-align: center;
+    z-index: 10;
+    position: relative;
+}
+#carouselbox .carouselbox button {
+    border: none;
+    visibility: hidden;
+}
+#carouselbox .active button {
+    visibility: visible;
+} 
+#carouselbox .offscreen {
+    position: absolute;
+    left: -2000px;
+}
+
+/* overide Skeleton styles */
+button {
+    height: 0 !important;
+    line-height: 0 !important;
+    white-space: nowrap;
+    border-radius: none !important;
+    border: none !important;
+    cursor: pointer; 
+    height: 0 !important;
+    padding: 15px 10px !important;
+    letter-spacing: 0 !important;
+    white-space: auto !important;
+    background-color: white !important;
+    box-sizing: border-box;
+}
+button:hover {
+    background-color: grey !important;
+}
+/* end carousel */
     
 /* @group throbber */
 
