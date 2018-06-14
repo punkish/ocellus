@@ -166,46 +166,48 @@ const makeLayout = function(imagesOfRecords) {
     for (let record in imagesOfRecords) {
         //recordCount = recordCount + 1;
 
-        const images = imagesOfRecords[record]["images"];
-        const title = imagesOfRecords[record]["title"];
-        const creators = imagesOfRecords[record]["creators"];
-        const thumb250 = imagesOfRecords[record]["thumb250"];
-        const recId = record.split('/').pop();
+        if (imagesOfRecords[record]["thumb250"]) {
+            const images = imagesOfRecords[record]["images"];
+            const title = imagesOfRecords[record]["title"];
+            const creators = imagesOfRecords[record]["creators"];
+            const thumb250 = imagesOfRecords[record]["thumb250"];
+            const recId = record.split('/').pop();
 
-        const j = images.length;
-        imgCount = imgCount + j;
+            const j = images.length;
+            imgCount = imgCount + j;
 
-        htmlCarousel += "<figure>";
-        htmlGrid += "<figure class='item'>";
+            htmlCarousel += "<figure>";
+            htmlGrid += "<figure class='item'>";
 
 
-        for (let i = 0; i < j; i++) {
-            if (tnsource === 'zenodo') {
-                htmlGrid += `<a href="${images[i]}" target="_blank"><img class="z" src="${thumb250}"></a>`;
-                //htmlGrid += `<a href="#carousel" onclick="carousel();"><img class="z" src="${thumb250}"></a>`;
+            for (let i = 0; i < j; i++) {
+                if (tnsource === 'zenodo') {
+                    htmlGrid += `<a href="${images[i]}" target="_blank"><img class="z" src="${thumb250}"></a>`;
+                    //htmlGrid += `<a href="#carousel" onclick="carousel();"><img class="z" src="${thumb250}"></a>`;
 
-                thumb960 = thumb250.replace('250,', '960,');
-                //htmlCarousel += `<a href="${images[i]}" target="_blank"><img data-frz-src="${thumb960}" src="${thumb250}" onload="lzld(this);" onerror="lzld(this);"></a>`;
-                //htmlCarousel += `<a href="${images[i]}" target="_blank"><img data-src="${thumb960}" src="${thumb250}"></a>`;
+                    thumb960 = thumb250.replace('250,', '960,');
+                    //htmlCarousel += `<a href="${images[i]}" target="_blank"><img data-frz-src="${thumb960}" src="${thumb250}" onload="lzld(this);" onerror="lzld(this);"></a>`;
+                    //htmlCarousel += `<a href="${images[i]}" target="_blank"><img data-src="${thumb960}" src="${thumb250}"></a>`;
 
-                htmlCarousel += `<a href="${images[i]}" target="_blank"><img class="lazyload" src="${thumb250}" data-src="${thumb960}"></a>`;
+                    htmlCarousel += `<a href="${images[i]}" target="_blank"><img class="lazyload" src="${thumb250}" data-src="${thumb960}"></a>`;
 
+                }
+                else {
+                    htmlGrid += `<a href="${images[i]}" target="_blank"><img class="z" src="${imageresizer}${images[i].replace(zenodoApi, '')}"></a>`;
+                }
             }
-            else {
-                htmlGrid += `<a href="${images[i]}" target="_blank"><img class="z" src="${imageresizer}${images[i].replace(zenodoApi, '')}"></a>`;
-            }
+
+            htmlGrid += `<figcaption class="transition-050 opacity85 text">
+                        rec ID: <a class="transition-050">${recId}</a>
+                        <div class="transition-050 desc">${title}. <a href='${zenodoRecord}${recId}' target='_blank'>more</a></div>
+                    </figcaption>
+                </figure>`;
+
+            htmlCarousel += `<figcaption>
+                        rec ID: <b>${recId}.</b> ${title}. <a href='${zenodoRecord}${recId}' target='_blank'>more</a></div>
+                    </figcaption>
+                </figure>`;
         }
-
-        htmlGrid += `<figcaption class="transition-050 opacity85 text">
-                    rec ID: <a class="transition-050">${recId}</a>
-                    <div class="transition-050 desc">${title}. <a href='${zenodoRecord}${recId}' target='_blank'>more</a></div>
-                </figcaption>
-            </figure>`;
-
-        htmlCarousel += `<figcaption>
-                    rec ID: <b>${recId}.</b> ${title}. <a href='${zenodoRecord}${recId}' target='_blank'>more</a></div>
-                </figcaption>
-            </figure>`;
     }
 
     return [htmlGrid, htmlCarousel, imgCount];
