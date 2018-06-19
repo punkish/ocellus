@@ -231,10 +231,12 @@ const getImages = function(event, qry, page, refreshCache, tnsource, layout) {
     // with the correctly decremented or  
     // incremented page number
     let qStr1 = 'q=' + qry;
-
+    console.log(`qStr1: ${qStr1}`);
+    console.log(`refreshCache: ${refreshCache}`);
     if (refreshCache) {
-        qStr1 = qStr1 + + '&refreshCache=' + refreshCache;
+        qStr1 = qStr1 + '&refreshCache=' + refreshCache;
     }
+    console.log(`qStr1: ${qStr1}`);
 
     qStr1 = qStr1 + '&page=';
 
