@@ -80,7 +80,8 @@ const fancySearch = function() {
      * @param {string} selector - HTML element that will house fancySearch
      * 
      */
-    const makeFsContainer = function() {
+    const makeFsContainer = function(version) {
+
 
         fsHelp = elementMaker({
             elType: 'div', 
@@ -89,7 +90,7 @@ const fancySearch = function() {
             container: fsContainer,
             class: 'fs-help'
         });
-
+        
         let fsWidget = elementMaker({
             elType: 'div', 
             id: 'fs-widget', 
@@ -597,7 +598,9 @@ const fancySearch = function() {
 
         let q = {};
         for (let i of params) {
-            const key = i.querySelector('.fs-key').innerText;
+
+            // https://stackoverflow.com/questions/952924/javascript-chop-slice-trim-off-last-character-in-string
+            const key = i.querySelector('.fs-key').innerText.slice(0, -1);
             const val = i.querySelector('.fs-val').innerText;
 
             if (key && val) {
@@ -655,10 +658,10 @@ const fancySearch = function() {
          * @param {array} facets - The facets to use for this instance of fancySearch.
          * @param {func} doSomethingWithQuery - Ingest the JSON object with fancySearch selection, and do something with it.
          */
-		init: function(selector, facets, doSomethingWithQuery) {
+		init: function(options) {
             
-            fsContainer = selector;
-            theFacets = facets;
+            fsContainer = options.selector;
+            theFacets = options.facets;
 
             // https://stackoverflow.com/questions/7028145/find-key-name-in-hash-with-only-one-key
             facetKeys = facets.map(element => { return element['key'] });
@@ -666,7 +669,7 @@ const fancySearch = function() {
 
             // we store the cb function so we can use it later when
             // we are ready to submit the query
-            resultCb = doSomethingWithQuery;
+            resultCb = options.doSomethingWithQuery;
             
             makeFsContainer();
 		}

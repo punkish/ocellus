@@ -1,12 +1,9 @@
 //const loc = 'http://localhost:3030';
 const loc = 'https://zenodeo.punkish.org';
-const baseUrl = loc + '/v1/records?size=30&communities=biosyslit&type=image&summary=false&images=true&';
-const imageresizer = 'https://ocacher.punkish.org/';
+const baseUrl = loc + '/v1/records?size=30&communities=biosyslit&access_right=open&type=image&summary=false&images=true&';
 const zenodoApi = 'https://zenodo.org/api/files/';
 const zenodoRecord = 'https://zenodo.org/record/';
 
-let tnsource = 'zenodo';
-let defaultLayout = 'masonry';
 let htmlCarouselStr = '';
 
 // figcaption height
@@ -27,14 +24,6 @@ const getQueryStr = function(qStr) {
             qryStr[el.split('=')[0]] = el.split('=')[1];
         });
 
-    if (qryStr['tnsource']) {
-        tnsource = qryStr['tnsource'];
-    }
-
-    if (qryStr['layout']) {
-        layout = qryStr['layout'];
-    }
-
     return qryStr;
 };
 
@@ -46,9 +35,7 @@ const getQueryParamsAndImages = function(event, search) {
         event, 
         qryStr['q'],            // qry 
         qryStr['page'],         // page, 
-        qryStr['refreshCache'], // refreshCache
-        qryStr['tnsource'] || '',
-        qryStr['layout'] || ''
+        qryStr['refreshCache']  // refreshCache
     );
 }
 
@@ -65,9 +52,7 @@ const getImagesFromButton = function(event) {
         event, 
         els['q'].value.toLowerCase(),  // qry
         1,                             // page
-        els['cacheMsgCheck'].checked,  // refreshCache
-        tnsource,
-        defaultLayout
+        els['cacheMsgCheck'].checked   // refreshCache
     );
 };
 
@@ -154,7 +139,7 @@ const carousel = function() {
 };
 
 const makeLayout = function(imagesOfRecords) {
-    //let html = '';
+    
     let htmlCarousel = '';
     let htmlGrid = '';
     let thumb960 = '';
@@ -164,57 +149,46 @@ const makeLayout = function(imagesOfRecords) {
     //const imagesOfRecords = data.imagesOfRecords;
 
     for (let record in imagesOfRecords) {
-        //recordCount = recordCount + 1;
+        
+        const images = imagesOfRecords[record]["images"];
+        const title = imagesOfRecords[record]["title"];
+        const creators = imagesOfRecords[record]["creators"];
+        const thumb250 = imagesOfRecords[record]["thumb250"] === 'na' ? 'img/kein-preview.png' : imagesOfRecords[record]["thumb250"];
+        const recId = record.split('/').pop();
 
-        if (imagesOfRecords[record]["thumb250"]) {
-            const images = imagesOfRecords[record]["images"];
-            const title = imagesOfRecords[record]["title"];
-            const creators = imagesOfRecords[record]["creators"];
-            const thumb250 = imagesOfRecords[record]["thumb250"];
-            const recId = record.split('/').pop();
+        const j = images.length;
+        imgCount = imgCount + j;
 
-            const j = images.length;
-            imgCount = imgCount + j;
+        htmlCarousel += "<figure>";
+        htmlGrid += "<figure class='item'>";
 
-            htmlCarousel += "<figure>";
-            htmlGrid += "<figure class='item'>";
+        for (let i = 0; i < j; i++) {
+            htmlGrid += `<a href="${images[i]}" target="_blank"><img class="z" src="${thumb250}"></a>`;
+            //htmlGrid += `<a href="#carousel" onclick="carousel();"><img class="z" src="${thumb250}"></a>`;
 
+            thumb960 = thumb250.replace('250,', '960,');
+            //htmlCarousel += `<a href="${images[i]}" target="_blank"><img data-frz-src="${thumb960}" src="${thumb250}" onload="lzld(this);" onerror="lzld(this);"></a>`;
+            //htmlCarousel += `<a href="${images[i]}" target="_blank"><img data-src="${thumb960}" src="${thumb250}"></a>`;
 
-            for (let i = 0; i < j; i++) {
-                if (tnsource === 'zenodo') {
-                    htmlGrid += `<a href="${images[i]}" target="_blank"><img class="z" src="${thumb250}"></a>`;
-                    //htmlGrid += `<a href="#carousel" onclick="carousel();"><img class="z" src="${thumb250}"></a>`;
-
-                    thumb960 = thumb250.replace('250,', '960,');
-                    //htmlCarousel += `<a href="${images[i]}" target="_blank"><img data-frz-src="${thumb960}" src="${thumb250}" onload="lzld(this);" onerror="lzld(this);"></a>`;
-                    //htmlCarousel += `<a href="${images[i]}" target="_blank"><img data-src="${thumb960}" src="${thumb250}"></a>`;
-
-                    htmlCarousel += `<a href="${images[i]}" target="_blank"><img class="lazyload" src="${thumb250}" data-src="${thumb960}"></a>`;
-
-                }
-                else {
-                    htmlGrid += `<a href="${images[i]}" target="_blank"><img class="z" src="${imageresizer}${images[i].replace(zenodoApi, '')}"></a>`;
-                }
-            }
-
-            htmlGrid += `<figcaption class="transition-050 opacity85 text">
-                        rec ID: <a class="transition-050">${recId}</a>
-                        <div class="transition-050 desc">${title}. <a href='${zenodoRecord}${recId}' target='_blank'>more</a></div>
-                    </figcaption>
-                </figure>`;
-
-            htmlCarousel += `<figcaption>
-                        rec ID: <b>${recId}.</b> ${title}. <a href='${zenodoRecord}${recId}' target='_blank'>more</a></div>
-                    </figcaption>
-                </figure>`;
+            htmlCarousel += `<a href="${images[i]}" target="_blank"><img class="lazyload" src="${thumb250}" data-src="${thumb960}"></a>`;
         }
+
+        htmlGrid += `<figcaption class="transition-050 opacity85 text">
+                    rec ID: <a class="transition-050">${recId}</a>
+                    <div class="transition-050 desc">${title}. <a href='${zenodoRecord}${recId}' target='_blank'>more</a></div>
+                </figcaption>
+            </figure>`;
+
+        htmlCarousel += `<figcaption>
+                    rec ID: <b>${recId}.</b> ${title}. <a href='${zenodoRecord}${recId}' target='_blank'>more</a></div>
+                </figcaption>
+            </figure>`;
     }
 
     return [htmlGrid, htmlCarousel, imgCount];
-    //return html;
 };
 
-const getImages = function(event, qry, page, refreshCache, tnsource, layout) {
+const getImages = function(event, qry, page, refreshCache) {
 
     if (!els['q'].value) {
         els['q'].className = 'reqd';
@@ -242,21 +216,6 @@ const getImages = function(event, qry, page, refreshCache, tnsource, layout) {
 
     // qStr2 is used for `history`
     let qStr2 = qStr1 + page;
-    let qStr3 = qStr2;
-
-    if (tnsource) {
-        if (tnsource !== 'zenodo') {
-            qStr3 = qStr3 + '&tnsource=' + tnsource;
-        }
-    }
-    
-    if (!layout) {
-        layout = defaultLayout;
-    }
-
-    if (layout !== 'masonry') {
-        qStr3 = qStr3 + '&layout=' + layout;
-    }
 
     // the complete url to the api
     let url = baseUrl + qStr2;
@@ -269,12 +228,10 @@ const getImages = function(event, qry, page, refreshCache, tnsource, layout) {
                 var data = JSON.parse(x.responseText);
                 if (data.total) {
                     const [htmlGrid, htmlCarousel, imgCount] = makeLayout(data.result);
-                    //const html = makeLayout(data.imagesOfRecords);
-                    //els['grid'].innerHTML = html;
                 
                     els['numOfFoundRecords'].innerHTML = `${data.total} records found`;
                     els['numOfFoundRecords'].className = 'on';
-                    els[layout].innerHTML = htmlGrid;
+                    els['masonry'].innerHTML = htmlGrid;
                     // els['carousel'].innerHTML = htmlCarousel;
                     htmlCarouselStr = htmlCarousel;
 
@@ -297,7 +254,7 @@ const getImages = function(event, qry, page, refreshCache, tnsource, layout) {
                         figs[i].addEventListener('click', toggleFigcaption);
                     }
 
-                    history.pushState('', '', '?' + qStr3);
+                    history.pushState('', '', '?' + qStr2);
                 }
                 else {
                     els['numOfFoundRecords'].innerHTML = 'no records found';

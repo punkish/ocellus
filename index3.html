@@ -46,7 +46,7 @@
 
     <div id="about" class="off">
         <div id="closeAbout">close</div>
-        <p>Ocellus is a frontend to more than 150K images in the <a href="http://biolitrepo.org" target="_blank">Biodiversity Literature Repository</a> (BLR) on <a href="https://zenodo.org" target="_blank">Zenodo</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API to the <a href="https://zenodo.org/api" target="_blank">Zenodo API</a>, that performs a fulltext search on BLR. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, or provide any term and Ocellus will retrieve related images.</p>
+        <p>Ocellus is a frontend to more than 180K images in the <a href="http://biolitrepo.org" target="_blank">Biodiversity Literature Repository</a> (BLR) on <a href="https://zenodo.org" target="_blank">Zenodo</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API to the <a href="https://zenodo.org/api" target="_blank">Zenodo API</a>, that performs a fulltext search on BLR. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, or provide any term and Ocellus will retrieve related images.</p>
         
         <p>For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country. The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up">Internet Archive</a> and has no known copyright restrictions. Please contact <a href="mailto:ocellus@plazi.org">Plazi</a> for more information or to provide feedback.</p>
     </div>
@@ -68,47 +68,51 @@
 
 <script src="JavaScript-autoComplete/auto-complete.js"></script>
 <script src="js/fancysearch.js"></script> 
-<script src="js/ocellus2.js"></script> 
+<script src="js/ocellus-ng.js"></script> 
 <script type="text/javascript">
-//const api = 'https://zenodeo.punkish.org';
 const api = 'http://localhost:3030';
 const facets = [
-{   "key": "title",
-    "actualKey": "title", 
-    "values": [], 
-    "prompt": "Enter text to search in the 'title' field",
-    "noDuplicates": true },
-{   "key": "authors", 
-    "actualKey": "creators.name",
-    "values": `${api}/v1/authors`, 
-    "prompt": "Type at least three letters to list the author names",
-    "noDuplicates": false },
-{   "key": "keywords", 
-    "actualKey": "keywords",
-    "values": `${api}/v1/keywords`, 
-    "prompt": "Type at least three letters to list the keywords",
-    "noDuplicates": false },
+// {   "key": "title",
+//     "actualKey": "title", 
+//     "values": [], 
+//     "prompt": "Enter text to search in the 'title' field",
+//     "noDuplicates": true },
+// {   "key": "authors", 
+//     "actualKey": "creators.name",
+//     "values": `${api}/v1/authors`, 
+//     "prompt": "Type at least three letters to list the author names",
+//     "noDuplicates": false },
+// {   "key": "keywords", 
+//     "actualKey": "keywords",
+//     "values": `${api}/v1/keywords`, 
+//     "prompt": "Type at least three letters to list the keywords",
+//     "noDuplicates": false },
 {   "key": "families", 
     "actualKey": "title",
     "values": `${api}/v1/families`, 
     "prompt": "Type at least three letters to list the families",
-    "noDuplicates": false },
-{   "key": "taxa", 
-    "actualKey": "title",
-    "values": `${api}/v1/taxa`, 
-    "prompt": "Type at least three letters to list the taxa",
-    "noDuplicates": false },
-{   "key": "year", 
-    "actualKey": "publicationdate",
-    "values": [], 
-    "prompt": "Enter year to get publications from that year",
-    "noDuplicates": true }
+    "noDuplicates": true },
+// {   "key": "taxa", 
+//     "actualKey": "title",
+//     "values": `${api}/v1/taxa`, 
+//     "prompt": "Type at least three letters to list the taxa",
+//     "noDuplicates": false },
+// {   "key": "year", 
+//     "actualKey": "publicationdate",
+//     "values": [], 
+//     "prompt": "Enter year to get publications from that year",
+//     "noDuplicates": true }
 ];
 
 window.onload = function() {
 
     const Ocellus = new ocellus();
-    Ocellus.init(facets);
+    Ocellus.init({
+        zenodeo: api,
+        figcaptionHeight: '40px',
+        layout: 'masonry',
+        facets: facets
+    });
 
     const fs = new fancySearch();
     fs.init({

@@ -263,7 +263,7 @@ input.fs-val-input:focus {
     width: 20px;
     height: 20px;
     margin-left: 5px;
-    margin-top: 6px;
+    margin-top: 7px;
     cursor: pointer;
     text-align: center;
     border: 1px solid grey;
@@ -295,7 +295,7 @@ td:last-child {
 table.fs-param-empty,
 table.fs-param-filled {
     float: left;
-    margin: 0 2px 2px 0;
+    margin: 4px 2px 2px 0;
     font-size: 0.7em;
     max-width: 200px;
 }

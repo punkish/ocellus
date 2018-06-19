@@ -76,29 +76,33 @@ const ocellus = function() {
         //let recordCount = 0;
         //const imagesOfRecords = data.imagesOfRecords;
     
+        
         for (let record in imagesOfRecords) {
-            //recordCount = recordCount + 1;
-    
-            const images = imagesOfRecords[record]["images"];
-            const title = imagesOfRecords[record]["title"];
-            const creators = imagesOfRecords[record]["creators"];
-    
-            const j = images.length;
-            imgCount = imgCount + j;
-    
-            html += "<figure class='item'>";
-    
-            for (let i = 0; i < j; i++) {
-                html += `<a href="${images[i]}" target="_blank"><img class="z" src="${imageresizer}${images[i].replace(zenodoApi, '')}"></a>`;
+
+            if (imagesOfRecords[record]["thumb250"]) {
+                //recordCount = recordCount + 1;
+        
+                const images = imagesOfRecords[record]["images"];
+                const title = imagesOfRecords[record]["title"];
+                const creators = imagesOfRecords[record]["creators"];
+                const thumb250 = imagesOfRecords[record]["thumb250"];
+                const recId = record.split('/').pop();
+        
+                const j = images.length;
+                imgCount = imgCount + j;
+        
+                html += "<figure class='item'>";
+        
+                for (let i = 0; i < j; i++) {
+                    html += `<a href="${images[i]}" target="_blank"><img class="z" src="${thumb250}"></a>`;
+                }
+        
+                html += `<figcaption class="transition-050 opacity85 text">
+                            rec ID: <a class="transition-050">${recId}</a>
+                            <div class="transition-050 desc">${title}. <a href="${zenodoRecord}${recId}" target="_blank">more</a></div>
+                        </figcaption>
+                    </figure>`;
             }
-    
-            const recId = record.split('/').pop();
-    
-            html += `<figcaption class="transition-050 opacity85 text">
-                        rec ID: <a class="transition-050">${recId}</a>
-                        <div class="transition-050 desc">${title}. <a href="${zenodoRecord}${recId}" target="_blank">more</a></div>
-                    </figcaption>
-                </figure>`;
         }
     
         return [html, imgCount];
@@ -404,6 +408,7 @@ const ocellus = function() {
      *
      */
     const query2qryStr = function(query) {
+        
         let qry = '';
         let title = [];
         let freetext = [];
@@ -481,7 +486,7 @@ const ocellus = function() {
 
         //+creators.name:/Agosti.*/ +publication_date:[1990 TO 1991} +keywords:taxonomy +title:review
         goGetIt: function(query, button) {
-
+            
             const qry = query2qryStr(query);
 
             log(`qry: ${qry}`);
@@ -497,6 +502,7 @@ const ocellus = function() {
         init: function(queryFacets) {
 
             facets = queryFacets;
+
             // When the page is loaded for the first time, 
             // the cacheMsgCheck checkbox should be unchecked
             els['cacheMsgCheck'].checked = false;
