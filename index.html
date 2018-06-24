@@ -46,7 +46,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><div id="fs-refreshCacheMsg" class="cacheCheckMsg off-block">this will delete the cached results and redo the query; you don't really want to do this</div></td>
+                            <td><div id="fs-refreshCacheMsg" class="cacheCheckMsg off-block">This will delete the cached results and redo the query; you don't really want to do this</div></td>
                             <td></td>
                         </tr>
                     </table>
@@ -127,6 +127,7 @@ window.onload = function() {
     const throbber = document.querySelector('#fs-throbber');
     const footer = document.querySelector('footer');
     const fsForm = document.querySelector('#fs-form');
+    const about = document.querySelector('#about');
 
     //load and compile the masonry template
     const templateMasonry = document.querySelector('#templateMasonry').innerHTML;
@@ -138,7 +139,8 @@ window.onload = function() {
         throbber: throbber,
         footer: footer,
         templateMasonry: templateMasonry,
-        wrapper: wrapper
+        wrapper: wrapper,
+        about: about
     });
 
     new autoComplete({

@@ -31,6 +31,11 @@ const Ocellus = (function() {
     let wrapper;
     let throbber;
     let footer;
+    let about;
+
+    // we use these when toggling about
+    let wrapperState;
+    let footerState;
 
     const getQueryStr = function(qStr) {
         let qryStr = {};
@@ -310,13 +315,6 @@ const Ocellus = (function() {
         },
 
         toggleAbout: function(event) {
-            
-            const about = document.querySelector('#about');
-            const footer = document.querySelector('footer');
-            const wrapper = document.querySelector('#wrapper');
-
-            let wrapperState;
-            let footerState;
 
             if (about.classList.contains('on')) {
 
@@ -376,6 +374,7 @@ const Ocellus = (function() {
             wrapper = options.wrapper;
             throbber = options.throbber;
             footer = options.footer;
+            about = options.about;
 
             if (location.search) {
                 getQueryParamsAndImages(location.search);

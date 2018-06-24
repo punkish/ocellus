@@ -31,7 +31,7 @@ module.exports = function(grunt) {
                         'css/normalize.css',
                         'css/skeleton.css',
                         'css/auto-complete.min.css',
-                        'css/ocellus.css',
+                        //'css/ocellus.css',
                         'css/throbber.css'
                     ]
                 }
