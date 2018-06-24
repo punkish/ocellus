@@ -4,86 +4,195 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="image viewer for the Biodiversity Literature Repository">
+    <meta name="version" content="2.0">
     <meta name="author" content="Puneet Kishor">
     <meta name="copyright" content="CC0 Public Domain Dedication">
     
-    <title>ocellus</title>
+    <title>ocellus^2</title>
     
-    <!-- <link rel="stylesheet" href="css/all.min.css"> -->
-
-    <link rel="stylesheet" href="JavaScript-autoComplete/auto-complete.css">
-    <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" type="image/png" href="img/ocellus.png">
+
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="JavaScript-autoComplete/auto-complete.css">
+    <link rel="stylesheet" href="css/ocellus.css#gjyigvi">
+    <link rel="stylesheet" href="css/throbber.css">
 </head>
 <body>
-    <header>
-        <div id="title">
-            <a href="/">ocellus</a><br>
-            <a id="aboutLink" href="/about">about</a>
-        </div>
-
-        <form id="formContainer" class="cf">
-            <div id="qWrapper">
-                <input name="q" id="q" type="text" required placeholder="search" autofocus> 
-                <button id="btnImages" type="submit">go</button>
-                <input id="cacheMsgCheck" name="refreshCache" type="checkbox">
-            </div>
-            <br clear="both">
-            <div id="cacheMsg" class="off">This will query BLR and overwrite any cached results. You probably <em><b>do not</b></em> want this.</div>
-        </form>
-    </header>
-
-    <div id="content">
-        <div id="throbber" class="off">Loading&#8230;</div>
-
-        <h3 id="numOfFoundRecords" class="off"></h3>
-
-        <div id="about" class="off">
-            <div id="closeAbout">close</div>
-            <p>Ocellus is a frontend to more than 150K images in the <a href="http://biolitrepo.org" target="_blank">Biodiversity Literature Repository</a> (BLR) on <a href="https://zenodo.org" target="_blank">Zenodo</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API to the <a href="https://zenodo.org/api" target="_blank">Zenodo API</a>, that performs a fulltext search on BLR. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, or provide any term and Ocellus will retrieve related images.</p>
-            
-            <p>For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country. The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up">Internet Archive</a> and has no known copyright restrictions. Please contact <a href="mailto:ocellus@plazi.org">Plazi</a> for more information or to provide feedback.</p>
-        </div>
-
-        <div id="wrapper">
-            <div id="carouselbox" class="off">
-                <div class="buttons">
-                    <button class="prev">
-                        ◀ <span class="offscreen">Previous</span>
-                    </button>
-                    <!-- <button class="next">
-                        <span class="offscreen">Next</span> ▶ 
-                    </button> -->
+<div class="header">
+    <div class="container">
+        <div class="row">
+            <div class="twelve columns">
+                <div class="title">
+                    <div class="main-title"><a href="/" style="text-decoration: none; color: black;">ocellus<sup>2</sup></a></div>
+                    <a id="about-link" class="sub-title msg" data-toggle-target='#about' data-toggle-class='off-none'>about</a>
                 </div>
-                <div id="carousel" class="content">
-                </div>
-                <div class="buttons">
-                    <!-- <button class="prev">
-                        ◀ <span class="offscreen">Previous</span>
-                    </button> -->
-                    <button class="next">
-                        <span class="offscreen">Next</span> ▶ 
-                    </button>
-                </div>
-            </div>
-            <div id="grid" class="grid"></div>
-            <div id="masonry" class="masonry"></div>
-            
-            <div id="pager" class="off">
-                <a href="" id="prev" class="pager">prev</a>
-                <a href="" id="next" class="pager">next</a>
+
+                <!-- this is the entirety of the Ocellus form -->
+                <form id="fs-form" class="fs-form">
+                    <table>
+                        <tr>
+                            <td><div id="fs-help" class="fs-help msg off-block">choose a param or enter any text</div></td><td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div id="fs-container" class="header-component fs-container">
+                                    <input id="q" name="q" type="text" required placeholder="search" autofocus>
+                                </div>
+                                <button id="fs-go" class="header-component">go</button>
+                            </td>
+                            <td>
+                                <input id="fs-refreshCache" type="checkbox" name="refreshCache" class="header-component" data-toggle-target='#fs-refreshCacheMsg' data-toggle-class='off-block'>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div id="fs-refreshCacheMsg" class="cacheCheckMsg off-block">this will delete the cached results and redo the query; you don't really want to do this</div></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </form>
+
             </div>
         </div>
     </div>
+    
+</div>
+<div id="fs-throbber" class="throbber throbber-off"></div>
 
-    <footer id="footer" class="fixed"><img src="img/fish.jpg"></footer>
+<div class="container">
+    <div class="row">
+        <div class="twelve columns">
+            <div id="about" class="off-none">
+                <div id="about-close" data-toggle-target='#about' data-toggle-class='off-none'>close</div>
+                <div id="about-text">
+                    <p>Ocellus is a frontend to more than 180K images in the <a href="http://biolitrepo.org" target="_blank">Biodiversity Literature Repository</a> (BLR) on <a href="https://zenodo.org" target="_blank">Zenodo</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API to the <a href="https://zenodo.org/api" target="_blank">Zenodo API</a>, that performs a fulltext search on BLR. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, or provide any term and Ocellus will retrieve related images.</p>
+        
+                    <p>For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country. The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up">Internet Archive</a> and has no known copyright restrictions. Please contact <a href="mailto:ocellus@plazi.org">Plazi</a> for more information or to provide feedback.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <!-- <script src='js/lazyload.min.js'></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/lazyload@2.0.0-beta.2/lazyload.js"></script>
-    <script src="JavaScript-autoComplete/auto-complete.js"></script>
-    <script src="js/family.min.js"></script>
-    <script src="js/ocellus.js"></script> 
-   
-    <!-- <script src="js/all.min.js"></script> -->
+<div class="container">
+    <div class="row">
+        <div class="twelve columns">
+            <div id="wrapper"></div>
+        </div>
+    </div>
+</div>
+
+<footer id="footer" class="fixed">
+    <img src="img/fish.jpg">
+</footer>
+
+<!-- template for the masonry wall of images -->
+<script id="templateMasonry" type="x-tmpl-mustache">
+    <h3 id="numOfFoundRecords">{{numOfFoundRecords}} records found</h3>
+    
+    <div id="masonry" class="masonry">
+        {{#figures}}
+        <figure class='item'>
+            <!-- <a href="#carousel" onclick="Ocellus.carousel(event);"><img src="{{thumb250}}"></a> -->
+            <a href="{{imageSrc}}" target="_blank"><img src="{{thumb250}}"></a>
+            <figcaption class="transition-050 opacity85 text">
+                rec ID: <a class="transition-050">{{recId}}</a>
+                <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
+            </figcaption>
+        </figure>
+        {{/figures}}
+    </div>
+    
+    <div id="pager">
+        ◀ <a href="{{prev}}" id="prev" class="pager">prev</a> 
+        <a href="{{next}}" id="next" class="pager">next</a>  ▶
+    </div>
+</script>
+
+<script src="js/mustache.min.js"></script>
+<script src="JavaScript-autoComplete/auto-complete.js"></script>
+<script src="js/family.min.js"></script>
+<script src="js/ocellus.js#gjyigvi"></script>
+<script type="text/javascript">
+const api = 'https://zenodeo.punkish.org';
+
+window.onload = function() {
+
+    const fsRefreshCache = document.querySelector('#fs-refreshCache');
+    const aboutLink = document.querySelector('#about-link');
+    const aboutClose = document.querySelector('#about-close');
+    const fsGo = document.querySelector('button[id=fs-go]');
+    const qField = document.querySelector('input[name=q]');
+    const wrapper = document.querySelector('#wrapper');
+    const throbber = document.querySelector('#fs-throbber');
+    const footer = document.querySelector('footer');
+    const fsForm = document.querySelector('#fs-form');
+
+    //load and compile the masonry template
+    const templateMasonry = document.querySelector('#templateMasonry').innerHTML;
+    Mustache.parse(templateMasonry);
+    
+    Ocellus.init({
+        zenodeo: api,
+        qField: qField,
+        throbber: throbber,
+        footer: footer,
+        templateMasonry: templateMasonry,
+        wrapper: wrapper
+    });
+
+    new autoComplete({
+        selector: qField,
+        minChars: 3,
+        source: function(term, suggest) {
+            
+            term = term.toLowerCase();
+            let matches = [];
+            let j = family.length;
+
+            for (let i = 0; i < j; i++) {
+                if (~family[i].toLowerCase().indexOf(term)) {
+                    matches.push(family[i]);
+                }
+            }
+
+            suggest(matches);
+        }
+    });
+
+    const goGetItWrapper = function(event) {
+
+        if (!qField.value) {
+            qField.className = 'reqd';
+            qField.placeholder = 'a search term is required';
+            qField.focus();
+            return;
+        }
+        else {
+            qField.className = 'normal';
+            throbber.classList.remove('throbber-off');
+            throbber.classList.add('throbber-on');
+        }
+
+        Ocellus.goGetIt({
+            qValue: qField.value,
+            refreshCache: document.querySelector('#fs-refreshCache').checked
+        });
+
+        event.preventDefault();
+        event.stopPropagation();
+    };
+
+    // Since some browsers preserve state across reloads, make sure the refreshCache button is off
+    fsRefreshCache.checked = false;
+
+    aboutLink.addEventListener('click', Ocellus.toggleAbout);
+    aboutClose.addEventListener('click', Ocellus.toggleAbout);
+    fsRefreshCache.addEventListener('click', Ocellus.toggleRefreshCache);
+
+    fsGo.addEventListener('click', goGetItWrapper);
+    fsForm.addEventListener('submit', goGetItWrapper);
+};
+</script>
 </body>
 </html>

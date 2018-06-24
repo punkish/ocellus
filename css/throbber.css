@@ -3,12 +3,21 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 10px;
-    opacity: 0;
+    height: 8px;
+    border-bottom: 1px solid silver;
+    margin-bottom: 20px;
     transition: opacity 0.3s ease;
     background-size: 30px 30px;
     background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.1) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1) 75%, transparent 75%, transparent);
     animation: barberpole 0.5s linear infinite;
+}
+
+.throbber-off {
+    opacity: 0;
+}
+
+.throbber-on {
+    opacity: 1;
 }
 
 @keyframes barberpole {

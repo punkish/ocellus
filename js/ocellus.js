@@ -1,431 +1,385 @@
-//const loc = 'http://localhost:3030';
-const loc = 'https://zenodeo.punkish.org';
-const baseUrl = loc + '/v1/records?size=30&communities=biosyslit&access_right=open&type=image&summary=false&images=true&';
-const zenodoApi = 'https://zenodo.org/api/files/';
-const zenodoRecord = 'https://zenodo.org/record/';
+'use strict';
 
-let htmlCarouselStr = '';
-
-// figcaption height
-const fch = '30px';
-let figcaptions = [];
-let fclength;
-
-let els = {};
-["numOfFoundRecords","grid","masonry","cacheMsg","qReqdMsg","cacheMsgCheck","q","qWrapper","throbber","btnImages","aboutLink","about","closeAbout","prev","next","pager","wrapper","html","footer", "carouselbox", "carousel"].forEach(function(el) {
-    els[el] = document.getElementById(el);
-});
-
-const getQueryStr = function(qStr) {
-    let qryStr = {};
-    qStr.substr(1)
-        .split('&')
-        .forEach(function(el) {
-            qryStr[el.split('=')[0]] = el.split('=')[1];
-        });
-
-    return qryStr;
-};
-
-const getQueryParamsAndImages = function(event, search) {
-    const qryStr = getQueryStr(search);
-    els['q'].value = qryStr['q'];
-
-    getImages(
-        event, 
-        qryStr['q'],            // qry 
-        qryStr['page'],         // page, 
-        qryStr['refreshCache']  // refreshCache
-    );
-}
-
-const getImagesFromPager = function(event) {
-    els['grid'].innerHTML = '';
-    els['footer'].className = 'fixed';
-    smoothScroll(0);
-    getQueryParamsAndImages(event, this.search);
-};
-
-const getImagesFromButton = function(event) {
-
-    getImages(
-        event, 
-        els['q'].value.toLowerCase(),  // qry
-        1,                             // page
-        els['cacheMsgCheck'].checked   // refreshCache
-    );
-};
-
-const carousel = function() {
-    //const re = '(.*?)(250,)(.*)';
-    // const thumb960 = thumb250.replace('250,', '960,');
-    // let html = '<figure class="item">';
-    // html += `<a href="${image}" target="_blank"><img class="z" src="${thumb960}"></a>`;
-    // html += `<figcaption class="transition-050 opacity85 text">
-    //                 rec ID: <a class="transition-050">${recId}</a>
-    //                 <div class="transition-050 desc">${title}. <a href='${zenodoRecord}${recId}' target='_blank'>more</a></div>
-    //             </figcaption>
-    //         </figure>`;
-
-    els['carousel'].innerHTML = htmlCarouselStr;
-    els['carouselbox'].className = 'on';
-    lazyload();
-    els['masonry'].className = 'off';
-    els['grid'].className = 'off';
-    els['pager'].className = 'off';
+const Ocellus = (function() {
     
-    // Read necessary elements from the DOM once
-    //var box = document.querySelector('#carouselbox');
-    var box = document.getElementById('carouselbox');
-    var next = box.querySelector('.next');
-    var prev = box.querySelector('.prev');
+    // private stuff
+    let zenodeo = 'https://zenodeo.punkish.org';
+    const basePath = '/v1/records?size=30&communities=biosyslit&access_right=open&type=image&summary=false&images=true&';
+    let baseUrl = zenodeo + basePath;
+    const zenodoApi = 'https://zenodo.org/api/files/';
+    const zenodoRecord = 'https://zenodo.org/record/';
+    
+    let layout = 'masonry';
 
-    // Define the global counter, the items and the 
-    // current item 
-    var counter = 0;
-    var items = box.querySelectorAll('.content figure');
-    var amount = items.length;
-    var current = items[0];
-    // let thumb960 = current.childNodes[0].firstChild.src.replace('250,', '960,');
-    //current.childNodes[0].firstChild.src = current.childNodes[0].firstChild.dataset.src;
+    // figcaption settings //////////////////
+    let figcaptionHeight = '30px';
+    let figcaptions = [];
+    let figcaptionLength;
 
-    box.classList.add('active');
+    let facets;
 
-    // navigate through the carousel
+    let data = {
+        numOfFoundRecords: 0,
+        figures: [],
+        prev: '',
+        next: ''
+    };
 
-    function navigate(direction) {
+    let qField;
+    let qValue;
+    let templateMasonry;
+    let wrapper;
+    let throbber;
+    let footer;
 
-        // hide the old current list item 
-        current.classList.remove('current');
+    const getQueryStr = function(qStr) {
+        let qryStr = {};
+        qStr.substr(1)
+            .split('&')
+            .forEach(function(el) {
+                qryStr[el.split('=')[0]] = el.split('=')[1];
+            });
+    
+        return qryStr;
+    };
+    
+    const getQueryParamsAndImages = function(search) {
+
+        const qryStr = getQueryStr(search);
+        q = qryStr['q'];
+    
+        getImages(
+            qryStr['q'],            // qry 
+            qryStr['page'],         // page, 
+            qryStr['refreshCache']  // refreshCache
+        );
+    };
+    
+    const makeLayout = function(imagesOfRecords) {
         
-        // calculate th new position
-        counter = counter + direction;
+        let imgCount = 0;
+        let figures = [];
     
-        // if the previous one was chosen
-        // and the counter is less than 0 
-        // make the counter the last element,
-        // thus looping the carousel
-        if (direction === -1 && counter < 0) { 
-            counter = amount - 1; 
+        for (let record in imagesOfRecords) {
+            
+            const images = imagesOfRecords[record]["images"];
+            const j = images.length;
+            imgCount = imgCount + j;
+            const recId = record.split('/').pop();
+
+            let thumb250;
+            let thumb960;
+            if (imagesOfRecords[record]["thumb250"] === 'na') {
+                thumb250 = 'img/kein-preview.png';
+                thumb960 = 'img/kein-preview.png';
+            }
+            else {
+                thumb250 = imagesOfRecords[record]["thumb250"];
+                thumb960 = thumb250.replace('250,', '960,');
+            }
+
+            const figure = {
+                title: imagesOfRecords[record]["title"],
+                creators: imagesOfRecords[record]["creators"],
+                recId: recId,
+                zenodoRecord: zenodoRecord + recId,
+                imageSrc: images[0],
+                thumb250: thumb250,
+                thumb960: thumb960
+            };
+            
+            figures.push(figure)
         }
     
-        // if the next button was clicked and there 
-        // is no items element, set the counter 
-        // to 0
-        if (direction === 1 && !items[counter]) { 
-            counter = 0;
-        }
+        return [figures, imgCount];
+    };
+
     
-        // set new current element 
-        // and add CSS class
-        current = items[counter];
-        // thumb960 = current.childNodes[0].firstChild.src.replace('250,', '960,');
-        //current.childNodes[0].firstChild.src = current.childNodes[0].firstChild.dataset.src;
-        current.classList.add('current');
-    }
-
-    // add event handlers to buttons
-    next.addEventListener('click', function(ev) {
-        navigate(1);
-    });
-    prev.addEventListener('click', function(ev) {
-        navigate(-1);
-    });
-
-    // show the first element 
-    // (when direction is 0 counter doesn't change)
-    navigate(0);
-
-};
-
-const makeLayout = function(imagesOfRecords) {
-    
-    let htmlCarousel = '';
-    let htmlGrid = '';
-    let thumb960 = '';
-
-    let imgCount = 0;
-    //let recordCount = 0;
-    //const imagesOfRecords = data.imagesOfRecords;
-
-    for (let record in imagesOfRecords) {
+    const getImages = function(qValue, page, refreshCache) {
         
-        const images = imagesOfRecords[record]["images"];
-        const title = imagesOfRecords[record]["title"];
-        const creators = imagesOfRecords[record]["creators"];
-        const thumb250 = imagesOfRecords[record]["thumb250"] === 'na' ? 'img/kein-preview.png' : imagesOfRecords[record]["thumb250"];
-        const recId = record.split('/').pop();
-
-        const j = images.length;
-        imgCount = imgCount + j;
-
-        htmlCarousel += "<figure>";
-        htmlGrid += "<figure class='item'>";
-
-        for (let i = 0; i < j; i++) {
-            htmlGrid += `<a href="${images[i]}" target="_blank"><img class="z" src="${thumb250}"></a>`;
-            //htmlGrid += `<a href="#carousel" onclick="carousel();"><img class="z" src="${thumb250}"></a>`;
-
-            thumb960 = thumb250.replace('250,', '960,');
-            //htmlCarousel += `<a href="${images[i]}" target="_blank"><img data-frz-src="${thumb960}" src="${thumb250}" onload="lzld(this);" onerror="lzld(this);"></a>`;
-            //htmlCarousel += `<a href="${images[i]}" target="_blank"><img data-src="${thumb960}" src="${thumb250}"></a>`;
-
-            htmlCarousel += `<a href="${images[i]}" target="_blank"><img class="lazyload" src="${thumb250}" data-src="${thumb960}"></a>`;
+        // we attach qStr1 to 'prev' and 'next' links 
+        // with the correctly decremented or  
+        // incremented page number
+        let qStr1 = 'q=' + qValue;
+        
+        if (refreshCache) {
+            qStr1 = qStr1 + '&refreshCache=' + refreshCache;
         }
-
-        htmlGrid += `<figcaption class="transition-050 opacity85 text">
-                    rec ID: <a class="transition-050">${recId}</a>
-                    <div class="transition-050 desc">${title}. <a href='${zenodoRecord}${recId}' target='_blank'>more</a></div>
-                </figcaption>
-            </figure>`;
-
-        htmlCarousel += `<figcaption>
-                    rec ID: <b>${recId}.</b> ${title}. <a href='${zenodoRecord}${recId}' target='_blank'>more</a></div>
-                </figcaption>
-            </figure>`;
-    }
-
-    return [htmlGrid, htmlCarousel, imgCount];
-};
-
-const getImages = function(event, qry, page, refreshCache) {
-
-    if (!els['q'].value) {
-        els['q'].className = 'reqd';
-        els['q'].placeholder = 'a search term is required';
-        els['q'].focus();
-        return;
-    }
-    else {
-        els['q'].className = 'normal';
-        els['throbber'].className = 'on';
-    }
     
-    // we attach qStr1 to 'prev' and 'next' links 
-    // with the correctly decremented or  
-    // incremented page number
-    let qStr1 = 'q=' + qry;
-    console.log(`qStr1: ${qStr1}`);
-    console.log(`refreshCache: ${refreshCache}`);
-    if (refreshCache) {
-        qStr1 = qStr1 + '&refreshCache=' + refreshCache;
-    }
-    console.log(`qStr1: ${qStr1}`);
+        qStr1 = qStr1 + '&page=';
+    
+        // qStr2 is used for `history`
+        let qStr2 = qStr1 + page;
+    
+        // the complete url to the api
+        let url = baseUrl + qStr2;
 
-    qStr1 = qStr1 + '&page=';
+        let x = new XMLHttpRequest();
+    
+        x.onload = function(event) {
+            if (x.readyState === 4) {
+                if (x.status === 200) {
+                    const res = JSON.parse(x.responseText);
 
-    // qStr2 is used for `history`
-    let qStr2 = qStr1 + page;
+                    if (res.total) {
+                        const [figures, imgCount] = makeLayout(res.result);
+                        data.figures = figures;
+                        data.numOfFoundRecords = niceNumbers(res.total);
 
-    // the complete url to the api
-    let url = baseUrl + qStr2;
-    console.log(`url: ${url}`);
-    let x = new XMLHttpRequest();
+                        if (imgCount >= 30) {
+                            data.prev = (page === 1) ? '?' + qStr1 + 1 : '?' + qStr1 + (page - 1);
+                            data.next = '?' + qStr1 + (parseInt(page) + 1);
+                        }
 
-    x.onload = function(event) {
-        if (x.readyState === 4) {
-            if (x.status === 200) {
-                var data = JSON.parse(x.responseText);
-                if (data.total) {
-                    const [htmlGrid, htmlCarousel, imgCount] = makeLayout(data.result);
-                
-                    els['numOfFoundRecords'].innerHTML = `${data.total} records found`;
-                    els['numOfFoundRecords'].className = 'on';
-                    els['masonry'].innerHTML = htmlGrid;
-                    // els['carousel'].innerHTML = htmlCarousel;
-                    htmlCarouselStr = htmlCarousel;
-
-                    if (imgCount >= 30) {
-                        els['prev'].href = (page === 1) ? '?' + qStr1 + 1 : '?' + qStr1 + (page - 1);
-                        els['next'].href = '?' + qStr1 + (parseInt(page) + 1);
-                        els['pager'].className = 'on';
-                        els['prev'].addEventListener('click', getImagesFromPager);
-                        els['next'].addEventListener('click', getImagesFromPager);
+                        footer.className = 'relative';
+                        history.pushState('', '', '?' + qStr2);
+                    }
+                    else {
+                        numOfFoundRecords = 'Zero';
+                        footer.className = 'fixed';
+                        
                     }
 
-                    els['throbber'].className = 'off';
-                    els['footer'].className = 'relative';
+                    qField.value = qValue;
+                    wrapper.innerHTML = Mustache.render(templateMasonry, data);
+                    wrapper.className = 'on';
+                    throbber.classList.remove('throbber-on');
+                    throbber.classList.add('throbber-off');
 
-                    const figs = document.querySelectorAll('figcaption > a');
+                    if (data.numOfFoundRecords !== 'Zero') {
+                        const figs = document.querySelectorAll('figcaption > a');
                 
-                    let i = 0;
-                    let j = figs.length;
-                    for (; i < j; i++) {
-                        figs[i].addEventListener('click', toggleFigcaption);
+                        let i = 0;
+                        let j = figs.length;
+                        for (; i < j; i++) {
+                            figs[i].addEventListener('click', toggleFigcaption);
+                        }
                     }
-
-                    history.pushState('', '', '?' + qStr2);
-                }
-                else {
-                    els['numOfFoundRecords'].innerHTML = 'no records found';
-                    els['numOfFoundRecords'].className = 'on';
-                    els['throbber'].className = 'off';
                 }
             }
-        }
+        };
+    
+        x.onerror = function(e) {
+            console.error(x.statusText);
+        };
+    
+        x.open("GET", url, true);
+        x.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        x.send();
+        
+        return false;
     };
-
-    x.onerror = function(e) {
-        console.error(x.statusText);
-    };
-
-    x.open("GET", url, true);
-    x.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    x.send();
-
-    if (event !== null) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
     
-    return false;
-};
+    const toggleFigcaption = function() {
 
-const toggleFigcaption = function() {
-    if (figcaptions.length == 0) {
-        figcaptions = document.querySelectorAll('figcaption');
-        fclength = figcaptions.length;
-    }
-
-    let fc = this.parentElement.style.maxHeight;
-    
-    if (fc === fch || fc === '') {
-        let i = 0;
-        for (; i < fclength; i++) {
-            figcaptions[i].style.maxHeight = fch;
+        // find and store all the figcaptions on the page in an array
+        if (figcaptions.length == 0) {
+            figcaptions = document.querySelectorAll('figcaption');
+            figcaptionLength = figcaptions.length;
         }
-
-        this.parentElement.style.maxHeight =  '100%';
-    }
-    else {
-        this.parentElement.style.maxHeight =  fch;
-    }
     
-};
-
-const currentYPosition = function() {
-
-    // Firefox, Chrome, Opera, Safari
-    if (self.pageYOffset) {
-        return self.pageYOffset;
-    }
-
-    // Internet Explorer 6 - standards mode
-    if (document.documentElement && document.documentElement.scrollTop) {
-        return document.documentElement.scrollTop;
-    }
+        let fc = this.parentElement.style.maxHeight;
+        
+        if (fc === figcaptionHeight || fc === '') {
+            let i = 0;
+            for (; i < figcaptionLength; i++) {
+                figcaptions[i].style.maxHeight = figcaptionHeight;
+            }
     
-    // Internet Explorer 6, 7 and 8
-    if (document.body.scrollTop) {
-        return document.body.scrollTop;
-    }
-
-    return 0;
-};
-
-const smoothScroll = function(stopY) {
-    const startY = currentYPosition();
-    const distance = stopY > startY ? stopY - startY : startY - stopY;
-
-    if (distance < 100) {
-        scrollTo(0, stopY);
-        return;
-    }
-
-    let speed = Math.round(distance / 100);
-    if (speed >= 10) {
-        speed = 10;
-    }
-
-    const step = Math.round(distance / 25);
-    let leapY = stopY > startY ? startY + step : startY - step;
-    let timer = 0;
-    if (stopY > startY) {
-        for (let i = startY; i < stopY; i += step) {
+            this.parentElement.style.maxHeight =  '90%';
+            this.parentElement.style.overflow = 'auto';
+        }
+        else {
+            this.parentElement.style.maxHeight =  figcaptionHeight;
+            this.parentElement.style.overflow = 'hidden';
+        }
+        
+    };
+    
+    const currentYPosition = function() {
+    
+        // Firefox, Chrome, Opera, Safari
+        if (self.pageYOffset) {
+            return self.pageYOffset;
+        }
+    
+        // Internet Explorer 6 - standards mode
+        if (document.documentElement && document.documentElement.scrollTop) {
+            return document.documentElement.scrollTop;
+        }
+        
+        // Internet Explorer 6, 7 and 8
+        if (document.body.scrollTop) {
+            return document.body.scrollTop;
+        }
+    
+        return 0;
+    };
+    
+    const smoothScroll = function(stopY) {
+        const startY = currentYPosition();
+        const distance = stopY > startY ? stopY - startY : startY - stopY;
+    
+        if (distance < 100) {
+            scrollTo(0, stopY);
+            return;
+        }
+    
+        let speed = Math.round(distance / 100);
+        if (speed >= 10) {
+            speed = 10;
+        }
+    
+        const step = Math.round(distance / 25);
+        let leapY = stopY > startY ? startY + step : startY - step;
+        let timer = 0;
+        if (stopY > startY) {
+            for (let i = startY; i < stopY; i += step) {
+                setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
+                leapY += step; 
+                if (leapY > stopY) {
+                    leapY = stopY; 
+                    timer++;
+                }
+            }
+    
+            return;
+        }
+    
+        for (let i = startY; i > stopY; i -= step) {
             setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
-            leapY += step; 
-            if (leapY > stopY) {
+            leapY -= step;
+            if (leapY < stopY) {
                 leapY = stopY; 
                 timer++;
             }
         }
+    };
 
-        return;
-    }
+    const niceNumbers = function(num) {
 
-    for (let i = startY; i > stopY; i -= step) {
-        setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
-        leapY -= step;
-        if (leapY < stopY) {
-            leapY = stopY; 
-            timer++;
-        }
-    }
-};
+        const nums = {
+            '0': 'Zero',
+            '1': 'One',
+            '2': 'Two',
+            '3': 'Three',
+            '4': 'Four',
+            '5': 'Five',
+            '6': 'Six',
+            '7': 'Seven',
+            '8': 'Eight',
+            '9': 'Nine',
+            '10': 'Ten'
+        };
 
-window.onload = function() {
-    new autoComplete({
-        selector: q,
-        minChars: 3,
-        source: function(term, suggest) {
-
-            term = term.toLowerCase();
-            let matches = [];
-            let j = family.length;
-
-            for (let i = 0; i < j; i++) {
-                if (~family[i].toLowerCase().indexOf(term)) {
-                    matches.push(family[i]);
-                }
-            }
-
-            els['q'].className = 'normal';
-            suggest(matches);
-        }
-    });
-
-    // When the page is loaded for the first time, 
-    // the cacheMsgCheck checkbox should be unchecked
-    els['cacheMsgCheck'].checked = false;
-
-    els['cacheMsgCheck'].addEventListener('click', function() {
-        if (els['cacheMsg'].className === 'on') {
-            els['cacheMsg'].className = 'off';
-            els['qWrapper'].style.backgroundColor = '#6b9dc8';
+        if (num in nums) {
+            return nums[num];
         }
         else {
-            els['cacheMsg'].className = 'on';
-            els['qWrapper'].style.backgroundColor = '#e54040';
+            return num;
         }
-    });
-    
-    aboutLink.addEventListener('click', function(event) {
-        console.log('hello')
-        if (els['about'].className === 'off') {
-            els['wrapper'].className = 'off';
-            els['about'].className = 'on';
-        }
-        else if (els['about'].className === 'on') {
-            els['about'].className = 'off';
-            els['wrapper'].className = 'on';
-        }
-    
-        event.preventDefault();
-        event.stopPropagation();
-    });
-    
-    els['closeAbout'].addEventListener('click', function(event) {
-        els['about'].className = 'off';
-        els['wrapper'].className = 'on';
-    });
-    
-    els['btnImages'].addEventListener('click', getImagesFromButton);
-    els['btnImages'].addEventListener('submit', getImagesFromButton);
+    }
 
-    if (location.search) {
-        getQueryParamsAndImages(null, location.search);
+    // public stuff
+    return {
+
+        //+creators.name:/Agosti.*/ +publication_date:[1990 TO 1991} +keywords:taxonomy +title:review
+        goGetIt: function(options) {
+            
+            qValue = options.qValue;
+            getImages( 
+                qValue.toLowerCase(), // qry
+                1,                    // page
+                options.refreshCache, // refreshCache
+            );
+        },
+
+        toggleRefreshCache: function(event) {
+            
+            const toggleClass = event.target.dataset['toggleClass'];
+            const toggleTarget = document.querySelector(event.target.dataset['toggleTarget']);
+
+            if (event.target['checked']) {
+                toggleTarget.classList.remove(toggleClass);
+                toggleTarget.classList.add('on');
+            }
+            else {
+                toggleTarget.classList.remove('on');
+                toggleTarget.classList.add(toggleClass);
+            }
+        },
+
+        toggleAbout: function(event) {
+            
+            const about = document.querySelector('#about');
+            const footer = document.querySelector('footer');
+            const wrapper = document.querySelector('#wrapper');
+
+            let wrapperState;
+            let footerState;
+
+            if (about.classList.contains('on')) {
+
+                // hide about
+                about.classList.remove('on');
+                about.classList.add('off-none');
+
+                // restore wrapper and footer
+                footer.className = footerState;
+                wrapper.className = wrapperState;
+            }
+            else {
+                
+                // save wrapper and footer state
+                wrapperState = wrapper.className;
+                footerState = footer.className;
+
+                // hide wrapper
+                wrapper.className = 'off-none';
+
+                // make footer fixed
+                footer.className = 'fixed';
+
+                // make about visible
+                about.classList.remove('off-none');
+                about.classList.add('on');
+            }
+        },
+        
+        /*
+         * Initialization options
+         * 
+         * { 
+         *     zenodeo: <path to zenodeo service>,
+         *     layout: <'masonry' | 'grid'>
+         *     facets: {}
+         * }
+         * 
+         */
+        init: function(options) {
+
+            // store the options in private variables for later use
+            if (options.zenodeo) {
+                baseUrl = options.zenodeo + basePath;
+            }
+
+            if (options.layout) {
+                layout = options.layout;
+            }
+
+            if (options.facets) {
+                facets = options.facets;
+            }
+
+            qField = options.qField;
+            templateMasonry = options.templateMasonry;
+            wrapper = options.wrapper;
+            throbber = options.throbber;
+            footer = options.footer;
+
+            if (location.search) {
+                getQueryParamsAndImages(location.search);
+            }
+        }
     }
-    else {
-        els['q'].focus();
-    }
-}
+}());
