@@ -134,13 +134,15 @@ const Ocellus = (function() {
                         if (imgCount >= 30) {
                             data.prev = (page === 1) ? '?' + qStr1 + 1 : '?' + qStr1 + (page - 1);
                             data.next = '?' + qStr1 + (parseInt(page) + 1);
+                            data.pager = true;
                         }
 
                         footer.className = 'relative';
                         history.pushState('', '', '?' + qStr2);
                     }
                     else {
-                        numOfFoundRecords = 'Zero';
+                        data.numOfFoundRecords = 'Zero';
+                        data.pager = false;
                         footer.className = 'fixed';
                         
                     }
@@ -175,9 +177,10 @@ const Ocellus = (function() {
         return false;
     };
     
-    const toggleFigcaption = function() {
+    const toggleFigcaption = function(event) {
 
         // find and store all the figcaptions on the page in an array
+        // This is done only once since figcaptions is a global var
         if (figcaptions.length == 0) {
             figcaptions = document.querySelectorAll('figcaption');
             figcaptionLength = figcaptions.length;
@@ -191,7 +194,7 @@ const Ocellus = (function() {
                 figcaptions[i].style.maxHeight = figcaptionHeight;
             }
     
-            this.parentElement.style.maxHeight =  '90%';
+            this.parentElement.style.maxHeight =  '100%';
             this.parentElement.style.overflow = 'auto';
         }
         else {
