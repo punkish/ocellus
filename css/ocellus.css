@@ -49,7 +49,6 @@ sup {
     75%  { color: rgba(0,0,0,0.5) }
     100% { color: rgba(0,0,0,1  ) }
 }
-
 #fs-form {
     overflow: auto;
     line-height: 8px;
@@ -145,13 +144,12 @@ h3 {
     text-align: center;
 }
 .transition-050 {
-    -moz-transition: 0.50s;
+       -moz-transition: 0.50s;
     -webkit-transition: 0.50s;
-    -ms-transition: 0.50s;
-    -o-transition: 0.50s;
-    transition: 0.50s;
+        -ms-transition: 0.50s;
+         -o-transition: 0.50s;
+            transition: 0.50s;
 }
-
 .opacity85{ 
     opacity: 0.85; 
     filter: alpha(opacity=85); 
@@ -163,7 +161,6 @@ h3 {
     opacity: 1;
     border: 0px solid red;
 }
-
 .grid {
     margin: 0em 0;
     padding: 0;
@@ -171,7 +168,6 @@ h3 {
     display: flex;
     flex-wrap: wrap;
 }
-
 .masonry {
     margin: 0em 0;
     padding: 0;
@@ -189,7 +185,6 @@ h3 {
     border: 1px solid silver;
     margin-left: 0em;
 }
-
 .masonry figure {
     position: relative;
     overflow: hidden;
@@ -204,13 +199,11 @@ h3 {
     break-inside: avoid-column;
     -webkit-column-break-inside: avoid;
 }
-
 .masonry figure img {
     width: 98%;
     border: 0px solid silver;
     margin-bottom: 0px;
 }
-
 .masonry figcaption {
     background: rgba(250, 250, 250, 0.8);
     position: absolute;
@@ -228,26 +221,21 @@ h3 {
     font-weight: 400;
     opacity: 1 !important;
     border: 0px solid grey;
-    /*! margin-top: 30px */
 }
-
 .masonry figcaption a {
     cursor: pointer;
     text-decoration: underline;
     text-decoration-color: blue;
     text-decoration-style: double;
 }
-
 .masonry figcaption a.transition-050 {
     text-decoration-style: wavy;
 }
-
 .text {
     color: #000;
     background-color: #fff;
     font-size:1.2em;
 }
-
 .desc {
     display: block;
     padding: 0px;
@@ -261,33 +249,27 @@ h3 {
     animation-name: animatebottom;
     animation-duration: 1s
 }
-
 @-webkit-keyframes animatebottom {
     from { bottom:-100px; opacity:0 } 
     to { bottom:0px; opacity:1 }
 }
-
 @keyframes animatebottom { 
     from{ bottom:-100px; opacity:0 } 
     to{ bottom:0; opacity:1 }
 }
-    
 #pager {
     margin: 0 auto;
     z-index: 1;
     text-align: center;
     margin-top: 1em;
     margin-bottom: 6em;
-}
-    
+} 
 #prev {
     margin-right: 1em;
-}
-    
+} 
 #next {
     margin-left: 1em;
-}
-    
+} 
 #prev:visited,
 #next:visited {
     color: blue;
@@ -297,15 +279,12 @@ footer {
     text-align: center;
     width: 100%;
 }
-
 footer.fixed {
     position: fixed;
 }
-
 footer.relative {
     position: relative;
 }
-    
 footer img {
     width: 80%;
     max-width: 480px;
@@ -314,98 +293,11 @@ footer img {
     border: 1px solid lightgrey !important;
     margin-top: 2px;
 }
-
 .autocomplete-suggestion {
     font-size: 0.8em;
 }
 
-/* flickity */
-/* external css: flickity.css */
-
-/* * { box-sizing: border-box; } */
-
-/* body { font-family: sans-serif; } */
-.carousel {
-  background: #FAFAFA;
-}
-.carousel-cell {
-  width: 100%;
-  margin-right: 10px;
-  background: #333;
-}
-.carousel-cell.is-selected {
-  background: #fff;
-}
-.carousel-cell-image {
-  display: block;
-  max-height: 100%;
-  margin: 0 auto;
-  max-width: 100%;
-  opacity: 0;
-  -webkit-transition: opacity 0.4s;
-          transition: opacity 0.4s;
-}
-
-/* position dots up a bit */
-.flickity-page-dots {
-  bottom: -22px;
-}
-/* dots are lines */
-.flickity-page-dots .dot {
-  height: 4px;
-  width: 40px;
-  margin: 0;
-  border-radius: 0;
-}
-/* unset Skeleton buttons */
-.carousel button {
-    padding: unset;
-}
-
-/* no circle */
-.flickity-button {
-  background: transparent;
-}
-/* big previous & next buttons */
-.flickity-prev-next-button {
-  width: 50px;
-  height: 50px;
-}
-/* icon color */
-.flickity-button-icon {
-  fill: black;
-}
-/* hide disabled button */
-.flickity-button:disabled {
-  display: none;
-}
-
-/* Add a carousel :focus style style to aid accessibility. When focused, users can navigate the carousel with their keyboard. */
-.flickity-enabled:focus .flickity-viewport {
-  outline: thin dotted;
-  outline: 5px auto -webkit-focus-ring-color;
-}
-
-/* fade in lazy loaded image */
-.carousel-cell-image.flickity-lazyloaded,
-.carousel-cell-image.flickity-lazyerror {
-  opacity: 1;
-}
-.carousel figure {
-  margin: 0 !important;
-}
-.carousel figcaption {
-    font-size: 12px;
-    overflow: auto;
-    background-color: white;
-    line-height: 1.2em;
-    padding: 5px;
-}
-/* end flickity */
-
-@media (min-width: 375px) {
-
-}
+@media (min-width: 375px) {}
 @media (min-width: 414px) {
     .masonry {
         -moz-column-count: 2;
