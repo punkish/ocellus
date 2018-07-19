@@ -72,15 +72,18 @@ const Ocellus = (function() {
             imgCount = imgCount + j;
             const recId = record.split('/').pop();
 
-            let thumb250;
-            let thumb960;
+            let imgA; // 250 pixels wide
+            let imgB; // 400
+            let imgC; // 960
+            let imgD; // 1200
             if (imagesOfRecords[record]["thumb250"] === 'na') {
-                thumb250 = 'img/kein-preview.png';
-                thumb960 = 'img/kein-preview.png';
+                imgA = imgB = imgC = imgD = 'img/kein-preview.png';
             }
             else {
-                thumb250 = imagesOfRecords[record]["thumb250"];
-                thumb960 = thumb250.replace('250,', '960,');
+                imgA = imagesOfRecords[record]["thumb250"];
+                imgB = imgA.replace('250,', '400,');
+                imgC = imgA.replace('250,', '960,');
+                imgD = imgA.replace('250,', '1200,');
             }
 
             const figure = {
@@ -89,8 +92,10 @@ const Ocellus = (function() {
                 recId: recId,
                 zenodoRecord: zenodoRecord + recId,
                 imageSrc: images[0],
-                thumb250: thumb250,
-                thumb960: thumb960
+                imgA: imgA,
+                imgB: imgB,
+                imgC: imgC,
+                imgD: imgD
             };
             
             figures.push(figure)
@@ -144,7 +149,6 @@ const Ocellus = (function() {
                         data.numOfFoundRecords = 'Zero';
                         data.pager = false;
                         footer.className = 'fixed';
-                        
                     }
 
                     qField.value = qValue;
@@ -291,6 +295,39 @@ const Ocellus = (function() {
     // public stuff
     return {
 
+        carousel: function() {
+
+            (function() {
+                var bLazy = new Blazy({
+                    breakpoints: [
+                        { width: 375, src: "data-src-a" },
+                        { width: 414, src: "data-src-b" },
+                        { width: 1024, src: "data-src-c" },
+                        { width: 1280, src: "data-src-d" }
+                    ]
+                });
+            })();
+            
+            wrapper.className = 'off-none';
+            carousel.innerHTML = Mustache.render(templateCarousel, data);
+            carousel.className = 'on';
+
+            // scrollmagic
+            var controller = new ScrollMagic.Controller();
+            const figuresDivs = [].slice.call(document.querySelectorAll('.image-wrapper'));
+    
+            figuresDivs.forEach(function(el) {
+                var typeIndvScene = new ScrollMagic.Scene({
+                    triggerElement: el,
+                    triggerHook: 0.6
+                })
+                .setClassToggle(el, "zap")
+                .addTo(controller);
+            });
+            
+            //scene = scene.destroy();
+        },
+
         //+creators.name:/Agosti.*/ +publication_date:[1990 TO 1991} +keywords:taxonomy +title:review
         goGetIt: function(options) {
             
@@ -375,6 +412,8 @@ const Ocellus = (function() {
             qField = options.qField;
             templateMasonry = options.templateMasonry;
             wrapper = options.wrapper;
+            templateCarousel = options.templateCarousel;
+            carousel = options.carousel;
             throbber = options.throbber;
             footer = options.footer;
             about = options.about;

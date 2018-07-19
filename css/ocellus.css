@@ -297,6 +297,84 @@ footer img {
     font-size: 0.8em;
 }
 
+/* b-lazy */
+body {
+padding-left: 20px;
+padding-right: 20px;
+}
+
+h1 {
+font-size: 10rem;
+}
+
+figure {
+margin: 0;
+}
+
+/* figcaption {
+padding: 20px;
+font-size: 2rem;
+font-weight: 700;
+} */
+
+.wrapper {
+max-width: 1200px;
+margin: 20px auto;
+}
+
+.image-wrapper {
+background: url("https://cdn.dribbble.com/users/91700/screenshots/3038974/loader.gif") center center no-repeat;
+width: 100%;
+position: relative;
+-webkit-transform: scale(0.8);
+        transform: scale(0.8);
+transition-property: -webkit-transform;
+transition-property: transform;
+transition-property: transform, -webkit-transform;
+transition-duration: 400ms;
+transition-timing-function: ease-out;
+}
+
+.image-wrapper img {
+-webkit-transform: perspective(400px) rotateX(5deg);
+        transform: perspective(400px) rotateX(5deg);
+transition-property: -webkit-transform;
+transition-property: transform;
+transition-property: transform, -webkit-transform;
+transition-duration: 400ms;
+transition-timing-function: ease;
+}
+
+.zap {
+-webkit-transform: scale(1);
+        transform: scale(1);
+}
+.zap img {
+-webkit-transform: perspective(0) rotateX(0);
+        transform: perspective(0) rotateX(0);
+}
+
+/* .ratio_16-9 {
+padding-bottom: calc(56.25% + 100px);
+height: 0;
+} */
+
+.b-lazy {
+max-width: 100%;
+}
+
+/* transition */
+.b-lazy {
+transition: all 500ms ease-in-out;
+max-width: 100%;
+opacity: 0.2;
+}
+
+.b-lazy.b-loaded {
+opacity: 1;
+}
+/* end b-lazy */
+
 @media (min-width: 375px) {}
 @media (min-width: 414px) {
     .masonry {
