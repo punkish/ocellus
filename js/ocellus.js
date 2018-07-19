@@ -51,7 +51,7 @@ const Ocellus = (function() {
     const getQueryParamsAndImages = function(search) {
 
         const qryStr = getQueryStr(search);
-        q = qryStr['q'];
+        qValue = qryStr['q'];
     
         getImages(
             qryStr['q'],            // qry 
