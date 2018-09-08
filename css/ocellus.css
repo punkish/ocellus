@@ -183,7 +183,6 @@ h3 {
     width: 100%;
     padding: 0px;
     border: 1px solid silver;
-    margin-left: 0em;
 }
 .masonry figure {
     position: relative;
@@ -200,7 +199,7 @@ h3 {
     -webkit-column-break-inside: avoid;
 }
 .masonry figure img {
-    width: 98%;
+    width: 100%;
     border: 0px solid silver;
     margin-bottom: 0px;
 }
@@ -229,7 +228,8 @@ h3 {
     text-decoration-style: double;
 }
 .masonry figcaption a.transition-050 {
-    text-decoration-style: wavy;
+    text-decoration: none;
+    text-decoration-style: none;
 }
 .text {
     color: #000;
