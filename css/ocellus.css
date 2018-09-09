@@ -229,7 +229,10 @@ h3 {
 }
 .masonry figcaption a.transition-050 {
     text-decoration: none;
+<<<<<<< HEAD
     text-decoration-style: none;
+=======
+>>>>>>> carousel
 }
 .text {
     color: #000;
@@ -296,6 +299,106 @@ footer img {
 .autocomplete-suggestion {
     font-size: 0.8em;
 }
+
+#carouselContainer {
+    cursor: pointer;
+}
+/* b-lazy */
+/* body {
+padding-left: 20px;
+padding-right: 20px;
+}
+
+h1 {
+font-size: 10rem;
+} */
+
+figure {
+    margin: 0;
+    position: relative;
+}    
+.carouselOff {
+    position: absolute;
+    left: 0;
+    z-index: 100;
+    background-color: white;
+    opacity: 0.8;
+    padding: 5px;
+    border-radius: 0 0 10px 0;
+    border: 1px grey solid;
+}
+.carouselOff:hover {
+    background-color: yellow;
+}
+
+/* figcaption {
+padding: 20px;
+font-size: 2rem;
+font-weight: 700;
+} */
+
+/* .wrapper {
+    max-width: 1200px;
+    margin: 20px auto;
+} */
+
+.image-wrapper {
+    background: url("https://cdn.dribbble.com/users/91700/screenshots/3038974/loader.gif") center center no-repeat;
+    width: 100%;
+    position: relative;
+    /* -webkit-transform: scale(0.8);
+            transform: scale(0.8);
+    transition-property: -webkit-transform;
+    transition-property: transform;
+    transition-property: transform, -webkit-transform;
+    transition-duration: 400ms;
+    transition-timing-function: ease-out; */
+    margin-top: 20px;
+    border: 1px solid;
+    text-align: center;
+}
+
+.image-wrapper img {
+    /* -webkit-transform: perspective(400px) rotateX(5deg);
+            transform: perspective(400px) rotateX(5deg);
+    transition-property: -webkit-transform;
+    transition-property: transform;
+    transition-property: transform, -webkit-transform;
+    transition-duration: 400ms;
+    transition-timing-function: ease; */
+    width:100%
+}
+
+.image-wrapper > figcaption {
+    padding: 20px;
+}
+
+.zap {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+}
+.zap img {
+    -webkit-transform: perspective(0) rotateX(0);
+            transform: perspective(0) rotateX(0);
+}
+
+/* .ratio_16-9 {
+padding-bottom: calc(56.25% + 100px);
+height: 0;
+} */
+
+.b-lazy {
+    max-width: 100%;
+    transition: all 500ms ease-in-out;
+    max-width: 100%;
+    opacity: 0.2;
+}
+
+.b-lazy.b-loaded {
+    opacity: 1;
+    width:auto;
+}
+/* end b-lazy */
 
 @media (min-width: 375px) {}
 @media (min-width: 414px) {

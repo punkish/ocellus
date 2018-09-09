@@ -78,6 +78,9 @@
     <div class="row">
         <div class="twelve columns">
             <div id="wrapper"></div>
+            <div id="carouselContainer" class="off-none">
+                <div id="carousel"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -93,8 +96,8 @@
     <div id="masonry" class="masonry">
         {{#figures}}
         <figure class='item'>
-            <!-- <a href="#carousel" onclick="Ocellus.carousel(event);"><img src="{{thumb250}}"></a> -->
-            <a href="{{imageSrc}}" target="_blank"><img src="{{thumb250}}"></a>
+            <a href="#carousel" onclick="Ocellus.carousel(event);"><img src="{{imgA}}"></a>
+            <!-- <a href="{{imageSrc}}" target="_blank"><img src="{{imgA}}"></a> -->
             <figcaption class="transition-050 opacity85 text">
                 <a class="transition-050">rec ID: {{recId}}</a>
                 <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
@@ -106,15 +109,35 @@
     {{#pager}}
     <div id="pager">
         ◀ <a href="{{prev}}" id="prev" class="pager">prev</a> 
-        <a href="{{next}}" id="next" class="pager">next</a>  ▶
+        <a href="{{next}}" id="next" class="pager">next</a> ▶
     </div>
     {{/pager}}
 </script>
 
+<!-- template for the vertical carousel -->
+<script id="templateCarousel" type="x-tmpl-mustache">    
+    {{#figures}}
+    <figure class="image-wrapper ratio_16-9">
+        <div class="carouselOff">close</div>
+        <a href="{{imageSrc}}" target="_blank">
+            <img class="lazyload" 
+                src="{{imgA}}" 
+                data-src="{{imgC}}" 
+                alt="{{title}}">
+        </a>
+        <figcaption>
+            <a class="transition-050">rec ID: {{recId}}</a>
+            <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
+        </figcaption>
+    </figure>
+    {{/figures}}
+</script>
+
+<script src="js/lazysizes.min.js"></script>
 <script src="js/mustache.min.js"></script>
 <script src="JavaScript-autoComplete/auto-complete.js"></script>
 <script src="js/family.min.js"></script>
-<script src="js/ocellus.js#gjyigvi"></script>
+<script src="js/ocellus.js#uhydftr"></script>
 <script type="text/javascript">
 const api = 'https://zenodeo.punkish.org';
 
@@ -126,14 +149,21 @@ window.onload = function() {
     const fsGo = document.querySelector('button[id=fs-go]');
     const qField = document.querySelector('input[name=q]');
     const wrapper = document.querySelector('#wrapper');
+    const carousel = document.querySelector('#carousel');
+    const carouselContainer = document.querySelector('#carouselContainer');
+    //const carouselOff = document.querySelectorAll('.carouselOff');
     const throbber = document.querySelector('#fs-throbber');
     const footer = document.querySelector('footer');
     const fsForm = document.querySelector('#fs-form');
     const about = document.querySelector('#about');
+    const fsContainer = document.querySelector('#fs-container');
 
-    //load and compile the masonry template
+    //load and compile the templates
     const templateMasonry = document.querySelector('#templateMasonry').innerHTML;
     Mustache.parse(templateMasonry);
+
+    const templateCarousel = document.querySelector('#templateCarousel').innerHTML;
+    Mustache.parse(templateCarousel);
     
     Ocellus.init({
         zenodeo: api,
@@ -142,6 +172,9 @@ window.onload = function() {
         footer: footer,
         templateMasonry: templateMasonry,
         wrapper: wrapper,
+        templateCarousel: templateCarousel,
+        carousel: carousel,
+        carouselContainer: carouselContainer,
         about: about
     });
 
@@ -187,7 +220,8 @@ window.onload = function() {
         event.stopPropagation();
     };
 
-    // Since some browsers preserve state across reloads, make sure the refreshCache button is off
+    // Since some browsers preserve state across reloads, 
+    // so make sure the refreshCache button is off
     fsRefreshCache.checked = false;
 
     aboutLink.addEventListener('click', Ocellus.toggleAbout);
