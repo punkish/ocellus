@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/skeleton.css">
     <link rel="stylesheet" href="JavaScript-autoComplete/auto-complete.css">
-    <link rel="stylesheet" href="css/ocellus.css#gjyigvi">
+    <link rel="stylesheet" href="css/ocellus.css#uhydftr">
     <link rel="stylesheet" href="css/throbber.css">
 </head>
 <body>
@@ -117,7 +117,7 @@
 <!-- template for the vertical carousel -->
 <script id="templateCarousel" type="x-tmpl-mustache">    
     {{#figures}}
-    <figure class="image-wrapper ratio_16-9">
+    <figure class="image-wrapper">
         <div class="carouselOff">close</div>
         <a href="{{imageSrc}}" target="_blank">
             <img class="lazyload" 
@@ -151,7 +151,6 @@ window.onload = function() {
     const wrapper = document.querySelector('#wrapper');
     const carousel = document.querySelector('#carousel');
     const carouselContainer = document.querySelector('#carouselContainer');
-    //const carouselOff = document.querySelectorAll('.carouselOff');
     const throbber = document.querySelector('#fs-throbber');
     const footer = document.querySelector('footer');
     const fsForm = document.querySelector('#fs-form');

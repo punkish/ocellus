@@ -343,7 +343,7 @@ font-weight: 700;
 } */
 
 .image-wrapper {
-    background: url("https://cdn.dribbble.com/users/91700/screenshots/3038974/loader.gif") center center no-repeat;
+    /* background: url("https://cdn.dribbble.com/users/91700/screenshots/3038974/loader.gif") center center no-repeat; */
     width: 100%;
     position: relative;
     /* -webkit-transform: scale(0.8);
@@ -371,23 +371,24 @@ font-weight: 700;
 
 .image-wrapper > figcaption {
     padding: 20px;
+    text-align: left;
 }
 
-.zap {
+/* .zap {
     -webkit-transform: scale(1);
             transform: scale(1);
 }
 .zap img {
     -webkit-transform: perspective(0) rotateX(0);
             transform: perspective(0) rotateX(0);
-}
-
-/* .ratio_16-9 {
-padding-bottom: calc(56.25% + 100px);
-height: 0;
 } */
 
-.b-lazy {
+/* .ratio_16-9 {
+    padding-bottom: calc(56.25% + 100px);
+    height: 0;
+} */
+
+/* .b-lazy {
     max-width: 100%;
     transition: all 500ms ease-in-out;
     max-width: 100%;
@@ -397,7 +398,7 @@ height: 0;
 .b-lazy.b-loaded {
     opacity: 1;
     width:auto;
-}
+} */
 /* end b-lazy */
 
 @media (min-width: 375px) {}
