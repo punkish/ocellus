@@ -37,7 +37,7 @@
                         <tr>
                             <td>
                                 <div id="fs-container" class="header-component fs-container">
-                                    <!-- <input id="q" name="q" type="text" required placeholder="search" autofocus> -->
+                                    <input id="q" name="q" type="text" required placeholder="search" autofocus>
                                 </div>
                                 <button id="fs-go" class="header-component">go</button>
                             </td>
@@ -78,7 +78,9 @@
     <div class="row">
         <div class="twelve columns">
             <div id="wrapper"></div>
-            <div id="carousel"></div>
+            <div id="carouselContainer" class="off-none">
+                <div id="carousel"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -97,7 +99,7 @@
             <a href="#carousel" onclick="Ocellus.carousel(event);"><img src="{{imgA}}"></a>
             <!-- <a href="{{imageSrc}}" target="_blank"><img src="{{imgA}}"></a> -->
             <figcaption class="transition-050 opacity85 text">
-                rec ID: <a class="transition-050">{{recId}}</a>
+                <a class="transition-050">rec ID: {{recId}}</a>
                 <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
             </figcaption>
         </figure>
@@ -116,27 +118,26 @@
 <script id="templateCarousel" type="x-tmpl-mustache">    
     {{#figures}}
     <figure class="image-wrapper ratio_16-9">
-        <a href="{{imageSrc}}" target="_blank"><img class="b-lazy" 
-            src=data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw== 
-            data-src-a="{{imgA}}" 
-            data-src-b="{{imgB}}" 
-            data-src-c="{{imgC}}" 
-            data-src-d="{{imgD}}" 
-            alt="This is a sample 16 x 9 image"></a>
+        <div class="carouselOff">close</div>
+        <a href="{{imageSrc}}" target="_blank">
+            <img class="lazyload" 
+                src="{{imgA}}" 
+                data-src="{{imgC}}" 
+                alt="{{title}}">
+        </a>
         <figcaption>
-            rec ID: <a class="transition-050">{{recId}}</a>
+            <a class="transition-050">rec ID: {{recId}}</a>
             <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
         </figcaption>
     </figure>
     {{/figures}}
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/blazy/1.8.2/blazy.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.5/ScrollMagic.js"></script>
+<script src="js/lazysizes.min.js"></script>
 <script src="js/mustache.min.js"></script>
 <script src="JavaScript-autoComplete/auto-complete.js"></script>
 <script src="js/family.min.js"></script>
-<script src="js/ocellus.js#gjyigvi"></script>
+<script src="js/ocellus.js#uhydftr"></script>
 <script type="text/javascript">
 const api = 'https://zenodeo.punkish.org';
 
@@ -149,6 +150,8 @@ window.onload = function() {
     const qField = document.querySelector('input[name=q]');
     const wrapper = document.querySelector('#wrapper');
     const carousel = document.querySelector('#carousel');
+    const carouselContainer = document.querySelector('#carouselContainer');
+    //const carouselOff = document.querySelectorAll('.carouselOff');
     const throbber = document.querySelector('#fs-throbber');
     const footer = document.querySelector('footer');
     const fsForm = document.querySelector('#fs-form');
@@ -171,6 +174,7 @@ window.onload = function() {
         wrapper: wrapper,
         templateCarousel: templateCarousel,
         carousel: carousel,
+        carouselContainer: carouselContainer,
         about: about
     });
 
@@ -216,7 +220,8 @@ window.onload = function() {
         event.stopPropagation();
     };
 
-    // Since some browsers preserve state across reloads, make sure the refreshCache button is off
+    // Since some browsers preserve state across reloads, 
+    // so make sure the refreshCache button is off
     fsRefreshCache.checked = false;
 
     aboutLink.addEventListener('click', Ocellus.toggleAbout);

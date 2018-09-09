@@ -297,35 +297,19 @@ const Ocellus = (function() {
 
         carousel: function() {
 
-            (function() {
-                var bLazy = new Blazy({
-                    breakpoints: [
-                        { width: 375, src: "data-src-a" },
-                        { width: 414, src: "data-src-b" },
-                        { width: 1024, src: "data-src-c" },
-                        { width: 1280, src: "data-src-d" }
-                    ]
-                });
-            })();
-            
             wrapper.className = 'off-none';
             carousel.innerHTML = Mustache.render(templateCarousel, data);
-            carousel.className = 'on';
+            carouselContainer.className = 'on';
 
-            // scrollmagic
-            var controller = new ScrollMagic.Controller();
-            const figuresDivs = [].slice.call(document.querySelectorAll('.image-wrapper'));
-    
-            figuresDivs.forEach(function(el) {
-                var typeIndvScene = new ScrollMagic.Scene({
-                    triggerElement: el,
-                    triggerHook: 0.6
-                })
-                .setClassToggle(el, "zap")
-                .addTo(controller);
-            });
-            
-            //scene = scene.destroy();
+            const carouselOff = document.querySelectorAll('.carouselOff');
+            for (let i = 0, j = carouselOff.length; i < j; i++) {
+                carouselOff[i].addEventListener('click', Ocellus.carouselOff);
+            }
+        },
+
+        carouselOff: function() {
+            carouselContainer.className = 'off-none';
+            wrapper.className = 'on';
         },
 
         //+creators.name:/Agosti.*/ +publication_date:[1990 TO 1991} +keywords:taxonomy +title:review
@@ -413,6 +397,7 @@ const Ocellus = (function() {
             templateMasonry = options.templateMasonry;
             wrapper = options.wrapper;
             templateCarousel = options.templateCarousel;
+            carouselContainer = options.carouselContainer;
             carousel = options.carousel;
             throbber = options.throbber;
             footer = options.footer;
