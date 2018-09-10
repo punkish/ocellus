@@ -29,6 +29,8 @@ const Ocellus = (function() {
     let qValue;
     let templateMasonry;
     let templateCarousel;
+    let carouselContainer;
+    let carousel;
     let wrapper;
     let throbber;
     let footer;
