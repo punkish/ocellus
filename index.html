@@ -97,7 +97,6 @@
         {{#figures}}
         <figure class='item'>
             <a href="#carousel" onclick="Ocellus.carousel(event);"><img src="{{imgA}}"></a>
-            <!-- <a href="{{imageSrc}}" target="_blank"><img src="{{imgA}}"></a> -->
             <figcaption class="transition-050 opacity85 text">
                 <a class="transition-050">rec ID: {{recId}}</a>
                 <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
@@ -118,7 +117,7 @@
 <script id="templateCarousel" type="x-tmpl-mustache">    
     {{#figures}}
     <figure class="image-wrapper">
-        <div class="carouselOff">close</div>
+        <div class="carouselOff">x</div>
         <a href="{{imageSrc}}" target="_blank">
             <img class="lazyload" 
                 src="{{imgA}}" 
@@ -139,7 +138,8 @@
 <script src="js/family.min.js"></script>
 <script src="js/ocellus.js#uhydftr"></script>
 <script type="text/javascript">
-const api = 'https://zenodeo.punkish.org';
+//const zenodeo = 'https://zenodeo.punkish.org';
+const zenodeo = 'http://localhost:3030';
 
 window.onload = function() {
 
@@ -165,7 +165,7 @@ window.onload = function() {
     Mustache.parse(templateCarousel);
     
     Ocellus.init({
-        zenodeo: api,
+        zenodeo: zenodeo,
         qField: qField,
         throbber: throbber,
         footer: footer,

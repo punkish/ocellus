@@ -106,7 +106,6 @@ const Ocellus = (function() {
     
         return [figures, imgCount];
     };
-
     
     const getImages = function(qValue, page, refreshCache) {
         
@@ -124,66 +123,170 @@ const Ocellus = (function() {
         // qStr2 is used for `history`
         let qStr2 = qStr1 + page;
     
+        const method = 'GET';
         // the complete url to the api
         let url = baseUrl + qStr2;
+        const callback = function(xh) {
 
-        let x = new XMLHttpRequest();
-    
-        x.onload = function(event) {
-            if (x.readyState === 4) {
-                if (x.status === 200) {
-                    const res = JSON.parse(x.responseText);
+            const res = JSON.parse(xh.responseText);
 
-                    if (res.total) {
-                        const [figures, imgCount] = makeLayout(res.result);
-                        data.figures = figures;
-                        data.numOfFoundRecords = niceNumbers(res.total);
+            if (res.total) {
+                const [figures, imgCount] = makeLayout(res.result);
+                data.figures = figures;
+                data.numOfFoundRecords = niceNumbers(res.total);
 
-                        if (imgCount >= 30) {
-                            data.prev = (page === 1) ? '?' + qStr1 + 1 : '?' + qStr1 + (page - 1);
-                            data.next = '?' + qStr1 + (parseInt(page) + 1);
-                            data.pager = true;
-                        }
+                if (imgCount >= 30) {
+                    data.prev = (page === 1) ? '?' + qStr1 + 1 : '?' + qStr1 + (page - 1);
+                    data.next = '?' + qStr1 + (parseInt(page) + 1);
+                    data.pager = true;
+                }
 
-                        footer.className = 'relative';
-                        history.pushState('', '', '?' + qStr2);
-                    }
-                    else {
-                        data.numOfFoundRecords = 'Zero';
-                        data.pager = false;
-                        footer.className = 'fixed';
-                    }
+                footer.className = 'relative';
+                history.pushState('', '', '?' + qStr2);
+            }
+            else {
+                data.numOfFoundRecords = 'Zero';
+                data.pager = false;
+                footer.className = 'fixed';
+            }
 
-                    qField.value = qValue;
-                    wrapper.innerHTML = Mustache.render(templateMasonry, data);
-                    wrapper.className = 'on';
-                    throbber.classList.remove('throbber-on');
-                    throbber.classList.add('throbber-off');
+            qField.value = qValue;
+            wrapper.innerHTML = Mustache.render(templateMasonry, data);
+            wrapper.className = 'on';
+            throbber.classList.remove('throbber-on');
+            throbber.classList.add('throbber-off');
 
-                    if (data.numOfFoundRecords !== 'Zero') {
-                        const figs = document.querySelectorAll('figcaption > a');
-                
-                        let i = 0;
-                        let j = figs.length;
-                        for (; i < j; i++) {
-                            figs[i].addEventListener('click', toggleFigcaption);
-                        }
-                    }
+            if (data.numOfFoundRecords !== 'Zero') {
+                const figs = document.querySelectorAll('figcaption > a');
+                // const reporters = document.querySelectorAll('.report');
+                // const submitters = document.querySelectorAll('.submit');
+                // const cancellers = document.querySelectorAll('.cancel');
+        
+                let i = 0;
+                let j = figs.length;
+                for (; i < j; i++) {
+                    figs[i].addEventListener('click', toggleFigcaption);
+                    // reporters[i].addEventListener('click', toggleReporter);
+                    // submitters[i].addEventListener('click', submitReporter);
+                    // cancellers[i].addEventListener('click', cancelReporter);
                 }
             }
         };
-    
-        x.onerror = function(e) {
-            console.error(x.statusText);
-        };
-    
-        x.open("GET", url, true);
-        x.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        x.send();
+        const headers = [
+            {k: "Content-Type", v: "application/json;charset=UTF-8"}
+        ];
+        const payload = '';
+
+        x(method, url, callback, headers, payload);
         
         return false;
     };
     
+    const cancelReporter = function(event) {
+
+        const c = event.target;
+        const f = c.parentElement;
+        const r = f.parentElement.querySelector('.report');
+
+        // show widget
+        f.style.visibility = 'hidden';
+
+        // hide report button
+        r.style.visibility = 'visible';
+
+        event.preventDefault();
+        event.stopPropagation();
+    };
+
+    const submitReporter = function(event) {
+
+        const send = event.target;
+        const form = send.parentElement;
+        const widget = form.parentElement;
+        const report = widget.querySelector('.report');
+        const reporter = form.querySelector('.imageReport');
+        const recId = form.querySelector('input[name="recId"]').value;
+        const status = widget.querySelector('.status');
+
+        // Send a POST request to /repos/:owner/:repo/issues with JSON
+        const github = 'https://api.github.com/repos/plazi/Biodiversity-Literature-Repository/issues';
+
+        const payload = JSON.stringify({
+            "title": `problem with record id: ${recId}`,
+            "body": reporter.innerText,
+            "assignee": "myrmoteras",
+            "milestone": 1,
+            "labels": [
+                "images"
+            ]
+        });
+
+        const method = 'POST';
+        const url = github;
+        const callback = function() {
+
+                // show widget
+                form.style.visibility = 'hidden';
+                status.innerHTML = 'Thank you for submitting the report!';
+                status.style.visibility = 'visible';
+                status.style.display = 'block';
+
+                setInterval(function() {
+                    status.style.visibility = 'hidden';
+                    status.style.display = 'none';
+                    report.style.visibility = 'visible';
+                }, 3000);
+        };
+        const headers = [
+            {k: "Content-type", v: "application/json"},
+            {k: "Authorization", v: "Basic " + btoa("blruser:xucqE5-tezmab-ruqgyr")}
+        ]
+
+        x(method, url, callback, headers, payload);
+
+        event.preventDefault();
+        event.stopPropagation();
+    };
+
+    const x = function(method, url, callback, headers, payload) {
+        const xh = new XMLHttpRequest();
+
+        xh.onload = function(e) {
+            if (xh.readyState === 4) {
+                if (xh.status === 200) {
+                    callback(xh);
+                }
+            }
+        };
+
+        xh.onerror = function(e) {
+            console.error(xh.statusText);
+        };
+        xh.open(method, url, true);
+        if (headers.length) {
+            for (let i = 0, j = headers.length; i < j; i++) {
+                xh.setRequestHeader(headers[i].k, headers[i].v);
+            }
+        }
+
+        xh.send(payload);
+    };
+
+    const toggleReporter = function(event) {
+
+        const r = event.target;
+        const f = r.parentElement.querySelector('form');
+
+        // show widget
+        f.style.visibility = 'visible';
+
+        // hide report button
+        r.style.visibility = 'hidden';
+
+        event.preventDefault();
+        event.stopPropagation();
+    };
+
     const toggleFigcaption = function(event) {
 
         // find and store all the figcaptions on the page in an array

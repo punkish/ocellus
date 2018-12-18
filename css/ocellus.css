@@ -180,7 +180,7 @@ h3 {
     column-count: 1;
 }
 .item {
-    width: 100%;
+    width: 97%;
     padding: 0px;
     border: 1px solid silver;
 }
@@ -197,6 +197,7 @@ h3 {
     overflow: hidden; /* fix for Firefox */
     break-inside: avoid-column;
     -webkit-column-break-inside: avoid;
+    text-align: center;
 }
 .masonry figure img {
     width: 100%;
@@ -220,6 +221,7 @@ h3 {
     font-weight: 400;
     opacity: 1 !important;
     border: 0px solid grey;
+    overflow: hidden;
 }
 .masonry figcaption a {
     cursor: pointer;
@@ -229,10 +231,6 @@ h3 {
 }
 .masonry figcaption a.transition-050 {
     text-decoration: none;
-<<<<<<< HEAD
-    text-decoration-style: none;
-=======
->>>>>>> carousel
 }
 .text {
     color: #000;
@@ -323,24 +321,85 @@ figure {
     z-index: 100;
     background-color: white;
     opacity: 0.8;
-    padding: 5px;
-    border-radius: 0 0 10px 0;
-    border: 1px grey solid;
+    padding: 0px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-transform: uppercase;
+    font-weight: 800;
+    border-radius: 50%;
+    border: 0px white solid;
 }
 .carouselOff:hover {
     background-color: yellow;
 }
+.widget {
+    position: absolute;
+    border: 0px solid red;
+    width: 100%;
+    z-index: 100;
+}
+.widget form {
+    visibility: hidden;
+}
+.widget form .imageReport,
+.widget .status {
+    z-index: 100;
+    background-color: white;
+    opacity: 0.8;
+    padding: 0px;
+    width: calc(100% - 90px);
+    height: 40px !important;
+    border: 1px grey solid;
+    border-radius: 0px;
+    text-align: left;
+    float: left;
+    border-radius: 0 5px 5px 5px;
+}
+.widget form .imageReport {
+    padding: 5px;
+}
+.widget .status {
+    padding: 2px;
+    visibility: hidden;
+    display: none;
+}
+.widget button {
+    background-color: white;
+    opacity: 0.8;
+    padding: 0px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-transform: uppercase;
+    font-weight: 800;
+    border-radius: 50%;
+    border: 1px grey solid;
+    font-size: 7px;
+}
+.widget button.report {
+    visibility: hidden;
+    display: none;
+    position: absolute;
+    right: 0;
+}
+.masonry figure:hover > .widget button.report {
+    visibility: visible;
+    display: block;
+    cursor: pointer;
+}
+.widget button.submit:hover {
+    background-color: green;
+    color:white;
+}
+.widget button.cancel:hover {
+    background-color: orange;
+}
 
-/* figcaption {
-padding: 20px;
-font-size: 2rem;
-font-weight: 700;
-} */
 
-/* .wrapper {
-    max-width: 1200px;
-    margin: 20px auto;
-} */
+.widget button.report:hover {
+    background-color: yellow;
+}
 
 .image-wrapper {
     /* background: url("https://cdn.dribbble.com/users/91700/screenshots/3038974/loader.gif") center center no-repeat; */
@@ -373,33 +432,6 @@ font-weight: 700;
     padding: 20px;
     text-align: left;
 }
-
-/* .zap {
-    -webkit-transform: scale(1);
-            transform: scale(1);
-}
-.zap img {
-    -webkit-transform: perspective(0) rotateX(0);
-            transform: perspective(0) rotateX(0);
-} */
-
-/* .ratio_16-9 {
-    padding-bottom: calc(56.25% + 100px);
-    height: 0;
-} */
-
-/* .b-lazy {
-    max-width: 100%;
-    transition: all 500ms ease-in-out;
-    max-width: 100%;
-    opacity: 0.2;
-}
-
-.b-lazy.b-loaded {
-    opacity: 1;
-    width:auto;
-} */
-/* end b-lazy */
 
 @media (min-width: 375px) {}
 @media (min-width: 414px) {
