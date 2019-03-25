@@ -3,63 +3,71 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="The Biodiversity Literature Repository Explorer">
-    <meta name="version" content="3.0">
+    <meta name="description" content="image viewer for the Biodiversity Literature Repository">
+    <meta name="version" content="2.0">
     <meta name="author" content="Puneet Kishor">
     <meta name="copyright" content="CC0 Public Domain Dedication">
     
-    <title>ocellus^3</title>
+    <title>ocellus^2</title>
     
     <link rel="icon" type="image/png" href="img/ocellus.png">
 
-    <link rel="stylesheet" href="Skeleton-2.0.4/css/normalize-7.0.0.min.css">
-    <link rel="stylesheet" href="Skeleton-2.0.4/css/skeleton.min.css">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
     <link rel="stylesheet" href="JavaScript-autoComplete/auto-complete.css">
-    <link rel="stylesheet" href="fancysearch/fancysearch.css">
     <link rel="stylesheet" href="css/ocellus.css#uhydftr">
     <link rel="stylesheet" href="css/throbber.css">
 </head>
 <body>
-
-<header>
+<div class="header">
     <div class="container">
-        <div class="title">
-            <a href="/" class="main-title">Ocellus<sup>3</sup></a>
-        </div>              
-        
-        <div class="searchContainer">
-            <nav><a href="">images</a><a href="">treatments</a><a href="">citations</a></nav>
-            <div id="sSearch" class="searchWidget">
-                <select name="communities">
-                    <option selected>all communities</option>
-                    <option>blr</option>
-                    <option>icedig</option>
-                </select>
-                <div class="searchInputs">
-                    <input id="q" type="text" required placeholder="search for something">
-                    <input id="refreshCache" type="checkbox" name="refreshCache">
+        <div class="row">
+            <div class="twelve columns">
+                <div class="title">
+                    <div class="main-title"><a href="/" style="text-decoration: none; color: black;">ocellus<sup>2</sup></a></div>
+                    <a id="about-link" class="sub-title msg" data-toggle-target='#about' data-toggle-class='off-none'>about</a>
                 </div>
-                <button id="ssGo" class="searchButton">go</button>
+
+                <!-- this is the entirety of the Ocellus form -->
+                <form id="fs-form" class="fs-form">
+                    <table>
+                        <tr>
+                            <td><div id="fs-help" class="fs-help msg off-block">choose a param or enter any text</div></td><td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div id="fs-container" class="header-component fs-container">
+                                    <input id="q" name="q" type="text" required placeholder="search" autofocus>
+                                </div>
+                                <button id="fs-go" class="header-component">go</button>
+                            </td>
+                            <td>
+                                <input id="fs-refreshCache" type="checkbox" name="refreshCache" class="header-component" data-toggle-target='#fs-refreshCacheMsg' data-toggle-class='off-block'>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div id="fs-refreshCacheMsg" class="cacheCheckMsg off-block">This will delete the cached results and redo the query; you don't really want to do this</div></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </form>
+
             </div>
-            <div id="fSearch" class="off-none"></div>
-            <!-- <div class="searchChooser"><a id="searchChooser" href="">switch to fancy search</a></div> -->
-            <div class="searchChooser">switch to fancy search</div>
         </div>
     </div>
-</header>
+    
+</div>
 <div id="fs-throbber" class="throbber throbber-off"></div>
 
 <div class="container">
     <div class="row">
         <div class="twelve columns">
-            <div id="refreshCacheWarning" class="u-cf off-none">This will refresh the cache; you probably don‘t want this.</div>
-
             <div id="about" class="off-none">
-                <a id="about-close" class='about'>close</a>
-                <div id="about-text" class="about">
-                    <p>Ocellus is a frontend to the Biodiversity Literature Repository (BLR) with more than 180K images on <a href="https://zenodo.org" target="_blank">Zenodo</a>, 200K taxonomic treatments in <a href="http://treatmentbank.org" target="_blank">TreatmentBank</a>, and 800,000 citations on <a href="https://refbank.org" target="_blank">RefBank</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API that queries, analyzes and aggregates results from these various repositories via a single, unified interface. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, or choose the fancy search interface to create more granular queries – Ocellus will retrieve the results for you.</p>
+                <div id="about-close" data-toggle-target='#about' data-toggle-class='off-none'>close</div>
+                <div id="about-text">
+                    <p>Ocellus is a frontend to more than 180K images in the <a href="http://biolitrepo.org" target="_blank">Biodiversity Literature Repository</a> (BLR) on <a href="https://zenodo.org" target="_blank">Zenodo</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API to the <a href="https://zenodo.org/api" target="_blank">Zenodo API</a>, that performs a fulltext search on BLR. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, or provide any term and Ocellus will retrieve related images.</p>
         
-                    <p>For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country. The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up">Internet Archive</a> and has no known copyright restrictions. Please contact <a href="mailto:blr@plazi.org">Plazi</a> for more information or to provide feedback.</p>
+                    <p>For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country. The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up">Internet Archive</a> and has no known copyright restrictions. Please contact <a href="mailto:ocellus@plazi.org">Plazi</a> for more information or to provide feedback.</p>
                 </div>
             </div>
         </div>
@@ -88,24 +96,7 @@
     <div id="masonry" class="masonry">
         {{#figures}}
         <figure class='item'>
-     
-            <!-- 
-            <div class="widget">
-                <div id='status' class='status'></div>
-                <button id="toggle-{{recId}}" class="report">r</button>
-                <form>
-                    <input type="text" class="imageReport" placeholder="enter report here">
-                    <input type="hidden" name="recId" value="{{recId}}">
-                    <button id="submit-{{recId}}" class="submit">send</button>
-                    <button id="cancel-{{recId}}" class="cancel">cancel</button>
-                </form>
-            </div>
-            -->
-     
-            <a><img src="{{imgA}}" data-recid="{{recId}}"></a>
-            <!-- <a><img src="img/maratus.png" data-recid="{{recId}}"></a> -->
-            <!-- <a href="javascript:Ocellus.carousel();"><img src="img/maratus.png"></a> -->
-            <!-- <a href="#carousel" onclick="Ocellus.carousel(event);"><img src="{{imgA}}"></a> -->
+            <a href="#carousel" onclick="Ocellus.carousel(event);"><img src="{{imgA}}"></a>
             <figcaption class="transition-050 opacity85 text">
                 <a class="transition-050">rec ID: {{recId}}</a>
                 <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
@@ -125,11 +116,14 @@
 <!-- template for the vertical carousel -->
 <script id="templateCarousel" type="x-tmpl-mustache">    
     {{#figures}}
-    <figure id="{{recId}}" class="image-wrapper">
+    <figure class="image-wrapper">
         <div class="carouselOff">x</div>
         <a href="{{imageSrc}}" target="_blank">
-            <img class="lazyload" src="{{imgA}}" data-src="{{imgC}}" alt="{{title}}" width="960" height="480"></a>
-            <!-- <img class="lazyload" src="img/maratus-big.jpg" data-src="img/maratus-big.jpg" alt="{{title}}" width="960" height="480"></a> -->
+            <img class="lazyload" 
+                src="{{imgA}}" 
+                data-src="{{imgC}}" 
+                alt="{{title}}">
+        </a>
         <figcaption>
             <a class="transition-050">rec ID: {{recId}}</a>
             <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
@@ -138,133 +132,104 @@
     {{/figures}}
 </script>
 
-<script src="js/cookies.js"></script>
 <script src="js/lazysizes.min.js"></script>
 <script src="js/mustache.min.js"></script>
-<script src="JavaScript-autoComplete/auto-complete.min.js"></script>
-<script src="fancysearch/fancysearch.js"></script>
-<script src="js/ocellus.js"></script>
-<script src="js/facets.js"></script>
-
+<script src="JavaScript-autoComplete/auto-complete.js"></script>
+<script src="js/family.min.js"></script>
+<script src="js/ocellus.js#uhydftr"></script>
 <script type="text/javascript">
+const zenodeo = 'https://zenodeo.punkish.org';
+//const zenodeo = 'http://localhost:3030';
 
-    //const zenodeo = 'https://zenodeo.punkish.org';
-    const zenodeo = 'http://localhost:3030';
-    const facets = getFacets(zenodeo);
+window.onload = function() {
 
-    window.onload = function() {
+    const fsRefreshCache = document.querySelector('#fs-refreshCache');
+    const aboutLink = document.querySelector('#about-link');
+    const aboutClose = document.querySelector('#about-close');
+    const fsGo = document.querySelector('button[id=fs-go]');
+    const qField = document.querySelector('input[name=q]');
+    const wrapper = document.querySelector('#wrapper');
+    const carousel = document.querySelector('#carousel');
+    const carouselContainer = document.querySelector('#carouselContainer');
+    const throbber = document.querySelector('#fs-throbber');
+    const footer = document.querySelector('footer');
+    const fsForm = document.querySelector('#fs-form');
+    const about = document.querySelector('#about');
+    const fsContainer = document.querySelector('#fs-container');
 
-        //const searchChooser = document.querySelector('#searchChooser');
-        const refreshCache = document.querySelector('#refreshCache');
-        const refreshCacheWarning = document.querySelector('#refreshCacheWarning');
-        
-        const about = document.querySelector('#about');
-        const aboutLink = document.querySelector('#about-close');
-        const header = document.querySelector('header');
-        const footer = document.querySelector('footer');
-        const wrapper = document.querySelector('#wrapper');
+    //load and compile the templates
+    const templateMasonry = document.querySelector('#templateMasonry').innerHTML;
+    Mustache.parse(templateMasonry);
 
-        // load and compile the templates
-        const templateMasonry = document.querySelector('#templateMasonry').innerHTML;
-        const templateCarousel = document.querySelector('#templateCarousel').innerHTML;
+    const templateCarousel = document.querySelector('#templateCarousel').innerHTML;
+    Mustache.parse(templateCarousel);
+    
+    Ocellus.init({
+        zenodeo: zenodeo,
+        qField: qField,
+        throbber: throbber,
+        footer: footer,
+        templateMasonry: templateMasonry,
+        wrapper: wrapper,
+        templateCarousel: templateCarousel,
+        carousel: carousel,
+        carouselContainer: carouselContainer,
+        about: about
+    });
 
-        const select = document.querySelector('select');
-        const q = document.querySelector('#q');
-        const ssGo = document.querySelector('#ssGo');
-
-        const throbber = document.querySelector('#fs-throbber');
-        
-        
-        // const fsGo = document.querySelector('button[id=fs-go]');
-        // const qField = document.querySelector('input[name=q]');
-        // 
-        // const carousel = document.querySelector('#carousel');
-        // const carouselContainer = document.querySelector('#carouselContainer');
-        // 
-        // const footer = document.querySelector('footer');
-        // const fsForm = document.querySelector('#fs-form');
-        // 
-        // const fsContainer = document.querySelector('#fs-container');
-        // const searchChooser = document.querySelector('#searchChooser');
-        // const sSearch = document.querySelector('#sSearch');
-        // const fSearch = document.querySelector('#fSearch');
-
-        
-        
-        Ocellus.init({
-
-            // required to toggle refresh cache warning
-            refreshCache: refreshCache,
-            refreshCacheWarning: refreshCacheWarning,
-
-            // required to toggle About
-            about: about,
-            aboutLink: aboutLink,
-            header: header,
-            footer: footer,
-            wrapper: wrapper,
-
-            // templates to be compiled and rendered
-            // with data
-            templateMasonry: templateMasonry,
-            templateCarousel: templateCarousel,
-
-            zenodeo: zenodeo,
-
-            select: select,
-            q: q,
-
-            //searchChooser: searchChooser,
-
-            ssGo: ssGo,
-            throbber: throbber
-            // qField: qField,
-            // throbber: throbber,
-            // carousel: carousel,
-            // carouselContainer: carouselContainer,
+    new autoComplete({
+        selector: qField,
+        minChars: 3,
+        source: function(term, suggest) {
             
-            // sSearch: sSearch,
-            // fSearch: fSearch
+            term = term.toLowerCase();
+            let matches = [];
+            let j = family.length;
+
+            for (let i = 0; i < j; i++) {
+                if (~family[i].toLowerCase().indexOf(term)) {
+                    matches.push(family[i]);
+                }
+            }
+
+            suggest(matches);
+        }
+    });
+
+    const goGetItWrapper = function(event) {
+
+        if (!qField.value) {
+            qField.className = 'reqd';
+            qField.placeholder = 'a search term is required';
+            qField.focus();
+            return;
+        }
+        else {
+            qField.className = 'normal';
+            throbber.classList.remove('throbber-off');
+            throbber.classList.add('throbber-on');
+        }
+
+        Ocellus.goGetIt({
+            qValue: qField.value,
+            refreshCache: document.querySelector('#fs-refreshCache').checked
         });
 
-        const fs = new fancySearch();
-        const doSomethingWithQuery = function(query) {
-
-            if (Object.keys(query).length) {
-                throbber.classList.remove('throbber-off');
-                throbber.classList.add('throbber-on');
-                Ocellus.goGetIt({
-                    query: query,
-                    refreshCache: document.querySelector('#fs-refreshCache').checked
-                });
-            }
-            else {
-
-                const i = document.querySelectorAll('.fs-key-input')
-                i[0].classList.add('warning');
-                i[0].placeholder = 'Please choose a searchterm';
-            }
-        };
-
-        // fs.init(
-        //     document.getElementById('fSearch'), 
-        //     // document.getElementById('fs-widget'), 
-        //     facets,
-        //     doSomethingWithQuery
-        // );
-
-        
-        
-        
-
-        
-        // 
-
-        // Ocellus.initializeCommunities();
-        // Ocellus.initializeSearch();
-        // const select = document.querySelector('select[name="communities"');
-        // select.addEventListener('mouseup', Ocellus.setCommunities);
+        event.preventDefault();
+        event.stopPropagation();
     };
+
+    // Since some browsers preserve state across reloads, 
+    // so make sure the refreshCache button is off
+    fsRefreshCache.checked = false;
+
+    aboutLink.addEventListener('click', Ocellus.toggleAbout);
+    aboutClose.addEventListener('click', Ocellus.toggleAbout);
+    fsRefreshCache.addEventListener('click', Ocellus.toggleRefreshCache);
+
+    fsGo.addEventListener('click', goGetItWrapper);
+    fsForm.addEventListener('submit', goGetItWrapper);
+};
 </script>
 </body>
 </html>
