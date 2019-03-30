@@ -175,6 +175,11 @@ nav span {
     margin-right: 10px;
     margin-left: 0;
 }
+
+nav a.searchFocus {
+    text-decoration: none;
+    color: black;
+}
 #sSearch,
 #fSearch {
     font-size: 1rem;
@@ -190,7 +195,7 @@ nav span {
     position: relative;
 }
 select {
-    width: 75px;
+    width: auto;
     height: 40px;
     text-align: center;
     background-color: rgb(235, 228, 228);
@@ -205,7 +210,7 @@ select {
 }
 #sSearch .searchInputs,
 #fSearch .searchInputs {
-    width: calc( 100% - 121px );
+    width: calc( 100% - 181px );
     float: left;
     background-color: white;
     border: 1px solid #444;
