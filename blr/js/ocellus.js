@@ -4,8 +4,8 @@ const Ocellus = (function() {
     
     // private stuff
     let zenodeo = 'https://zenodeo.punkish.org';
-    const basePath = '/v1/records?size=30&communities=biosyslit&access_right=open&type=image&summary=false&images=true&';
-    let baseUrl = zenodeo + basePath;
+    const basePath = '/v2/records?size=30&communities=biosyslit&access_right=open&type=image&summary=false&images=true&';
+    let baseUrl;
     const zenodoApi = 'https://zenodo.org/api/files/';
     const zenodoRecord = 'https://zenodo.org/record/';
     
@@ -35,6 +35,9 @@ const Ocellus = (function() {
     let throbber;
     let footer;
     let about;
+    let aboutLink;
+    let aboutClose;
+    let ssGo;
 
     // we use these when toggling about
     let wrapperState;
@@ -488,8 +491,9 @@ const Ocellus = (function() {
 
             // store the options in private variables for later use
             if (options.zenodeo) {
-                baseUrl = options.zenodeo + basePath;
+                zenodeo = options.zenodeo;
             }
+            baseUrl = options.zenodeo + basePath;
 
             if (options.layout) {
                 layout = options.layout;
@@ -508,10 +512,19 @@ const Ocellus = (function() {
             throbber = options.throbber;
             footer = options.footer;
             about = options.about;
+            aboutLink = options.aboutLink;
+            aboutClose = options.aboutClose;
+            ssGo = options.ssGo;
+            ssForm = options.ssForm;
 
             if (location.search) {
                 getQueryParamsAndImages(location.search);
             }
+
+            aboutLink.addEventListener('click', Ocellus.toggleAbout);
+            aboutClose.addEventListener('click', Ocellus.toggleAbout);
+            ssGo.addEventListener('click', Ocellus.goGetItWrapper);
+            ssForm.addEventListener('submit', Ocellus.goGetItWrapper);
         }
     }
 }());

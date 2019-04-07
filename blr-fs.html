@@ -23,19 +23,12 @@
 
 <header>
     <div class="container">
-        
         <div class="title">
-            <a href="/" class="main-title">Ocellus<sup>3</sup></a><br>
-            <a id="about-link" class="sub-title msg" data-toggle-target='#about' data-toggle-class='off-none'>about</a>
-        </div>
-             
-        <form id="ssForm">
+            <a href="/" class="main-title">Ocellus<sup>3</sup></a>
+        </div>              
+        
         <div class="searchContainer">
-            <nav id="resultTypeChooser">
-                <a href="#images" class="searchFocus">images</a>
-                <a href="#treatments">treatments</a>
-                <a href="#citations">citations</a>
-            </nav>
+            <nav><a href="" class="searchFocus">images</a><a href="">treatments</a><a href="">citations</a></nav>
             <div id="sSearch" class="searchWidget">
                 <select name="communities">
                     <option selected>all communities</option>
@@ -45,14 +38,12 @@
                 <div class="searchInputs">
                     <input id="q" type="text" required placeholder="search for something">
                     <input id="refreshCache" type="checkbox" name="refreshCache">
-                    <input type="hidden" name="resultType" value="images">
                 </div>
                 <button id="ssGo" class="searchButton">go</button>
             </div>
             <div id="fSearch" class="off-none"></div>
             <div class="searchChooser"><a id="searchChooser" href="">switch to fancy search</a></div>
         </div>
-        </form>
     </div>
 </header>
 <div id="fs-throbber" class="throbber throbber-off"></div>
@@ -156,111 +147,123 @@
 
 <script type="text/javascript">
 
-//const zenodeo = 'https://zenodeo.punkish.org';
-const zenodeo = 'http://localhost:3030';
+    //const zenodeo = 'https://zenodeo.punkish.org';
+    const zenodeo = 'http://localhost:3030';
+    const facets = getFacets(zenodeo);
 
-window.onload = function() {
+    window.onload = function() {
 
-    
-    const fsContainer = document.querySelector('#fs-container');
-    const fsForm = document.querySelector('#fs-form');
-    const fsGo = document.querySelector('button[id=fs-go]');
-    const fsRefreshCache = document.querySelector('#fs-refreshCache');
+        //const searchChooser = document.querySelector('#searchChooser');
+        const refreshCache = document.querySelector('#refreshCache');
+        const refreshCacheWarning = document.querySelector('#refreshCacheWarning');
+        
+        const about = document.querySelector('#about');
+        const aboutLink = document.querySelector('#about-close');
+        const header = document.querySelector('header');
+        const footer = document.querySelector('footer');
+        const wrapper = document.querySelector('#wrapper');
 
-    const ssGo = document.querySelector('#ssGo');
-    const ssForm = document.querySelector('#ssForm');
+        // load and compile the templates
+        const templateMasonry = document.querySelector('#templateMasonry').innerHTML;
+        const templateCarousel = document.querySelector('#templateCarousel').innerHTML;
 
-    const resultTypeChooser = document.querySelector('#resultTypeChooser');
-    const resultType = document.querySelector('input[name=resultType]');
-    const qField = document.querySelector('input[name=q]');
-    const wrapper = document.querySelector('#wrapper');
-    const carousel = document.querySelector('#carousel');
-    const carouselContainer = document.querySelector('#carouselContainer');
-    const throbber = document.querySelector('#fs-throbber');
-    const footer = document.querySelector('footer');
-    
-    const about = document.querySelector('#about');
-    const aboutLink = document.querySelector('#about-link');
-    const aboutClose = document.querySelector('#about-close');
-    
+        const select = document.querySelector('select');
+        const q = document.querySelector('#q');
+        const ssGo = document.querySelector('#ssGo');
 
-    // compile the templates
-    const templateMasonry = document.querySelector('#templateMasonry').innerHTML;
-    Mustache.parse(templateMasonry);
+        const throbber = document.querySelector('#fs-throbber');
+        
+        
+        // const fsGo = document.querySelector('button[id=fs-go]');
+        // const qField = document.querySelector('input[name=q]');
+        // 
+        // const carousel = document.querySelector('#carousel');
+        // const carouselContainer = document.querySelector('#carouselContainer');
+        // 
+        // const footer = document.querySelector('footer');
+        // const fsForm = document.querySelector('#fs-form');
+        // 
+        // const fsContainer = document.querySelector('#fs-container');
+        // const searchChooser = document.querySelector('#searchChooser');
+        // const sSearch = document.querySelector('#sSearch');
+        // const fSearch = document.querySelector('#fSearch');
 
-    const templateCarousel = document.querySelector('#templateCarousel').innerHTML;
-    Mustache.parse(templateCarousel);
-    
-    Ocellus.init({
-        zenodeo: zenodeo,
-        qField: qField,
-        throbber: throbber,
-        footer: footer,
-        templateMasonry: templateMasonry,
-        wrapper: wrapper,
-        templateCarousel: templateCarousel,
-        carousel: carousel,
-        carouselContainer: carouselContainer,
-        about: about,
-        aboutLink: aboutLink,
-        aboutClose: aboutClose,
-        ssGo: ssGo,
-        ssForm: ssForm
-    });
+        
+        
+        Ocellus.init({
 
-    // new autoComplete({
-    //     selector: qField,
-    //     minChars: 3,
-    //     source: function(term, suggest) {
+            // required to toggle refresh cache warning
+            refreshCache: refreshCache,
+            refreshCacheWarning: refreshCacheWarning,
+
+            // required to toggle About
+            about: about,
+            aboutLink: aboutLink,
+            header: header,
+            footer: footer,
+            wrapper: wrapper,
+
+            // templates to be compiled and rendered
+            // with data
+            templateMasonry: templateMasonry,
+            templateCarousel: templateCarousel,
+
+            zenodeo: zenodeo,
+
+            select: select,
+            q: q,
+
+            //searchChooser: searchChooser,
+
+            ssGo: ssGo,
+            throbber: throbber
+            // qField: qField,
+            // throbber: throbber,
+            // carousel: carousel,
+            // carouselContainer: carouselContainer,
             
-    //         term = term.toLowerCase();
-    //         let matches = [];
-    //         let j = family.length;
+            // sSearch: sSearch,
+            // fSearch: fSearch
+        });
 
-    //         for (let i = 0; i < j; i++) {
-    //             if (~family[i].toLowerCase().indexOf(term)) {
-    //                 matches.push(family[i]);
-    //             }
-    //         }
+        const fs = new fancySearch();
+        const doSomethingWithQuery = function(query) {
 
-    //         suggest(matches);
-    //     }
-    // });
+            if (Object.keys(query).length) {
+                throbber.classList.remove('throbber-off');
+                throbber.classList.add('throbber-on');
+                Ocellus.goGetIt({
+                    query: query,
+                    refreshCache: document.querySelector('#fs-refreshCache').checked
+                });
+            }
+            else {
 
-    // const goGetItWrapper = function(event) {
+                const i = document.querySelectorAll('.fs-key-input')
+                i[0].classList.add('warning');
+                i[0].placeholder = 'Please choose a searchterm';
+            }
+        };
 
-    //     if (!qField.value) {
-    //         qField.className = 'reqd';
-    //         qField.placeholder = 'a search term is required';
-    //         qField.focus();
-    //         return;
-    //     }
-    //     else {
-    //         qField.className = 'normal';
-    //         throbber.classList.remove('throbber-off');
-    //         throbber.classList.add('throbber-on');
-    //     }
+        // fs.init(
+        //     document.getElementById('fSearch'), 
+        //     // document.getElementById('fs-widget'), 
+        //     facets,
+        //     doSomethingWithQuery
+        // );
 
-    //     Ocellus.goGetIt({
-    //         qValue: qField.value,
-    //         refreshCache: document.querySelector('#fs-refreshCache').checked
-    //     });
+        
+        
+        
 
-    //     event.preventDefault();
-    //     event.stopPropagation();
-    // };
+        
+        // 
 
-    // Since some browsers preserve state across reloads, 
-    // so make sure the refreshCache button is off
-    //fsRefreshCache.checked = false;
-
-    // aboutLink.addEventListener('click', Ocellus.toggleAbout);
-    // aboutClose.addEventListener('click', Ocellus.toggleAbout);
-    // fsRefreshCache.addEventListener('click', Ocellus.toggleRefreshCache);
-
-    // fsGo.addEventListener('click', goGetItWrapper);
-    // fsForm.addEventListener('submit', goGetItWrapper);
-};
+        // Ocellus.initializeCommunities();
+        // Ocellus.initializeSearch();
+        // const select = document.querySelector('select[name="communities"');
+        // select.addEventListener('mouseup', Ocellus.setCommunities);
+    };
 </script>
 </body>
 </html>
