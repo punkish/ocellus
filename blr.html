@@ -25,7 +25,7 @@
     <div class="container">
         
         <div class="title">
-            <a href="/" class="main-title">Ocellus<sup>3</sup></a><br>
+            <a href="/blr.html" class="main-title">Ocellus<sup>3</sup></a><br>
             <a id="about-link" class="sub-title msg" data-toggle-target='#about' data-toggle-class='off-none'>about</a>
         </div>
              
@@ -43,19 +43,21 @@
                     <option>icedig</option>
                 </select>
                 <div class="searchInputs">
-                    <input id="q" type="text" required placeholder="search for something">
-                    <input id="refreshCache" type="checkbox" name="refreshCache">
+                    <input id="q" name="q" type="text" required placeholder="search for something">
+                    <input id="refreshCache" type="checkbox" name="refreshCache" value="false">
                     <input type="hidden" name="resultType" value="images">
                 </div>
                 <button id="ssGo" class="searchButton">go</button>
             </div>
             <div id="fSearch" class="off-none"></div>
-            <div class="searchChooser"><a id="searchChooser" href="">switch to fancy search</a></div>
+            <div class="searchChooser">
+                <!-- <a id="searchChooser" href="">switch to fancy search</a> -->
+            </div>
         </div>
         </form>
     </div>
 </header>
-<div id="fs-throbber" class="throbber throbber-off"></div>
+<div id="throbber" class="throbber throbber-off"></div>
 
 <div class="container">
     <div class="row">
@@ -146,6 +148,16 @@
     {{/figures}}
 </script>
 
+<!-- template for fulltext search of treatments -->
+<script id="templateTreatmentsFTS" type="x-tmpl-mustache">    
+    {{#treatments}}
+    <details open>
+        <summary>{{treatmentTitle}}</summary>
+        <p>… {{{s}}} … <a href="/blr.html?resultType=treatments&treatmentId={{treatmentId}}">more</a></p>
+    </details>
+    {{/treatments}}
+</script>
+
 <script src="blr/js/cookies.js"></script>
 <script src="js/lazysizes.min.js"></script>
 <script src="js/mustache.min.js"></script>
@@ -156,33 +168,7 @@
 
 <script type="text/javascript">
 
-//const zenodeo = 'https://zenodeo.punkish.org';
-const zenodeo = 'http://localhost:3030';
-
-window.onload = function() {
-
-    
-    const fsContainer = document.querySelector('#fs-container');
-    const fsForm = document.querySelector('#fs-form');
-    const fsGo = document.querySelector('button[id=fs-go]');
-    const fsRefreshCache = document.querySelector('#fs-refreshCache');
-
-    const ssGo = document.querySelector('#ssGo');
-    const ssForm = document.querySelector('#ssForm');
-
-    const resultTypeChooser = document.querySelector('#resultTypeChooser');
-    const resultType = document.querySelector('input[name=resultType]');
-    const qField = document.querySelector('input[name=q]');
-    const wrapper = document.querySelector('#wrapper');
-    const carousel = document.querySelector('#carousel');
-    const carouselContainer = document.querySelector('#carouselContainer');
-    const throbber = document.querySelector('#fs-throbber');
-    const footer = document.querySelector('footer');
-    
-    const about = document.querySelector('#about');
-    const aboutLink = document.querySelector('#about-link');
-    const aboutClose = document.querySelector('#about-close');
-    
+window.onload = function() {    
 
     // compile the templates
     const templateMasonry = document.querySelector('#templateMasonry').innerHTML;
@@ -190,22 +176,50 @@ window.onload = function() {
 
     const templateCarousel = document.querySelector('#templateCarousel').innerHTML;
     Mustache.parse(templateCarousel);
+
+    const templateTreatmentsFTS = document.querySelector('#templateTreatmentsFTS').innerHTML;
+    Mustache.parse(templateTreatmentsFTS);
     
     Ocellus.init({
-        zenodeo: zenodeo,
-        qField: qField,
-        throbber: throbber,
-        footer: footer,
+
+        zenodeo: 'https://zenodeo.punkish.org',
+        //zenodeo: 'http://localhost:3030',
+
+        // layout: 'grid',
+        layout: 'masonry',
+
+        // form elements
+        ssForm: document.querySelector('#ssForm'),
+        ssGo: document.querySelector('#ssGo'),
+        
+        // form fields
+        q: document.querySelector('input[name=q]'),
+        resultType: document.querySelector('input[name=resultType]'),
+        communities: document.querySelector('select[name=communities]'),
+        refreshCache: document.querySelector('input[name=refreshCache]'),
+
+        // interface elements
+        resultTypeChooser: document.querySelector('#resultTypeChooser'),
+        throbber: document.querySelector('#throbber'),
+        footer: document.querySelector('footer'),
+        wrapper: document.querySelector('#wrapper'),
+        carousel: document.querySelector('#carousel'),
+        carouselContainer: document.querySelector('#carouselContainer'),
+        about: document.querySelector('#about'),
+        aboutLink: document.querySelector('#about-link'),
+        aboutClose: document.querySelector('#about-close'),
+
+        // compiled templates
         templateMasonry: templateMasonry,
-        wrapper: wrapper,
         templateCarousel: templateCarousel,
-        carousel: carousel,
-        carouselContainer: carouselContainer,
-        about: about,
-        aboutLink: aboutLink,
-        aboutClose: aboutClose,
-        ssGo: ssGo,
-        ssForm: ssForm
+        templateTreatmentsFTS: templateTreatmentsFTS
+
+        // fancysearch
+        // fsContainer: document.querySelector('#fs-container'),
+        // fsForm: document.querySelector('#fs-form'),
+        // fsGo: document.querySelector('button[id=fs-go]'),
+        // fsRefreshCache: document.querySelector('#fs-refreshCache')
+        
     });
 
     // new autoComplete({

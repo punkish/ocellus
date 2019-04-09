@@ -624,6 +624,17 @@ figure {
     text-align: left;
 }
 
+/* treatments */
+details {
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+details p {
+    margin-left: 1.5rem;
+    font-size: 1.2rem;
+}
+/* end treatments */
+
 /* Larger than mobile */
 @media (min-width: 400px) {
     /*
@@ -676,7 +687,7 @@ figure {
     .title {
         float: left;
         width: 90px;
-        margin-top: 35px !important;
+        margin-top: 30px !important;
     }
     .searchContainer {
         float: left;
