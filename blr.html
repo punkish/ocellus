@@ -34,7 +34,7 @@
             <nav id="resultTypeChooser">
                 <a href="#images" class="searchFocus">images</a>
                 <a href="#treatments">treatments</a>
-                <a href="#citations">citations</a>
+                <!-- <a href="#citations">citations</a> -->
             </nav>
             <div id="sSearch" class="searchWidget">
                 <select name="communities">
@@ -153,9 +153,28 @@
     {{#treatments}}
     <details open>
         <summary>{{treatmentTitle}}</summary>
-        <p>… {{{s}}} … <a href="/blr.html?resultType=treatments&treatmentId={{treatmentId}}">more</a></p>
+        <p>… {{{s}}} … <a class="treatmentLink" href="/blr.html?resultType=treatments&treatmentId={{treatmentId}}">more</a></p>
     </details>
     {{/treatments}}
+</script>
+
+<!-- template for a single treatment -->
+<script id="templateTreatment" type="x-tmpl-mustache">
+    <div class="treatment">
+        <h1>{{treatmentTitle}}</h1>
+        <h2>{{treatmentId}}</h2>
+        <ul class="classification">
+            <li class="kingdom">{{kingdom}}</li>
+            <li class="phylum">{{phylum}}</li>
+            <li class="order">{{order}}</li>
+            <li class="family">{{family}}</li>
+            <li class="genus">{{genus}}</li>
+            <li class="species">{{species}}</li>
+        </ul>
+        
+        <p class="journal">{{journalTitle}}, {{journalYear}}, Vol. {{journalVolume}}, Issue {{journalIssue}}</p>
+        <p>{{fullText}}</p>
+    </div>
 </script>
 
 <script src="blr/js/cookies.js"></script>
@@ -179,11 +198,14 @@ window.onload = function() {
 
     const templateTreatmentsFTS = document.querySelector('#templateTreatmentsFTS').innerHTML;
     Mustache.parse(templateTreatmentsFTS);
+
+    const templateTreatment = document.querySelector('#templateTreatment').innerHTML;
+    Mustache.parse(templateTreatment);
     
     Ocellus.init({
 
-        zenodeo: 'https://zenodeo.punkish.org',
-        //zenodeo: 'http://localhost:3030',
+        //zenodeo: 'https://zenodeo.punkish.org',
+        zenodeo: 'http://localhost:3030',
 
         // layout: 'grid',
         layout: 'masonry',
@@ -212,7 +234,8 @@ window.onload = function() {
         // compiled templates
         templateMasonry: templateMasonry,
         templateCarousel: templateCarousel,
-        templateTreatmentsFTS: templateTreatmentsFTS
+        templateTreatmentsFTS: templateTreatmentsFTS,
+        templateTreatment: templateTreatment
 
         // fancysearch
         // fsContainer: document.querySelector('#fs-container'),
@@ -221,48 +244,6 @@ window.onload = function() {
         // fsRefreshCache: document.querySelector('#fs-refreshCache')
         
     });
-
-    // new autoComplete({
-    //     selector: qField,
-    //     minChars: 3,
-    //     source: function(term, suggest) {
-            
-    //         term = term.toLowerCase();
-    //         let matches = [];
-    //         let j = family.length;
-
-    //         for (let i = 0; i < j; i++) {
-    //             if (~family[i].toLowerCase().indexOf(term)) {
-    //                 matches.push(family[i]);
-    //             }
-    //         }
-
-    //         suggest(matches);
-    //     }
-    // });
-
-    // const goGetItWrapper = function(event) {
-
-    //     if (!qField.value) {
-    //         qField.className = 'reqd';
-    //         qField.placeholder = 'a search term is required';
-    //         qField.focus();
-    //         return;
-    //     }
-    //     else {
-    //         qField.className = 'normal';
-    //         throbber.classList.remove('throbber-off');
-    //         throbber.classList.add('throbber-on');
-    //     }
-
-    //     Ocellus.goGetIt({
-    //         qValue: qField.value,
-    //         refreshCache: document.querySelector('#fs-refreshCache').checked
-    //     });
-
-    //     event.preventDefault();
-    //     event.stopPropagation();
-    // };
 
     // Since some browsers preserve state across reloads, 
     // so make sure the refreshCache button is off

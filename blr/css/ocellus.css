@@ -635,6 +635,57 @@ details p {
 }
 /* end treatments */
 
+/* classification */
+.treatment h1 {
+    font-size: 2rem;
+    font-weight: 800;
+}
+.treatment h2 {
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+ul.classification {
+    list-style: none;
+}
+.kingdom,
+.phylum,
+.order,
+.family,
+.genus,
+.species {
+    border-top: 20px solid lightgrey;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    height: 0px;
+    line-height: 0px;
+    margin-top: 0;
+    margin-bottom: 2px;
+}
+.kingdom {
+    width: 100px;
+}
+.phylum {
+    width: 80px;
+    margin-left: 10px
+}
+.order {
+    width: 60px;
+    margin-left: 20px
+}
+.family {
+    width: 40px;
+    margin-left: 30px
+}
+.genus {
+    width: 20px;
+    margin-left: 40px
+}
+.species {
+    width: 0px;
+    margin-left: 50px
+}
+/* end classification */
+
 /* Larger than mobile */
 @media (min-width: 400px) {
     /*

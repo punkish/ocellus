@@ -47,6 +47,8 @@ const Ocellus = (function() {
 
     let templateMasonry;
     let templateCarousel;
+    let templateTreatmentsFTS;
+    let templateTreatment;
 
     // we use these when toggling about
     let wrapperState;
@@ -122,7 +124,7 @@ const Ocellus = (function() {
     const getImages = function(opts) {
 
         const q = opts.q;
-        const resultType = opts.resultType;
+        //const resultType = opts.resultType;
         const page = opts.page;
         const refreshCache = opts.refreshCache;
 
@@ -149,7 +151,7 @@ const Ocellus = (function() {
 
         history.pushState('', '', '?' + qStr2);
 
-        let qStr3 = `resultType=${resultType}&${qStr1}`
+        let qStr3 = `resultType=${resultType.value}&${qStr1}`
 
         const callback = function(xh) {
 
@@ -210,7 +212,7 @@ const Ocellus = (function() {
     const getTreatments = function(opts) {
 
         const q = opts.q;
-        const resultType = opts.resultType;
+        //const resultType = opts.resultType;
         const page = opts.page;
         const refreshCache = opts.refreshCache;
 
@@ -234,8 +236,7 @@ const Ocellus = (function() {
         //qStr2 = qStr1;
         url = zenodeo + '/v2/treatments/?' + qStr1;
 
-        history.pushState('', '', '?' + `resultType=${resultType}&${qStr1}`);
-
+        history.pushState('', '', '?' + `resultType=${resultType.value}&${qStr1}`);
 
         const callback = function(xh) {
 
@@ -264,6 +265,12 @@ const Ocellus = (function() {
 
             wrapper.innerHTML = Mustache.render(templateTreatmentsFTS, data);
             wrapper.className = 'on';
+            const treatmentLinks = document.querySelectorAll('.treatmentLink');
+   
+            for (let i = 0, j = treatmentLinks.length; i < j; i++) {
+                treatmentLinks[i].addEventListener('click', getTreatment);
+            }
+
             throbber.classList.remove('throbber-on');
             throbber.classList.add('throbber-off');
 
@@ -333,6 +340,7 @@ const Ocellus = (function() {
                     report.style.visibility = 'visible';
                 }, 3000);
         };
+
         const headers = [
             {k: "Content-type", v: "application/json"},
             {k: "Authorization", v: "Basic " + btoa("blruser:xucqE5-tezmab-ruqgyr")}
@@ -358,7 +366,9 @@ const Ocellus = (function() {
         xh.onerror = function(e) {
             console.error(xh.statusText);
         };
+
         xh.open(method, url, true);
+
         if (headers.length) {
             for (let i = 0, j = headers.length; i < j; i++) {
                 xh.setRequestHeader(headers[i].k, headers[i].v);
@@ -470,6 +480,46 @@ const Ocellus = (function() {
         }
     };
 
+    const xhr = function(href, cb) {
+        let x = new XMLHttpRequest();
+
+        x.onload = function(event) {
+            if (x.readyState === 4) {
+                if (x.status === 200) {
+                    const res = JSON.parse(x.responseText);
+                    cb(res);
+                }
+            }
+        };
+
+        x.onerror = function(e) {
+            console.error(x.statusText);
+        };
+
+        x.open("GET", href, true);
+        x.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        x.send();
+    };
+
+    const autoc = function(field) {
+
+        const headers = [
+            {k: "Content-type", v: "application/json"}
+        ]
+
+        //let xhr;
+
+        new autoComplete({
+            selector: field,
+            minChars: 3,
+            source: function(term, response) {
+                try { xhr.abort() } catch(e) {}
+                xhr(`${zenodeo}/v2/families?q=${term}`, response)
+            }
+        });
+        
+    }
+
     const niceNumbers = function(num) {
 
         const nums = {
@@ -505,7 +555,7 @@ const Ocellus = (function() {
         if (resultType.value === 'images') {
             getImages({ 
                 q: q.value.toLowerCase(),
-                resultType: resultType.value,
+                //resultType: resultType.value,
                 page: 1,
                 refreshCache: refreshCache.value
             });
@@ -513,11 +563,45 @@ const Ocellus = (function() {
         else if (resultType.value === 'treatments') {
             getTreatments({ 
                 q: q.value.toLowerCase(),
-                resultType: resultType.value,
+                //resultType: resultType.value,
                 page: 1,
                 refreshCache: refreshCache.value
             });
         }
+
+    };
+
+    const getTreatment = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const search = event.target.search.substr(1).split('&');
+        let qry = {};
+        search.forEach(el => {
+            const a = el.split('=')
+            qry[ a[0] ] = a[1] 
+        })
+        
+        let qStr1 = `resultType=treatments&treatmentId=${qry.treatmentId}`;
+        let url = `${zenodeo}/v2/treatments?treatmentId=${qry.treatmentId}`;
+        history.pushState('', '', '?' + qStr1);
+        const method = 'GET';
+        const callback = function(xh) {
+
+            const data = JSON.parse(xh.responseText).value;
+
+            wrapper.innerHTML = Mustache.render(templateTreatment, data);
+            wrapper.className = 'on';
+            throbber.classList.remove('throbber-on');
+            throbber.classList.add('throbber-off');
+
+        };
+        const headers = [
+            {k: "Content-Type", v: "application/json;charset=UTF-8"}
+        ];
+        const payload = '';
+
+        x(method, url, callback, headers, payload);
     };
 
     const toggleRefreshCache = function(event) {
@@ -604,10 +688,6 @@ const Ocellus = (function() {
             carouselContainer.className = 'off-none';
             wrapper.className = 'on';
         },
-
-        
-
-        
         
         /*
          * Initialization options
@@ -650,6 +730,7 @@ const Ocellus = (function() {
             templateMasonry = options.templateMasonry;
             templateCarousel = options.templateCarousel;
             templateTreatmentsFTS = options.templateTreatmentsFTS;
+            templateTreatment = options.templateTreatment;
 
             if (location.search) {
                 getQueryParamsAndImages(location.search);
@@ -663,6 +744,8 @@ const Ocellus = (function() {
             for (let i = 0; i < resultTypeChooser.children.length; i++) {
                 resultTypeChooser.children[i].addEventListener('click', chooseResultType)
             }
+
+            autoc(q)
 
             baseUrl = zenodeo + basePath;
         }
