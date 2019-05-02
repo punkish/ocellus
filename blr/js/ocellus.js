@@ -419,7 +419,7 @@ const Ocellus = (function() {
         //     }
         // }
         xh.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
-        xh.setRequestHeader('Access-Control-Allow-Origin', '*');
+        xh.setRequestHeader('Access-Control-Allow-Origin', 'https://zenodeo.punkish.org');
 
         xh.send(payload);
     };
