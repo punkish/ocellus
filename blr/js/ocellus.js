@@ -280,12 +280,8 @@ const Ocellus = (function() {
                 wrapper.className = 'on';
                 throbber.classList.remove('throbber-on');
                 throbber.classList.add('throbber-off');
-    
-                const treatmentLinks = document.querySelectorAll('.treatmentLink');
-       
-                for (let i = 0, j = treatmentLinks.length; i < j; i++) {
-                    treatmentLinks[i].addEventListener('click', goGetIt);
-                }
+
+                footer.className = 'relative';
     
             };
     
@@ -316,7 +312,6 @@ const Ocellus = (function() {
 
             }
             
-    
             // We need three hrefs:
             //
             // 1. 'href1' is sent to zenodeo to fetch the result
