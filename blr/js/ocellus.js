@@ -413,11 +413,13 @@ const Ocellus = (function() {
 
         xh.open(method, url, true);
 
-        if (headers.length) {
-            for (let i = 0, j = headers.length; i < j; i++) {
-                xh.setRequestHeader(headers[i].k, headers[i].v);
-            }
-        }
+        // if (headers.length) {
+        //     for (let i = 0, j = headers.length; i < j; i++) {
+        //         xh.setRequestHeader(headers[i].k, headers[i].v);
+        //     }
+        // }
+        xh.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
+        xh.setRequestHeader('Access-Control-Allow-Origin', '*');
 
         xh.send(payload);
     };
