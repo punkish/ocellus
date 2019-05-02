@@ -391,8 +391,7 @@ const Ocellus = (function() {
 
         const method = 'GET';
         const headers = [
-            {k: "Content-Type", v: "application/json;charset=UTF-8"},
-            {k: "Access-Control-Allow-Origin", v: "*"}
+            {k: "Content-Type", v: "application/json;charset=UTF-8"}
         ];
         const payload = '';
 
@@ -413,13 +412,12 @@ const Ocellus = (function() {
 
         xh.open(method, url, true);
 
-        // if (headers.length) {
-        //     for (let i = 0, j = headers.length; i < j; i++) {
-        //         xh.setRequestHeader(headers[i].k, headers[i].v);
-        //     }
-        // }
-        xh.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
-        xh.setRequestHeader('Access-Control-Allow-Origin', 'https://zenodeo.punkish.org');
+        if (headers.length) {
+            
+            for (let i = 0, j = headers.length; i < j; i++) {
+                xh.setRequestHeader(headers[i].k, headers[i].v);
+            }
+        }
 
         xh.send(payload);
     };
