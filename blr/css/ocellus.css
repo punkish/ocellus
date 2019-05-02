@@ -93,7 +93,7 @@ smaller than 375px width
     font-size: 1rem;
     padding-left: 5px;
     cursor: pointer;
-/*     visibility: hidden; */
+    visibility: hidden;
 }
 nav {
     font-size: 1rem;
