@@ -212,6 +212,7 @@
 <script src="js/mustache.min.js"></script>
 <script src="JavaScript-autoComplete/auto-complete.min.js"></script>
 <script src="blr/fancysearch/fancysearch.js"></script>
+<script src="blr/js/config.js"></script>
 <script src="blr/js/ocellus.js"></script>
 <script src="blr/js/facets.js"></script>
 
@@ -237,12 +238,8 @@ window.onload = function() {
     
     Ocellus.init({
 
-        zenodeo: 'https://zenodeo.punkish.org',
-        // zenodeo: 'http://localhost:3030',
-
-        // layout: 'grid',
-        //layout: 'masonry',
-
+        zenodeo: zenodeo,
+        
         // form elements
         ssForm: document.querySelector('#ssForm'),
         ssGo: document.querySelector('#ssGo'),
@@ -272,25 +269,9 @@ window.onload = function() {
         templateTreatmentsFTS: templateTreatmentsFTS,
         templateTreatmentsList: templateTreatmentsList,
         templateTreatment: templateTreatment
-
-        // fancysearch
-        // fsContainer: document.querySelector('#fs-container'),
-        // fsForm: document.querySelector('#fs-form'),
-        // fsGo: document.querySelector('button[id=fs-go]'),
-        // fsRefreshCache: document.querySelector('#fs-refreshCache')
         
     });
 
-    // Since some browsers preserve state across reloads, 
-    // so make sure the refreshCache button is off
-    //fsRefreshCache.checked = false;
-
-    // aboutLink.addEventListener('click', Ocellus.toggleAbout);
-    // aboutClose.addEventListener('click', Ocellus.toggleAbout);
-    // fsRefreshCache.addEventListener('click', Ocellus.toggleRefreshCache);
-
-    // fsGo.addEventListener('click', goGetItWrapper);
-    // fsForm.addEventListener('submit', goGetItWrapper);
 };
 </script>
 </body>

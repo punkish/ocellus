@@ -40,3 +40,7 @@ node_modules/
 # query cache #
 ################
 cache/
+
+# specific config files #
+#########################
+blr/js/config.js

@@ -269,7 +269,7 @@ const Ocellus = (function() {
             let href3 = `resultType=treatments&${href1}`;
 
             href1 = `${zenodeo}/v2/treatments?${href1}`;
-    
+
             history.pushState('', '', `?${href3}`);
             
             const callback = function(xh) {
