@@ -1,0 +1,21 @@
+mods\:title,
+mods\:roleTerm {
+    font-weight: 800;
+}
+
+mods\:title:after,
+mods\:name:after,
+subSubSection paragraph heading {
+    content: '\A';
+    /* white-space: pre; */
+}
+
+mods\:namePart {
+    font-style: italic
+}
+
+geocoordinate {
+    border: 1px solid grey;
+    border-radius: 5px;
+    background-color: lightgreen;
+}

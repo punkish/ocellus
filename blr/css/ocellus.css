@@ -4,16 +4,18 @@ created by P Kishor
 GitHub: https://github.com/punkish/ocellus
 License: Released into the public domain under CC0
 */
+
+a {
+    color: blue;
+}
+
 header {
     padding-top: 10px;
     background-color: #f5f5f5;
     border-bottom: 1px solid silver;
 }
-a {
-    color: blue;
-}
+
 .title {
-    /* width: 50px; */
     margin-bottom: 10px;
     line-height: 15px;
     text-align: center;
@@ -31,9 +33,6 @@ a.main-title {
     cursor: pointer;
 }
 #about-close {
-    /* border: 1px solid grey;
-    border-radius: 5px;
-    width: 50px; */
     -moz-transition: all 1s ease-in-out;
     -webkit-transition: all 1s ease-in-out;
     -o-transition: all 1s ease-in-out;
@@ -72,82 +71,17 @@ a.main-title {
     visibility: visible;
 }
 
-/* simple search */
-/* #ss-container {
-    position: relative;
-    width: 100%;
-    height: auto;
-}
-.ss {
-    width: calc( 100% - 52px );
-    height: 38px;
-    padding: 0px;
-    float: left;
-    border: 1px solid grey;
-    border-radius: 5px 0 0 5px;
-    background-color: white;
-}
-#fs-go {
-    border-radius: 0 5px 5px 0;
-    background-color: grey !important;
-    border: 1px solid grey !important;
-    color: white !important;
-    padding-left: 15px;
-    padding-right: 15px;
-    height: 40px;
-    width: 50px;
-    position: relative;
-}
-#fs-go:hover {
-    background-color: green !important;
-}
-select {
-    width: 65px;
-    height: 38px;
-    margin-top: -20px;
-    text-align: left;
-    background-color: rgb(235, 228, 228);
-    -moz-appearance: none;
-    border-right: 1px solid grey;
-    border-radius: 5px 0 0 5px;
-}
-#q {
-    width: calc( 100% - 140px );
-    border: none;
-}
-#q.reqd {
-    color: red;
-}
-#refreshCache {
-    margin-right: 15px;
-    margin-top: 13px;
-    margin-bottom: 0;
-    float: right;
-}
-nav {
-    margin-top: -10px;
-    font-size: 0.8em;
-    padding-left: 5px;
-}
-nav a {
-    padding-right: 10px;
-}
-.msg {
-    font-size: 12px;
-    margin-bottom: 0px;
-}
-#refreshCacheWarning {
-    text-align: left;
-    line-height: 16px;
-    margin-top: 0;
-    font-size: 0.8em;
-    margin-bottom: 10px;
-    color: red;
-}*/
 .warning {
     color: red;
 } 
+
+#ssForm,
+#fSearch {
+    margin: 0;
+    font-size: 1rem;
+}
 .searchContainer {
+    width: 100%;
     margin-bottom: 10px;
 }
 
@@ -158,16 +92,13 @@ smaller than 375px width
 .searchChooser {
     font-size: 1rem;
     padding-left: 5px;
-    /* float: left;
-    margin-top: -15px;
-    margin-right: 10px; */
-    /* display: none;
-    visibility: hidden; */
     cursor: pointer;
+/*     visibility: hidden; */
 }
 nav {
     font-size: 1rem;
     padding-left: 5px;
+    padding-bottom: 2px;
     text-align: left;
     float: left;
 }
@@ -179,15 +110,15 @@ nav span {
 
 nav a.searchFocus {
     text-decoration: none;
-    color: black;
+    color: white;
+    background-color: grey;
+    padding: 2px 5px;
+    border-radius: 2px;
 }
-#sSearch,
-#fSearch {
-    font-size: 1rem;
-}
+
 .searchWidget {
-    position: relative;
     width: 100%;
+    position: relative;
     border: none;
     clear: both;
     display: table;
@@ -209,9 +140,28 @@ select {
     float: left;
     margin-bottom: 0;
 }
+
+ul.communities {
+    float: left;
+    border: 1px solid red;
+    list-style: none;
+    padding: 2px 5px;
+    line-height: 24px;
+}
+
+ul.communities ul {
+    display: none;
+    list-style: none;
+    line-height: 0;
+}
+
+ul.communities li:hover > ul {
+    display: none
+}
+
 #sSearch .searchInputs,
 #fSearch .searchInputs {
-    width: calc( 100% - 181px );
+    width: calc( 100% - 160px );
     float: left;
     background-color: white;
     border: 1px solid #444;
@@ -255,86 +205,11 @@ select {
     height: auto;
     float: left;
 }
-/* .fs-param-empty {
-    float: left;
-    display: flex;
-    margin: 2px;
-    font-family: sans-serif;
-    width: calc( 100% - 110px );
-}
-.fs-param-empty > input[type="text"] {
-    border: 0px solid !important;
-    height: 34px !important;
-}
-.fs-key, 
-.fs-val {
-    float: left;
-    padding: 0 5px;
-    height: 32px;
-}
-.fs-key {
-    background-color: grey;
-    color: white;
-    text-transform: uppercase;
-    line-height: 34px
-}
-.fs-val {
-    max-width: 140px;
-    overflow-y: hidden;
-    padding-top: 8px;
-}
-.fs-cancel {
-    float: left;
-    padding: 0 10px;
-    height: 30px;
-    width: 8px;
-    line-height: 32px;
-    background-color: #f5f5f5;
-    color: #ccc;
-    margin-right: 0px;
-    border-radius: 0 5px 5px 0;
-    border: 1px solid #f5f5f5;
-    border-left: 1px solid #ccc;
-}
-.fs-cancel:hover {
-    background-color: red;
-    color: white;
-}
-.fs-key-input,
-.fs-val-input {
-    width: 100%;
-    box-sizing: border-box;
-    border: none !important;
-    font-size: unset;
-    height: 32px;
-    margin: 0;
-    float: left;
-} */
-/* #q:focus,
-input.fs-key-input:focus,
-input.fs-val-input:focus  */
+
 #q:focus {
-    /* outline: 1px skyblue solid;
-    border-block-end: #ccc 1em; */
-    /* -moz-box-shadow:    inset 0 0 3px #c0c0c0;
-    -webkit-box-shadow: inset 0 0 3px #c0c0c0;
-    box-shadow:         inset 0 0 3px #c0c0c0; */
     color: green;
 }
-/* .fs-param-filled {
-    border: 1px solid grey;
-    border-radius: 5px;
-    float: left;
-    margin: 2px;
-    font-family: sans-serif;
-    height: 32px;
-    width: auto;
-    max-width: calc( 100% - 40px );
-}
-#fSearch input[type="checkbox"] {
-    margin-top: 12px;
-    margin-bottom: 0;
-} */
+
 .off-none {
     visibility: hidden;
     display: none;
@@ -635,9 +510,27 @@ details p {
 }
 /* end treatments */
 
+/* treatment */
+ul.pids {
+    list-style: none;
+}
+ul.pids li {
+    line-height: 10px;
+    font-size: 80%;
+}
+.xml-marker {
+    border: 1px solid lightblue;
+    background-color: lightblue;
+    border-radius: 5px;
+    color: #444;
+    font-size: 1rem;
+    padding: 2px;
+}
+/* treatment */
+
 /* classification */
 .treatment h1 {
-    font-size: 2rem;
+    font-size: 3rem;
     font-weight: 800;
 }
 .treatment h2 {
@@ -653,67 +546,95 @@ ul.classification {
 .family,
 .genus,
 .species {
-    border-top: 20px solid lightgrey;
+    border-top-width: 20px;
+    border-top-style: solid;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
+    border-bottom: 0px solid grey;
     height: 0px;
-    line-height: 0px;
-    margin-top: 0;
+    line-height: 0;
+    margin-top: 0px;
     margin-bottom: 2px;
 }
 .kingdom {
+    border-top-color: #e8e8e8;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
     width: 100px;
 }
 .phylum {
+    border-top-color: #d8d8d8;
     width: 80px;
     margin-left: 10px
 }
 .order {
+    border-top-color: #b8b8b8;
     width: 60px;
     margin-left: 20px
 }
 .family {
+    border-top: 20px solid #989898;
     width: 40px;
     margin-left: 30px
 }
 .genus {
+    border-top-color: #787878;
     width: 20px;
     margin-left: 40px
 }
 .species {
+    border-top-color: #585858;
     width: 0px;
     margin-left: 50px
 }
+.kingdom > .txn,
+.phylum > .txn,
+.order > .txn,
+.family > .txn,
+.genus > .txn,
+.species > .txn
+{
+    margin-top: -10px;
+}
+
+.kingdom > .txn {
+    margin-left: 110px;
+}
+.phylum > .txn {
+    margin-left: 90px;
+}
+.order > .txn {
+    margin-left: 70px;
+}
+.family > .txn {
+    margin-left: 50px;
+}
+.genus > .txn {
+    margin-left: 30px;
+}
+.species > .txn {
+    margin-left: 10px;
+}
 /* end classification */
+
+/* lazyload classes */
+.lazyload {
+	opacity: 0;
+}
+.lazyloading {
+	opacity: 1;
+	transition: opacity 300ms;
+	background: #f7f7f7 url(../../img/loader.gif) no-repeat center;
+}
+.lazyloaded {
+	opacity: 1;
+	transition: opacity 300ms;
+}
+/* end lazyload classes */
 
 /* Larger than mobile */
 @media (min-width: 400px) {
-    /*
-    show the searchChooser widget on screens 
-    greater than 375px wide
-    */
-    .searchChooser {
-        display: block;
-        visibility: visible;
-    }
-    #sSearch,
-    #fSearch {
-        font-size: 1.2rem;
-    }
-    
-    /* select {
-        width: 50px;
-    } */
-    
-    /* #sSearch .searchInputs,
-    #fSearch .searchInputs {
-        width: calc( 100% - 98px );
-    } */
-    
-    .fs-key, 
-    .fs-val {
-        font-size: unset;
-    }
+
     .masonry {
         -moz-column-count: 2;
         -webkit-column-count: 2;
@@ -723,30 +644,33 @@ ul.classification {
 
 /* Larger than phablet (also point when grid becomes active) */
 @media (min-width: 550px) {
-    /* .title {
-        margin-top: 30px;
+    .column,
+    .columns {
+        margin-left: 10px !important;
+    }
+    
+    header {
+        margin-top: 0;
+    }
+    
+    .title {
+        /* float: left; */
+        width: 90px;
+        margin-top: 25px !important;
+    }
+/*     .searchContainer {
+        float: left;
+        width: calc( 100% - 90px );
     } */
 }
 
 /* Larger than tablet */
 @media (min-width: 750px) {
-    #about {
-        /* width: 80%;
-        max-width: 600px; */
-        margin-left: 90px;
+    
+    .column,
+    .columns {
+        margin-left:0 !important;
     }
-    .title {
-        float: left;
-        width: 90px;
-        margin-top: 30px !important;
-    }
-    .searchContainer {
-        float: left;
-        width: calc( 100% - 90px );
-    }
-    /* .column,.columns {
-        margin-left:2% !important;
-    } */
     .masonry {
         -moz-column-count: 3;
         -webkit-column-count: 3;
@@ -756,9 +680,7 @@ ul.classification {
 
 /* Larger than desktop */
 @media (min-width: 1000px) {
-/*     .column,.columns {
-        margin-left:1% !important;
-    } */
+    
     h3 {
         font-size: 16px;
     }

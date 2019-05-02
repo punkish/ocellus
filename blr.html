@@ -16,45 +16,61 @@
     <link rel="stylesheet" href="Skeleton-2.0.4/css/skeleton.min.css">
     <link rel="stylesheet" href="JavaScript-autoComplete/auto-complete.css">
     <link rel="stylesheet" href="blr/fancysearch/fancysearch.css">
-    <link rel="stylesheet" href="blr/css/ocellus.css#uhydftr">
+    <link rel="stylesheet" href="blr/css/ocellus.css">
+    <link rel="stylesheet" href="blr/css/xml.css">
     <link rel="stylesheet" href="css/throbber.css">
 </head>
 <body>
 
 <header>
     <div class="container">
-        
-        <div class="title">
-            <a href="/blr.html" class="main-title">Ocellus<sup>3</sup></a><br>
-            <a id="about-link" class="sub-title msg" data-toggle-target='#about' data-toggle-class='off-none'>about</a>
-        </div>
-             
-        <form id="ssForm">
-        <div class="searchContainer">
-            <nav id="resultTypeChooser">
-                <a href="#images" class="searchFocus">images</a>
-                <a href="#treatments">treatments</a>
-                <!-- <a href="#citations">citations</a> -->
-            </nav>
-            <div id="sSearch" class="searchWidget">
-                <select name="communities">
-                    <option selected>all communities</option>
-                    <option>blr</option>
-                    <option>icedig</option>
-                </select>
-                <div class="searchInputs">
-                    <input id="q" name="q" type="text" required placeholder="search for something">
-                    <input id="refreshCache" type="checkbox" name="refreshCache" value="false">
-                    <input type="hidden" name="resultType" value="images">
+        <div class="row">
+            <div class="two columns">
+                <div class="title">
+                    <a href="/blr.html" class="main-title">Ocellus<sup>3</sup></a><br>
+                    <a id="about-link" class="sub-title msg" data-toggle-target='#about' data-toggle-class='off-none'>about</a>
                 </div>
-                <button id="ssGo" class="searchButton">go</button>
             </div>
-            <div id="fSearch" class="off-none"></div>
-            <div class="searchChooser">
-                <!-- <a id="searchChooser" href="">switch to fancy search</a> -->
-            </div>
+            <!-- <div class="ten columns"> -->
+            <form class="ten columns" id="ssForm">
+                <div class="searchContainer">
+                    <nav id="resultTypeChooser">
+                        <a href="#images" class="searchFocus">images</a>
+                        <a href="#treatments">treatments</a>
+                        <!-- <a href="#citations">citations</a> -->
+                    </nav>
+                    <div id="sSearch" class="searchWidget">
+                        <select name="communities">
+                            <option selected>all communities</option>
+                            <option>blr</option>
+                            <option>icedig</option>
+                        </select>
+                        <!-- <ul class="communities">
+                            <li>communities
+                                <ul>
+                                    <li>all</li>
+                                    <li>blr</li>
+                                    <li>icedig</li>
+                                </ul>
+                            </li>
+                        </ul> -->
+                        <div class="searchInputs">
+                            <input id="q" name="q" type="text" required placeholder="search for something">
+                            <input id="refreshCache" type="checkbox" name="refreshCache" value="false">
+                            <input type="hidden" name="resultType" value="images">
+                            <input type="hidden" name="page" value="1">
+                            <input type="hidden" name="size" value="30">
+                        </div>
+                        <button id="ssGo" class="searchButton">go</button>
+                    </div>
+                    <div id="fSearch" class="off-none"></div>
+                    <div class="searchChooser">
+                        <a id="searchChooser" href="">switch to fancy search</a>
+                    </div>
+                </div>
+            </form>
+            <!-- </div> -->
         </div>
-        </form>
     </div>
 </header>
 <div id="throbber" class="throbber throbber-off"></div>
@@ -99,7 +115,6 @@
         {{#figures}}
         <figure class='item'>
      
-            <!-- 
             <div class="widget">
                 <div id='status' class='status'></div>
                 <button id="toggle-{{recId}}" class="report">r</button>
@@ -110,12 +125,9 @@
                     <button id="cancel-{{recId}}" class="cancel">cancel</button>
                 </form>
             </div>
-            -->
      
-            <a><img src="{{imgA}}" data-recid="{{recId}}"></a>
-            <!-- <a><img src="img/maratus.png" data-recid="{{recId}}"></a> -->
-            <!-- <a href="javascript:Ocellus.carousel();"><img src="img/maratus.png"></a> -->
-            <!-- <a href="#carousel" onclick="Ocellus.carousel(event);"><img src="{{imgA}}"></a> -->
+            <a href="#carousel" onclick="Ocellus.carousel(event);"><img src="{{imgBlur}}" width="250" data-src="{{imgA}}" class="lazyload" data-recid="{{recId}}"></a>
+            
             <figcaption class="transition-050 opacity85 text">
                 <a class="transition-050">rec ID: {{recId}}</a>
                 <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
@@ -138,8 +150,11 @@
     <figure id="{{recId}}" class="image-wrapper">
         <div class="carouselOff">x</div>
         <a href="{{imageSrc}}" target="_blank">
-            <img class="lazyload" src="{{imgA}}" data-src="{{imgC}}" alt="{{title}}" width="960" height="480"></a>
-            <!-- <img class="lazyload" src="img/maratus-big.jpg" data-src="img/maratus-big.jpg" alt="{{title}}" width="960" height="480"></a> -->
+
+            <img src="{{imgA}}" width="960" data-src="{{imgC}}" class="lazyload" data-recid="{{recId}}">
+
+            <img src="{{imgA}}" data-src="{{imgC}}"  class="lazyload" alt="{{title}}" data-recid="{{recId}}"></a>
+
         <figcaption>
             <a class="transition-050">rec ID: {{recId}}</a>
             <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
@@ -158,22 +173,37 @@
     {{/treatments}}
 </script>
 
+<!-- template for fulltext search of treatments shown as a list -->
+<script id="templateTreatmentsList" type="x-tmpl-mustache"> 
+    <ul>   
+        {{#treatments}}
+        <li>{{treatmentTitle}}</li>
+        {{/treatments}}
+    </ul>
+</script>
+
 <!-- template for a single treatment -->
 <script id="templateTreatment" type="x-tmpl-mustache">
     <div class="treatment">
         <h1>{{treatmentTitle}}</h1>
-        <h2>{{treatmentId}}</h2>
-        <ul class="classification">
-            <li class="kingdom">{{kingdom}}</li>
-            <li class="phylum">{{phylum}}</li>
-            <li class="order">{{order}}</li>
-            <li class="family">{{family}}</li>
-            <li class="genus">{{genus}}</li>
-            <li class="species">{{species}}</li>
+        <ul class="pids">
+            <li class="treatmentId">Treatment ID: <a href="/{{treatmentXmlUrl}}">{{treatmentId}}</a> <span class="xml-marker">&lt;xml&gt;</span></li>
+            <li class="doi">DOI: <a href="{{doi}}" target="_blank">{{doi}}</a></li>
+            <li class="zenodoDep">Zenodo deposit: <a href="https://www.zenodo.org/record/{{zenodoDep}}" target="_blank">{{zenodoDep}}</a></li>
         </ul>
         
-        <p class="journal">{{journalTitle}}, {{journalYear}}, Vol. {{journalVolume}}, Issue {{journalIssue}}</p>
-        <p>{{fullText}}</p>
+        <p class="journal">{{journalTitle}}, {{journalYear}}, pages {{pages}}, Vol. {{journalVolume}}, Issue {{journalIssue}}</p>
+
+        <ul class="classification">
+            <li class="kingdom"><div class="txn"><a class="treatmentLink" href="/blr.html?resultType=treatments&kingdom={{kingdom}}">{{kingdom}}</a></div></li>
+            <li class="phylum"><div class="txn">{{phylum}}</div></li>
+            <li class="order"><div class="txn">{{order}}</div></li>
+            <li class="family"><div class="txn">{{family}}</div></li>
+            <li class="genus"><div class="txn">{{genus}}</div></li>
+            <li class="species"><div class="txn">{{species}}</div></li>
+        </ul>
+        
+        <p>{{{xml}}}</p>
     </div>
 </script>
 
@@ -199,26 +229,31 @@ window.onload = function() {
     const templateTreatmentsFTS = document.querySelector('#templateTreatmentsFTS').innerHTML;
     Mustache.parse(templateTreatmentsFTS);
 
+    const templateTreatmentsList = document.querySelector('#templateTreatmentsList').innerHTML;
+    Mustache.parse(templateTreatmentsList);
+
     const templateTreatment = document.querySelector('#templateTreatment').innerHTML;
     Mustache.parse(templateTreatment);
     
     Ocellus.init({
 
-        zenodeo: 'https://zenodeo.punkish.org',
-        //zenodeo: 'http://localhost:3030',
+        //zenodeo: 'https://zenodeo.punkish.org',
+        zenodeo: 'http://localhost:3030',
 
         // layout: 'grid',
-        layout: 'masonry',
+        //layout: 'masonry',
 
         // form elements
         ssForm: document.querySelector('#ssForm'),
         ssGo: document.querySelector('#ssGo'),
         
         // form fields
-        q: document.querySelector('input[name=q]'),
-        resultType: document.querySelector('input[name=resultType]'),
-        communities: document.querySelector('select[name=communities]'),
-        refreshCache: document.querySelector('input[name=refreshCache]'),
+        qField: document.querySelector('input[name=q]'),
+        resultTypeField: document.querySelector('input[name=resultType]'),
+        pageField: document.querySelector('input[name=page]'),
+        sizeField: document.querySelector('input[name=size]'),
+        communitiesField: document.querySelector('select[name=communities]'),
+        refreshCacheField: document.querySelector('input[name=refreshCache]'),
 
         // interface elements
         resultTypeChooser: document.querySelector('#resultTypeChooser'),
@@ -235,6 +270,7 @@ window.onload = function() {
         templateMasonry: templateMasonry,
         templateCarousel: templateCarousel,
         templateTreatmentsFTS: templateTreatmentsFTS,
+        templateTreatmentsList: templateTreatmentsList,
         templateTreatment: templateTreatment
 
         // fancysearch
