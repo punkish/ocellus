@@ -391,7 +391,8 @@ const Ocellus = (function() {
 
         const method = 'GET';
         const headers = [
-            {k: "Content-Type", v: "application/json;charset=UTF-8"}
+            {k: "Content-Type", v: "application/json;charset=UTF-8"},
+            {k: "Access-Control-Allow-Origin", v: "*"}
         ];
         const payload = '';
 
