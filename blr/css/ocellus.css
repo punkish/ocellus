@@ -632,6 +632,8 @@ ul.classification {
 }
 /* end lazyload classes */
 
+#map { height: 300px; }
+
 /* Larger than mobile */
 @media (min-width: 400px) {
 

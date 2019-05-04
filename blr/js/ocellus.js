@@ -293,6 +293,34 @@ const Ocellus = (function() {
                         figs[i].addEventListener('click', toggleFigcaption);
                     }
                 }
+
+                if (data.materialCitations) {
+
+                    // initialize the map and add the layers to it
+                    const map = L.map('map').setView([0, 0], 8);
+
+                    // initialize the baselayer
+                    // L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
+                    //     maxZoom: 18,
+                    //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                    // }).addTo(map);
+
+                    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+                        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                        maxZoom: 18,
+                        id: 'mapbox.streets',
+                        accessToken: 'pk.eyJ1IjoicHVua2lzaCIsImEiOiJjajhvOXY0dW8wMTA3MndvMzBlamlhaGZyIn0.3Ye8NRiiGyjJ1fud7VbtOA'
+                    }).addTo(map);
+
+                    const markers = [];
+                    data.materialCitations.forEach(mc => {
+                        const marker = L.marker([mc.latitude, mc.longitude]).addTo(map);
+                        marker.bindPopup(mc.typeStatus);
+                        markers.push(marker)
+                    })
+                    
+                    map.fitBounds(new L.featureGroup(markers).getBounds());
+                }
     
             };
     
