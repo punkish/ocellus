@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="blr/css/ocellus.css">
     <link rel="stylesheet" href="blr/css/xml.css">
     <link rel="stylesheet" href="css/throbber.css">
+    <!-- <link rel="stylesheet" href="blr/css/styles.min.css"> -->
 </head>
 <body>
 
@@ -195,6 +196,31 @@
             <li class="species"><div class="txn">{{species}}</div></li>
         </ul>
         
+        <div id="masonry" class="masonry">
+            {{#figures}}
+            <figure class='item'>
+         
+                <div class="widget">
+                    <div id='status' class='status'></div>
+                    <button id="toggle-{{recId}}" class="report">r</button>
+                    <form>
+                        <input type="text" class="imageReport" placeholder="enter report here">
+                        <input type="hidden" name="recId" value="{{recId}}">
+                        <button id="submit-{{recId}}" class="submit">send</button>
+                        <button id="cancel-{{recId}}" class="cancel">cancel</button>
+                    </form>
+                </div>
+         
+                <a href="#carousel" onclick="Ocellus.carousel(event);"><img src="{{imgBlur}}" width="250" data-src="{{imgA}}" class="lazyload" data-recid="{{recId}}"></a>
+                
+                <figcaption class="transition-050 opacity85 text">
+                    <a class="transition-050">rec ID: {{recId}}</a>
+                    <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
+                </figcaption>
+            </figure>
+            {{/figures}}
+        </div>
+
         <p>{{{xml}}}</p>
     </div>
 </script>
@@ -207,6 +233,7 @@
 <script src="blr/js/config.js"></script>
 <script src="blr/js/ocellus.js"></script>
 <script src="blr/js/facets.js"></script>
+<!-- <script src="blr/js/scripts.min.js"></script> -->
 
 <script type="text/javascript">
 

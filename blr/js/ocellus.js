@@ -275,13 +275,24 @@ const Ocellus = (function() {
             const callback = function(xh) {
     
                 const data = xh.value;
+
+                let imgCount = 0;
+                [data.figures, imgCount] = makeLayout(xh.value.images.images);
     
                 wrapper.innerHTML = Mustache.render(templateTreatment, data);
                 wrapper.className = 'on';
+                footer.className = 'relative';
+
                 throbber.classList.remove('throbber-on');
                 throbber.classList.add('throbber-off');
 
-                footer.className = 'relative';
+                if (data.numOfFoundRecords !== 'Zero') {
+                    const figs = document.querySelectorAll('figcaption > a');
+                    
+                    for (let i = 0, j = figs.length; i < j; i++) {
+                        figs[i].addEventListener('click', toggleFigcaption);
+                    }
+                }
     
             };
     

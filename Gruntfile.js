@@ -4,19 +4,36 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
-        uglify: {
+        "uglify-es": {
             options: {
                 mangle: false
             },
-            my_target: {
-            files: {
-                    'js/scripts.min.js': [
-                        'js/mustache.min.js',
-                        'JavaScript-autoComplete/auto-complete.js',
-                        'js/family.min.js',
-                        'js/ocellus.js'
-                    ]
-                }
+            target: {
+                files: {
+                        'blr/js/scripts-es.min.js': [
+                            "blr/fancysearch/fancysearch.js",
+                            "blr/js/config.js",
+                            'js/ocellus.js',
+                            "blr/js/facets.js"
+                        ]
+                    }
+            }
+        },
+
+        "uglify": {
+            options: {
+                mangle: false
+            },
+            target: {
+                files: {
+                        'blr/js/scripts.min.js': [
+                            "blr/js/cookies.js",
+                            "js/lazysizes.min.js",
+                            'js/mustache.min.js',
+                            'JavaScript-autoComplete/auto-complete.js'
+
+                        ]
+                    }
             }
         },
 
@@ -27,11 +44,13 @@ module.exports = function(grunt) {
             },
             target: {
                 files: {
-                    'css/styles.min.css': [
-                        'css/normalize.css',
-                        'css/skeleton.css',
-                        'css/auto-complete.min.css',
-                        //'css/ocellus.css',
+                    'blr/css/styles.min.css': [
+                        "Skeleton-2.0.4/css/normalize-7.0.0.min.css",
+                        "Skeleton-2.0.4/css/skeleton.min.css",
+                        "JavaScript-autoComplete/auto-complete.css",
+                        "blr/fancysearch/fancysearch.css",
+                        "blr/css/ocellus.css",
+                        "blr/css/xml.css",
                         'css/throbber.css'
                     ]
                 }
@@ -43,5 +62,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
 
     // Default task(s).
-    grunt.registerTask('default', ['uglify', 'cssmin']);
+    grunt.registerTask('default', ['uglify-es', 'uglify', 'cssmin']);
 };
