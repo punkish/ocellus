@@ -278,7 +278,10 @@ const Ocellus = (function() {
 
                 let imgCount = 0;
                 [data.figures, imgCount] = makeLayout(xh.value.images.images);
-    
+
+                // const rx = XRegExp('(<taxonomicName.*?>)(.*)?(<\/taxonomicName>)', 'gs');
+                // data.xml = XRegExp.replace(data.xml, rx, `$1<a href="${zenodeo}/v2/treatments?q=foo">$2</a>$3`);
+
                 wrapper.innerHTML = Mustache.render(templateTreatment, data);
                 wrapper.className = 'on';
                 footer.className = 'relative';

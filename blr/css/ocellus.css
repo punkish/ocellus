@@ -632,7 +632,10 @@ ul.classification {
 }
 /* end lazyload classes */
 
-#map { height: 300px; }
+#map { 
+    height: 300px; 
+    margin-bottom: 20px;
+}
 
 /* Larger than mobile */
 @media (min-width: 400px) {

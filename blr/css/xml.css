@@ -1,3 +1,11 @@
+p.xml {
+    font-family: Georgia, Times, 'Times New Roman', serif
+}
+
+emphasis {
+    font-weight: bold;
+}
+
 mods\:title,
 mods\:roleTerm {
     font-weight: 800;
@@ -10,8 +18,21 @@ subSubSection paragraph heading {
     /* white-space: pre; */
 }
 
+paragraph {
+    display: table;
+    margin-top: 12px;
+}
+
+taxonomicname {
+    font-style: italic;
+}
+
 mods\:namePart {
     font-style: italic
+}
+
+location {
+    background-color: lightgreen;
 }
 
 geocoordinate {
