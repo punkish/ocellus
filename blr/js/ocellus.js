@@ -235,6 +235,8 @@ const Ocellus = (function() {
         'treatment': function(event, options) {
 
             let treatmentId = options.treatmentId;
+            let format = options.format;
+
             if (event) {
 
                 if (event.target.search) {
@@ -247,6 +249,7 @@ const Ocellus = (function() {
 
                     treatmentId = qry.treatmentId;
                     refreshCache = qry.refreshCache;
+                    format = qry.format;
 
                 }
             }
@@ -258,6 +261,10 @@ const Ocellus = (function() {
             
             if (refreshCache === 'true') {
                 href1 += '&refreshCache=true';
+            }
+
+            if (format) {
+                href1 += `&format=${format}`;
             }
         
             // 2. 'href2' is attached to 'prev' and 'next' links with
@@ -274,55 +281,61 @@ const Ocellus = (function() {
             
             const callback = function(xh) {
     
+
                 const data = xh.value;
 
-                let imgCount = 0;
-                [data.figures, imgCount] = makeLayout(xh.value.images.images);
-
-                // const rx = XRegExp('(<taxonomicName.*?>)(.*)?(<\/taxonomicName>)', 'gs');
-                // data.xml = XRegExp.replace(data.xml, rx, `$1<a href="${zenodeo}/v2/treatments?q=foo">$2</a>$3`);
-
-                wrapper.innerHTML = Mustache.render(templateTreatment, data);
-                wrapper.className = 'on';
-                footer.className = 'relative';
-
-                throbber.classList.remove('throbber-on');
-                throbber.classList.add('throbber-off');
-
-                if (data.numOfFoundRecords !== 'Zero') {
-                    const figs = document.querySelectorAll('figcaption > a');
-                    
-                    for (let i = 0, j = figs.length; i < j; i++) {
-                        figs[i].addEventListener('click', toggleFigcaption);
-                    }
+                if (format === 'xml') {
+                    return data;
                 }
+                else {
+                    let imgCount = 0;
+                    [data.figures, imgCount] = makeLayout(xh.value.images.images);
 
-                if (data.materialCitations) {
+                    // const rx = XRegExp('(<taxonomicName.*?>)(.*)?(<\/taxonomicName>)', 'gs');
+                    // data.xml = XRegExp.replace(data.xml, rx, `$1<a href="${zenodeo}/v2/treatments?q=foo">$2</a>$3`);
 
-                    // initialize the map and add the layers to it
-                    const map = L.map('map').setView([0, 0], 8);
+                    wrapper.innerHTML = Mustache.render(templateTreatment, data);
+                    wrapper.className = 'on';
+                    footer.className = 'relative';
 
-                    // initialize the baselayer
-                    // L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
-                    //     maxZoom: 18,
-                    //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                    // }).addTo(map);
+                    throbber.classList.remove('throbber-on');
+                    throbber.classList.add('throbber-off');
 
-                    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-                        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-                        maxZoom: 18,
-                        id: 'mapbox.streets',
-                        accessToken: 'pk.eyJ1IjoicHVua2lzaCIsImEiOiJjajhvOXY0dW8wMTA3MndvMzBlamlhaGZyIn0.3Ye8NRiiGyjJ1fud7VbtOA'
-                    }).addTo(map);
+                    if (data.numOfFoundRecords !== 'Zero') {
+                        const figs = document.querySelectorAll('figcaption > a');
+                        
+                        for (let i = 0, j = figs.length; i < j; i++) {
+                            figs[i].addEventListener('click', toggleFigcaption);
+                        }
+                    }
 
-                    const markers = [];
-                    data.materialCitations.forEach(mc => {
-                        const marker = L.marker([mc.latitude, mc.longitude]).addTo(map);
-                        marker.bindPopup(mc.typeStatus);
-                        markers.push(marker)
-                    })
-                    
-                    map.fitBounds(new L.featureGroup(markers).getBounds());
+                    if (data.materialCitations) {
+
+                        // initialize the map and add the layers to it
+                        const map = L.map('map').setView([0, 0], 8);
+
+                        // initialize the baselayer
+                        // L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
+                        //     maxZoom: 18,
+                        //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                        // }).addTo(map);
+
+                        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+                            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                            maxZoom: 18,
+                            id: 'mapbox.streets',
+                            accessToken: 'pk.eyJ1IjoicHVua2lzaCIsImEiOiJjajhvOXY0dW8wMTA3MndvMzBlamlhaGZyIn0.3Ye8NRiiGyjJ1fud7VbtOA'
+                        }).addTo(map);
+
+                        const markers = [];
+                        data.materialCitations.forEach(mc => {
+                            const marker = L.marker([mc.latitude, mc.longitude]).addTo(map);
+                            marker.bindPopup(mc.typeStatus);
+                            markers.push(marker)
+                        })
+                        
+                        map.fitBounds(new L.featureGroup(markers).getBounds());
+                    }
                 }
     
             };

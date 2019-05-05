@@ -181,7 +181,7 @@
     <div class="treatment">
         <h1>{{treatmentTitle}}</h1>
         <ul class="pids">
-            <li class="treatmentId">Treatment ID: <a href="/{{treatmentXmlUrl}}">{{treatmentId}}</a> <span class="xml-marker">&lt;xml&gt;</span></li>
+            <li class="treatmentId">Treatment ID: <a href="https://zenodeo.punkish.org/v2/treatments?treatmentId={{treatmentId}}&format=xml" target="_blank">{{treatmentId}}</a> <span class="xml-marker">&lt;xml&gt;</span></li>
             <li class="doi">DOI: <a href="{{doi}}" target="_blank">{{doi}}</a></li>
             <li class="zenodoDep">Zenodo deposit: <a href="https://www.zenodo.org/record/{{zenodoDep}}" target="_blank">{{zenodoDep}}</a></li>
         </ul>
@@ -189,7 +189,8 @@
         <p class="journal">{{journalTitle}}, {{journalYear}}, pages {{pages}}, Vol. {{journalVolume}}, Issue {{journalIssue}}</p>
 
         <ul class="classification">
-            <li class="kingdom"><div class="txn"><a class="treatmentLink" href="/blr.html?resultType=treatments&kingdom={{kingdom}}">{{kingdom}}</a></div></li>
+                <li class="kingdom"><div class="txn">{{kingdom}}</div></li>
+            <!-- <li class="kingdom"><div class="txn"><a class="treatmentLink" href="/blr.html?resultType=treatments&kingdom={{kingdom}}">{{kingdom}}</a></div></li> -->
             <li class="phylum"><div class="txn">{{phylum}}</div></li>
             <li class="order"><div class="txn">{{order}}</div></li>
             <li class="family"><div class="txn">{{family}}</div></li>
