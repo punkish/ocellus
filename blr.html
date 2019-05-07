@@ -34,7 +34,7 @@
                 </div>
             </div>
             
-            <form class="ten columns" id="ssForm">
+            <form class="ten columns" id="ssForm" method="GET">
                 <div class="searchContainer">
                     <nav id="resultTypeChooser">
                         <a href="#images" class="searchFocus">images</a>
@@ -162,18 +162,9 @@
     {{#treatments}}
     <details open>
         <summary>{{treatmentTitle}}</summary>
-        <p>… {{{s}}} … <a class="treatmentLink" href="/blr.html?resultType=treatments&treatmentId={{treatmentId}}">more</a></p>
+        <p>{{{s}}} <a class="treatmentLink" href="/blr.html?resultType=treatments&treatmentId={{treatmentId}}">more</a></p>
     </details>
     {{/treatments}}
-</script>
-
-<!-- template for fulltext search of treatments shown as a list -->
-<script id="templateTreatmentsList" type="x-tmpl-mustache"> 
-    <ul>   
-        {{#treatments}}
-        <li>{{treatmentTitle}}</li>
-        {{/treatments}}
-    </ul>
 </script>
 
 <!-- template for a single treatment -->
@@ -189,13 +180,12 @@
         <p class="journal">{{journalTitle}}, {{journalYear}}, pages {{pages}}, Vol. {{journalVolume}}, Issue {{journalIssue}}</p>
 
         <ul class="classification">
-                <li class="kingdom"><div class="txn">{{kingdom}}</div></li>
-            <!-- <li class="kingdom"><div class="txn"><a class="treatmentLink" href="/blr.html?resultType=treatments&kingdom={{kingdom}}">{{kingdom}}</a></div></li> -->
-            <li class="phylum"><div class="txn">{{phylum}}</div></li>
-            <li class="order"><div class="txn">{{order}}</div></li>
-            <li class="family"><div class="txn">{{family}}</div></li>
-            <li class="genus"><div class="txn">{{genus}}</div></li>
-            <li class="species"><div class="txn">{{species}}</div></li>
+            <li class="kingdom"><div class="txn"><a class="treatmentLink" href="/blr.html?resultType=treatments&kingdom={{kingdom}}">{{kingdom}}</a></div></li>
+            <li class="phylum"><div class="txn"><a class="treatmentLink" href="/blr.html?resultType=treatments&kingdom={{kingdom}}&phylum={{phylum}}">{{phylum}}</a></div></li>
+            <li class="order"><div class="txn"><a class="treatmentLink" href="/blr.html?resultType=treatments&kingdom={{kingdom}}&phylum={{phylum}}&order={{order}}">{{order}}</a></div></li>
+            <li class="family"><div class="txn"><a class="treatmentLink" href="/blr.html?resultType=treatments&kingdom={{kingdom}}&phylum={{phylum}}&order={{order}}&family={{family}}">{{family}}</a></div></li>
+            <li class="genus"><div class="txn"><a class="treatmentLink" href="/blr.html?resultType=treatments&kingdom={{kingdom}}&phylum={{phylum}}&order={{order}}&family={{family}}&genus={{genus}}">{{genus}}</a></div></li>
+            <li class="species"><div class="txn"><a class="treatmentLink" href="/blr.html?resultType=treatments&kingdom={{kingdom}}&phylum={{phylum}}&order={{order}}&family={{family}}&genus={{genus}}&species={{species}}">{{species}}</a></div></li>
         </ul>
         
         <div id="map"></div>
@@ -224,8 +214,6 @@
             </figure>
             {{/figures}}
         </div>
-
-        <hr>
 
         <p class="xml">{{{xml}}}</p>
     </div>
@@ -260,8 +248,8 @@ window.onload = function() {
     const templateTreatmentsFTS = document.querySelector('#templateTreatmentsFTS').innerHTML;
     Mustache.parse(templateTreatmentsFTS);
 
-    const templateTreatmentsList = document.querySelector('#templateTreatmentsList').innerHTML;
-    Mustache.parse(templateTreatmentsList);
+    // const templateTreatmentsList = document.querySelector('#templateTreatmentsList').innerHTML;
+    // Mustache.parse(templateTreatmentsList);
 
     const templateTreatment = document.querySelector('#templateTreatment').innerHTML;
     Mustache.parse(templateTreatment);
@@ -297,7 +285,7 @@ window.onload = function() {
         templateMasonry: templateMasonry,
         templateCarousel: templateCarousel,
         templateTreatmentsFTS: templateTreatmentsFTS,
-        templateTreatmentsList: templateTreatmentsList,
+        //templateTreatmentsList: templateTreatmentsList,
         templateTreatment: templateTreatment
         
     });

@@ -56,7 +56,7 @@ const Ocellus = (function() {
     let templateMasonry;
     let templateCarousel;
     let templateTreatmentsFTS;
-    let templateTreatmentsList;
+    //let templateTreatmentsList;
     let templateTreatment;
 
     // we use these state variables when toggling about
@@ -93,7 +93,7 @@ const Ocellus = (function() {
         
         let resource = options.resultType;
         if (options.treatmentId) resource = 'treatment';
-        resources[resource](false, options)
+        resources[resource](options)
     };
     
     const makeLayout = function(imagesOfRecords) {
@@ -146,36 +146,29 @@ const Ocellus = (function() {
 
     const resources = {
 
-        'treatments': function(event, options) {
-
-            let {q, page, size, refreshCache} = options;
-            if (event) {
-
-                if (event.target.search) {
-                    const search = event.target.search.substr(1).split('&');
-                    let qry = {};
-                    search.forEach(el => {
-                        const a = el.split('=')
-                        qry[ a[0] ] = a[1] 
-                    })
-
-                    q = qry.q;
-                    page = qry.page;
-                    size = qry.size;
-                    refreshCache = qry.refreshCache;
-
-                }
-                
-            }
+        //'treatments': function(event, options) {
+        'treatments': function(options) {
 
             // We need three hrefs:
             //
             // 1. 'href1' is sent to zenodeo to fetch the result
-            let href1 = `q=${q.toLowerCase()}&size=${size}&page=${page}`;
+            // let href1 = `q=${q.toLowerCase()}&size=${size}&page=${page}`;
             
-            if (refreshCache === 'true') {
-                href1 += '&refreshCache=true';
+            
+            let params = [];
+            for (let k in options) {
+                params.push(`${k}=${options[k]}`)
             }
+
+            let href3 = params.join('&')
+            
+            delete options['resultType'];
+            let params2 = [];
+            for (let k in options) {
+                params2.push(`${k}=${options[k]}`)
+            }
+
+            let href1 = params2.join('&')
         
             // 2. 'href2' is attached to 'prev' and 'next' links with
             // the correctly decremented or  incremented page number
@@ -183,11 +176,12 @@ const Ocellus = (function() {
     
             // 3. 'href3' is displayed in the browser URL bar via  
             // `history.pushState()`
-            let href3 = `resultType=treatments&${href1}`;
+            //let href3 = `resultType=treatments&${href1}`;
     
-            href1 = `${zenodeo}/v2/treatments?${href1}`;
-    
+            
             history.pushState('', '', `?${href3}`);
+
+            href1 = `${zenodeo}/v2/treatments?${href1}`;
             
             const callback = function(xh) {
     
@@ -201,8 +195,8 @@ const Ocellus = (function() {
     
                 if (numOfFoundRecords) {
                     if (numOfFoundRecords >= 30) {
-                        data.prev = (page === 1) ? `?${href2}&page=1` : `?${href2}&page=${page - 1}`;
-                        data.next = `?${href2}&page=${(parseInt(page) + 1)}`;
+                        data.prev = (options.page === 1) ? `?${href2}&page=1` : `?${href2}&page=${options.page - 1}`;
+                        data.next = `?${href2}&page=${(parseInt(options.page) + 1)}`;
                         data.pager = true;
                     }
     
@@ -232,31 +226,11 @@ const Ocellus = (function() {
             return false;
         },
 
-        'treatment': function(event, options) {
+        'treatment': function(options) {
 
             let treatmentId = options.treatmentId;
             let format = options.format;
-
-            if (event) {
-
-                if (event.target.search) {
-                    const search = event.target.search.substr(1).split('&');
-                    let qry = {};
-                    search.forEach(el => {
-                        const a = el.split('=')
-                        qry[ a[0] ] = a[1] 
-                    })
-
-                    treatmentId = qry.treatmentId;
-                    refreshCache = qry.refreshCache;
-                    format = qry.format;
-
-                }
-            }
-
-            // We need two hrefs:
-            //
-            // 1. 'href1' is sent to zenodeo to fetch the result
+            let refreshCache = options.refreshCache;
             let href1 = `treatmentId=${treatmentId}`;
             
             if (refreshCache === 'true') {
@@ -267,17 +241,11 @@ const Ocellus = (function() {
                 href1 += `&format=${format}`;
             }
         
-            // 2. 'href2' is attached to 'prev' and 'next' links with
-            // the correctly decremented or  incremented page number
-            // There is no 'href2' for a single treatment
-    
-            // 3. 'href3' is displayed in the browser URL bar via  
-            // `history.pushState()`
-            let href3 = `resultType=treatments&${href1}`;
 
+            history.pushState('', '', `?${href1}`);
             href1 = `${zenodeo}/v2/treatments?${href1}`;
 
-            history.pushState('', '', `?${href3}`);
+            
             
             const callback = function(xh) {
     
@@ -290,9 +258,6 @@ const Ocellus = (function() {
                 else {
                     let imgCount = 0;
                     [data.figures, imgCount] = makeLayout(xh.value.images.images);
-
-                    // const rx = XRegExp('(<taxonomicName.*?>)(.*)?(<\/taxonomicName>)', 'gs');
-                    // data.xml = XRegExp.replace(data.xml, rx, `$1<a href="${zenodeo}/v2/treatments?q=foo">$2</a>$3`);
 
                     wrapper.innerHTML = Mustache.render(templateTreatment, data);
                     wrapper.className = 'on';
@@ -312,29 +277,30 @@ const Ocellus = (function() {
                     if (data.materialCitations) {
 
                         // initialize the map and add the layers to it
-                        const map = L.map('map').setView([0, 0], 8);
-
-                        // initialize the baselayer
-                        // L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
-                        //     maxZoom: 18,
-                        //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                        // }).addTo(map);
+                        const mcmap = L.map('map', {
+                            center: [0, 0],
+                            zoom: 8,
+                            scrollWheelZoom: false
+                        });
 
                         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
                             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
                             maxZoom: 18,
                             id: 'mapbox.streets',
                             accessToken: 'pk.eyJ1IjoicHVua2lzaCIsImEiOiJjajhvOXY0dW8wMTA3MndvMzBlamlhaGZyIn0.3Ye8NRiiGyjJ1fud7VbtOA'
-                        }).addTo(map);
+                        }).addTo(mcmap);
 
                         const markers = [];
                         data.materialCitations.forEach(mc => {
-                            const marker = L.marker([mc.latitude, mc.longitude]).addTo(map);
+                            const marker = L.marker([mc.latitude, mc.longitude]).addTo(mcmap);
                             marker.bindPopup(mc.typeStatus);
                             markers.push(marker)
                         })
                         
-                        map.fitBounds(new L.featureGroup(markers).getBounds());
+                        mcmap.fitBounds(new L.featureGroup(markers).getBounds());
+                    }
+                    else {
+                        document.querySelector('#map').classList.add('off-none');
                     }
                 }
     
@@ -344,37 +310,55 @@ const Ocellus = (function() {
 
         },
     
-        'images': function(event, options) {
+        'images': function(options) {
 
-            let {q, page, size, communities, refreshCache} = options;
+            // let {q, page, size, communities, refreshCache} = options;
 
-            if (event) {
+            // if (event) {
 
-                if (event.target.search) {
-                    const search = event.target.search.substr(1).split('&');
-                    let qry = {};
-                    search.forEach(el => {
-                        const a = el.split('=')
-                        qry[ a[0] ] = a[1] 
-                    })
+            //     if (event.target.search) {
+            //         const search = event.target.search.substr(1).split('&');
+            //         let qry = {};
+            //         search.forEach(el => {
+            //             const a = el.split('=')
+            //             qry[ a[0] ] = a[1] 
+            //         })
                     
-                    q = qry.q;
-                    page = qry.page;
-                    size = qry.size;
-                    communities = qry.communities;
-                    refreshCache = qry.refreshCache;
-                }
+            //         q = qry.q;
+            //         page = qry.page;
+            //         size = qry.size;
+            //         communities = qry.communities;
+            //         refreshCache = qry.refreshCache;
+            //     }
 
-            }
+            // }
             
             // We need three hrefs:
             //
             // 1. 'href1' is sent to zenodeo to fetch the result
-            let href1 = `q=${q.toLowerCase()}&size=${size}&page=${page}&communities=${communities}&access_right=open&type=image`;
-            
-            if (refreshCache === 'true') {
-                href1 += '&refreshCache=true';
+            //let href1 = `q=${q.toLowerCase()}&size=${size}&page=${page}&communities=${communities}&access_right=open&type=image`;
+
+            let params = [];
+            for (let k in options) {
+                params.push(`${k}=${options[k]}`)
             }
+
+            let href3 = params.join('&')
+            
+            delete options['resultType'];
+            let params2 = [];
+            for (let k in options) {
+                params2.push(`${k}=${options[k]}`)
+            }
+
+            params2.push('access_right=open')
+            params2.push('type=image')
+
+            let href1 = params2.join('&')
+            
+            // if (refreshCache === 'true') {
+            //     href1 += '&refreshCache=true';
+            // }
         
             // 2. 'href2' is attached to 'prev' and 'next' links with
             // the correctly decremented or  incremented page number
@@ -382,11 +366,11 @@ const Ocellus = (function() {
     
             // 3. 'href3' is displayed in the browser URL bar via  
             // `history.pushState()`
-            let href3 = `resultType=images&${href1}`;
-    
-            href1 = `${zenodeo}/v2/images?${href1}`;
     
             history.pushState('', '', `?${href3}`);
+            href1 = `${zenodeo}/v2/images?${href1}`;
+    
+            
             
             const callback = function(xh) {
     
@@ -400,8 +384,8 @@ const Ocellus = (function() {
     
                 if (numOfFoundRecords) {
                     if (numOfFoundRecords >= 30) {
-                        data.prev = (page === 1) ? `?${href2}&page=1` : `?${href2}&page=${page - 1}`;
-                        data.next = `?${href2}&page=${(parseInt(page) + 1)}`;
+                        data.prev = (options.page === 1) ? `?${href2}&page=1` : `?${href2}&page=${options.page - 1}`;
+                        data.next = `?${href2}&page=${(parseInt(options.page) + 1)}`;
                         data.pager = true;
                     }
     
@@ -681,6 +665,7 @@ const Ocellus = (function() {
 
     //+creators.name:/Agosti.*/ +publication_date:[1990 TO 1991} +keywords:taxonomy +title:review
     const goGetIt = function(event) {
+
         event.preventDefault();
         event.stopPropagation();
 
@@ -698,7 +683,7 @@ const Ocellus = (function() {
                 size: sizeField.value
             };
 
-            resources[resultTypeField.value](event, options)
+            resources[resultTypeField.value](options)
         }
     };
 
@@ -817,7 +802,7 @@ const Ocellus = (function() {
             templateMasonry = options.templateMasonry;
             templateCarousel = options.templateCarousel;
             templateTreatmentsFTS = options.templateTreatmentsFTS;
-            templateTreatmentsList = options.templateTreatmentsList;
+            //templateTreatmentsList = options.templateTreatmentsList;
             templateTreatment = options.templateTreatment;
 
             aboutLink.addEventListener('click', toggleAbout);
