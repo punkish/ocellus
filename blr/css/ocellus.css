@@ -209,7 +209,7 @@ nav a.searchFocus {
 
 .drop-down ul {
     position: relative;
-    top: 29px;
+    top: 23px;
     left:-1px;
     list-style: none;
     background: #afafaf;
@@ -243,10 +243,7 @@ nav a.searchFocus {
 .drop-down ul li:hover a{
     color: white;
 }
-.drop-down ul li:first-child:hover{
-    background-color: lightgrey;
-    color: black;
-}
+
 .drop-down.open{
     border-radius: 5px 0 0 0px;
 }
@@ -257,19 +254,20 @@ nav a.searchFocus {
 
 .drop-down .arrow-down {
     width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
+/*     height: 0; */
+    /* border-left: 10px solid transparent;
     border-right: 10px solid transparent;
-    border-top: 10px solid #000;
+    border-top: 10px solid #000; */
     margin: 0 auto;
-    top: 40%;
+    top: 30%;
+    left: -5px;
     position: relative;
 }
 /* end communities select box */
 
 #sSearch .searchInputs,
 #fSearch .searchInputs {
-    width: calc( 100% - 160px );
+    width: calc( 100% - 90px );
     float: left;
     background-color: white;
     border: 1px solid #444;
