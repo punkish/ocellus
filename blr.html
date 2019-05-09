@@ -20,7 +20,6 @@
     <link rel="stylesheet" href="blr/css/ocellus.css">
     <link rel="stylesheet" href="blr/css/xml.css">
     <link rel="stylesheet" href="css/throbber.css">
-    <!-- <link rel="stylesheet" href="blr/css/styles.min.css"> -->
 </head>
 <body>
 
@@ -42,24 +41,34 @@
                         <!-- <a href="#citations">citations</a> -->
                     </nav>
                     <div id="sSearch" class="searchWidget">
-                        <select name="communities">
-                            <option selected>all communities</option>
-                            <option>blr</option>
-                            <option>icedig</option>
-                        </select>
+
+                        <div class="drop-down" data-tooltip="choose a community">
+
+                            <div class="arrow-down"></div>
+                            <ul>
+                                <!-- <li>choose a community…</li> -->
+                                <li><a href="#">all communities</a></li>
+                                <li><a href="#">BLR</a></li>
+                                <li><a href="#">IceDig</a></li>
+                            </ul>
+                        </div>
                         
                         <div class="searchInputs">
                             <input id="q" name="q" type="text" required placeholder="search for something">
                             <input id="refreshCache" type="checkbox" name="refreshCache" value="false">
+                            <input type="hidden" name="communities" value="all communities">
                             <input type="hidden" name="resultType" value="images">
                             <input type="hidden" name="page" value="1">
                             <input type="hidden" name="size" value="30">
                         </div>
+
                         <button id="ssGo" class="searchButton">go</button>
-                    </div>
-                    <div id="fSearch" class="off-none"></div>
-                    <div class="searchChooser">
-                        <a id="searchChooser" href="">switch to fancy search</a>
+                        <!-- </div> -->
+
+                        <div id="fSearch" class="off-none"></div>
+                        <div class="searchChooser">
+                            <a id="searchChooser" href="">switch to fancy search</a>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -144,11 +153,7 @@
     <figure id="{{recId}}" class="image-wrapper">
         <div class="carouselOff">x</div>
         <a href="{{imageSrc}}" target="_blank">
-
-            <img src="{{imgA}}" width="960" data-src="{{imgC}}" class="lazyload" data-recid="{{recId}}">
-
             <img src="{{imgA}}" data-src="{{imgC}}"  class="lazyload" alt="{{title}}" data-recid="{{recId}}"></a>
-
         <figcaption>
             <a class="transition-050">rec ID: {{recId}}</a>
             <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
@@ -232,11 +237,9 @@
 <script src="blr/js/config.js"></script>
 <script src="blr/js/ocellus.js"></script>
 
-<!-- <script src="blr/js/scripts.min.js"></script> -->
-
 <script type="text/javascript">
 
-window.onload = function() {    
+window.onload = function() {
 
     // compile the templates
     const templateMasonry = document.querySelector('#templateMasonry').innerHTML;
@@ -267,10 +270,11 @@ window.onload = function() {
         resultTypeField: document.querySelector('input[name=resultType]'),
         pageField: document.querySelector('input[name=page]'),
         sizeField: document.querySelector('input[name=size]'),
-        communitiesField: document.querySelector('select[name=communities]'),
+        communitiesField: document.querySelector('input[name=communities]'),
         refreshCacheField: document.querySelector('input[name=refreshCache]'),
 
         // interface elements
+        communitiesSelector: document.querySelector('.drop-down'),
         resultTypeChooser: document.querySelector('#resultTypeChooser'),
         throbber: document.querySelector('#throbber'),
         footer: document.querySelector('footer'),
@@ -285,7 +289,6 @@ window.onload = function() {
         templateMasonry: templateMasonry,
         templateCarousel: templateCarousel,
         templateTreatmentsFTS: templateTreatmentsFTS,
-        //templateTreatmentsList: templateTreatmentsList,
         templateTreatment: templateTreatment
         
     });

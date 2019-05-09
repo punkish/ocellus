@@ -42,6 +42,7 @@ const Ocellus = (function() {
     let refreshCacheField;
 
     // various divs and navs
+    let communitiesSelector;
     let resultTypeChooser;
     let throbber;
     let footer;
@@ -56,7 +57,6 @@ const Ocellus = (function() {
     let templateMasonry;
     let templateCarousel;
     let templateTreatmentsFTS;
-    //let templateTreatmentsList;
     let templateTreatment;
 
     // we use these state variables when toggling about
@@ -92,7 +92,12 @@ const Ocellus = (function() {
         tagResultTypeChooser(options.resultType)
         
         let resource = options.resultType;
-        if (options.treatmentId) resource = 'treatment';
+        if (options.treatmentId) {
+            resource = 'treatment'
+        }
+        else {
+            resource = 'iort'
+        }
         resources[resource](options)
     };
     
@@ -145,86 +150,6 @@ const Ocellus = (function() {
     };
 
     const resources = {
-
-        //'treatments': function(event, options) {
-        'treatments': function(options) {
-
-            // We need three hrefs:
-            //
-            // 1. 'href1' is sent to zenodeo to fetch the result
-            // let href1 = `q=${q.toLowerCase()}&size=${size}&page=${page}`;
-            
-            
-            let params = [];
-            for (let k in options) {
-                params.push(`${k}=${options[k]}`)
-            }
-
-            let href3 = params.join('&')
-            
-            delete options['resultType'];
-            let params2 = [];
-            for (let k in options) {
-                params2.push(`${k}=${options[k]}`)
-            }
-
-            let href1 = params2.join('&')
-        
-            // 2. 'href2' is attached to 'prev' and 'next' links with
-            // the correctly decremented or  incremented page number
-            let href2 = href1
-    
-            // 3. 'href3' is displayed in the browser URL bar via  
-            // `history.pushState()`
-            //let href3 = `resultType=treatments&${href1}`;
-    
-            
-            history.pushState('', '', `?${href3}`);
-
-            href1 = `${zenodeo}/v2/treatments?${href1}`;
-            
-            const callback = function(xh) {
-    
-                const res = xh.value;
-                let numOfFoundRecords = res.length;
-                let imgCount = 0;
-                let template= templateTreatmentsFTS;
-    
-                data.treatments = res;
-                data.numOfFoundRecords = niceNumbers(numOfFoundRecords);
-    
-                if (numOfFoundRecords) {
-                    if (numOfFoundRecords >= 30) {
-                        data.prev = (options.page === 1) ? `?${href2}&page=1` : `?${href2}&page=${options.page - 1}`;
-                        data.next = `?${href2}&page=${(parseInt(options.page) + 1)}`;
-                        data.pager = true;
-                    }
-    
-                    footer.className = 'relative';
-                }
-                else {
-                    data.numOfFoundRecords = 'Zero';
-                    data.pager = false;
-                    footer.className = 'fixed';
-                }
-    
-                wrapper.innerHTML = Mustache.render(template, data);            
-                wrapper.className = 'on';
-                throbber.classList.remove('throbber-on');
-                throbber.classList.add('throbber-off');
-    
-                const treatmentLinks = document.querySelectorAll('.treatmentLink');
-    
-                for (let i = 0, j = treatmentLinks.length; i < j; i++) {
-                    treatmentLinks[i].addEventListener('click', resources['treatment']);
-                }
-                
-            };
-    
-            x(href1, callback);
-            
-            return false;
-        },
 
         'treatment': function(options) {
 
@@ -290,6 +215,7 @@ const Ocellus = (function() {
                             accessToken: 'pk.eyJ1IjoicHVua2lzaCIsImEiOiJjajhvOXY0dW8wMTA3MndvMzBlamlhaGZyIn0.3Ye8NRiiGyjJ1fud7VbtOA'
                         }).addTo(mcmap);
 
+                        // https://stackoverflow.com/questions/16845614/zoom-to-fit-all-markers-in-mapbox-or-leaflet
                         const markers = [];
                         data.materialCitations.forEach(mc => {
                             const marker = L.marker([mc.latitude, mc.longitude]).addTo(mcmap);
@@ -309,35 +235,12 @@ const Ocellus = (function() {
             x(href1, callback);
 
         },
-    
-        'images': function(options) {
 
-            // let {q, page, size, communities, refreshCache} = options;
-
-            // if (event) {
-
-            //     if (event.target.search) {
-            //         const search = event.target.search.substr(1).split('&');
-            //         let qry = {};
-            //         search.forEach(el => {
-            //             const a = el.split('=')
-            //             qry[ a[0] ] = a[1] 
-            //         })
-                    
-            //         q = qry.q;
-            //         page = qry.page;
-            //         size = qry.size;
-            //         communities = qry.communities;
-            //         refreshCache = qry.refreshCache;
-            //     }
-
-            // }
+        'iort': function(options) {
             
             // We need three hrefs:
-            //
-            // 1. 'href1' is sent to zenodeo to fetch the result
-            //let href1 = `q=${q.toLowerCase()}&size=${size}&page=${page}&communities=${communities}&access_right=open&type=image`;
-
+            // 1. 'href1' is sent to zenodeo to fetch 
+            // the result
             let params = [];
             for (let k in options) {
                 params.push(`${k}=${options[k]}`)
@@ -345,41 +248,51 @@ const Ocellus = (function() {
 
             let href3 = params.join('&')
             
-            delete options['resultType'];
             let params2 = [];
+            if (options.resultType === 'images') {
+                params2.push('access_right=open')
+                params2.push('type=image')
+            }
+
+            let stub = `${zenodeo}/v2/${options.resultType}`;
+            delete options['resultType'];
+            
             for (let k in options) {
                 params2.push(`${k}=${options[k]}`)
             }
 
-            params2.push('access_right=open')
-            params2.push('type=image')
-
             let href1 = params2.join('&')
-            
-            // if (refreshCache === 'true') {
-            //     href1 += '&refreshCache=true';
-            // }
         
-            // 2. 'href2' is attached to 'prev' and 'next' links with
-            // the correctly decremented or  incremented page number
+            // 2. 'href2' is attached to 'prev' and 'next' 
+            // links with the correctly decremented or  
+            // incremented page number
             let href2 = href1
+            href1 = `${stub}?${href1}`;
     
-            // 3. 'href3' is displayed in the browser URL bar via  
-            // `history.pushState()`
-    
+            // 3. 'href3' is displayed in the browser URL 
+            // bar via `history.pushState()`
             history.pushState('', '', `?${href3}`);
-            href1 = `${zenodeo}/v2/images?${href1}`;
     
-            
-            
             const callback = function(xh) {
     
                 const res = xh.value;
                 let numOfFoundRecords = res.total;
                 let imgCount = 0;
-                let template = templateMasonry;
+
+                let template;
+                
+                if (res.images) {
+                    
+                    template = templateMasonry;
+                    [data.figures, imgCount] = makeLayout(res.images);
+                }
+                else {
+                    
+                    template = templateTreatmentsFTS;
+                    data.treatments = res;
+                }
     
-                [data.figures, imgCount] = makeLayout(res.images);
+                
                 data.numOfFoundRecords = niceNumbers(numOfFoundRecords);
     
                 if (numOfFoundRecords) {
@@ -402,11 +315,20 @@ const Ocellus = (function() {
                 throbber.classList.remove('throbber-on');
                 throbber.classList.add('throbber-off');
     
-                if (data.numOfFoundRecords !== 'Zero') {
-                    const figs = document.querySelectorAll('figcaption > a');
-                    
-                    for (let i = 0, j = figs.length; i < j; i++) {
-                        figs[i].addEventListener('click', toggleFigcaption);
+                if (res.images) {
+                    if (data.numOfFoundRecords !== 'Zero') {
+                        const figs = document.querySelectorAll('figcaption > a');
+                        
+                        for (let i = 0, j = figs.length; i < j; i++) {
+                            figs[i].addEventListener('click', toggleFigcaption);
+                        }
+                    }
+                }
+                else {
+                    const treatmentLinks = document.querySelectorAll('.treatmentLink');
+    
+                    for (let i = 0, j = treatmentLinks.length; i < j; i++) {
+                        treatmentLinks[i].addEventListener('click', resources['treatment']);
                     }
                 }
     
@@ -683,7 +605,8 @@ const Ocellus = (function() {
                 size: sizeField.value
             };
 
-            resources[resultTypeField.value](options)
+           resources['iort'](options)
+            
         }
     };
 
@@ -789,6 +712,7 @@ const Ocellus = (function() {
             communitiesField = options.communitiesField;
             refreshCacheField = options.refreshCacheField;
 
+            communitiesSelector = options.communitiesSelector;
             resultTypeChooser = options.resultTypeChooser;
             throbber = options.throbber;
             footer = options.footer;
@@ -802,8 +726,20 @@ const Ocellus = (function() {
             templateMasonry = options.templateMasonry;
             templateCarousel = options.templateCarousel;
             templateTreatmentsFTS = options.templateTreatmentsFTS;
-            //templateTreatmentsList = options.templateTreatmentsList;
             templateTreatment = options.templateTreatment;
+
+            communitiesSelector.addEventListener('click', function(event){
+                communitiesSelector.classList.toggle('open');
+            });
+
+            const csa = communitiesSelector.querySelectorAll('li a');
+            for (let i = 0; i < csa.length; i++) {
+                csa[i].addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    communitiesField.value = event.currentTarget.innerText;
+                    communitiesSelector.classList.remove('open');
+                })
+            }
 
             aboutLink.addEventListener('click', toggleAbout);
             aboutClose.addEventListener('click', toggleAbout);

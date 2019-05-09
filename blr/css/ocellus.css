@@ -91,14 +91,14 @@ smaller than 375px width
 */
 .searchChooser {
     font-size: 1rem;
-    padding-left: 5px;
+    margin-left: 45px;
     cursor: pointer;
     visibility: hidden;
 }
 nav {
     font-size: 1rem;
-    padding-left: 5px;
-    padding-bottom: 2px;
+    margin-left: 45px;
+    padding-bottom: 3px;
     text-align: left;
     float: left;
 }
@@ -126,38 +126,146 @@ nav a.searchFocus {
 .searchTopBar {
     position: relative;
 }
-select {
-    width: auto;
-    height: 40px;
+
+
+/* communities select box */
+
+/* https://chrisbracco.com/a-simple-css-tooltip/ */
+/* Add this attribute to the element that needs a tooltip */
+[data-tooltip] {
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+  }
+  
+  /* Hide the tooltip content by default */
+  [data-tooltip]:before,
+  [data-tooltip]:after {
+    visibility: hidden;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  /* Position tooltip above the element */
+  [data-tooltip]:before {
+    position: absolute;
+    bottom: 39px;
+    left: 50%;
+    margin-bottom: 0px;
+    margin-left: -18px;
+    padding: 7px;
+    width: 100px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px 3px 0 0;
+    background-color: #000;
+    background-color: hsla(0, 0%, 20%, 0.9);
+    color: #fff;
+    content: attr(data-tooltip);
     text-align: center;
-    background-color: rgb(235, 228, 228);
-    /* -moz-appearance: none;
-    -webkit-appearance: none;
-    appearance: none; */
-    border-radius: 5px 0 0 5px;
-    border: 1px solid #444;
-    border-right: none;
-    float: left;
-    margin-bottom: 0;
-}
-
-ul.communities {
-    float: left;
-    border: 1px solid red;
-    list-style: none;
-    padding: 2px 5px;
-    line-height: 24px;
-}
-
-ul.communities ul {
-    display: none;
-    list-style: none;
+    font-size: 10px;
+    line-height: 1;
+  }
+  
+  /* Triangle hack to make tooltip look like a speech bubble */
+  [data-tooltip]:after {
+    position: absolute;
+    bottom: 34px;
+    left: 50%;
+    margin-left: -5px;
+    width: 0;
+    border-top: 5px solid #000;
+    border-top: 5px solid hsla(0, 0%, 20%, 0.9);
+    border-right: 5px solid transparent;
+    border-left: 5px solid transparent;
+    content: " ";
+    font-size: 0;
     line-height: 0;
+  }
+  
+  /* Show tooltip content on hover */
+  [data-tooltip]:hover:before,
+  [data-tooltip]:hover:after {
+    visibility: visible;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
+    opacity: 1;
+  }
+
+.drop-down {
+    width: 40px;
+    background: #afafaf;
+    height: 38px;
+    float: left;
+    cursor: pointer;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    border-top: 1px solid black;
+    border-radius: 5px 0 0 5px;
+    transition: 500ms all ease-out;
 }
 
-ul.communities li:hover > ul {
-    display: none
+.drop-down ul {
+    position: relative;
+    top: 29px;
+    left:-1px;
+    list-style: none;
+    background: #afafaf;
+    width: 130px;
+    padding: 0px;
+    margin: 0px;
+    max-height: 0px;
+    overflow: hidden;
+    transition: 500ms all ease-out;
+    border: 1px solid black;
+    border-top: none;
+    opacity:0;
 }
+.drop-down ul li{
+    padding:5px 0 5px 10px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    background-color: lightgrey;
+}
+.drop-down ul li:first-child{
+    margin-top: 0px;
+    /* font-weight: bold; */
+}
+.drop-down ul li:last-child{
+    margin-bottom: 0px;
+}
+.drop-down ul li:hover{
+    background-color: #444;
+    color: white;
+}
+.drop-down ul li:hover a{
+    color: white;
+}
+.drop-down ul li:first-child:hover{
+    background-color: lightgrey;
+    color: black;
+}
+.drop-down.open{
+    border-radius: 5px 0 0 0px;
+}
+.drop-down.open ul{
+    max-height: 150px;
+    opacity:1;
+}
+
+.drop-down .arrow-down {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #000;
+    margin: 0 auto;
+    top: 40%;
+    position: relative;
+}
+/* end communities select box */
 
 #sSearch .searchInputs,
 #fSearch .searchInputs {
