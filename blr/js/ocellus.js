@@ -1,760 +1,773 @@
-'use strict';
+const zenodoRecord = 'https://zenodo.org/record/';
+const header = document.querySelector('header');
+const form = document.querySelector('form[name=simpleSearch');
+const formButton = document.querySelector('button[name=simpleSearch');
+const q = document.querySelector('input[name=q]');
+const urlFlagSelectors = document.querySelectorAll('.urlFlag');
+const communitiesSelector = document.querySelector('.drop-down');
+const communityCheckBoxes = document.querySelectorAll('input[name=communities]');
+const allCommunities = document.querySelector('input[value="all communities"]');
+const refreshCacheSelector = document.querySelector('input[name=refreshCache]');
+const about = document.querySelector('#about');
+const aboutOpen = document.querySelector('#about-link');
+const aboutClose = document.querySelector('#about-close');
+const footer = document.querySelector('footer');
+const wrapper = document.querySelector('#wrapper');
+const resourceSelector = document.querySelector('#resourceSelector');
+const figcaptionHeight = '30px';
+let figcaptions = [];
+let figcaptionLength;
 
-const Ocellus = (function() {
-    
-    // private stuff
-    // const basePath = '/v2/records?size=30&communities=biosyslit&access_right=open&type=image&';
-    const zenodoApi = 'https://zenodo.org/api/files/';
-    const zenodoRecord = 'https://zenodo.org/record/';
-    
+// templates
+const tmplMasonry = document.querySelector('#templateMasonry').innerHTML;
+Mustache.parse(tmplMasonry);
 
-    // figcaption settings //////////////////
-    let figcaptionHeight = '30px';
-    let figcaptions = [];
-    let figcaptionLength;
+const tmplCarousel = document.querySelector('#templateCarousel').innerHTML;
+Mustache.parse(tmplCarousel);
 
-    let facets;
+const tmplTreatmentsFTS = document.querySelector('#templateTreatmentsFTS').innerHTML;
+Mustache.parse(tmplTreatmentsFTS);
 
-    let data = {
-        numOfFoundRecords: 0,
-        figures: [],
-        prev: '',
-        next: ''
-    };
+const tmplTreatment = document.querySelector('#templateTreatment').innerHTML;
+Mustache.parse(tmplTreatment);
 
-    let zenodeo;
+// map params
+const map = {
+    url: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    id: 'mapbox.streets',
+    accessToken: 'pk.eyJ1IjoicHVua2lzaCIsImEiOiJjajhvOXY0dW8wMTA3MndvMzBlamlhaGZyIn0.3Ye8NRiiGyjJ1fud7VbtOA'
+}
 
-    /***************************************************/
-    /* various page elements that are used in the      */
-    /* program logic                                   */
-    /***************************************************/
-  
-    // the form and form button
-    let ssForm;
-    let ssGo;
-    
-    // form fields
-    let qField;
-    let resultTypeField;
-    let pageField;
-    let sizeField;
-    let communitiesField;
-    let refreshCacheField;
+const goGetIt = function(event) {
 
-    // various divs and navs
-    let communitiesSelector;
-    let resultTypeChooser;
-    let throbber;
-    let footer;
-    let wrapper;
-    let carousel;
-    let carouselContainer;
-    let about;
-    let aboutLink;
-    let aboutClose;
+    if (!event && !location.search) {
 
-    // Mustache template fragments
-    let templateMasonry;
-    let templateCarousel;
-    let templateTreatmentsFTS;
-    let templateTreatment;
-
-    // we use these state variables when toggling about
-    let wrapperState;
-    let footerState;
-    
-    const tagResultTypeChooser = function(resultType) {
-
-        resultTypeField.value = resultType;
-        for (let i = 0; i < resultTypeChooser.children.length; i++) {
-
-            if (resultType === resultTypeChooser.children[i].hash.substr(1)) {
-                resultTypeChooser.children[i].classList.add('searchFocus');
-            }
-            else {
-                resultTypeChooser.children[i].classList.remove('searchFocus');
-            }
-        }
-    };
-
-    const getQueryParamsAndImages = function(search) {
-
-        let options = {};
-        search.substr(1)
-            .split('&')
-            .forEach(function(el) {
-                options[el.split('=')[0]] = el.split('=')[1];
-            });
-
-        if (options.q) qField.value = options.q;
-        resultTypeField.value = options.resultType;
-
-        tagResultTypeChooser(options.resultType)
+        // neither is there an event, that is, nothing has
+        // been clicked, nor there are any search params, 
+        // that is, we are not trying to load a preformed 
+        // URL sent by someone. This means something is not 
+        // right. In this case, default to a blank form
+        setVisualElements('blank');
+        goHome();
+    }
+    else {
         
-        let resource = options.resultType;
-        if (options.treatmentId) {
-            resource = 'treatment'
+        let qp;
+        if (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            // construct URL based on form fields
+            qp = urlConstruct(form);
+        }
+        else if (location.search) {
+    
+            // deconstruct URL based on location.search
+            qp = urlDeconstruct(location.search);
+        }
+
+        // throbber.classList.toggle('show');
+        setVisualElements('queryStart');
+        fetchResource[qp.resource](qp);
+    }
+};
+
+const isXml = function(s) {
+    if (s.length === 32) {
+        return true;
+    }
+
+    return false;
+};
+
+const urlDeconstruct = function(s) {
+    
+
+    // removing any leading '?'
+    if (s.substr(0, 1) === '?') {
+        s = s.substr(1);
+    }
+
+    const qp = {};
+    s.split('&').forEach(p => { r = p.split('='); qp[r[0]] = r[1] });
+    return qp;
+};
+
+const urlConstruct = function(form) {
+
+    let queryParams = {};
+
+    const q = form.querySelector('input[name=q]').value;
+    if (isXml(q)) {
+        queryParams.treatmentId = q;
+        queryParams.resource = 'treatment';
+        const rc = urlFlagSelectors.querySelector('input[name=refreshCache');
+        if (rc.checked) {
+            queryParams.refreshCache = true;
+        }
+    }
+    else {
+        queryParams.q = q;
+        for (let i = 0, j = urlFlagSelectors.length; i < j; i++) {
+
+            const element = urlFlagSelectors[i];
+            
+            if (element.checked) {
+                queryParams[element.name] = element.value;
+            }
+    
+        }
+    
+        queryParams.page = form.querySelector('input[name=page]').value;
+        queryParams.size = form.querySelector('input[name=size]').value;
+        queryParams.access_right = 'open';
+        queryParams.type = 'image';
+    }
+
+    return queryParams;
+};
+
+const goHome = function() {
+    location.search = '/'
+};
+
+const makeLayout = function(imagesOfRecords) {
+        
+    let imgCount = 0;
+    let figures = [];
+
+    for (let record in imagesOfRecords) {
+        
+        const images = imagesOfRecords[record].images;
+        const j = images.length;
+        imgCount = imgCount + j;
+        const recId = record.split('/').pop();
+
+        let imgBlur; // 10 pixels wide
+        let imgA; // 250 pixels wide
+        let imgB; // 400
+        let imgC; // 960
+        let imgD; // 1200
+
+        if (imagesOfRecords[record].thumb250 === 'na') {
+            imgBlur = imgA = imgB = imgC = imgD = 'img/kein-preview.png';
         }
         else {
-            resource = 'iort'
+            imgA = imagesOfRecords[record].thumb250;
+            imgBlur = imgA.replace('250', '10');
+            imgB = imgA.replace('250,', '400,');
+            imgC = imgA.replace('250,', '960,');
+            imgD = imgA.replace('250,', '1200,');
         }
-        resources[resource](options)
-    };
-    
-    const makeLayout = function(imagesOfRecords) {
+
+        const figure = {
+            title: imagesOfRecords[record].title,
+            creators: imagesOfRecords[record].creators,
+            recId: recId,
+            zenodoRecord: zenodoRecord + recId,
+            imageSrc: images[0],
+            imgBlur: imgBlur,
+            imgA: imgA,
+            imgB: imgB,
+            imgC: imgC,
+            imgD: imgD
+        };
         
-        let imgCount = 0;
-        let figures = [];
-    
-        for (let record in imagesOfRecords) {
-            
-            const images = imagesOfRecords[record]["images"];
-            const j = images.length;
-            imgCount = imgCount + j;
-            const recId = record.split('/').pop();
+        figures.push(figure)
+    }
 
-            let imgBlur; // 10 pixels wide
-            let imgA; // 250 pixels wide
-            let imgB; // 400
-            let imgC; // 960
-            let imgD; // 1200
+    return [figures, imgCount];
+};
 
-            if (imagesOfRecords[record]["thumb250"] === 'na') {
-                imgBlur = imgA = imgB = imgC = imgD = 'img/kein-preview.png';
-            }
-            else {
-                imgA = imagesOfRecords[record]["thumb250"];
-                imgBlur = imgA.replace('250', '10');
-                imgB = imgA.replace('250,', '400,');
-                imgC = imgA.replace('250,', '960,');
-                imgD = imgA.replace('250,', '1200,');
-            }
+const niceNumbers = function(num) {
 
-            const figure = {
-                title: imagesOfRecords[record]["title"],
-                creators: imagesOfRecords[record]["creators"],
-                recId: recId,
-                zenodoRecord: zenodoRecord + recId,
-                imageSrc: images[0],
-                imgBlur: imgBlur,
-                imgA: imgA,
-                imgB: imgB,
-                imgC: imgC,
-                imgD: imgD
-            };
-            
-            figures.push(figure)
-        }
-    
-        return [figures, imgCount];
+    const nums = {
+        '0': 'Zero',
+        '1': 'One',
+        '2': 'Two',
+        '3': 'Three',
+        '4': 'Four',
+        '5': 'Five',
+        '6': 'Six',
+        '7': 'Seven',
+        '8': 'Eight',
+        '9': 'Nine'
     };
 
-    const resources = {
+    return nums[num] || num;
+};
 
-        'treatment': function(options) {
+// https://andylangton.co.uk/blog/development/get-viewportwindow-size-width-and-height-javascript
+const getHeightofVisibleViewport = function() {
 
-            let treatmentId = options.treatmentId;
-            let format = options.format;
-            let refreshCache = options.refreshCache;
-            let href1 = `treatmentId=${treatmentId}`;
-            
-            if (refreshCache === 'true') {
-                href1 += '&refreshCache=true';
-            }
+    let viewportwidth;
+    let viewportheight;
+     
+    // the more standards compliant browsers 
+    // (mozilla/netscape/opera/IE7) use window.innerWidth 
+    // and window.innerHeight
+    if (typeof window.innerWidth !== 'undefined') {
+         viewportwidth = window.innerWidth,
+         viewportheight = window.innerHeight
+    }
+     
+    // IE6 in standards compliant mode (i.e. with a 
+    // valid doctype as the first line in the document)
+    else if (typeof document.documentElement !== 'undefined'
+        && typeof document.documentElement.clientWidth !==
+        'undefined' && document.documentElement.clientWidth !== 0) {
+          viewportwidth = document.documentElement.clientWidth,
+          viewportheight = document.documentElement.clientHeight
+    }
+     
+    // older versions of IE
+    else {
+        viewportwidth = document.getElementsByTagName('body')[0].clientWidth,
+        viewportheight = document.getElementsByTagName('body')[0].clientHeight
+    }
 
-            if (format) {
-                href1 += `&format=${format}`;
-            }
-        
+    return (viewportwidth - header);
+};
 
-            history.pushState('', '', `?${href1}`);
-            href1 = `${zenodeo}/v2/treatments?${href1}`;
+const setVisualElements = function(state) {
 
-            
-            
-            const callback = function(xh) {
+    // blank state (initial state)
+    if (state === 'blank') {
+        throbber.classList.remove('show');
+        wrapper.classList.remove('show');
+        about.classList.remove('show');
+        footer.classList.remove('relative');
+    }
     
+    // about state
+    else if (state === 'about') {
+        throbber.classList.remove('show');
+        wrapper.classList.remove('show');
+        about.classList.add('show');
+        const visibleViewportHeight = getHeightofVisibleViewport();
 
-                const data = xh.value;
+        if (about.clientHeight < visibleViewportHeight) {
+            footer.classList.remove('relative');
+        }
+        else {
+            footer.classList.add('relative');
+        }
+    }
 
-                if (format === 'xml') {
+    // query start
+    else if (state === 'queryStart') {
+        throbber.classList.add('show');
+        about.classList.remove('show');
+    }
+    
+    // query end no result
+    else if (state === 'queryEndNoResult') {
+        throbber.classList.remove('show');
+        wrapper.classList.remove('show');
+        about.classList.remove('show');
+        footer.classList.remove('relative');
+        refreshCacheSelector.checked = false;
+    }
+    
+    // query end with result
+    else if (state === 'queryEndWithResult') {
+        throbber.classList.remove('show');
+        wrapper.classList.add('show');
+        about.classList.remove('show');
+        const visibleViewportHeight = getHeightofVisibleViewport();
+
+        if (wrapper.clientHeight < visibleViewportHeight) {
+            footer.classList.remove('relative');
+        }
+        else {
+            footer.classList.add('relative');
+        }
+
+        refreshCacheSelector.checked = false;
+    }
+
+    // carousel on
+    else if (state === 'turnCarouselOn') {
+        wrapper.classList.remove('show');
+        carouselContainer.classList.add('show');
+    }
+
+    // carousel off
+    else if (state === 'turnCarouselOff') {
+        wrapper.classList.add('show');
+        carouselContainer.classList.remove('show');
+    }
+    
+};
+
+const makeUris = function(qp) {
+    let hrefArray1 = [];
+    let hrefArray2 = [];
+
+    for (let p in qp) {
+
+        // We don't want to send 'resource' to Zenodeo
+        // because 'resource' is already in the uri
+        if (p !== 'resource') {
+            hrefArray1.push(p + '=' + qp[p]);
+        }
+
+        // We don't want 'refreshCache' in the browser
+        // address bar
+        if (p !== 'refreshCache') {
+            hrefArray2.push(p + '=' + qp[p]);
+        }
+    }
+
+    history.pushState('', '', `?${hrefArray2.join('&')}`);
+    const s = hrefArray1.join('&');
+
+    return {
+        search: s,
+        uri: `${zenodeo}/v2/${qp.resource}?${s}`
+    }
+
+};
+
+const makeMap = function(mcs) {
+
+    // initialize the map and add the layers to it
+    const mcmap = L.map('map', {
+        center: [0, 0],
+        zoom: 8,
+        scrollWheelZoom: false
+    });
+
+    L.tileLayer(map.url, {
+        attribution: map.attribution,
+        maxZoom: 18,
+        id: map.id,
+        accessToken: map.accessToken
+    }).addTo(mcmap);
+
+    // https://stackoverflow.com/questions/16845614/zoom-to-fit-all-markers-in-mapbox-or-leaflet
+    const markers = [];
+    mcs.forEach(mc => {
+        if (mc.latitude && mc.longitude) {
+            const marker = L.marker([mc.latitude, mc.longitude]).addTo(mcmap);
+            marker.bindPopup(mc.typeStatus);
+            markers.push(marker)
+        }
+    })
+
+    mcmap.fitBounds(new L.featureGroup(markers).getBounds());
+    document.querySelector('#map').classList.toggle('show');
+};
+
+const makePager = function(data, page, search) {
+
+    if (data.found) {
+        
+        if (data.found >= 30) {
+            data.prev = (page === 1) ? `?${s}&page=1` : `?${search}&page=${page - 1}`;
+            data.next = `?${search}&page=${(parseInt(page) + 1)}`;
+            data.pager = true;
+        }
+
+        setVisualElements('queryEndWithResult');
+    }
+    else {
+        setVisualElements('queryEndNoResult');
+    }
+
+    return data;
+};
+
+const submitReporter = function(event) {
+
+    const send = event.target;
+    const form = send.parentElement;
+    const widget = form.parentElement;
+    const report = widget.querySelector('.report');
+    const reporter = form.querySelector('.imageReport');
+    const recId = form.querySelector('input[name="recId"]').value;
+    const status = widget.querySelector('.status');
+
+    // Send a POST request to /repos/:owner/:repo/issues with JSON
+    const github = 'https://api.github.com/repos/plazi/Biodiversity-Literature-Repository/issues';
+
+    const payload = JSON.stringify({
+        "title": `problem with record id: ${recId}`,
+        "body": reporter.innerText,
+        "assignee": "myrmoteras",
+        "milestone": 1,
+        "labels": [
+            "images"
+        ]
+    });
+
+    const method = 'POST';
+    const url = github;
+    const callback = function() {
+
+            // show widget
+            form.style.visibility = 'hidden';
+            status.innerHTML = 'Thank you for submitting the report!';
+            status.style.visibility = 'visible';
+            status.style.display = 'block';
+
+            setInterval(function() {
+                status.style.visibility = 'hidden';
+                status.style.display = 'none';
+                report.style.visibility = 'visible';
+            }, 3000);
+    };
+    const headers = [
+        {k: "Content-type", v: "application/json"},
+        {k: "Authorization", v: "Basic " + btoa("blruser:xucqE5-tezmab-ruqgyr")}
+    ]
+
+    x(method, url, callback, headers, payload);
+
+    event.preventDefault();
+    event.stopPropagation();
+};
+
+const toggleReporter = function(event) {
+
+    const r = event.target;
+    const f = r.parentElement.querySelector('form');
+
+    // show widget
+    f.style.visibility = 'visible';
+
+    // hide report button
+    r.style.visibility = 'hidden';
+
+    event.preventDefault();
+    event.stopPropagation();
+};
+
+const cancelReporter = function(event) {
+
+    const c = event.target;
+    const f = c.parentElement;
+    const r = f.parentElement.querySelector('.report');
+
+    // show widget
+    f.style.visibility = 'hidden';
+
+    // hide report button
+    r.style.visibility = 'visible';
+
+    event.preventDefault();
+    event.stopPropagation();
+};
+
+const fetchResource = {
+
+    treatments: function(qp) {
+
+        const {search, uri} = makeUris(qp);
+
+        let callback;
+        if (qp.treatmentId) {
+            callback = function(xh) {
+
+                let data = xh.value;
+    
+                if (qp.format === 'xml') {
                     return data;
                 }
                 else {
-                    let imgCount = 0;
-                    [data.figures, imgCount] = makeLayout(xh.value.images.images);
-
-                    wrapper.innerHTML = Mustache.render(templateTreatment, data);
-                    wrapper.className = 'on';
-                    footer.className = 'relative';
-
-                    throbber.classList.remove('throbber-on');
-                    throbber.classList.add('throbber-off');
-
-                    if (data.numOfFoundRecords !== 'Zero') {
+                    
+                    [data.figures, data.imgCount] = makeLayout(xh.value.images.images);
+                    data.imgCount = niceNumbers(data.imgCount);
+    
+                    wrapper.innerHTML = Mustache.render(tmplTreatment, data);
+                    setVisualElements('queryEndWithResult');
+    
+                    if (data.imgCount !== 'Zero') {
                         const figs = document.querySelectorAll('figcaption > a');
+                        // const reporters = document.querySelectorAll('.report');
+                        // const submitters = document.querySelectorAll('.submit');
+                        // const cancellers = document.querySelectorAll('.cancel');
                         
                         for (let i = 0, j = figs.length; i < j; i++) {
                             figs[i].addEventListener('click', toggleFigcaption);
+                            // reporters[i].addEventListener('click', toggleReporter);
+                            // submitters[i].addEventListener('click', submitReporter);
+                            // cancellers[i].addEventListener('click', cancelReporter);
                         }
                     }
-
+    
                     if (data.materialCitations) {
-
-                        // initialize the map and add the layers to it
-                        const mcmap = L.map('map', {
-                            center: [0, 0],
-                            zoom: 8,
-                            scrollWheelZoom: false
-                        });
-
-                        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-                            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-                            maxZoom: 18,
-                            id: 'mapbox.streets',
-                            accessToken: 'pk.eyJ1IjoicHVua2lzaCIsImEiOiJjajhvOXY0dW8wMTA3MndvMzBlamlhaGZyIn0.3Ye8NRiiGyjJ1fud7VbtOA'
-                        }).addTo(mcmap);
-
-                        // https://stackoverflow.com/questions/16845614/zoom-to-fit-all-markers-in-mapbox-or-leaflet
-                        const markers = [];
-                        data.materialCitations.forEach(mc => {
-                            const marker = L.marker([mc.latitude, mc.longitude]).addTo(mcmap);
-                            marker.bindPopup(mc.typeStatus);
-                            markers.push(marker)
-                        })
-                        
-                        mcmap.fitBounds(new L.featureGroup(markers).getBounds());
+                        makeMap(data.materialCitations);
                     }
-                    else {
-                        document.querySelector('#map').classList.add('off-none');
-                    }
+                    
                 }
     
             };
-    
-            x(href1, callback);
-
-        },
-
-        'iort': function(options) {
-            
-            // We need three hrefs:
-            // 1. 'href1' is sent to zenodeo to fetch 
-            // the result
-            let params = [];
-            for (let k in options) {
-                params.push(`${k}=${options[k]}`)
-            }
-
-            let href3 = params.join('&')
-            
-            let params2 = [];
-            if (options.resultType === 'images') {
-                params2.push('access_right=open')
-                params2.push('type=image')
-            }
-
-            let stub = `${zenodeo}/v2/${options.resultType}`;
-            delete options['resultType'];
-            
-            for (let k in options) {
-                params2.push(`${k}=${options[k]}`)
-            }
-
-            let href1 = params2.join('&')
-        
-            // 2. 'href2' is attached to 'prev' and 'next' 
-            // links with the correctly decremented or  
-            // incremented page number
-            let href2 = href1
-            href1 = `${stub}?${href1}`;
-    
-            // 3. 'href3' is displayed in the browser URL 
-            // bar via `history.pushState()`
-            history.pushState('', '', `?${href3}`);
-    
-            const callback = function(xh) {
-    
-                const res = xh.value;
-                let numOfFoundRecords = res.total;
-                let imgCount = 0;
-
-                let template;
-                
-                if (res.images) {
-                    
-                    template = templateMasonry;
-                    [data.figures, imgCount] = makeLayout(res.images);
-                }
-                else {
-                    
-                    template = templateTreatmentsFTS;
-                    data.treatments = res;
-                }
-    
-                
-                data.numOfFoundRecords = niceNumbers(numOfFoundRecords);
-    
-                if (numOfFoundRecords) {
-                    if (numOfFoundRecords >= 30) {
-                        data.prev = (options.page === 1) ? `?${href2}&page=1` : `?${href2}&page=${options.page - 1}`;
-                        data.next = `?${href2}&page=${(parseInt(options.page) + 1)}`;
-                        data.pager = true;
-                    }
-    
-                    footer.className = 'relative';
-                }
-                else {
-                    data.numOfFoundRecords = 'Zero';
-                    data.pager = false;
-                    footer.className = 'fixed';
-                }
-    
-                wrapper.innerHTML = Mustache.render(template, data);            
-                wrapper.className = 'on';
-                throbber.classList.remove('throbber-on');
-                throbber.classList.add('throbber-off');
-    
-                if (res.images) {
-                    if (data.numOfFoundRecords !== 'Zero') {
-                        const figs = document.querySelectorAll('figcaption > a');
-                        
-                        for (let i = 0, j = figs.length; i < j; i++) {
-                            figs[i].addEventListener('click', toggleFigcaption);
-                        }
-                    }
-                }
-                else {
-                    const treatmentLinks = document.querySelectorAll('.treatmentLink');
-    
-                    for (let i = 0, j = treatmentLinks.length; i < j; i++) {
-                        treatmentLinks[i].addEventListener('click', resources['treatment']);
-                    }
-                }
-    
-            };
-    
-            x(href1, callback);
-            
-            return false;
-        },
-        
-        'citations': function() {
-        }
-    };
-
-    const x = function(url, callback) {
-
-        const method = 'GET';
-        const headers = [
-            {k: "Content-Type", v: "application/json;charset=UTF-8"}
-        ];
-        const payload = '';
-
-        const xh = new XMLHttpRequest();
-
-        xh.onload = function(e) {
-            if (xh.readyState === 4) {
-                if (xh.status === 200) {
-                    const res = JSON.parse(xh.responseText);
-                    callback(res);
-                }
-            }
-        };
-
-        xh.onerror = function(e) {
-            console.error(xh.statusText);
-        };
-
-        xh.open(method, url, true);
-
-        if (headers.length) {
-            
-            for (let i = 0, j = headers.length; i < j; i++) {
-                xh.setRequestHeader(headers[i].k, headers[i].v);
-            }
-        }
-
-        xh.send(payload);
-    };
-
-    const cancelReporter = function(event) {
-
-        const c = event.target;
-        const f = c.parentElement;
-        const r = f.parentElement.querySelector('.report');
-
-        // show widget
-        f.style.visibility = 'hidden';
-
-        // hide report button
-        r.style.visibility = 'visible';
-
-        event.preventDefault();
-        event.stopPropagation();
-    };
-
-    const submitReporter = function(event) {
-
-        const send = event.target;
-        const form = send.parentElement;
-        const widget = form.parentElement;
-        const report = widget.querySelector('.report');
-        const reporter = form.querySelector('.imageReport');
-        const recId = form.querySelector('input[name="recId"]').value;
-        const status = widget.querySelector('.status');
-
-        // Send a POST request to /repos/:owner/:repo/issues with JSON
-        const github = 'https://api.github.com/repos/plazi/Biodiversity-Literature-Repository/issues';
-
-        const payload = JSON.stringify({
-            "title": `problem with record id: ${recId}`,
-            "body": reporter.innerText,
-            "assignee": "myrmoteras",
-            "milestone": 1,
-            "labels": [
-                "images"
-            ]
-        });
-
-        const method = 'POST';
-        const url = github;
-        const callback = function() {
-
-                // show widget
-                form.style.visibility = 'hidden';
-                status.innerHTML = 'Thank you for submitting the report!';
-                status.style.visibility = 'visible';
-                status.style.display = 'block';
-
-                setInterval(function() {
-                    status.style.visibility = 'hidden';
-                    status.style.display = 'none';
-                    report.style.visibility = 'visible';
-                }, 3000);
-        };
-
-        const headers = [
-            {k: "Content-type", v: "application/json"},
-            {k: "Authorization", v: "Basic " + btoa("blruser:xucqE5-tezmab-ruqgyr")}
-        ]
-
-        x(method, url, callback, headers, payload);
-
-        event.preventDefault();
-        event.stopPropagation();
-    };
-
-    const toggleReporter = function(event) {
-
-        const r = event.target;
-        const f = r.parentElement.querySelector('form');
-
-        // show widget
-        f.style.visibility = 'visible';
-
-        // hide report button
-        r.style.visibility = 'hidden';
-
-        event.preventDefault();
-        event.stopPropagation();
-    };
-
-    const toggleFigcaption = function(event) {
-
-        // find and store all the figcaptions on the page in an array
-        // This is done only once since figcaptions is a global var
-        if (figcaptions.length == 0) {
-            figcaptions = document.querySelectorAll('figcaption');
-            figcaptionLength = figcaptions.length;
-        }
-    
-        let fc = this.parentElement.style.maxHeight;
-        
-        if (fc === figcaptionHeight || fc === '') {
-            let i = 0;
-            for (; i < figcaptionLength; i++) {
-                figcaptions[i].style.maxHeight = figcaptionHeight;
-            }
-    
-            this.parentElement.style.maxHeight =  '100%';
-            this.parentElement.style.overflow = 'auto';
         }
         else {
-            this.parentElement.style.maxHeight =  figcaptionHeight;
-            this.parentElement.style.overflow = 'hidden';
-        }
-        
-    };
-    
-    const currentYPosition = function() {
-    
-        // Firefox, Chrome, Opera, Safari
-        if (self.pageYOffset) {
-            return self.pageYOffset;
-        }
-    
-        // Internet Explorer 6 - standards mode
-        if (document.documentElement && document.documentElement.scrollTop) {
-            return document.documentElement.scrollTop;
-        }
-        
-        // Internet Explorer 6, 7 and 8
-        if (document.body.scrollTop) {
-            return document.body.scrollTop;
-        }
-    
-        return 0;
-    };
-    
-    const smoothScroll = function(stopY) {
-        const startY = currentYPosition();
-        const distance = stopY > startY ? stopY - startY : startY - stopY;
-    
-        if (distance < 100) {
-            scrollTo(0, stopY);
-            return;
-        }
-    
-        let speed = Math.round(distance / 100);
-        if (speed >= 10) {
-            speed = 10;
-        }
-    
-        const step = Math.round(distance / 25);
-        let leapY = stopY > startY ? startY + step : startY - step;
-        let timer = 0;
-        if (stopY > startY) {
-            for (let i = startY; i < stopY; i += step) {
-                setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
-                leapY += step; 
-                if (leapY > stopY) {
-                    leapY = stopY; 
-                    timer++;
-                }
-            }
-    
-            return;
-        }
-    
-        for (let i = startY; i > stopY; i -= step) {
-            setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
-            leapY -= step;
-            if (leapY < stopY) {
-                leapY = stopY; 
-                timer++;
-            }
-        }
-    };
+            callback = function(xh) {
 
-    const autoc = function(field) {
+                let data = {
+                    found: 0,
+                    treatments: [],
+                    prev: '',
+                    next: '',
+                    pager: false
+                };
 
-        new autoComplete({
-            selector: field,
-            minChars: 3,
-            source: function(term, response) {
-                try { x.abort() } catch(e) {}
+                data.treatments = xh.value;
+                data.found = xh.value.length;
+
+                data = makePager(data, qp.page, search);
+                data.found = niceNumbers(xh.value.length);
                 
-                x(`${zenodeo}/v2/families?q=${term}`, response)
-            }
-        });
+                wrapper.innerHTML = Mustache.render(tmplTreatmentsFTS, data);
+
+                const treatmentLinks = document.querySelectorAll('.treatmentLink');
+
+                for (let i = 0, j = treatmentLinks.length; i < j; i++) {
+                    const t = treatmentLinks[i];
+                    const qp = urlDeconstruct(t.search);
+
+                    t.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                        event.preventDefault();
+                        
+                        setVisualElements('queryStart');
+                        fetchResource['treatments'](qp);
+                    });
+                }
+
+            };
+        }
+
+        x(uri, callback);
         
+        return false;
+    },
+    
+    images: function(qp) {
+
+        const {search, uri} = makeUris(qp);
+
+        const callback = function(xh) {
+
+            let data = {
+                found: 0,
+                figures: [],
+                prev: '',
+                next: '',
+                pager: false
+            };
+
+            const {total, imagesOfRecords} = xh.value;
+
+            [data.figures, data.found] = makeLayout(imagesOfRecords);
+            
+            data = makePager(data, qp.page, search);
+            data.found = niceNumbers(data.found);
+
+            wrapper.innerHTML = Mustache.render(tmplMasonry, data);         
+
+            const figs = document.querySelectorAll('figcaption > a');
+            for (let i = 0, j = figs.length; i < j; i++) {
+                figs[i].addEventListener('click', toggleFigcaption);
+            }
+
+            const carousel = document.querySelectorAll('.carousel');
+            for (let i = 0, j = carousel.length; i < j; i++) {
+                carousel[i].addEventListener('click', function(event) {
+                    turnCarouselOn(data, data.figures[i].recId);
+                });
+            }
+            
+        };
+
+        x(uri, callback);
+        
+        return false;
     }
 
-    const niceNumbers = function(num) {
+};
 
-        const nums = {
-            '0': 'Zero',
-            '1': 'One',
-            '2': 'Two',
-            '3': 'Three',
-            '4': 'Four',
-            '5': 'Five',
-            '6': 'Six',
-            '7': 'Seven',
-            '8': 'Eight',
-            '9': 'Nine',
-            '10': 'Ten'
-        };
+const toggleAbout = function(event) {
+    setVisualElements('about');
+};
 
-        if (num in nums) {
-            return nums[num];
-        }
-        else {
-            return num;
-        }
-    };
+const chooseUrlFlags = function (element) {
 
-    //+creators.name:/Agosti.*/ +publication_date:[1990 TO 1991} +keywords:taxonomy +title:review
-    const goGetIt = function(event) {
+    if (element.name === 'communities') {
 
-        event.preventDefault();
-        event.stopPropagation();
+        if (element.value === 'all communities') {
 
-        if (qField.value) {
-
-            throbber.classList.remove('throbber-off');
-            throbber.classList.add('throbber-on');
-
-            const options = {
-                q: qField.value,
-                resultType: resultTypeField.value,
-                communities: communitiesField.value,
-                refreshCache: refreshCacheField.value,
-                page: pageField.value,
-                size: sizeField.value
-            };
-
-           resources['iort'](options)
-            
-        }
-    };
-
-    const chooseResultType = function(event) {
-        
-        // https://stackoverflow.com/questions/4564414/delete-first-character-of-a-string-in-javascript
-
-        tagResultTypeChooser(event.target.hash.substr(1))
-        goGetIt(event)
-    };
-
-    const toggleRefreshCache = function(event) {
-            
-        const toggleClass = event.target.dataset['toggleClass'];
-        const toggleTarget = document.querySelector(event.target.dataset['toggleTarget']);
-
-        if (event.target['checked']) {
-            toggleTarget.classList.remove(toggleClass);
-            toggleTarget.classList.add('on');
-        }
-        else {
-            toggleTarget.classList.remove('on');
-            toggleTarget.classList.add(toggleClass);
-        }
-    };
-
-    const toggleAbout = function(event) {
-
-        if (about.classList.contains('on')) {
-
-            // hide about
-            about.classList.remove('on');
-            about.classList.add('off-none');
-
-            // restore wrapper and footer
-            footer.className = footerState;
-            wrapper.className = wrapperState;
-        }
-        else {
-            
-            // save wrapper and footer state
-            wrapperState = wrapper.className;
-            footerState = footer.className;
-
-            // hide wrapper
-            wrapper.className = 'off-none';
-
-            // make footer fixed
-            footer.className = 'fixed';
-
-            // make about visible
-            about.classList.remove('off-none');
-            about.classList.add('on');
-        }
-    };
-
-    // public stuff
-    return {
-
-        carousel: function() {
-
-            wrapper.className = 'off-none';
-            carousel.innerHTML = Mustache.render(templateCarousel, data);
-            carouselContainer.className = 'on';
-
-            const carouselOff = document.querySelectorAll('.carouselOff');
-            for (let i = 0, j = carouselOff.length; i < j; i++) {
-                carouselOff[i].addEventListener('click', Ocellus.carouselOff);
+            if (element.checked === true) {
+                for (let i = 0, j = communityCheckBoxes.length; i < j; i++) {
+                    communityCheckBoxes[i].checked = true;
+                }
             }
-        },
+            else {
+                for (let i = 0, j = communityCheckBoxes.length; i < j; i++) {
+                    if (communityCheckBoxes[i].value !== 'all communities') {
+                        communityCheckBoxes[i].checked = false;
+                    }
+                }
+            }
 
-        carouselOff: function() {
-            carouselContainer.className = 'off-none';
-            wrapper.className = 'on';
-        },
+        }
+        else {
+
+            // uncheck 'all communities'
+            allCommunities.checked = false;
+        }
+    }
+    else if (element.name === 'resource') {
+
+        const rtLabels = resourceSelector.querySelectorAll('label');
+        const rtInputs = resourceSelector.querySelectorAll('input');
+
+        for (let i = 0; i < rtLabels.length; i++) {
+            if (element.value === rtInputs[i].value) {
+                rtLabels[i].classList.add('searchFocus');
+            }
+            else {
+                rtLabels[i].classList.remove('searchFocus');
+            }
+        }
+    }
+    else if (element.name === 'refreshCache') {
+        element.value = element.checked;
+    }
+
+};
+
+const toggleCommunities = function(event) {
+    communitiesSelector.classList.toggle('open');
+};
+
+const defaultHeaders = [
+    {k: "Content-Type", v: "application/json;charset=UTF-8"}
+];
+
+const x = function(url, callback, headers = defaultHeaders, payload = '') {
+
+    const method = 'GET';
+    const xh = new XMLHttpRequest();
+
+    xh.onload = function(e) {
+        if (xh.readyState === 4) {
+            if (xh.status === 200) {
+                const res = JSON.parse(xh.responseText);
+                callback(res);
+            }
+        }
+    };
+
+    xh.onerror = function(e) {
+        console.error(xh.statusText);
+    };
+
+    xh.open(method, url, true);
+
+    if (headers.length) {
         
-        /*
-         * Initialization options
-         * 
-         * { 
-         *     zenodeo: <path to zenodeo service>,
-         *     layout: <'masonry' | 'grid'>
-         *     facets: {}
-         * }
-         * 
-         */
-        init: function(options) {
+        for (let i = 0, j = headers.length; i < j; i++) {
+            xh.setRequestHeader(headers[i].k, headers[i].v);
+        }
+    }
 
-            // store the options in private variables for later use
-            zenodeo = options.zenodeo;
+    xh.send(payload);
+};
 
-            ssGo = options.ssGo;
-            ssForm = options.ssForm;
+const suggest = function(field) {
 
-            // if (options.facets) {
-            //     facets = options.facets;
-            // }
+    new autoComplete({
+        selector: field,
+        minChars: 3,
+        source: function(term, response) {
+            try { x.abort() } catch(e) {}
+            x(`${zenodeo}/v2/families?q=${term}`, response)
+        }
+    });
+    
+};
 
-            qField = options.qField;
-            resultTypeField = options.resultTypeField;
-            pageField = options.pageField;
-            sizeField = options.sizeField;
-            communitiesField = options.communitiesField;
-            refreshCacheField = options.refreshCacheField;
+const toggleFigcaption = function(event) {
 
-            communitiesSelector = options.communitiesSelector;
-            resultTypeChooser = options.resultTypeChooser;
-            throbber = options.throbber;
-            footer = options.footer;
-            wrapper = options.wrapper;
-            carousel = options.carousel;
-            carouselContainer = options.carouselContainer;
-            about = options.about;
-            aboutLink = options.aboutLink;
-            aboutClose = options.aboutClose;
+    // find and store all the figcaptions on the page in 
+    // an array. This is done only once since figcaptions 
+    // is a global var
+    if (figcaptions.length == 0) {
+        figcaptions = document.querySelectorAll('figcaption');
+        figcaptionLength = figcaptions.length;
+    }
 
-            templateMasonry = options.templateMasonry;
-            templateCarousel = options.templateCarousel;
-            templateTreatmentsFTS = options.templateTreatmentsFTS;
-            templateTreatment = options.templateTreatment;
+    let fc = this.parentElement.style.maxHeight;
+    
+    if (fc === figcaptionHeight || fc === '') {
+        let i = 0;
+        for (; i < figcaptionLength; i++) {
+            figcaptions[i].style.maxHeight = figcaptionHeight;
+        }
 
-            communitiesSelector.addEventListener('click', function(event){
-                communitiesSelector.classList.toggle('open');
-            });
+        this.parentElement.style.maxHeight =  '100%';
+        this.parentElement.style.overflow = 'auto';
+    }
+    else {
+        this.parentElement.style.maxHeight =  figcaptionHeight;
+        this.parentElement.style.overflow = 'hidden';
+    }
+    
+};
 
-            const csa = communitiesSelector.querySelectorAll('li a');
-            for (let i = 0; i < csa.length; i++) {
-                csa[i].addEventListener('click', function(event) {
-                    event.stopPropagation();
-                    communitiesField.value = event.currentTarget.innerText;
+const activateUrlFlagSelectors = function() {
+    for (let i = 0, j = urlFlagSelectors.length; i < j; i++) {
+
+        const element = urlFlagSelectors[i];
+        element.addEventListener('click', function(event) {
+    
+            chooseUrlFlags(element);
+            
+                if (element.name === 'communities') {
                     communitiesSelector.classList.remove('open');
-                })
-            }
-
-            aboutLink.addEventListener('click', toggleAbout);
-            aboutClose.addEventListener('click', toggleAbout);
-            ssGo.addEventListener('click', goGetIt);
-            ssForm.addEventListener('submit', goGetIt);
-
-            for (let i = 0; i < resultTypeChooser.children.length; i++) {
-                resultTypeChooser.children[i].addEventListener('click', chooseResultType)
-            }
-
-            autoc(qField)
-
-            if (location.search) {
-                getQueryParamsAndImages(location.search);
-            }
-        }
+                }
+    
+        })
     }
-}());
+};
+
+const turnCarouselOn = function(data, recId) {
+
+    carousel.innerHTML = Mustache.render(tmplCarousel, data);
+    setVisualElements('turnCarouselOn');
+
+    const carouselOff = document.querySelectorAll('.carouselOff');
+    for (let i = 0, j = carouselOff.length; i < j; i++) {
+        carouselOff[i].addEventListener('click', turnCarouselOff);
+    }
+    
+    const newhash = '#' + recId;
+    if (history.pushState) {
+        history.pushState(null, null, newhash);
+    }
+    else {
+        location.hash = newhash;
+    }
+};
+
+const turnCarouselOff = function(event) {
+    setVisualElements('turnCarouselOff');
+};
+
+aboutOpen.addEventListener('click', toggleAbout);
+aboutClose.addEventListener('click', toggleAbout);
+communitiesSelector.addEventListener('click', toggleCommunities);
+form.addEventListener('submit', goGetIt);
+formButton.addEventListener('click', goGetIt);
+suggest(q);
+activateUrlFlagSelectors();
+
+if (location.search) {
+    goGetIt();
+}

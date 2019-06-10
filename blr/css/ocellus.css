@@ -29,34 +29,9 @@ a.main-title {
     margin-top: -5px;
     font-size: 0.85rem;
 }
-#about-link, #about-close, button {
+
+button {
     cursor: pointer;
-}
-#about-close {
-    -moz-transition: all 1s ease-in-out;
-    -webkit-transition: all 1s ease-in-out;
-    -o-transition: all 1s ease-in-out;
-    -ms-transition: all 1s ease-in-out;
-    transition: all 1s ease-in-out;
-    -moz-animation: blink normal 2s infinite ease-in-out;
-    -webkit-animation: blink normal 2s infinite ease-in-out;
-    -ms-animation: blink normal 2s infinite ease-in-out;
-    animation: blink normal 2s infinite ease-in-out;
-}
-/* about-close fade-in fade-out */
-@keyframes blink {
-    0%   { color: rgba(0,0,0,1  ) }
-    25%  { color: rgba(0,0,0,0.5) }
-    50%  { color: rgba(0,0,0,0  ) }
-    75%  { color: rgba(0,0,0,0.5) }
-    100% { color: rgba(0,0,0,1  ) }
-}
-@-webkit-keyframes blink {
-    0%   { color: rgba(0,0,0,1  ) }
-    25%  { color: rgba(0,0,0,0.5) }
-    50%  { color: rgba(0,0,0,0  ) }
-    75%  { color: rgba(0,0,0,0.5) }
-    100% { color: rgba(0,0,0,1  ) }
 }
 
 .off-block {
@@ -98,11 +73,11 @@ smaller than 375px width
 nav {
     font-size: 1rem;
     margin-left: 45px;
-    padding-bottom: 3px;
+/*     padding-bottom: 3px;
     text-align: left;
-    float: left;
+    float: left; */
 }
-nav a,
+/* nav a,
 nav span {
     margin-right: 10px;
     margin-left: 0;
@@ -114,8 +89,22 @@ nav a.searchFocus {
     background-color: grey;
     padding: 2px 5px;
     border-radius: 2px;
-}
+} */
 
+nav label {
+    float: left;
+    margin-right: 10px;
+}
+nav label.searchFocus {
+    text-decoration: none;
+    color: white;
+    background-color: grey;
+    padding: 2px 5px;
+    border-radius: 2px;
+}
+nav input[type="radio"] {
+    display: none;
+}
 .searchWidget {
     width: 100%;
     position: relative;
@@ -126,144 +115,6 @@ nav a.searchFocus {
 .searchTopBar {
     position: relative;
 }
-
-
-/* communities select box */
-
-/* https://chrisbracco.com/a-simple-css-tooltip/ */
-/* Add this attribute to the element that needs a tooltip */
-[data-tooltip] {
-    position: relative;
-    z-index: 2;
-    cursor: pointer;
-  }
-  
-  /* Hide the tooltip content by default */
-  [data-tooltip]:before,
-  [data-tooltip]:after {
-    visibility: hidden;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-    filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
-    opacity: 0;
-    pointer-events: none;
-  }
-  
-  /* Position tooltip above the element */
-  [data-tooltip]:before {
-    position: absolute;
-    bottom: 39px;
-    left: 50%;
-    margin-bottom: 0px;
-    margin-left: -18px;
-    padding: 7px;
-    width: 100px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px 3px 0 0;
-    background-color: #000;
-    background-color: hsla(0, 0%, 20%, 0.9);
-    color: #fff;
-    content: attr(data-tooltip);
-    text-align: center;
-    font-size: 10px;
-    line-height: 1;
-  }
-  
-  /* Triangle hack to make tooltip look like a speech bubble */
-  [data-tooltip]:after {
-    position: absolute;
-    bottom: 34px;
-    left: 50%;
-    margin-left: -5px;
-    width: 0;
-    border-top: 5px solid #000;
-    border-top: 5px solid hsla(0, 0%, 20%, 0.9);
-    border-right: 5px solid transparent;
-    border-left: 5px solid transparent;
-    content: " ";
-    font-size: 0;
-    line-height: 0;
-  }
-  
-  /* Show tooltip content on hover */
-  [data-tooltip]:hover:before,
-  [data-tooltip]:hover:after {
-    visibility: visible;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-    filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
-    opacity: 1;
-  }
-
-.drop-down {
-    width: 40px;
-    background: #afafaf;
-    height: 38px;
-    float: left;
-    cursor: pointer;
-    border-bottom: 1px solid black;
-    border-left: 1px solid black;
-    border-top: 1px solid black;
-    border-radius: 5px 0 0 5px;
-    transition: 500ms all ease-out;
-}
-
-.drop-down ul {
-    position: relative;
-    top: 23px;
-    left:-1px;
-    list-style: none;
-    background: #afafaf;
-    width: 130px;
-    padding: 0px;
-    margin: 0px;
-    max-height: 0px;
-    overflow: hidden;
-    transition: 500ms all ease-out;
-    border: 1px solid black;
-    border-top: none;
-    opacity:0;
-}
-.drop-down ul li{
-    padding:5px 0 5px 10px;
-    margin-top: 1px;
-    margin-bottom: 1px;
-    background-color: lightgrey;
-}
-.drop-down ul li:first-child{
-    margin-top: 0px;
-    /* font-weight: bold; */
-}
-.drop-down ul li:last-child{
-    margin-bottom: 0px;
-}
-.drop-down ul li:hover{
-    background-color: #444;
-    color: white;
-}
-.drop-down ul li:hover a{
-    color: white;
-}
-
-.drop-down.open{
-    border-radius: 5px 0 0 0px;
-}
-.drop-down.open ul{
-    max-height: 150px;
-    opacity:1;
-}
-
-.drop-down .arrow-down {
-    width: 0;
-/*     height: 0; */
-    /* border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid #000; */
-    margin: 0 auto;
-    top: 30%;
-    left: -5px;
-    position: relative;
-}
-/* end communities select box */
 
 #sSearch .searchInputs,
 #fSearch .searchInputs {
@@ -322,16 +173,7 @@ nav a.searchFocus {
 }
 /* end simple search */
 
-#about {
-    margin: 0 auto;
-}
-#about-text {
-    margin-top: 12px;
-    /* width: 90%; */
-}
-.about {
-    font-size: 1.5rem;
-}
+
 h3 {
     font-size: 14px;
     text-align: center;
@@ -347,13 +189,35 @@ h3 {
     opacity: 0.85; 
     filter: alpha(opacity=85); 
 }
+
 #wrapper {
     width: 100%;
     margin: 0 auto;
     background-color: white;
     opacity: 1;
-/*     border: 0px solid red; */
+    display: none;
 }
+#wrapper.show {
+    display: block;
+}
+footer {
+    bottom: 0;
+    text-align: center;
+    width: 100%;
+    cursor: pointer;
+    position: fixed;
+}
+/* footer.fixed {
+    position: fixed;
+} */
+footer.relative {
+    position: relative;
+}
+footer img {
+    width: 80%;
+    max-width: 480px;
+}
+
 .grid {
     margin: 0em 0;
     padding: 0;
@@ -472,22 +336,7 @@ h3 {
 #next:visited {
     color: blue;
 }
-footer {
-    bottom: 0;
-    text-align: center;
-    width: 100%;
-    cursor: pointer;
-}
-footer.fixed {
-    position: fixed;
-}
-footer.relative {
-    position: relative;
-}
-footer img {
-    width: 80%;
-    max-width: 480px;
-}
+
 .autocomplete-suggestions {
     border: 1px solid lightgrey !important;
     margin-top: 2px;
@@ -497,6 +346,10 @@ footer img {
 }
 #carouselContainer {
     cursor: pointer;
+    display: none;
+}
+#carouselContainer.show {
+    display: block;
 }
 figure {
     margin: 0;
@@ -583,7 +436,6 @@ figure {
     background-color: orange;
 }
 
-
 .widget button.report:hover {
     background-color: yellow;
 }
@@ -632,9 +484,6 @@ ul.pids li {
     font-size: 1rem;
     padding: 2px;
 }
-/* treatment */
-
-/* classification */
 .treatment h1 {
     font-size: 3rem;
     font-weight: 800;
@@ -643,85 +492,7 @@ ul.pids li {
     font-size: 1.5rem;
     font-weight: 400;
 }
-ul.classification {
-    list-style: none;
-}
-.kingdom,
-.phylum,
-.order,
-.family,
-.genus,
-.species {
-    border-top-width: 20px;
-    border-top-style: solid;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 0px solid grey;
-    height: 0px;
-    line-height: 0;
-    margin-top: 0px;
-    margin-bottom: 2px;
-}
-.kingdom {
-    border-top-color: #e8e8e8;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    width: 100px;
-}
-.phylum {
-    border-top-color: #d8d8d8;
-    width: 80px;
-    margin-left: 10px
-}
-.order {
-    border-top-color: #b8b8b8;
-    width: 60px;
-    margin-left: 20px
-}
-.family {
-    border-top: 20px solid #989898;
-    width: 40px;
-    margin-left: 30px
-}
-.genus {
-    border-top-color: #787878;
-    width: 20px;
-    margin-left: 40px
-}
-.species {
-    border-top-color: #585858;
-    width: 0px;
-    margin-left: 50px
-}
-.kingdom > .txn,
-.phylum > .txn,
-.order > .txn,
-.family > .txn,
-.genus > .txn,
-.species > .txn
-{
-    margin-top: -10px;
-}
-
-.kingdom > .txn {
-    margin-left: 110px;
-}
-.phylum > .txn {
-    margin-left: 90px;
-}
-.order > .txn {
-    margin-left: 70px;
-}
-.family > .txn {
-    margin-left: 50px;
-}
-.genus > .txn {
-    margin-left: 30px;
-}
-.species > .txn {
-    margin-left: 10px;
-}
-/* end classification */
+/* treatment */
 
 /* lazyload classes */
 .lazyload {
@@ -741,8 +512,11 @@ ul.classification {
 #map { 
     height: 300px; 
     margin-bottom: 20px;
+    display: none;
 }
-
+#map.show {
+    display: block;
+}
 /* Larger than mobile */
 @media (min-width: 400px) {
 
