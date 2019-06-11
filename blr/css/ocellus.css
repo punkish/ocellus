@@ -245,7 +245,7 @@ footer img {
     position: relative;
     overflow: hidden;
     border: 1px solid #000;
-    min-height: 200px;
+    /* min-height: 200px; */
     height: auto;
     margin: 0 0 1em 0 !important;
 

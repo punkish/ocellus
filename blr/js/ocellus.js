@@ -146,17 +146,19 @@ const makeLayout = function(imagesOfRecords) {
         const recId = record.split('/').pop();
 
         let imgBlur; // 10 pixels wide
-        let imgA; // 250 pixels wide
+        let imgA_; // 50 pixels 
+        let imgA; // 250 pixels 
         let imgB; // 400
         let imgC; // 960
         let imgD; // 1200
 
         if (imagesOfRecords[record].thumb250 === 'na') {
-            imgBlur = imgA = imgB = imgC = imgD = 'img/kein-preview.png';
+            imgBlur = imgA_ = imgA = imgB = imgC = imgD = 'img/kein-preview.png';
         }
         else {
             imgA = imagesOfRecords[record].thumb250;
             imgBlur = imgA.replace('250', '10');
+            imgA_ = imgA.replace('250', '50');
             imgB = imgA.replace('250,', '400,');
             imgC = imgA.replace('250,', '960,');
             imgD = imgA.replace('250,', '1200,');
@@ -170,6 +172,7 @@ const makeLayout = function(imagesOfRecords) {
             imageSrc: images[0],
             imgBlur: imgBlur,
             imgA: imgA,
+            imgA_: imgA_,
             imgB: imgB,
             imgC: imgC,
             imgD: imgD
@@ -333,6 +336,8 @@ const makeUris = function(qp) {
 
 const makeMap = function(mcs) {
 
+    document.querySelector('#map').classList.toggle('show');
+
     // initialize the map and add the layers to it
     const mcmap = L.map('map', {
         center: [0, 0],
@@ -357,8 +362,9 @@ const makeMap = function(mcs) {
         }
     })
 
-    mcmap.fitBounds(new L.featureGroup(markers).getBounds());
-    document.querySelector('#map').classList.toggle('show');
+    const bounds = new L.featureGroup(markers).getBounds();
+    mcmap.fitBounds(bounds);
+    
 };
 
 const makePager = function(data, page, search) {
@@ -468,8 +474,12 @@ const fetchResource = {
         const {search, uri} = makeUris(qp);
 
         let callback;
+
+        // single treatment
         if (qp.treatmentId) {
             callback = function(xh) {
+
+                //let data = xh.value;
 
                 let data = xh.value;
     
@@ -478,7 +488,7 @@ const fetchResource = {
                 }
                 else {
                     
-                    [data.figures, data.imgCount] = makeLayout(xh.value.images.images);
+                    [data.figures, data.imgCount] = makeLayout(data.images.images);
                     data.imgCount = niceNumbers(data.imgCount);
     
                     wrapper.innerHTML = Mustache.render(tmplTreatment, data);
@@ -498,14 +508,16 @@ const fetchResource = {
                         }
                     }
     
-                    if (data.materialCitations) {
-                        makeMap(data.materialCitations);
+                    if (data.materialsCitations) {
+                        makeMap(data.materialsCitations);
                     }
                     
                 }
     
             };
         }
+
+        // many treatents
         else {
             callback = function(xh) {
 
@@ -522,6 +534,13 @@ const fetchResource = {
 
                 data = makePager(data, qp.page, search);
                 data.found = niceNumbers(xh.value.length);
+
+                // for each treatment, make layout of the thumbnail images
+                // for (let i = 0, j = data.treatments.length; i < j; i++) {
+                //     const images = data.treatments[i].images.images;
+                //     [data.treatments[i].figures, data.treatments[i].imgCount] = makeLayout(images);
+                //     data.treatments[i].imgCount = niceNumbers(data.treatments[i].imgCount);
+                // }
                 
                 wrapper.innerHTML = Mustache.render(tmplTreatmentsFTS, data);
 
