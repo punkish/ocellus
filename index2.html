@@ -215,13 +215,11 @@
     <details open>
         <summary>{{treatmentTitle}}</summary>
         
-        <!--
         <div class='masonry'>
-            {{#figures}}
-            <a href="#carousel" class="carousel"><img src="{{imgA_}}" width="50" data-recid="{{recId}}"></a> 
-            {{/figures}}
+            {{#images}}
+            <a href="#carousel" class="carousel"><img src="{{httpUri}}" width="50" alt="{{captionText}}"></a> 
+            {{/images}}
         </div>
-        -->
         
         <p>{{{s}}} <a class="treatmentLink" href="/index2.html?resource=treatments&treatmentId={{treatmentId}}">more</a></p>
     </details>
