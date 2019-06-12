@@ -227,12 +227,36 @@
 
         <ul class="classification">
             {{#taxonStats}}
-            <li class="kingdom"><div class="txn"><a class="treatmentLink" href="/index2.html?resource=treatments&kingdom={{kingdom.qryObj.kingdom}}">{{kingdom.qryObj.kingdom}}</a> [{{kingdom.num.num}}]</div></li>
-            <li class="phylum"><div class="txn"><a class="treatmentLink" href="/index2.html?resource=treatments&kingdom={{phylum.qryObj.kingdom}}&phylum={{phylum.qryObj.phylum}}">{{phylum.qryObj.phylum}}</a> [{{phylum.num.num}}]</div></li>
-            <li class="order"><div class="txn"><a class="treatmentLink" href="/index2.html?resource=treatments&kingdom={{order.qryObj.kingdom}}&phylum={{order.qryObj.phylum}}&order={{order.qryObj.order}}">{{order.qryObj.order}}</a> [{{order.num.num}}]</div></li>
-            <li class="family"><div class="txn"><a class="treatmentLink" href="/index2.html?resource=treatments&kingdom={{family.qryObj.kingdom}}&phylum={{family.qryObj.phylum}}&order={{family.qryObj.order}}&family={{family.qryObj.family}}">{{family.qryObj.family}}</a> [{{family.num.num}}]</div></li>
-            <li class="genus"><div class="txn"><a class="treatmentLink" href="/index2.html?resource=treatments&kingdom={{genus.qryObj.kingdom}}&phylum={{.genus.qryObj.phylum}}&order={{genus.qryObj.order}}&family={{genus.qryObj.family}}&genus={{genus.qryObj.genus}}">{{genus.qryObj.genus}}</a> [{{genus.num.num}}]</div></li>
-            <li class="species"><div class="txn"><a class="treatmentLink" href="/index2.html?resource=treatments&kingdom={{species.qryObj.kingdom}}&phylum={{species.qryObj.phylum}}&order={{species.qryObj.order}}&family={{species.qryObj.family}}&genus={{species.qryObj.genus}}&species={{species.qryObj.species}}">{{species.qryObj.species}}</a> [{{species.num.num}}]</div></li>
+            <li class="kingdom">
+                <div class="txn">
+                    <a class="treatmentLink" href="/index2.html?resource=treatments&kingdom={{kingdom.qryObj.kingdom}}">{{kingdom.qryObj.kingdom}}</a> [{{kingdom.num.num}}]
+                </div>
+            </li>
+            <li class="phylum">
+                <div class="txn">
+                    <a class="treatmentLink" href="/index2.html?resource=treatments&kingdom={{phylum.qryObj.kingdom}}&phylum={{phylum.qryObj.phylum}}">{{phylum.qryObj.phylum}}</a> [{{phylum.num.num}}]
+                </div>
+            </li>
+            <li class="order">
+                <div class="txn">
+                    <a class="treatmentLink" href="/index2.html?resource=treatments&kingdom={{order.qryObj.kingdom}}&phylum={{order.qryObj.phylum}}&order={{order.qryObj.order}}">{{order.qryObj.order}}</a> [{{order.num.num}}]
+                </div>
+            </li>
+            <li class="family">
+                <div class="txn">
+                    <a class="treatmentLink" href="/index2.html?resource=treatments&kingdom={{family.qryObj.kingdom}}&phylum={{family.qryObj.phylum}}&order={{family.qryObj.order}}&family={{family.qryObj.family}}">{{family.qryObj.family}}</a> [{{family.num.num}}]
+                </div>
+            </li>
+            <li class="genus">
+                <div class="txn">
+                    <a class="treatmentLink" href="/index2.html?resource=treatments&kingdom={{genus.qryObj.kingdom}}&phylum={{genus.qryObj.phylum}}&order={{genus.qryObj.order}}&family={{genus.qryObj.family}}&genus={{genus.qryObj.genus}}">{{genus.qryObj.genus}}</a> [{{genus.num.num}}]
+                </div>
+            </li>
+            <li class="species">
+                <div class="txn">
+                    <a class="treatmentLink" href="/index2.html?resource=treatments&kingdom={{species.qryObj.kingdom}}&phylum={{species.qryObj.phylum}}&order={{species.qryObj.order}}&family={{species.qryObj.family}}&genus={{species.qryObj.genus}}&species={{species.qryObj.species}}">{{species.qryObj.species}}</a> [{{species.num.num}}]
+                </div>
+            </li>
             {{/taxonStats}}
         </ul>
 
