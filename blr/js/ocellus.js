@@ -19,6 +19,9 @@ let figcaptions = [];
 let figcaptionLength;
 
 // templates
+const tmplPager = document.querySelector('#templatePager').innerHTML;
+Mustache.parse(tmplPager);
+
 const tmplMasonry = document.querySelector('#templateMasonry').innerHTML;
 Mustache.parse(tmplMasonry);
 
@@ -41,7 +44,7 @@ const map = {
 
 const goGetIt = function(event) {
 
-    if (!event && !location.search) {
+    if (!location.search && q.value === '') {
 
         // neither is there an event, that is, nothing has
         // been clicked, nor there are any search params, 
@@ -49,7 +52,8 @@ const goGetIt = function(event) {
         // URL sent by someone. This means something is not 
         // right. In this case, default to a blank form
         setVisualElements('blank');
-        goHome();
+        q.placeholder = "c'mon, enter something";
+        return false;
     }
     else {
         
@@ -120,10 +124,16 @@ const urlConstruct = function(form) {
     
         }
     
-        queryParams.page = form.querySelector('input[name=page]').value;
-        queryParams.size = form.querySelector('input[name=size]').value;
-        queryParams.access_right = 'open';
-        queryParams.type = 'image';
+        if (queryParams.resource === 'images') {
+            queryParams.page = form.querySelector('input[name=page]').value;
+            queryParams.size = form.querySelector('input[name=size]').value;
+            queryParams.access_right = 'open';
+            queryParams.type = 'image';
+        }
+        else {
+            delete queryParams.communities;
+        }
+        
     }
 
     return queryParams;
@@ -231,9 +241,10 @@ const getHeightofVisibleViewport = function() {
         viewportheight = document.getElementsByTagName('body')[0].clientHeight
     }
 
-    return (viewportwidth - header);
+    return (viewportwidth - header.clientHeight);
 };
 
+const savedState = {};
 const setVisualElements = function(state) {
 
     // blank state (initial state)
@@ -246,16 +257,52 @@ const setVisualElements = function(state) {
     
     // about state
     else if (state === 'about') {
-        throbber.classList.remove('show');
-        wrapper.classList.remove('show');
-        about.classList.add('show');
-        const visibleViewportHeight = getHeightofVisibleViewport();
 
-        if (about.clientHeight < visibleViewportHeight) {
-            footer.classList.remove('relative');
+        if (about.classList.contains('show')) {
+            about.classList.remove('show');
+
+            if (savedState.wrapper === 'show') {
+                wrapper.classList.add('show');
+            }
+            else {
+                wrapper.classList.remove('show');
+            }
+
+            if (savedState.footer === 'relative') {
+                footer.classList.add('relative');
+            }
+            else {
+                footer.classList.remove('relative');
+            }
         }
         else {
-            footer.classList.add('relative');
+
+            throbber.classList.remove('show');
+
+            if (wrapper.classList.contains('show')) {
+                savedState.wrapper = 'show';
+                wrapper.classList.remove('show');
+            }
+            
+            about.classList.add('show');
+
+            const visibleViewportHeight = getHeightofVisibleViewport();
+            if (about.clientHeight < visibleViewportHeight) {
+
+                if (footer.classList.contains('relative')) {
+                    savedState.footer = 'relative';
+                    footer.classList.remove('relative');
+                }
+                
+            }
+            else {
+
+                if (!footer.classList.contains('relative')) {
+                    savedState.footer = '';
+                    footer.classList.add('relative');
+                }
+                
+            }
         }
     }
 
@@ -279,14 +326,15 @@ const setVisualElements = function(state) {
         throbber.classList.remove('show');
         wrapper.classList.add('show');
         about.classList.remove('show');
-        const visibleViewportHeight = getHeightofVisibleViewport();
+        footer.classList.add('relative');
 
-        if (wrapper.clientHeight < visibleViewportHeight) {
-            footer.classList.remove('relative');
-        }
-        else {
-            footer.classList.add('relative');
-        }
+        // const visibleViewportHeight = getHeightofVisibleViewport();
+        // if (wrapper.clientHeight < visibleViewportHeight) {
+        //     footer.classList.remove('relative');
+        // }
+        // else {
+        //     footer.classList.add('relative');
+        // }
 
         refreshCacheSelector.checked = false;
     }
@@ -369,18 +417,14 @@ const makeMap = function(mcs) {
 
 const makePager = function(data, page, search) {
 
-    if (data.found) {
+    if (data.recordsFound) {
         
-        if (data.found >= 30) {
+        if (data.recordsFound >= 30) {
             data.prev = (page === 1) ? `?${s}&page=1` : `?${search}&page=${page - 1}`;
             data.next = `?${search}&page=${(parseInt(page) + 1)}`;
             data.pager = true;
         }
-
-        setVisualElements('queryEndWithResult');
-    }
-    else {
-        setVisualElements('queryEndNoResult');
+        
     }
 
     return data;
@@ -522,7 +566,7 @@ const fetchResource = {
             callback = function(xh) {
 
                 let data = {
-                    found: 0,
+                    recordsFound: 0,
                     treatments: [],
                     prev: '',
                     next: '',
@@ -530,22 +574,16 @@ const fetchResource = {
                 };
 
                 data.treatments = xh.value;
-                data.found = xh.value.length;
+                data.recordsFound = niceNumbers(xh.value.length);
 
-                data = makePager(data, qp.page, search);
-                data.found = niceNumbers(xh.value.length);
-
-                // for each treatment, make layout of the thumbnail images
-                // for (let i = 0, j = data.treatments.length; i < j; i++) {
-                //     const images = data.treatments[i].images.images;
-                //     [data.treatments[i].figures, data.treatments[i].imgCount] = makeLayout(images);
-                //     data.treatments[i].imgCount = niceNumbers(data.treatments[i].imgCount);
-                // }
+                //data = makePager(data, qp.firstId, qp.lastId, search);
+                //data.found = niceNumbers(xh.value.length);
                 
                 wrapper.innerHTML = Mustache.render(tmplTreatmentsFTS, data);
+                setVisualElements('queryEndWithResult');
 
+                // add clickEvent to links to get more details of a treatment
                 const treatmentLinks = document.querySelectorAll('.treatmentLink');
-
                 for (let i = 0, j = treatmentLinks.length; i < j; i++) {
                     const t = treatmentLinks[i];
                     const qp = urlDeconstruct(t.search);
@@ -574,7 +612,8 @@ const fetchResource = {
         const callback = function(xh) {
 
             let data = {
-                found: 0,
+                recordsFound: 0,
+                imagesFound: 0,
                 figures: [],
                 prev: '',
                 next: '',
@@ -583,12 +622,14 @@ const fetchResource = {
 
             const {total, imagesOfRecords} = xh.value;
 
-            [data.figures, data.found] = makeLayout(imagesOfRecords);
+            data.recordsFound = total;
+            [data.figures, data.imagesFound] = makeLayout(imagesOfRecords);
             
             data = makePager(data, qp.page, search);
-            data.found = niceNumbers(data.found);
+            data.recordsFound = niceNumbers(data.recordsFound);
 
-            wrapper.innerHTML = Mustache.render(tmplMasonry, data);         
+            wrapper.innerHTML = Mustache.render(tmplMasonry, data, {templatePager: tmplPager});
+            setVisualElements('queryEndWithResult');     
 
             const figs = document.querySelectorAll('figcaption > a');
             for (let i = 0, j = figs.length; i < j; i++) {

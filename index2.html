@@ -120,60 +120,39 @@
     </div>
 </div>
 
-
-<!-- <div class="container">
-    <div class="row">
-        <div class="twelve columns">
-            <div id="refreshCacheWarning" class="u-cf off-none">This will refresh the cache; you probably don‘t want this.</div>
-
-            <div id="about">
-                <a id="about-close">close</a>
-                <div id="about-text">
-                    <p>Ocellus is a frontend to the Biodiversity Literature Repository (BLR) with more than 180K images on <a href="https://zenodo.org" target="_blank">Zenodo</a>, 200K taxonomic treatments in <a href="http://treatmentbank.org" target="_blank">TreatmentBank</a>, and 800,000 citations on <a href="https://refbank.org" target="_blank">RefBank</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API that queries, analyzes and aggregates results from these various repositories via a single, unified interface. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, or choose the fancy search interface to create more granular queries – Ocellus will retrieve the results for you.</p>
-        
-                    <p>For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country. The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up">Internet Archive</a> and has no known copyright restrictions. Please contact <a href="mailto:blr@plazi.org">Plazi</a> for more information or to provide feedback.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <div class="row">
-        <div class="twelve columns">
-            <div id="wrapper"></div>
-            <div id="carouselContainer" class="off-none">
-                <div id="carousel"></div>
-            </div>
-        </div>
-    </div>
-</div> -->
-
 <footer id="footer">
     <img src="blr/img/fish.jpg">
 </footer>
 
+<script id="templatePager" type="x-tmpl-mustache">
+    {{#pager}}
+    <div id="pager">
+        ◀ <a href="{{prev}}" id="prev" class="pager">prev</a> 
+        <a href="{{next}}" id="next" class="pager">next</a> ▶
+    </div>
+    {{/pager}}
+</script>
+
+<script id="templateWidget" type="x-tmpl-mustache">
+    <div class="widget">
+        <div id="status" class="status"></div>
+        <button id="toggle-{{recId}}" class="report">r</button>
+        <form>
+            <input type="text" class="imageReport" placeholder="enter report here">
+            <input type="hidden" name="recId" value="{{recId}}">
+            <button id="submit-{{recId}}" class="submit">send</button>
+            <button id="cancel-{{recId}}" class="cancel">cancel</button>
+        </form>
+    </div>
+</script>
+
 <!-- template for the masonry wall of images -->
 <script id="templateMasonry" type="x-tmpl-mustache">
-    <h3>{{found}} records found</h3>
+    <h3>{{recordsFound}} records found</h3>
     
     <div id="masonry" class="masonry">
         {{#figures}}
         <figure class="item">
-     
-            <!--
-            <div class="widget">
-                <div id="status" class="status"></div>
-                <button id="toggle-{{recId}}" class="report">r</button>
-                <form>
-                    <input type="text" class="imageReport" placeholder="enter report here">
-                    <input type="hidden" name="recId" value="{{recId}}">
-                    <button id="submit-{{recId}}" class="submit">send</button>
-                    <button id="cancel-{{recId}}" class="cancel">cancel</button>
-                </form>
-            </div>
-            -->
-     
             <a href="#carousel" class="carousel"><img src="{{imgBlur}}" width="250" data-src="{{imgA}}" class="lazyload" data-recid="{{recId}}"></a>
             
             <figcaption class="transition-050 opacity85 text">
@@ -184,12 +163,7 @@
         {{/figures}}
     </div>
     
-    {{#pager}}
-    <div id="pager">
-        ◀ <a href="{{prev}}" id="prev" class="pager">prev</a> 
-        <a href="{{next}}" id="next" class="pager">next</a> ▶
-    </div>
-    {{/pager}}
+    {{> templatePager}}
 </script>
 
 <!-- template for the vertical carousel -->
@@ -208,18 +182,31 @@
 </script>
 
 <!-- template for fulltext search of treatments -->
-<script id="templateTreatmentsFTS" type="x-tmpl-mustache">
-    <h3>{{found}} records found</h3>
+<script id="templateTreatmentsFTSWithThumbnail" type="x-tmpl-mustache">
+    <h3>{{recordsFound}} records found</h3>
 
     {{#treatments}}
     <details open>
         <summary>{{treatmentTitle}}</summary>
         
-        <!-- <div class='masonry'>
+        <div class='masonry'>
             {{#images}}
-            <a href="#carousel" class="carousel"><img src="{{httpUri}}" width="50" alt="{{captionText}}"></a> 
+            <a href="#carousel" class="carousel"><img src="{{thumb50}}" width="50" alt=""></a> 
             {{/images}}
-        </div> -->
+        </div>
+        
+        <p>{{{s}}} <a class="treatmentLink" href="/index2.html?resource=treatments&treatmentId={{treatmentId}}">more</a></p>
+    </details>
+    {{/treatments}}
+</script>
+
+<!-- template for fulltext search of treatments -->
+<script id="templateTreatmentsFTS" type="x-tmpl-mustache">
+    <h3>{{recordsFound}} records found</h3>
+
+    {{#treatments}}
+    <details open>
+        <summary>{{treatmentTitle}}</summary>
         
         <p>{{{s}}} <a class="treatmentLink" href="/index2.html?resource=treatments&treatmentId={{treatmentId}}">more</a></p>
     </details>
