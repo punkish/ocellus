@@ -615,7 +615,9 @@ const fetchResource = {
                 data.treatments = xh.value.treatments;
                 data.previd = xh.value.previd;
                 data.nextid = xh.value.nextid;
-                data.recordsFound = niceNumbers(data.treatments.length);
+                data.recordsFound = niceNumbers(xh.value.recordsFound);
+                data.from = xh.value.from;
+                data.to = xh.value.to;
 
                 data = makePager(data, search);
                 //data.found = niceNumbers(xh.value.length);
