@@ -18,6 +18,9 @@ const figcaptionHeight = '30px';
 let figcaptions = [];
 let figcaptionLength;
 
+// default number of records to fetch
+let size = 30;
+
 // templates
 const tmplPager = document.querySelector('#templatePager').innerHTML;
 Mustache.parse(tmplPager);
@@ -104,6 +107,7 @@ const urlConstruct = function(form) {
     let queryParams = {};
 
     const q = form.querySelector('input[name=q]').value;
+
     if (isXml(q)) {
         queryParams.treatmentId = q;
         queryParams.resource = 'treatment';
@@ -126,13 +130,16 @@ const urlConstruct = function(form) {
     
         if (queryParams.resource === 'images') {
             queryParams.page = form.querySelector('input[name=page]').value;
-            queryParams.size = form.querySelector('input[name=size]').value;
             queryParams.access_right = 'open';
             queryParams.type = 'image';
         }
-        else {
+        else if (queryParams.resource === 'treatments') {
             delete queryParams.communities;
+            queryParams.id = form.querySelector('input[name=id]').value;
         }
+
+        // number of records to fetch
+        queryParams.size = size;
         
     }
 
@@ -372,12 +379,14 @@ const makeUris = function(qp) {
         }
     }
 
+    const uri = `${zenodeo}/v2/${qp.resource}?${hrefArray1.join('&')}`;
+    const search = hrefArray2.join('&');
     history.pushState('', '', `?${hrefArray2.join('&')}`);
-    const s = hrefArray1.join('&');
+    
 
     return {
-        search: s,
-        uri: `${zenodeo}/v2/${qp.resource}?${s}`
+        search: search,
+        uri: uri
     }
 
 };
@@ -415,20 +424,48 @@ const makeMap = function(mcs) {
     
 };
 
-const makePager = function(data, page, search) {
 
-    if (data.recordsFound) {
-        
-        if (data.recordsFound >= 30) {
-            data.prev = (page === 1) ? `?${s}&page=1` : `?${search}&page=${page - 1}`;
-            data.next = `?${search}&page=${(parseInt(page) + 1)}`;
-            data.pager = true;
+const makePager = function(data, search, page) {
+
+    if (data.recordsFound && (data.recordsFound >= size)) {
+        if (page) {
+
+            // making pager for images
+            let prev = 'page=';
+            let next = 'page=';
+            
+            prev += (page === 1) ? 1 : page - 1;
+            next += parseInt(page) + 1;
+
+            data.prev = '?' + search.replace(/page=\d+/, prev);
+            data.next = '?' + search.replace(/page=\d+/, next);
+            
         }
-        
+        else {
+
+            // making pager for treatments
+            let prev = 'id=' + data.previd;
+            let next = 'id=' + data.nextid;
+
+            data.prev = '?refreshCache=true&' + search.replace(/id=\d+/, prev);
+            data.next = '?refreshCache=true&' + search.replace(/id=\d+/, next);
+        }
     }
 
+    data.pager = true;
     return data;
 };
+
+// const makeTreatmentsPager = function(data, search) {
+
+//     if (data.recordsFound && (data.recordsFound >= size)) {
+//         data.prev = `?${search}&id=${data.previd}`;
+//         data.next = `?${search}&id=${data.nextid}`;
+//         data.pager = true;
+//     }
+
+//     return data;
+// };
 
 const submitReporter = function(event) {
 
@@ -570,16 +607,20 @@ const fetchResource = {
                     treatments: [],
                     prev: '',
                     next: '',
+                    previd: 0,
+                    nextid: 0,
                     pager: false
                 };
 
-                data.treatments = xh.value;
-                data.recordsFound = niceNumbers(xh.value.length);
+                data.treatments = xh.value.treatments;
+                data.previd = xh.value.previd;
+                data.nextid = xh.value.nextid;
+                data.recordsFound = niceNumbers(data.treatments.length);
 
-                //data = makePager(data, qp.firstId, qp.lastId, search);
+                data = makePager(data, search);
                 //data.found = niceNumbers(xh.value.length);
                 
-                wrapper.innerHTML = Mustache.render(tmplTreatmentsFTS, data);
+                wrapper.innerHTML = Mustache.render(tmplTreatmentsFTS, data, {templatePager: tmplPager});
                 setVisualElements('queryEndWithResult');
 
                 // add clickEvent to links to get more details of a treatment
@@ -625,7 +666,7 @@ const fetchResource = {
             data.recordsFound = total;
             [data.figures, data.imagesFound] = makeLayout(imagesOfRecords);
             
-            data = makePager(data, qp.page, search);
+            data = makePager(data, search, qp.page);
             data.recordsFound = niceNumbers(data.recordsFound);
 
             wrapper.innerHTML = Mustache.render(tmplMasonry, data, {templatePager: tmplPager});
