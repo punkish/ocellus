@@ -447,8 +447,8 @@ const makePager = function(data, search, page) {
             let prev = 'id=' + data.previd;
             let next = 'id=' + data.nextid;
 
-            data.prev = '?refreshCache=true&' + search.replace(/id=\d+/, prev);
-            data.next = '?refreshCache=true&' + search.replace(/id=\d+/, next);
+            data.prev = '?' + search.replace(/id=\d+/, prev);
+            data.next = '?' + search.replace(/id=\d+/, next);
         }
     }
 
