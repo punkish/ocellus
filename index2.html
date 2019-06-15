@@ -128,8 +128,8 @@
 <script id="templatePager" type="x-tmpl-mustache">
     {{#pager}}
     <div id="pager">
-        ◀ <a href="{{prev}}" id="prev" class="pager">prev</a> 
-        <a href="{{next}}" id="next" class="pager">next</a> ▶
+        {{#prev}}◀ <a href="{{prev}}" id="prev" class="pager">prev</a>{{/prev}}
+        {{#next}}<a href="{{next}}" id="next" class="pager">next</a> ▶{{/next}}
     </div>
     {{/pager}}
 </script>

@@ -99,6 +99,10 @@ const urlDeconstruct = function(s) {
 
     const qp = {};
     s.split('&').forEach(p => { r = p.split('='); qp[r[0]] = r[1] });
+    if (qp.q) {
+        q.value = qp.q;
+    }
+
     return qp;
 };
 
@@ -447,8 +451,20 @@ const makePager = function(data, search, page) {
             let prev = 'id=' + data.previd;
             let next = 'id=' + data.nextid;
 
-            data.prev = '?' + search.replace(/id=\d+/, prev);
-            data.next = '?' + search.replace(/id=\d+/, next);
+            if (data.previd !== '') {
+                data.prev = '?' + search.replace(/id=\d+/, prev);
+            }
+            else {
+                
+                data.prev = '';
+            }
+
+            if (data.nextid !== '') {
+                data.next = '?' + search.replace(/id=\d+/, next);
+            }
+            else {
+                data.next = '';
+            }
         }
     }
 
