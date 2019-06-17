@@ -452,15 +452,24 @@ const makePager = function(data, search, page) {
             let next = 'id=' + data.nextid;
 
             if (data.previd !== '') {
-                data.prev = '?' + search.replace(/id=\d+/, prev);
+                if (search.indexOf('id') > -1) {
+                    data.prev = '?' + search.replace(/id=\d+/, prev);
+                }
+                else {
+                    data.prev = `?${search}&${prev}`;
+                }
             }
             else {
-                
                 data.prev = '';
             }
 
             if (data.nextid !== '') {
-                data.next = '?' + search.replace(/id=\d+/, next);
+                if (search.indexOf('id') > -1) {
+                    data.next = '?' + search.replace(/id=\d+/, next);
+                }
+                else {
+                    data.next = `?${search}&${next}`;
+                }
             }
             else {
                 data.next = '';
