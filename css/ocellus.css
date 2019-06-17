@@ -474,6 +474,16 @@ details p {
 /* end treatments */
 
 /* treatment */
+#treatmentInfo {
+    position: -webkit-sticky;
+    position: -moz-sticky;
+    position: -ms-sticky;
+    position: -o-sticky;
+    position: sticky;
+    top: 0px;
+    background-color: white;
+    z-index: 100;
+}
 .treatment h1 {
     font-size: 3rem;
     font-weight: 800;

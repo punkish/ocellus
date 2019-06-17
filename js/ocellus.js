@@ -16,8 +16,8 @@ const footer = document.querySelector('footer');
 const wrapper = document.querySelector('#wrapper');
 const resourceSelector = document.querySelector('#resourceSelector');
 const figcaptionHeight = '30px';
-let figcaptions = [];
-let figcaptionLength;
+let figcaptions = []; 
+const treatmentInfo = document.querySelector('#treatmentInfo');
 
 // default number of records to fetch
 let size = 30;

@@ -225,14 +225,16 @@
 <!-- template for a single treatment -->
 <script id="templateTreatment" type="x-tmpl-mustache">
     <div class="treatment">
-        <h1>{{treatmentTitle}}</h1>
-        <ul class="pids">
-            <li class="treatmentId">Treatment ID: <a href="https://zenodeo.punkish.org/v2/treatments?treatmentId={{treatmentId}}&format=xml" target="_blank">{{treatmentId}}</a> <span class="xml-marker">&lt;xml&gt;</span></li>
-            <li class="doi">DOI: <a href="{{doi}}" target="_blank">{{doi}}</a></li>
-            <li class="zenodoDep">Zenodo deposit: <a href="https://www.zenodo.org/record/{{zenodoDep}}" target="_blank">{{zenodoDep}}</a></li>
-        </ul>
-        
+        <div id="treatmentInfo">
+            <h1>{{treatmentTitle}}</h1>
+            <ul class="pids">
+                <li class="treatmentId">Treatment ID: <a href="https://zenodeo.punkish.org/v2/treatments?treatmentId={{treatmentId}}&format=xml" target="_blank">{{treatmentId}}</a> <span class="xml-marker">&lt;xml&gt;</span></li>
+                <li class="doi">DOI: <a href="{{doi}}" target="_blank">{{doi}}</a></li>
+                <li class="zenodoDep">Zenodo deposit: <a href="https://www.zenodo.org/record/{{zenodoDep}}" target="_blank">{{zenodoDep}}</a></li>
+            </ul>
+            
         <p class="journal">{{journalTitle}}, {{journalYear}}, pages {{pages}}, Vol. {{journalVolume}}, Issue {{journalIssue}}</p>
+        </div>
 
         <ul class="classification">
             {{#taxonStats}}
