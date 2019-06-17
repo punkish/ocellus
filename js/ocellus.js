@@ -18,6 +18,11 @@ const resourceSelector = document.querySelector('#resourceSelector');
 const figcaptionHeight = '30px';
 let figcaptions = []; 
 const treatmentInfo = document.querySelector('#treatmentInfo');
+const searchMessage = document.querySelector('#searchMessage');
+const counts = {
+    treatments: 0,
+    images: 0
+}
 
 // default number of records to fetch
 let size = 30;
@@ -368,7 +373,7 @@ const setVisualElements = function(state) {
     
 };
 
-const makeUris = function(qp) {
+const makeUris = function(qp, setHistory = true) {
     let hrefArray1 = [];
     let hrefArray2 = [];
 
@@ -389,9 +394,11 @@ const makeUris = function(qp) {
 
     const uri = `${zenodeo}/v2/${qp.resource}?${hrefArray1.join('&')}`;
     const search = hrefArray2.join('&');
-    history.pushState('', '', `?${hrefArray2.join('&')}`);
-    
 
+    if (setHistory) {
+        history.pushState('', '', `?${hrefArray2.join('&')}`);
+    }
+    
     return {
         search: search,
         uri: uri
@@ -485,17 +492,6 @@ const makePager = function(data, search, page) {
     return data;
 };
 
-// const makeTreatmentsPager = function(data, search) {
-
-//     if (data.recordsFound && (data.recordsFound >= size)) {
-//         data.prev = `?${search}&id=${data.previd}`;
-//         data.next = `?${search}&id=${data.nextid}`;
-//         data.pager = true;
-//     }
-
-//     return data;
-// };
-
 const submitReporter = function(event) {
 
     const send = event.target;
@@ -579,6 +575,21 @@ const cancelReporter = function(event) {
 
 const fetchResource = {
 
+    count: function(qp) {
+        if (counts[qp.resource] === 0) {
+            console.log(`fetching count of ${qp.resource}`);
+            const {search, uri} = makeUris(qp, false);
+            x(uri, (xh) => {
+                counts[qp.resource] = xh.value.count;
+                searchMessage.innerHTML = `searching ${counts[qp.resource]} ${qp.resource}`;
+            });
+        }
+        else {
+            searchMessage.innerHTML = `searching ${counts[qp.resource]} ${qp.resource}`;
+        }
+        
+    },
+
     treatments: function(qp) {
 
         const {search, uri} = makeUris(qp);
@@ -596,6 +607,7 @@ const fetchResource = {
                 if (qp.format === 'xml') {
                     return data;
                 }
+
                 else {
                     
                     [data.figures, data.imgCount] = makeLayout(data.images.images);
@@ -627,8 +639,8 @@ const fetchResource = {
     
             };
         }
-
-        // many treatents
+        
+        // many treatments
         else {
             callback = function(xh) {
 
@@ -779,6 +791,7 @@ const chooseUrlFlags = function (element) {
         for (let i = 0; i < rtLabels.length; i++) {
             if (element.value === rtInputs[i].value) {
                 rtLabels[i].classList.add('searchFocus');
+                getCounts(rtInputs[i].value);
             }
             else {
                 rtLabels[i].classList.remove('searchFocus');
@@ -878,9 +891,9 @@ const activateUrlFlagSelectors = function() {
     
             chooseUrlFlags(element);
             
-                if (element.name === 'communities') {
-                    communitiesSelector.classList.remove('open');
-                }
+            if (element.name === 'communities') {
+                communitiesSelector.classList.remove('open');
+            }
     
         })
     }
@@ -909,6 +922,10 @@ const turnCarouselOff = function(event) {
     setVisualElements('turnCarouselOff');
 };
 
+const getCounts = function(resource) {
+    fetchResource.count({resource: resource, count: true});
+};
+
 aboutOpen.addEventListener('click', toggleAbout);
 aboutClose.addEventListener('click', toggleAbout);
 communitiesSelector.addEventListener('click', toggleCommunities);
@@ -917,6 +934,8 @@ form.addEventListener('submit', goGetIt);
 formButton.addEventListener('click', goGetIt);
 suggest(q);
 activateUrlFlagSelectors();
+
+fetchResource.count({resource: 'treatments', count: true});
 
 if (location.search) {
     goGetIt();
