@@ -120,6 +120,9 @@ nav input[type="radio"] {
     border: none;
     border-radius: 0;
 }
+#q::placeholder { /* Most modern browsers support this now. */
+    color: green;
+}
 .searchButton {
     border-radius: 0 5px 5px 0;
     background-color: #444;
