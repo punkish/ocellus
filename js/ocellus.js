@@ -18,7 +18,7 @@ const resourceSelector = document.querySelector('#resourceSelector');
 const figcaptionHeight = '30px';
 let figcaptions = []; 
 const treatmentInfo = document.querySelector('#treatmentInfo');
-const searchMessage = document.querySelector('#searchMessage');
+//const searchMessage = document.querySelector('#searchMessage');
 const counts = {
     treatments: 0,
     images: 0
@@ -581,11 +581,11 @@ const fetchResource = {
             const {search, uri} = makeUris(qp, false);
             x(uri, (xh) => {
                 counts[qp.resource] = xh.value.count;
-                searchMessage.innerHTML = `searching ${counts[qp.resource]} ${qp.resource}`;
+                q.placeholder = `search ${counts[qp.resource]} ${qp.resource}`;
             });
         }
         else {
-            searchMessage.innerHTML = `searching ${counts[qp.resource]} ${qp.resource}`;
+            q.placeholder = `search ${counts[qp.resource]} ${qp.resource}`;
         }
         
     },
