@@ -576,16 +576,20 @@ const cancelReporter = function(event) {
 const fetchResource = {
 
     count: function(qp) {
+
+        const setPlaceHolderMessage = function() {
+            q.placeholder = `search ${counts[qp.resource]} ${qp.resource}`;
+        };
+
         if (counts[qp.resource] === 0) {
-            console.log(`fetching count of ${qp.resource}`);
             const {search, uri} = makeUris(qp, false);
             x(uri, (xh) => {
                 counts[qp.resource] = xh.value.count;
-                q.placeholder = `search ${counts[qp.resource]} ${qp.resource}`;
+                setPlaceHolderMessage();
             });
         }
         else {
-            q.placeholder = `search ${counts[qp.resource]} ${qp.resource}`;
+            setPlaceHolderMessage();
         }
         
     },
