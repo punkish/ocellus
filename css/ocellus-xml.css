@@ -1,6 +1,7 @@
 p.xml {
     font-family: Georgia, Times, 'Times New Roman', serif;
     margin-top: 24px;
+    border-top: 1px solid grey;
 }
 
 emphasis {

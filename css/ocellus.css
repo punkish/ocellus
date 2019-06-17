@@ -1,166 +1,228 @@
-body {
-    font-family: 'Helvetica Neue', Helvetica, Sans-serif;
-    font-weight: 400;
-    font-size: 1.5rem;
-    margin: 0 auto;
+/*
+css Ocellus
+created by P Kishor
+GitHub: https://github.com/punkish/ocellus
+License: Released into the public domain under CC0
+*/
+
+a {
+    color: blue;
 }
-.header {
-    text-align: center;
+
+header {
+    padding-top: 10px;
     background-color: #f5f5f5;
     border-bottom: 1px solid silver;
-    width: 100%;
 }
-.header-component {
-    float: left;
-}
+
 .title {
-    line-height: 20px;
-    margin-top: 18px;
+    margin-bottom: 10px;
+    line-height: 15px;
+    text-align: center;
 }
-sup {
-    font-size: 8px;
-}
-#about-link, #about-close, button {
-    cursor: pointer;
-}
-#about-close {
-       -moz-transition: all 1s ease-in-out;
-    -webkit-transition: all 1s ease-in-out;
-         -o-transition: all 1s ease-in-out;
-        -ms-transition: all 1s ease-in-out;
-            transition: all 1s ease-in-out;
-        -moz-animation: blink normal 2s infinite ease-in-out;
-     -webkit-animation: blink normal 2s infinite ease-in-out;
-         -ms-animation: blink normal 2s infinite ease-in-out;
-             animation: blink normal 2s infinite ease-in-out;
-}
-/* about-close fade-in fade-out */
-@keyframes blink {
-    0%   { color: rgba(0,0,0,1  ) }
-    25%  { color: rgba(0,0,0,0.5) }
-    50%  { color: rgba(0,0,0,0  ) }
-    75%  { color: rgba(0,0,0,0.5) }
-    100% { color: rgba(0,0,0,1  ) }
-}
-@-webkit-keyframes blink {
-    0%   { color: rgba(0,0,0,1  ) }
-    25%  { color: rgba(0,0,0,0.5) }
-    50%  { color: rgba(0,0,0,0  ) }
-    75%  { color: rgba(0,0,0,0.5) }
-    100% { color: rgba(0,0,0,1  ) }
-}
-#fs-form {
-    overflow: auto;
-    line-height: 8px;
-    margin-top: 0px;
-    margin-bottom: 0 !important;
-}
-#fs-form table {
-    padding: 0;
-    margin: 0;
-    width: 100%;
-}
-#fs-form td {
-    border: none;
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
-    width: 100%;
-}
-.fs-help {
-    position: relative;
-    text-align: left;
-    text-transform: uppercase;
-    font-size: xx-small;
-    font-weight: 400;
-    padding-left: 5px;
-    color: darkgreen;
+a.main-title {
+    text-decoration: none;
+    color: black;
     margin-bottom: 0;
 }
-.fs-container {
-    position: relative;
-    width: calc(100% - 40px);
-    min-height: 36px;
-    border: 1px solid silver;
-    border-radius: 5px 0 0 5px;
-    background-color: white;
-    padding-left: 0px;
-    padding-right: 0px;
+.sub-title {
+    margin-top: -5px;
+    font-size: 0.85rem;
 }
-input[type="text"] {
-    width: 95%;
-    height: 36px !important;
-    border: none !important;
-    margin-bottom: 0 !important;
-    padding-left: 5px;
-    
+
+button {
+    cursor: pointer;
 }
-input[type="text"]:after {
-    clear: both;
-}
-input[type="text"].reqd {
-    color: red;
-}
-#fs-go {
-    padding: 0px 8px;
-    border-radius: 0 5px 5px 0;
-    border: 1px solid #444;
-    background-color: #444;
-    color: white;
-}
-input[type="checkbox"] {
-    margin-top:5px;
-    margin-left: 5px;
-    float: left;
-}
-.msg {
-    font-size: 12px;
-    margin-bottom: 0px;
-}
-.cacheCheckMsg {
-    text-align: left;
-    line-height: 16px;
-    margin-top: 0;
-    color: red;
-    font-size: 0.8em;
-    margin-bottom: 10px;
+
+.off-block {
+    display: block;
+    visibility: hidden;
 }
 .off-none {
-    visibility: hidden;
     display: none;
-}
-.off-block {
     visibility: hidden;
-    display: block;
 }
 .on {
     visibility: visible;
 }
-#about-text {
-    margin-top: 12px;
+
+.warning {
+    color: red;
+} 
+
+#ssForm,
+#fSearch {
+    margin: 0;
+    font-size: 1rem;
 }
+.searchContainer {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/*
+hide the searchChooser widget on screens 
+smaller than 375px width
+*/
+.searchChooser {
+    font-size: 1rem;
+    margin-left: 45px;
+    cursor: pointer;
+    visibility: hidden;
+}
+nav {
+    font-size: 1rem;
+    margin-left: 45px;
+/*     padding-bottom: 3px;
+    text-align: left;
+    float: left; */
+}
+/* nav a,
+nav span {
+    margin-right: 10px;
+    margin-left: 0;
+}
+
+nav a.searchFocus {
+    text-decoration: none;
+    color: white;
+    background-color: grey;
+    padding: 2px 5px;
+    border-radius: 2px;
+} */
+
+nav label {
+    float: left;
+    margin-right: 10px;
+}
+nav label.searchFocus {
+    text-decoration: none;
+    color: white;
+    background-color: grey;
+    padding: 2px 5px;
+    border-radius: 2px;
+}
+nav input[type="radio"] {
+    display: none;
+}
+.searchWidget {
+    width: 100%;
+    position: relative;
+    border: none;
+    clear: both;
+    display: table;
+}
+.searchTopBar {
+    position: relative;
+}
+
+#sSearch .searchInputs,
+#fSearch .searchInputs {
+    width: calc( 100% - 90px );
+    float: left;
+    background-color: white;
+    border: 1px solid #444;
+    padding: 0;
+}
+#sSearch .searchInputs {
+    height: 38px;
+}
+#fSearch .searchInputs {
+    height: auto;
+}
+#q {
+    width: calc( 100% - 25px );
+    border: none;
+    border-radius: 0;
+}
+.searchButton {
+    border-radius: 0 5px 5px 0;
+    background-color: #444;
+    border: 1px solid #444;
+    color: white !important;
+    padding-left: 12px;
+    height: 40px;
+    width: 40px;
+    position: relative;
+    font-size: unset;
+    line-height: unset;
+    margin-bottom: 0;
+}
+.searchButton:hover {
+    background-color: green !important;
+}
+#refreshCacheWarning {
+    color: red;
+    line-height: 1.1em;
+    display: block;
+    visibility: hidden;
+}
+#refreshCacheWarning.show {
+    visibility: visible;
+}
+.searchParams {
+    position: relative;
+    width: calc( 100% - 30px );
+    min-height: 38px;
+    height: auto;
+    float: left;
+}
+
+#q:focus {
+    color: green;
+}
+
+.off-none {
+    visibility: hidden;
+    display: none;
+}
+/* end simple search */
+
+
 h3 {
     font-size: 14px;
     text-align: center;
 }
 .transition-050 {
-       -moz-transition: 0.50s;
+        -moz-transition: 0.50s;
     -webkit-transition: 0.50s;
         -ms-transition: 0.50s;
-         -o-transition: 0.50s;
+            -o-transition: 0.50s;
             transition: 0.50s;
 }
 .opacity85{ 
     opacity: 0.85; 
     filter: alpha(opacity=85); 
 }
+
 #wrapper {
-    width: 99%;
+    width: 100%;
     margin: 0 auto;
     background-color: white;
     opacity: 1;
-    border: 0px solid red;
+    display: none;
 }
+#wrapper.show {
+    display: block;
+}
+footer {
+    bottom: 0;
+    text-align: center;
+    width: 100%;
+    cursor: pointer;
+    position: fixed;
+}
+/* footer.fixed {
+    position: fixed;
+} */
+footer.relative {
+    position: relative;
+}
+footer img {
+    width: 80%;
+    max-width: 480px;
+}
+
 .grid {
     margin: 0em 0;
     padding: 0;
@@ -169,7 +231,7 @@ h3 {
     flex-wrap: wrap;
 }
 .masonry {
-    margin: 0em 0;
+    margin: 0;
     padding: 0;
     -moz-column-gap: 1em;
     -webkit-column-gap: 1em;
@@ -180,15 +242,15 @@ h3 {
     column-count: 1;
 }
 .item {
-    width: 97%;
+    width: 100%;
     padding: 0px;
-    border: 1px solid silver;
+    border: 0px solid black;
 }
 .masonry figure {
     position: relative;
     overflow: hidden;
-    border: 1px solid #ccc;
-    min-height: 200px;
+    border: 1px solid #000;
+    /* min-height: 200px; */
     height: auto;
     margin: 0 0 1em 0 !important;
 
@@ -201,8 +263,9 @@ h3 {
 }
 .masonry figure img {
     width: 100%;
-    border: 0px solid silver;
+/*     border: 0px solid silver; */
     margin-bottom: 0px;
+    cursor: pointer;
 }
 .masonry figcaption {
     background: rgba(250, 250, 250, 0.8);
@@ -221,21 +284,24 @@ h3 {
     font-weight: 400;
     opacity: 1 !important;
     border: 0px solid grey;
-    overflow: hidden;
+    cursor: pointer;
 }
 .masonry figcaption a {
     cursor: pointer;
+    
     text-decoration: underline;
     text-decoration-color: blue;
-    text-decoration-style: double;
+/*     text-decoration-style: double; */
 }
 .masonry figcaption a.transition-050 {
     text-decoration: none;
+    color: black;
+/*     font-weight: bold; */
 }
 .text {
     color: #000;
     background-color: #fff;
-    font-size:1.2em;
+    font-size:1em;
 }
 .desc {
     display: block;
@@ -275,21 +341,7 @@ h3 {
 #next:visited {
     color: blue;
 }
-footer {
-    bottom: 0;
-    text-align: center;
-    width: 100%;
-}
-footer.fixed {
-    position: fixed;
-}
-footer.relative {
-    position: relative;
-}
-footer img {
-    width: 80%;
-    max-width: 480px;
-}
+
 .autocomplete-suggestions {
     border: 1px solid lightgrey !important;
     margin-top: 2px;
@@ -297,20 +349,13 @@ footer img {
 .autocomplete-suggestion {
     font-size: 0.8em;
 }
-
 #carouselContainer {
     cursor: pointer;
+    display: none;
 }
-/* b-lazy */
-/* body {
-padding-left: 20px;
-padding-right: 20px;
+#carouselContainer.show {
+    display: block;
 }
-
-h1 {
-font-size: 10rem;
-} */
-
 figure {
     margin: 0;
     position: relative;
@@ -396,35 +441,19 @@ figure {
     background-color: orange;
 }
 
-
 .widget button.report:hover {
     background-color: yellow;
 }
 
 .image-wrapper {
-    /* background: url("https://cdn.dribbble.com/users/91700/screenshots/3038974/loader.gif") center center no-repeat; */
     width: 100%;
     position: relative;
-    /* -webkit-transform: scale(0.8);
-            transform: scale(0.8);
-    transition-property: -webkit-transform;
-    transition-property: transform;
-    transition-property: transform, -webkit-transform;
-    transition-duration: 400ms;
-    transition-timing-function: ease-out; */
     margin-top: 20px;
     border: 1px solid;
     text-align: center;
 }
 
 .image-wrapper img {
-    /* -webkit-transform: perspective(400px) rotateX(5deg);
-            transform: perspective(400px) rotateX(5deg);
-    transition-property: -webkit-transform;
-    transition-property: transform;
-    transition-property: transform, -webkit-transform;
-    transition-duration: 400ms;
-    transition-timing-function: ease; */
     width:100%
 }
 
@@ -433,33 +462,125 @@ figure {
     text-align: left;
 }
 
-@media (min-width: 375px) {}
-@media (min-width: 414px) {
+/* treatments */
+details {
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+details p {
+    margin-left: 1.5rem;
+    font-size: 1.2rem;
+}
+/* end treatments */
+
+/* treatment */
+.treatment h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    font-family: Georgia, Times, 'Times New Roman', serif;
+    letter-spacing: 0px;
+}
+.treatment h2 {
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+ul.pids {
+    list-style: none;
+    font-weight: bold;
+}
+ul.pids li {
+    line-height: 10px;
+    font-size: 80%;
+}
+ul.pids a {
+    font-weight: normal;
+}
+p.journal {
+    font-size: 1.1em;
+}
+.xml-marker {
+    border: 1px solid lightblue;
+    background-color: lightblue;
+    border-radius: 5px;
+    color: #444;
+    font-size: 1rem;
+    padding: 2px;
+}
+/* for xml styling, see ocellus-xml.css */
+/* end treatment */
+
+/* lazyload classes */
+.lazyload {
+	opacity: 0;
+}
+.lazyloading {
+	opacity: 1;
+	transition: opacity 300ms;
+	background: #f7f7f7 url(../../img/loader.gif) no-repeat center;
+}
+.lazyloaded {
+	opacity: 1;
+	transition: opacity 300ms;
+}
+/* end lazyload classes */
+
+#map { 
+    height: 300px; 
+    margin-bottom: 20px;
+    display: none;
+}
+#map.show {
+    display: block;
+}
+/* Larger than mobile */
+@media (min-width: 400px) {
+
     .masonry {
         -moz-column-count: 2;
         -webkit-column-count: 2;
         column-count: 2;
     }
 }
-@media (min-width: 1024px) {
-    .header {
-        padding-top: 20px;
+
+/* Larger than phablet (also point when grid becomes active) */
+@media (min-width: 550px) {
+    .column,
+    .columns {
+        margin-left: 10px !important;
     }
+    
+    header {
+        margin-top: 0;
+    }
+    
     .title {
+        /* float: left; */
+        width: 90px;
+        margin-top: 25px !important;
+    }
+/*     .searchContainer {
         float: left;
-        margin-right: 10px;
-        margin-top: 10px;
+        width: calc( 100% - 90px );
+    } */
+}
+
+/* Larger than tablet */
+@media (min-width: 750px) {
+    
+    .column,
+    .columns {
+        margin-left:0 !important;
     }
-    #about {
-        margin: 0 auto;
-        margin-top: 50px;
+    .masonry {
+        -moz-column-count: 3;
+        -webkit-column-count: 3;
+        column-count: 3;
     }
-    .fs-form {
-        margin-bottom: 2em !important;
-    }
-    .cacheCheckMsg {
-        font-size: 1em;
-    }
+}
+
+/* Larger than desktop */
+@media (min-width: 1000px) {
+    
     h3 {
         font-size: 16px;
     }
@@ -469,7 +590,9 @@ figure {
         column-count: 4;
     }
 }
-@media (min-width: 1280px) {
+
+/* Larger than Desktop HD */
+@media (min-width: 1200px) {
     .masonry {
         -moz-column-count: 5;
         -webkit-column-count: 5;

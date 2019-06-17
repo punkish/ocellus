@@ -1,517 +1,922 @@
-'use strict';
+const zenodoRecord = 'https://zenodo.org/record/';
+const header = document.querySelector('header');
+const form = document.querySelector('form[name=simpleSearch]');
+const formButton = document.querySelector('button[name=simpleSearch]');
+const q = document.querySelector('input[name=q]');
+const urlFlagSelectors = document.querySelectorAll('.urlFlag');
+const communitiesSelector = document.querySelector('.drop-down');
+const communityCheckBoxes = document.querySelectorAll('input[name=communities]');
+const allCommunities = document.querySelector('input[value="all communities"]');
+const refreshCacheSelector = document.querySelector('input[name=refreshCache]');
+const refreshCacheWarning = document.querySelector('#refreshCacheWarning');
+const about = document.querySelector('#about');
+const aboutOpen = document.querySelector('#about-link');
+const aboutClose = document.querySelector('#about-close');
+const footer = document.querySelector('footer');
+const wrapper = document.querySelector('#wrapper');
+const resourceSelector = document.querySelector('#resourceSelector');
+const figcaptionHeight = '30px';
+let figcaptions = [];
+let figcaptionLength;
 
-const Ocellus = (function() {
-    
-    // private stuff
-    let zenodeo = 'https://zenodeo.punkish.org';
-    const basePath = '/v1/records?size=30&communities=biosyslit&access_right=open&type=image&summary=false&images=true&';
-    let baseUrl = zenodeo + basePath;
-    const zenodoApi = 'https://zenodo.org/api/files/';
-    const zenodoRecord = 'https://zenodo.org/record/';
-    
-    let layout = 'masonry';
+// default number of records to fetch
+let size = 30;
 
-    // figcaption settings //////////////////
-    let figcaptionHeight = '30px';
-    let figcaptions = [];
-    let figcaptionLength;
+// templates
+const tmplPager = document.querySelector('#templatePager').innerHTML;
+Mustache.parse(tmplPager);
 
-    let facets;
+const tmplRecordsFound = document.querySelector('#templateRecordsFound').innerHTML;
+Mustache.parse(tmplRecordsFound);
 
-    let data = {
-        numOfFoundRecords: 0,
-        figures: [],
-        prev: '',
-        next: ''
-    };
+const tmplMasonry = document.querySelector('#templateMasonry').innerHTML;
+Mustache.parse(tmplMasonry);
 
-    let qField;
-    let qValue;
-    let templateMasonry;
-    let templateCarousel;
-    let carouselContainer;
-    let carousel;
-    let wrapper;
-    let throbber;
-    let footer;
-    let about;
+const tmplCarousel = document.querySelector('#templateCarousel').innerHTML;
+Mustache.parse(tmplCarousel);
 
-    // we use these when toggling about
-    let wrapperState;
-    let footerState;
+const tmplTreatmentsFTS = document.querySelector('#templateTreatmentsFTS').innerHTML;
+Mustache.parse(tmplTreatmentsFTS);
 
-    const getQueryStr = function(qStr) {
-        let qryStr = {};
-        qStr.substr(1)
-            .split('&')
-            .forEach(function(el) {
-                qryStr[el.split('=')[0]] = el.split('=')[1];
-            });
-    
-        return qryStr;
-    };
-    
-    const getQueryParamsAndImages = function(search) {
+const tmplTreatment = document.querySelector('#templateTreatment').innerHTML;
+Mustache.parse(tmplTreatment);
 
-        const qryStr = getQueryStr(search);
-        qValue = qryStr['q'];
-    
-        getImages(
-            qryStr['q'],            // qry 
-            qryStr['page'],         // page, 
-            qryStr['refreshCache']  // refreshCache
-        );
-    };
-    
-    const makeLayout = function(imagesOfRecords) {
+// map params
+const map = {
+    url: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    id: 'mapbox.streets',
+    accessToken: 'pk.eyJ1IjoicHVua2lzaCIsImEiOiJjajhvOXY0dW8wMTA3MndvMzBlamlhaGZyIn0.3Ye8NRiiGyjJ1fud7VbtOA'
+}
+
+const goGetIt = function(event) {
+
+    if (!location.search && q.value === '') {
+
+        // neither is there an event, that is, nothing has
+        // been clicked, nor there are any search params, 
+        // that is, we are not trying to load a preformed 
+        // URL sent by someone. This means something is not 
+        // right. In this case, default to a blank form
+        setVisualElements('blank');
+        q.placeholder = "c'mon, enter something";
+        return false;
+    }
+    else {
         
-        let imgCount = 0;
-        let figures = [];
+        let qp;
+        if (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            // construct URL based on form fields
+            qp = urlConstruct(form);
+        }
+        else if (location.search) {
     
-        for (let record in imagesOfRecords) {
-            
-            const images = imagesOfRecords[record]["images"];
-            const j = images.length;
-            imgCount = imgCount + j;
-            const recId = record.split('/').pop();
+            // deconstruct URL based on location.search
+            qp = urlDeconstruct(location.search);
+        }
 
-            let imgA; // 250 pixels wide
-            let imgB; // 400
-            let imgC; // 960
-            let imgD; // 1200
-            if (imagesOfRecords[record]["thumb250"] === 'na') {
-                imgA = imgB = imgC = imgD = 'img/kein-preview.png';
-            }
-            else {
-                imgA = imagesOfRecords[record]["thumb250"];
-                imgB = imgA.replace('250,', '400,');
-                imgC = imgA.replace('250,', '960,');
-                imgD = imgA.replace('250,', '1200,');
-            }
+        // throbber.classList.toggle('show');
+        setVisualElements('queryStart');
+        fetchResource[qp.resource](qp);
+    }
+};
 
-            const figure = {
-                title: imagesOfRecords[record]["title"],
-                creators: imagesOfRecords[record]["creators"],
-                recId: recId,
-                zenodoRecord: zenodoRecord + recId,
-                imageSrc: images[0],
-                imgA: imgA,
-                imgB: imgB,
-                imgC: imgC,
-                imgD: imgD
-            };
+const isXml = function(s) {
+    if (s.length === 32) {
+        return true;
+    }
+
+    return false;
+};
+
+const urlDeconstruct = function(s) {
+    
+
+    // removing any leading '?'
+    if (s.substr(0, 1) === '?') {
+        s = s.substr(1);
+    }
+
+    const qp = {};
+    s.split('&').forEach(p => { r = p.split('='); qp[r[0]] = r[1] });
+    if (qp.q) {
+        q.value = qp.q;
+    }
+
+    return qp;
+};
+
+const urlConstruct = function(form) {
+
+    let queryParams = {};
+
+    const q = form.querySelector('input[name=q]').value;
+
+    if (isXml(q)) {
+        queryParams.treatmentId = q;
+        queryParams.resource = 'treatment';
+        const rc = urlFlagSelectors.querySelector('input[name=refreshCache');
+        if (rc.checked) {
+            queryParams.refreshCache = true;
+        }
+    }
+    else {
+        queryParams.q = q;
+        for (let i = 0, j = urlFlagSelectors.length; i < j; i++) {
+
+            const element = urlFlagSelectors[i];
             
-            figures.push(figure)
+            if (element.checked) {
+                queryParams[element.name] = element.value;
+            }
+    
         }
     
-        return [figures, imgCount];
-    };
-    
-    const getImages = function(qValue, page, refreshCache) {
-        
-        // we attach qStr1 to 'prev' and 'next' links 
-        // with the correctly decremented or  
-        // incremented page number
-        let qStr1 = 'q=' + qValue;
-        
-        if (refreshCache) {
-            qStr1 = qStr1 + '&refreshCache=' + refreshCache;
+        if (queryParams.resource === 'images') {
+            queryParams.page = form.querySelector('input[name=page]').value;
+            queryParams.access_right = 'open';
+            queryParams.type = 'image';
         }
-    
-        qStr1 = qStr1 + '&page=';
-    
-        // qStr2 is used for `history`
-        let qStr2 = qStr1 + page;
-    
-        const method = 'GET';
-        // the complete url to the api
-        let url = baseUrl + qStr2;
-        const callback = function(xh) {
+        else if (queryParams.resource === 'treatments') {
+            delete queryParams.communities;
+            queryParams.id = form.querySelector('input[name=id]').value;
+        }
 
-            const res = JSON.parse(xh.responseText);
-
-            if (res.total) {
-                const [figures, imgCount] = makeLayout(res.result);
-                data.figures = figures;
-                data.numOfFoundRecords = niceNumbers(res.total);
-
-                if (imgCount >= 30) {
-                    data.prev = (page === 1) ? '?' + qStr1 + 1 : '?' + qStr1 + (page - 1);
-                    data.next = '?' + qStr1 + (parseInt(page) + 1);
-                    data.pager = true;
-                }
-
-                footer.className = 'relative';
-                history.pushState('', '', '?' + qStr2);
-            }
-            else {
-                data.numOfFoundRecords = 'Zero';
-                data.pager = false;
-                footer.className = 'fixed';
-            }
-
-            qField.value = qValue;
-            wrapper.innerHTML = Mustache.render(templateMasonry, data);
-            wrapper.className = 'on';
-            throbber.classList.remove('throbber-on');
-            throbber.classList.add('throbber-off');
-
-            if (data.numOfFoundRecords !== 'Zero') {
-                const figs = document.querySelectorAll('figcaption > a');
-                // const reporters = document.querySelectorAll('.report');
-                // const submitters = document.querySelectorAll('.submit');
-                // const cancellers = document.querySelectorAll('.cancel');
+        // number of records to fetch
+        queryParams.size = size;
         
-                let i = 0;
-                let j = figs.length;
-                for (; i < j; i++) {
-                    figs[i].addEventListener('click', toggleFigcaption);
-                    // reporters[i].addEventListener('click', toggleReporter);
-                    // submitters[i].addEventListener('click', submitReporter);
-                    // cancellers[i].addEventListener('click', cancelReporter);
-                }
-            }
+    }
+
+    return queryParams;
+};
+
+const goHome = function() {
+    location.search = '/'
+};
+
+const makeLayout = function(imagesOfRecords) {
+        
+    let imgCount = 0;
+    let figures = [];
+
+    for (let record in imagesOfRecords) {
+        
+        const images = imagesOfRecords[record].images;
+        const j = images.length;
+        imgCount = imgCount + j;
+        const recId = record.split('/').pop();
+
+        let imgBlur; // 10 pixels wide
+        let imgA_; // 50 pixels 
+        let imgA; // 250 pixels 
+        let imgB; // 400
+        let imgC; // 960
+        let imgD; // 1200
+
+        if (imagesOfRecords[record].thumb250 === 'na') {
+            imgBlur = imgA_ = imgA = imgB = imgC = imgD = 'img/kein-preview.png';
+        }
+        else {
+            imgA = imagesOfRecords[record].thumb250;
+            imgBlur = imgA.replace('250', '10');
+            imgA_ = imgA.replace('250', '50');
+            imgB = imgA.replace('250,', '400,');
+            imgC = imgA.replace('250,', '960,');
+            imgD = imgA.replace('250,', '1200,');
+        }
+
+        const figure = {
+            title: imagesOfRecords[record].title,
+            creators: imagesOfRecords[record].creators,
+            recId: recId,
+            zenodoRecord: zenodoRecord + recId,
+            imageSrc: images[0],
+            imgBlur: imgBlur,
+            imgA: imgA,
+            imgA_: imgA_,
+            imgB: imgB,
+            imgC: imgC,
+            imgD: imgD
         };
-        const headers = [
-            {k: "Content-Type", v: "application/json;charset=UTF-8"}
-        ];
-        const payload = '';
+        
+        figures.push(figure)
+    }
 
-        x(method, url, callback, headers, payload);
+    return [figures, imgCount];
+};
+
+const niceNumbers = function(num) {
+
+    const nums = {
+        '0': 'Zero',
+        '1': 'One',
+        '2': 'Two',
+        '3': 'Three',
+        '4': 'Four',
+        '5': 'Five',
+        '6': 'Six',
+        '7': 'Seven',
+        '8': 'Eight',
+        '9': 'Nine'
+    };
+
+    return nums[num] || num;
+};
+
+// https://andylangton.co.uk/blog/development/get-viewportwindow-size-width-and-height-javascript
+const getHeightofVisibleViewport = function() {
+
+    let viewportwidth;
+    let viewportheight;
+     
+    // the more standards compliant browsers 
+    // (mozilla/netscape/opera/IE7) use window.innerWidth 
+    // and window.innerHeight
+    if (typeof window.innerWidth !== 'undefined') {
+         viewportwidth = window.innerWidth,
+         viewportheight = window.innerHeight
+    }
+     
+    // IE6 in standards compliant mode (i.e. with a 
+    // valid doctype as the first line in the document)
+    else if (typeof document.documentElement !== 'undefined'
+        && typeof document.documentElement.clientWidth !==
+        'undefined' && document.documentElement.clientWidth !== 0) {
+          viewportwidth = document.documentElement.clientWidth,
+          viewportheight = document.documentElement.clientHeight
+    }
+     
+    // older versions of IE
+    else {
+        viewportwidth = document.getElementsByTagName('body')[0].clientWidth,
+        viewportheight = document.getElementsByTagName('body')[0].clientHeight
+    }
+
+    return (viewportwidth - header.clientHeight);
+};
+
+const savedState = {};
+const setVisualElements = function(state) {
+
+    // blank state (initial state)
+    if (state === 'blank') {
+        throbber.classList.remove('show');
+        wrapper.classList.remove('show');
+        about.classList.remove('show');
+        footer.classList.remove('relative');
+    }
+    
+    // about state
+    else if (state === 'about') {
+
+        if (about.classList.contains('show')) {
+            about.classList.remove('show');
+
+            if (savedState.wrapper === 'show') {
+                wrapper.classList.add('show');
+            }
+            else {
+                wrapper.classList.remove('show');
+            }
+
+            if (savedState.footer === 'relative') {
+                footer.classList.add('relative');
+            }
+            else {
+                footer.classList.remove('relative');
+            }
+        }
+        else {
+
+            throbber.classList.remove('show');
+
+            if (wrapper.classList.contains('show')) {
+                savedState.wrapper = 'show';
+                wrapper.classList.remove('show');
+            }
+            
+            about.classList.add('show');
+
+            const visibleViewportHeight = getHeightofVisibleViewport();
+            if (about.clientHeight < visibleViewportHeight) {
+
+                if (footer.classList.contains('relative')) {
+                    savedState.footer = 'relative';
+                    footer.classList.remove('relative');
+                }
+                
+            }
+            else {
+
+                if (!footer.classList.contains('relative')) {
+                    savedState.footer = '';
+                    footer.classList.add('relative');
+                }
+                
+            }
+        }
+    }
+
+    // query start
+    else if (state === 'queryStart') {
+        throbber.classList.add('show');
+        about.classList.remove('show');
+    }
+    
+    // query end no result
+    else if (state === 'queryEndNoResult') {
+        throbber.classList.remove('show');
+        wrapper.classList.remove('show');
+        about.classList.remove('show');
+        footer.classList.remove('relative');
+        refreshCacheSelector.checked = false;
+    }
+    
+    // query end with result
+    else if (state === 'queryEndWithResult') {
+        throbber.classList.remove('show');
+        wrapper.classList.add('show');
+        about.classList.remove('show');
+        footer.classList.add('relative');
+
+        // const visibleViewportHeight = getHeightofVisibleViewport();
+        // if (wrapper.clientHeight < visibleViewportHeight) {
+        //     footer.classList.remove('relative');
+        // }
+        // else {
+        //     footer.classList.add('relative');
+        // }
+
+        refreshCacheSelector.checked = false;
+    }
+
+    // carousel on
+    else if (state === 'turnCarouselOn') {
+        wrapper.classList.remove('show');
+        carouselContainer.classList.add('show');
+    }
+
+    // carousel off
+    else if (state === 'turnCarouselOff') {
+        wrapper.classList.add('show');
+        carouselContainer.classList.remove('show');
+    }
+    
+};
+
+const makeUris = function(qp) {
+    let hrefArray1 = [];
+    let hrefArray2 = [];
+
+    for (let p in qp) {
+
+        // We don't want to send 'resource' to Zenodeo
+        // because 'resource' is already in the uri
+        if (p !== 'resource') {
+            hrefArray1.push(p + '=' + qp[p]);
+        }
+
+        // We don't want 'refreshCache' in the browser
+        // address bar
+        if (p !== 'refreshCache') {
+            hrefArray2.push(p + '=' + qp[p]);
+        }
+    }
+
+    const uri = `${zenodeo}/v2/${qp.resource}?${hrefArray1.join('&')}`;
+    const search = hrefArray2.join('&');
+    history.pushState('', '', `?${hrefArray2.join('&')}`);
+    
+
+    return {
+        search: search,
+        uri: uri
+    }
+
+};
+
+const makeMap = function(mcs) {
+
+    document.querySelector('#map').classList.toggle('show');
+
+    // initialize the map and add the layers to it
+    const mcmap = L.map('map', {
+        center: [0, 0],
+        zoom: 8,
+        scrollWheelZoom: false
+    });
+
+    L.tileLayer(map.url, {
+        attribution: map.attribution,
+        maxZoom: 18,
+        id: map.id,
+        accessToken: map.accessToken
+    }).addTo(mcmap);
+
+    // https://stackoverflow.com/questions/16845614/zoom-to-fit-all-markers-in-mapbox-or-leaflet
+    const markers = [];
+    mcs.forEach(mc => {
+        if (mc.latitude && mc.longitude) {
+            const marker = L.marker([mc.latitude, mc.longitude]).addTo(mcmap);
+            marker.bindPopup(mc.typeStatus);
+            markers.push(marker)
+        }
+    })
+
+    const bounds = new L.featureGroup(markers).getBounds();
+    mcmap.fitBounds(bounds);
+    
+};
+
+
+const makePager = function(data, search, page) {
+
+    if (data.recordsFound && (data.recordsFound >= size)) {
+        if (page) {
+
+            // making pager for images
+            let prev = 'page=';
+            let next = 'page=';
+            
+            prev += (page === 1) ? 1 : page - 1;
+            next += parseInt(page) + 1;
+
+            data.prev = '?' + search.replace(/page=\d+/, prev);
+            data.next = '?' + search.replace(/page=\d+/, next);
+            
+        }
+        else {
+
+            // making pager for treatments
+            let prev = 'id=' + data.previd;
+            let next = 'id=' + data.nextid;
+
+            if (data.previd !== '') {
+                if (search.indexOf('id') > -1) {
+                    data.prev = '?' + search.replace(/id=\d+/, prev);
+                }
+                else {
+                    data.prev = `?${search}&${prev}`;
+                }
+            }
+            else {
+                data.prev = '';
+            }
+
+            if (data.nextid !== '') {
+                if (search.indexOf('id') > -1) {
+                    data.next = '?' + search.replace(/id=\d+/, next);
+                }
+                else {
+                    data.next = `?${search}&${next}`;
+                }
+            }
+            else {
+                data.next = '';
+            }
+        }
+    }
+
+    data.pager = true;
+    return data;
+};
+
+// const makeTreatmentsPager = function(data, search) {
+
+//     if (data.recordsFound && (data.recordsFound >= size)) {
+//         data.prev = `?${search}&id=${data.previd}`;
+//         data.next = `?${search}&id=${data.nextid}`;
+//         data.pager = true;
+//     }
+
+//     return data;
+// };
+
+const submitReporter = function(event) {
+
+    const send = event.target;
+    const form = send.parentElement;
+    const widget = form.parentElement;
+    const report = widget.querySelector('.report');
+    const reporter = form.querySelector('.imageReport');
+    const recId = form.querySelector('input[name="recId"]').value;
+    const status = widget.querySelector('.status');
+
+    // Send a POST request to /repos/:owner/:repo/issues with JSON
+    const github = 'https://api.github.com/repos/plazi/Biodiversity-Literature-Repository/issues';
+
+    const payload = JSON.stringify({
+        "title": `problem with record id: ${recId}`,
+        "body": reporter.innerText,
+        "assignee": "myrmoteras",
+        "milestone": 1,
+        "labels": [
+            "images"
+        ]
+    });
+
+    const method = 'POST';
+    const url = github;
+    const callback = function() {
+
+            // show widget
+            form.style.visibility = 'hidden';
+            status.innerHTML = 'Thank you for submitting the report!';
+            status.style.visibility = 'visible';
+            status.style.display = 'block';
+
+            setInterval(function() {
+                status.style.visibility = 'hidden';
+                status.style.display = 'none';
+                report.style.visibility = 'visible';
+            }, 3000);
+    };
+    const headers = [
+        {k: "Content-type", v: "application/json"},
+        {k: "Authorization", v: "Basic " + btoa("blruser:xucqE5-tezmab-ruqgyr")}
+    ]
+
+    x(method, url, callback, headers, payload);
+
+    event.preventDefault();
+    event.stopPropagation();
+};
+
+const toggleReporter = function(event) {
+
+    const r = event.target;
+    const f = r.parentElement.querySelector('form');
+
+    // show widget
+    f.style.visibility = 'visible';
+
+    // hide report button
+    r.style.visibility = 'hidden';
+
+    event.preventDefault();
+    event.stopPropagation();
+};
+
+const cancelReporter = function(event) {
+
+    const c = event.target;
+    const f = c.parentElement;
+    const r = f.parentElement.querySelector('.report');
+
+    // show widget
+    f.style.visibility = 'hidden';
+
+    // hide report button
+    r.style.visibility = 'visible';
+
+    event.preventDefault();
+    event.stopPropagation();
+};
+
+const fetchResource = {
+
+    treatments: function(qp) {
+
+        const {search, uri} = makeUris(qp);
+
+        let callback;
+
+        // single treatment
+        if (qp.treatmentId) {
+            callback = function(xh) {
+
+                //let data = xh.value;
+
+                let data = xh.value;
+    
+                if (qp.format === 'xml') {
+                    return data;
+                }
+                else {
+                    
+                    [data.figures, data.imgCount] = makeLayout(data.images.images);
+                    data.imgCount = niceNumbers(data.imgCount);
+    
+                    wrapper.innerHTML = Mustache.render(tmplTreatment, data);
+                    setVisualElements('queryEndWithResult');
+    
+                    if (data.imgCount !== 'Zero') {
+                        const figs = document.querySelectorAll('figcaption > a');
+                        // const reporters = document.querySelectorAll('.report');
+                        // const submitters = document.querySelectorAll('.submit');
+                        // const cancellers = document.querySelectorAll('.cancel');
+                        
+                        for (let i = 0, j = figs.length; i < j; i++) {
+                            figs[i].addEventListener('click', toggleFigcaption);
+                            // reporters[i].addEventListener('click', toggleReporter);
+                            // submitters[i].addEventListener('click', submitReporter);
+                            // cancellers[i].addEventListener('click', cancelReporter);
+                        }
+                    }
+    
+                    if (data.materialsCitations) {
+                        makeMap(data.materialsCitations);
+                    }
+                    
+                }
+    
+            };
+        }
+
+        // many treatents
+        else {
+            callback = function(xh) {
+
+                let data = {
+                    recordsFound: 0,
+                    treatments: [],
+                    prev: '',
+                    next: '',
+                    previd: 0,
+                    nextid: 0,
+                    pager: false
+                };
+
+                data.treatments = xh.value.treatments;
+                data.previd = xh.value.previd;
+                data.nextid = xh.value.nextid;
+                data.recordsFound = niceNumbers(xh.value.recordsFound);
+                data.from = xh.value.from;
+                data.to = xh.value.to;
+
+                data = makePager(data, search);
+                //data.found = niceNumbers(xh.value.length);
+                
+                wrapper.innerHTML = Mustache.render(
+                    tmplTreatmentsFTS, data, 
+                    {
+                        templatePager: tmplPager,
+                        templateRecordsFound: tmplRecordsFound
+                    }
+                );
+                setVisualElements('queryEndWithResult');
+
+                // add clickEvent to links to get more details of a treatment
+                const treatmentLinks = document.querySelectorAll('.treatmentLink');
+                for (let i = 0, j = treatmentLinks.length; i < j; i++) {
+                    const t = treatmentLinks[i];
+                    const qp = urlDeconstruct(t.search);
+
+                    t.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                        event.preventDefault();
+                        
+                        setVisualElements('queryStart');
+                        fetchResource['treatments'](qp);
+                    });
+                }
+
+            };
+        }
+
+        x(uri, callback);
         
         return false;
-    };
+    },
     
-    const cancelReporter = function(event) {
+    images: function(qp) {
 
-        const c = event.target;
-        const f = c.parentElement;
-        const r = f.parentElement.querySelector('.report');
+        const {search, uri} = makeUris(qp);
 
-        // show widget
-        f.style.visibility = 'hidden';
+        const callback = function(xh) {
 
-        // hide report button
-        r.style.visibility = 'visible';
+            let data = {
+                recordsFound: 0,
+                imagesFound: 0,
+                figures: [],
+                prev: '',
+                next: '',
+                pager: false
+            };
 
-        event.preventDefault();
-        event.stopPropagation();
-    };
+            const {total, imagesOfRecords} = xh.value;
 
-    const submitReporter = function(event) {
-
-        const send = event.target;
-        const form = send.parentElement;
-        const widget = form.parentElement;
-        const report = widget.querySelector('.report');
-        const reporter = form.querySelector('.imageReport');
-        const recId = form.querySelector('input[name="recId"]').value;
-        const status = widget.querySelector('.status');
-
-        // Send a POST request to /repos/:owner/:repo/issues with JSON
-        const github = 'https://api.github.com/repos/plazi/Biodiversity-Literature-Repository/issues';
-
-        const payload = JSON.stringify({
-            "title": `problem with record id: ${recId}`,
-            "body": reporter.innerText,
-            "assignee": "myrmoteras",
-            "milestone": 1,
-            "labels": [
-                "images"
-            ]
-        });
-
-        const method = 'POST';
-        const url = github;
-        const callback = function() {
-
-                // show widget
-                form.style.visibility = 'hidden';
-                status.innerHTML = 'Thank you for submitting the report!';
-                status.style.visibility = 'visible';
-                status.style.display = 'block';
-
-                setInterval(function() {
-                    status.style.visibility = 'hidden';
-                    status.style.display = 'none';
-                    report.style.visibility = 'visible';
-                }, 3000);
-        };
-        const headers = [
-            {k: "Content-type", v: "application/json"},
-            {k: "Authorization", v: "Basic " + btoa("blruser:xucqE5-tezmab-ruqgyr")}
-        ]
-
-        x(method, url, callback, headers, payload);
-
-        event.preventDefault();
-        event.stopPropagation();
-    };
-
-    const x = function(method, url, callback, headers, payload) {
-        const xh = new XMLHttpRequest();
-
-        xh.onload = function(e) {
-            if (xh.readyState === 4) {
-                if (xh.status === 200) {
-                    callback(xh);
-                }
-            }
-        };
-
-        xh.onerror = function(e) {
-            console.error(xh.statusText);
-        };
-        xh.open(method, url, true);
-        if (headers.length) {
-            for (let i = 0, j = headers.length; i < j; i++) {
-                xh.setRequestHeader(headers[i].k, headers[i].v);
-            }
-        }
-
-        xh.send(payload);
-    };
-
-    const toggleReporter = function(event) {
-
-        const r = event.target;
-        const f = r.parentElement.querySelector('form');
-
-        // show widget
-        f.style.visibility = 'visible';
-
-        // hide report button
-        r.style.visibility = 'hidden';
-
-        event.preventDefault();
-        event.stopPropagation();
-    };
-
-    const toggleFigcaption = function(event) {
-
-        // find and store all the figcaptions on the page in an array
-        // This is done only once since figcaptions is a global var
-        if (figcaptions.length == 0) {
-            figcaptions = document.querySelectorAll('figcaption');
-            figcaptionLength = figcaptions.length;
-        }
-    
-        let fc = this.parentElement.style.maxHeight;
-        
-        if (fc === figcaptionHeight || fc === '') {
-            let i = 0;
-            for (; i < figcaptionLength; i++) {
-                figcaptions[i].style.maxHeight = figcaptionHeight;
-            }
-    
-            this.parentElement.style.maxHeight =  '100%';
-            this.parentElement.style.overflow = 'auto';
-        }
-        else {
-            this.parentElement.style.maxHeight =  figcaptionHeight;
-            this.parentElement.style.overflow = 'hidden';
-        }
-        
-    };
-    
-    const currentYPosition = function() {
-    
-        // Firefox, Chrome, Opera, Safari
-        if (self.pageYOffset) {
-            return self.pageYOffset;
-        }
-    
-        // Internet Explorer 6 - standards mode
-        if (document.documentElement && document.documentElement.scrollTop) {
-            return document.documentElement.scrollTop;
-        }
-        
-        // Internet Explorer 6, 7 and 8
-        if (document.body.scrollTop) {
-            return document.body.scrollTop;
-        }
-    
-        return 0;
-    };
-    
-    const smoothScroll = function(stopY) {
-        const startY = currentYPosition();
-        const distance = stopY > startY ? stopY - startY : startY - stopY;
-    
-        if (distance < 100) {
-            scrollTo(0, stopY);
-            return;
-        }
-    
-        let speed = Math.round(distance / 100);
-        if (speed >= 10) {
-            speed = 10;
-        }
-    
-        const step = Math.round(distance / 25);
-        let leapY = stopY > startY ? startY + step : startY - step;
-        let timer = 0;
-        if (stopY > startY) {
-            for (let i = startY; i < stopY; i += step) {
-                setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
-                leapY += step; 
-                if (leapY > stopY) {
-                    leapY = stopY; 
-                    timer++;
-                }
-            }
-    
-            return;
-        }
-    
-        for (let i = startY; i > stopY; i -= step) {
-            setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
-            leapY -= step;
-            if (leapY < stopY) {
-                leapY = stopY; 
-                timer++;
-            }
-        }
-    };
-
-    const niceNumbers = function(num) {
-
-        const nums = {
-            '0': 'Zero',
-            '1': 'One',
-            '2': 'Two',
-            '3': 'Three',
-            '4': 'Four',
-            '5': 'Five',
-            '6': 'Six',
-            '7': 'Seven',
-            '8': 'Eight',
-            '9': 'Nine',
-            '10': 'Ten'
-        };
-
-        if (num in nums) {
-            return nums[num];
-        }
-        else {
-            return num;
-        }
-    }
-
-    // public stuff
-    return {
-
-        carousel: function() {
-
-            wrapper.className = 'off-none';
-            carousel.innerHTML = Mustache.render(templateCarousel, data);
-            carouselContainer.className = 'on';
-
-            const carouselOff = document.querySelectorAll('.carouselOff');
-            for (let i = 0, j = carouselOff.length; i < j; i++) {
-                carouselOff[i].addEventListener('click', Ocellus.carouselOff);
-            }
-        },
-
-        carouselOff: function() {
-            carouselContainer.className = 'off-none';
-            wrapper.className = 'on';
-        },
-
-        //+creators.name:/Agosti.*/ +publication_date:[1990 TO 1991} +keywords:taxonomy +title:review
-        goGetIt: function(options) {
+            data.recordsFound = total;
+            [data.figures, data.imagesFound] = makeLayout(imagesOfRecords);
             
-            qValue = options.qValue;
-            getImages( 
-                qValue.toLowerCase(), // qry
-                1,                    // page
-                options.refreshCache, // refreshCache
+            data = makePager(data, search, qp.page);
+            data.recordsFound = niceNumbers(data.recordsFound);
+
+            wrapper.innerHTML = Mustache.render(
+                tmplMasonry, data, 
+                {
+                    templatePager: tmplPager,
+                    templateRecordsFound: tmplRecordsFound
+                }
             );
-        },
+            setVisualElements('queryEndWithResult');     
 
-        toggleRefreshCache: function(event) {
+            const figs = document.querySelectorAll('figcaption > a');
+            for (let i = 0, j = figs.length; i < j; i++) {
+                figs[i].addEventListener('click', toggleFigcaption);
+            }
+
+            const carousel = document.querySelectorAll('.carousel');
+            for (let i = 0, j = carousel.length; i < j; i++) {
+                carousel[i].addEventListener('click', function(event) {
+                    turnCarouselOn(data, data.figures[i].recId);
+                });
+            }
             
-            const toggleClass = event.target.dataset['toggleClass'];
-            const toggleTarget = document.querySelector(event.target.dataset['toggleTarget']);
+        };
 
-            if (event.target['checked']) {
-                toggleTarget.classList.remove(toggleClass);
-                toggleTarget.classList.add('on');
-            }
-            else {
-                toggleTarget.classList.remove('on');
-                toggleTarget.classList.add(toggleClass);
-            }
-        },
-
-        toggleAbout: function(event) {
-
-            if (about.classList.contains('on')) {
-
-                // hide about
-                about.classList.remove('on');
-                about.classList.add('off-none');
-
-                // restore wrapper and footer
-                footer.className = footerState;
-                wrapper.className = wrapperState;
-            }
-            else {
-                
-                // save wrapper and footer state
-                wrapperState = wrapper.className;
-                footerState = footer.className;
-
-                // hide wrapper
-                wrapper.className = 'off-none';
-
-                // make footer fixed
-                footer.className = 'fixed';
-
-                // make about visible
-                about.classList.remove('off-none');
-                about.classList.add('on');
-            }
-        },
+        x(uri, callback);
         
-        /*
-         * Initialization options
-         * 
-         * { 
-         *     zenodeo: <path to zenodeo service>,
-         *     layout: <'masonry' | 'grid'>
-         *     facets: {}
-         * }
-         * 
-         */
-        init: function(options) {
+        return false;
+    }
 
-            // store the options in private variables for later use
-            if (options.zenodeo) {
-                baseUrl = options.zenodeo + basePath;
+};
+
+const toggleRefreshCache = function(event) {
+    refreshCacheWarning.classList.toggle('show');
+};
+
+const toggleAbout = function(event) {
+    setVisualElements('about');
+};
+
+const chooseUrlFlags = function (element) {
+
+    if (element.name === 'communities') {
+
+        if (element.value === 'all communities') {
+
+            if (element.checked === true) {
+                for (let i = 0, j = communityCheckBoxes.length; i < j; i++) {
+                    communityCheckBoxes[i].checked = true;
+                }
+            }
+            else {
+                for (let i = 0, j = communityCheckBoxes.length; i < j; i++) {
+                    if (communityCheckBoxes[i].value !== 'all communities') {
+                        communityCheckBoxes[i].checked = false;
+                    }
+                }
             }
 
-            if (options.layout) {
-                layout = options.layout;
+        }
+        else {
+
+            // uncheck 'all communities'
+            allCommunities.checked = false;
+        }
+    }
+    else if (element.name === 'resource') {
+
+        const rtLabels = resourceSelector.querySelectorAll('label');
+        const rtInputs = resourceSelector.querySelectorAll('input');
+
+        for (let i = 0; i < rtLabels.length; i++) {
+            if (element.value === rtInputs[i].value) {
+                rtLabels[i].classList.add('searchFocus');
             }
-
-            if (options.facets) {
-                facets = options.facets;
-            }
-
-            qField = options.qField;
-            templateMasonry = options.templateMasonry;
-            wrapper = options.wrapper;
-            templateCarousel = options.templateCarousel;
-            carouselContainer = options.carouselContainer;
-            carousel = options.carousel;
-            throbber = options.throbber;
-            footer = options.footer;
-            about = options.about;
-
-            if (location.search) {
-                getQueryParamsAndImages(location.search);
+            else {
+                rtLabels[i].classList.remove('searchFocus');
             }
         }
     }
-}());
+    else if (element.name === 'refreshCache') {
+        element.value = element.checked;
+    }
+
+};
+
+const toggleCommunities = function(event) {
+    communitiesSelector.classList.toggle('open');
+};
+
+const defaultHeaders = [
+    {k: "Content-Type", v: "application/json;charset=UTF-8"}
+];
+
+const x = function(url, callback, headers = defaultHeaders, payload = '') {
+
+    const method = 'GET';
+    const xh = new XMLHttpRequest();
+
+    xh.onload = function(e) {
+        if (xh.readyState === 4) {
+            if (xh.status === 200) {
+                const res = JSON.parse(xh.responseText);
+                callback(res);
+            }
+        }
+    };
+
+    xh.onerror = function(e) {
+        console.error(xh.statusText);
+    };
+
+    xh.open(method, url, true);
+
+    if (headers.length) {
+        
+        for (let i = 0, j = headers.length; i < j; i++) {
+            xh.setRequestHeader(headers[i].k, headers[i].v);
+        }
+    }
+
+    xh.send(payload);
+};
+
+const suggest = function(field) {
+
+    new autoComplete({
+        selector: field,
+        minChars: 3,
+        source: function(term, response) {
+            try { x.abort() } catch(e) {}
+            x(`${zenodeo}/v2/families?q=${term}`, response)
+        }
+    });
+    
+};
+
+const toggleFigcaption = function(event) {
+
+    // find and store all the figcaptions on the page in 
+    // an array. This is done only once since figcaptions 
+    // is a global var
+    if (figcaptions.length == 0) {
+        figcaptions = document.querySelectorAll('figcaption');
+        figcaptionLength = figcaptions.length;
+    }
+
+    let fc = this.parentElement.style.maxHeight;
+    
+    if (fc === figcaptionHeight || fc === '') {
+        let i = 0;
+        for (; i < figcaptionLength; i++) {
+            figcaptions[i].style.maxHeight = figcaptionHeight;
+        }
+
+        this.parentElement.style.maxHeight =  '100%';
+        this.parentElement.style.overflow = 'auto';
+    }
+    else {
+        this.parentElement.style.maxHeight =  figcaptionHeight;
+        this.parentElement.style.overflow = 'hidden';
+    }
+    
+};
+
+const activateUrlFlagSelectors = function() {
+    for (let i = 0, j = urlFlagSelectors.length; i < j; i++) {
+
+        const element = urlFlagSelectors[i];
+        element.addEventListener('click', function(event) {
+    
+            chooseUrlFlags(element);
+            
+                if (element.name === 'communities') {
+                    communitiesSelector.classList.remove('open');
+                }
+    
+        })
+    }
+};
+
+const turnCarouselOn = function(data, recId) {
+
+    carousel.innerHTML = Mustache.render(tmplCarousel, data);
+    setVisualElements('turnCarouselOn');
+
+    const carouselOff = document.querySelectorAll('.carouselOff');
+    for (let i = 0, j = carouselOff.length; i < j; i++) {
+        carouselOff[i].addEventListener('click', turnCarouselOff);
+    }
+    
+    const newhash = '#' + recId;
+    if (history.pushState) {
+        history.pushState(null, null, newhash);
+    }
+    else {
+        location.hash = newhash;
+    }
+};
+
+const turnCarouselOff = function(event) {
+    setVisualElements('turnCarouselOff');
+};
+
+aboutOpen.addEventListener('click', toggleAbout);
+aboutClose.addEventListener('click', toggleAbout);
+communitiesSelector.addEventListener('click', toggleCommunities);
+refreshCacheSelector.addEventListener('click', toggleRefreshCache);
+form.addEventListener('submit', goGetIt);
+formButton.addEventListener('click', goGetIt);
+suggest(q);
+activateUrlFlagSelectors();
+
+if (location.search) {
+    goGetIt();
+}
