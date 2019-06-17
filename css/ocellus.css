@@ -75,24 +75,7 @@ smaller than 375px width
 nav {
     font-size: 1rem;
     margin-left: 45px;
-/*     padding-bottom: 3px;
-    text-align: left;
-    float: left; */
 }
-/* nav a,
-nav span {
-    margin-right: 10px;
-    margin-left: 0;
-}
-
-nav a.searchFocus {
-    text-decoration: none;
-    color: white;
-    background-color: grey;
-    padding: 2px 5px;
-    border-radius: 2px;
-} */
-
 nav label {
     float: left;
     margin-right: 10px;
@@ -153,9 +136,14 @@ nav input[type="radio"] {
 .searchButton:hover {
     background-color: green !important;
 }
+#searchMessage {
+    font-size: 1rem;
+    margin-left: 45px;
+}
 #refreshCacheWarning {
     color: red;
     line-height: 1.1em;
+    margin-left: 45px;
     display: block;
     visibility: hidden;
 }
