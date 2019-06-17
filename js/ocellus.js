@@ -939,8 +939,10 @@ formButton.addEventListener('click', goGetIt);
 suggest(q);
 activateUrlFlagSelectors();
 
-fetchResource.count({resource: 'treatments', count: true});
-
 if (location.search) {
     goGetIt();
+}
+else {
+    fetchResource.count({resource: 'treatments', count: true});
+    q.focus();
 }
