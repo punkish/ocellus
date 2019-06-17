@@ -482,6 +482,7 @@ details p {
     position: sticky;
     top: 0px;
     background-color: white;
+    padding-bottom: 5px;
     z-index: 100;
 }
 .treatment h1 {

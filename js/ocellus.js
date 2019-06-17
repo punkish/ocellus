@@ -600,6 +600,7 @@ const fetchResource = {
                     
                     [data.figures, data.imgCount] = makeLayout(data.images.images);
                     data.imgCount = niceNumbers(data.imgCount);
+                    data.zenodeo = zenodeo;
     
                     wrapper.innerHTML = Mustache.render(tmplTreatment, data);
                     setVisualElements('queryEndWithResult');
