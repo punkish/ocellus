@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="css/ocellus-about.css">
     <link rel="stylesheet" href="css/ocellus-communities-select-boxes.css">
     <link rel="stylesheet" href="css/ocellus-throbber.css">
+    <link rel="stylesheet" href="css/ocellus-treatment.css">
     <link rel="stylesheet" href="css/ocellus-taxon-tree.css">
     <link rel="stylesheet" href="css/ocellus-xml.css">
 </head>
@@ -88,7 +89,7 @@
                         <div class="searchChooser">
                             <a id="searchChooser" href="">switch to fancy search</a>
                         </div>
-                        <div id="refreshCacheWarning">This will refresh the cache; you probably don‘t want this.</div>
+                        <div id="refreshCacheWarning">This will refresh the cache; you probably don’t want this.</div>
                     </div>
                 </div>
             </form>
@@ -105,9 +106,16 @@
             <div id="about">
                 <a id="about-close">close</a>
                 <div id="about-text">
-                    <p>Ocellus is a frontend to the Biodiversity Literature Repository (BLR) with more than 180K images on <a href="https://zenodo.org" target="_blank">Zenodo</a>, 200K taxonomic treatments in <a href="http://treatmentbank.org" target="_blank">TreatmentBank</a>, and 800,000 citations on <a href="https://refbank.org" target="_blank">RefBank</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API that queries, analyzes and aggregates results from these various repositories via a single, unified interface. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, or choose the fancy search interface to create more granular queries – Ocellus will retrieve the results for you.</p>
+                    <p>Ocellus is a frontend to the Biodiversity Literature Repository (BLR) with almost 200K images on <a href="https://zenodo.org" target="_blank">Zenodo</a>, more than 300K taxonomic treatments in <a href="http://treatmentbank.org" target="_blank">TreatmentBank</a>, and 800,000 citations on <a href="https://refbank.org" target="_blank">RefBank</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API that queries, analyzes and aggregates results from these various repositories via a single, unified interface. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes,and Ocellus will retrieve the results for you.</p>
         
-                    <p>For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country. The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up">Internet Archive</a> and has no known copyright restrictions. Please contact <a href="mailto:blr@plazi.org">Plazi</a> for more information or to provide feedback.</p>
+                    <p>For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country. The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up">Internet Archive</a> and has no known copyright restrictions. Please check out our <a id="privacy-link" href="/privacy" class="warning">privacy policy</a> or  contact <a href="mailto:blr@plazi.org">Plazi</a> for more information or to provide feedback.</p>
+                </div>
+            </div>
+
+            <div id="privacy">
+                <a id="privacy-close">close</a>
+                <div id="privacy-text">
+                    <p>We track nothing whatsoever. Please contact <a href="mailto:blr@plazi.org">Plazi</a> for more information or to provide feedback.</p>
                 </div>
             </div>
 
@@ -220,19 +228,29 @@
 
     {{> templatePager}}
 </script>
-<!-- <a href="https://zenodeo.punkish.org/v2/treatments?treatmentId={{treatmentId}}&format=xml" target="_blank">{{treatmentId}}</a> -->
+
 <!-- template for a single treatment -->
 <script id="templateTreatment" type="x-tmpl-mustache">
     <div class="treatment">
         <div id="treatmentInfo">
-            <h1>{{treatmentTitle}}</h1>
+            <p class="summary">{{treatmentTitle}}</p>
             <ul class="pids">
                 <li class="treatmentId">Treatment ID: <a href="{{zenodeo}}/v2/treatments?treatmentId={{treatmentId}}&format=xml" target="_blank">{{treatmentId}}</a> <span class="xml-marker">&lt;xml&gt;</span></li>
                 <li class="doi">DOI: <a href="{{doi}}" target="_blank">{{doi}}</a></li>
                 <li class="zenodoDep">Zenodo deposit: <a href="https://www.zenodo.org/record/{{zenodoDep}}" target="_blank">{{zenodoDep}}</a></li>
             </ul>
             
-        <p class="journal">{{journalTitle}}, {{journalYear}}, pages {{pages}}, Vol. {{journalVolume}}, Issue {{journalIssue}}</p>
+        <!-- author, year, title, journal, volume, issue, pagenmubers -->
+        <!-- 
+            {{authorsList}}: Ferreira, Paulo Sérgio F., Uceli, Lorena F. and Pirovani, Victor D. 
+            {{journalYear}}: 2009 
+            {{articleTitle}}Perissobasis heroni Ferreira & Coelho Ferreira & Coelho
+            {{journalTitle}}Description of a new species Perissobasis heroni (Hemiptera: Heteroptera: Miridae: Deraeocorinae), found on Coffea arabica, and with a key to Neotropical species of the genus Zootaxa
+            {{journalVolume}}: 2127
+            {{journalIssue}}: ''
+            {{pages}}: 51–56 
+        -->
+        <p class="journal">{{authorsList}}. {{journalYear}}. {{articleTitle}}. <i>{{journalTitle}}</i>, Vol. {{journalVolume}}, Issue {{journalIssue}}, pages {{pages}}</p>
         </div>
 
         <ul class="classification">
@@ -270,22 +288,40 @@
             {{/taxonStats}}
         </ul>
 
-        <div id="map"></div>
+        <details class="treatment" {{mapState}}>
+            <summary>Map</summary>
+            <div id="map"></div>
+        </details>
 
-        <div id="masonry" class="masonry">
-            {{#figures}}
-            <figure class='item'>
-                <a href="#carousel" class="carousel"><img src="{{imgBlur}}" width="250" data-src="{{imgA}}" class="lazyload" data-recid="{{recId}}"></a>
-                
-                <figcaption class="transition-050 opacity85 text">
-                    <a class="transition-050">rec ID: {{recId}}</a>
-                    <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
-                </figcaption>
-            </figure>
-            {{/figures}}
-        </div>
+        <details class="treatment">
+            <summary>Figures</summary>
+            <div id="masonry" class="masonry">
+                {{#figures}}
+                <figure class='item'>
+                    <a href="#carousel" class="carousel"><img src="{{imgBlur}}" width="250" data-src="{{imgA}}" class="lazyload" data-recid="{{recId}}"></a>
+                    
+                    <figcaption class="transition-050 opacity85 text">
+                        <a class="transition-050">rec ID: {{recId}}</a>
+                        <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
+                    </figcaption>
+                </figure>
+                {{/figures}}
+            </div>
+        </details>
 
-        <p class="xml">{{{xml}}}</p>
+        <details class="treatment">
+            <summary>Citations</summary>
+            <ul class="citations">
+                {{#citations}}
+                <li>{{citation}}</li>
+                {{/citations}}
+            </ul>
+        </details>
+
+        <details class="treatment">
+            <summary>Treatment Text</summary>
+            <p class="xml">{{{xml}}}</p>
+        </details>
     </div>
 </script>
 

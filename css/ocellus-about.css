@@ -1,19 +1,26 @@
+#privacy,
 #about {
     display: none;
 }
+#privacy.show,
 #about.show {
     display: block;
 }
+#privacy-text,
 #about-text {
     margin-top: 12px;
 }
+.privacy,
 .about {
     font-size: 1.5rem;
 }
+#privacy-link,
+#privacy-close,
 #about-link, 
 #about-close {
     cursor: pointer;
 }
+#privacy-close,
 #about-close {
     -moz-transition: all 1s ease-in-out;
     -webkit-transition: all 1s ease-in-out;

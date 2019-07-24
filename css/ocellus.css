@@ -175,13 +175,14 @@ nav input[type="radio"] {
 h3 {
     font-size: 14px;
     text-align: center;
+    letter-spacing: revert;
 }
 .transition-050 {
-        -moz-transition: 0.50s;
-    -webkit-transition: 0.50s;
-        -ms-transition: 0.50s;
-            -o-transition: 0.50s;
-            transition: 0.50s;
+        -moz-transition     : 0.50s;
+    -webkit-transition      : 0.50s;
+        -ms-transition      : 0.50s;
+            -o-transition   : 0.50s;
+            transition      : 0.50s;
 }
 .opacity85{ 
     opacity: 0.85; 
@@ -205,9 +206,6 @@ footer {
     cursor: pointer;
     position: fixed;
 }
-/* footer.fixed {
-    position: fixed;
-} */
 footer.relative {
     position: relative;
 }
@@ -462,57 +460,11 @@ details {
     cursor: pointer;
 }
 details p {
-    margin-left: 1.5rem;
-    font-size: 1.2rem;
+    padding: 1.5rem;
+    font-family: serif;
+    font-size: 1.2em;
 }
 /* end treatments */
-
-/* treatment */
-#treatmentInfo {
-    position: -webkit-sticky;
-    position: -moz-sticky;
-    position: -ms-sticky;
-    position: -o-sticky;
-    position: sticky;
-    top: 0px;
-    background-color: white;
-    padding-bottom: 5px;
-    z-index: 100;
-}
-.treatment h1 {
-    font-size: 1.5rem;
-    font-weight: 800;
-    font-family: Georgia, Times, 'Times New Roman', serif;
-    letter-spacing: 0px;
-}
-.treatment h2 {
-    font-size: 1.5rem;
-    font-weight: 400;
-}
-ul.pids {
-    list-style: none;
-    font-weight: bold;
-}
-ul.pids li {
-    line-height: 10px;
-    font-size: 80%;
-}
-ul.pids a {
-    font-weight: normal;
-}
-p.journal {
-    font-size: 1.1em;
-}
-.xml-marker {
-    border: 1px solid lightblue;
-    background-color: lightblue;
-    border-radius: 5px;
-    color: #444;
-    font-size: 1rem;
-    padding: 2px;
-}
-/* for xml styling, see ocellus-xml.css */
-/* end treatment */
 
 /* lazyload classes */
 .lazyload {

@@ -1,0 +1,85 @@
+/* for xml styling, see ocellus-xml.css */
+
+#treatmentInfo {
+    position: -webkit-sticky;
+    position: -moz-sticky;
+    position: -ms-sticky;
+    position: -o-sticky;
+    position: sticky;
+    top: 0px;
+    background-color: white;
+    padding-bottom: 5px;
+    z-index: 100;
+}
+/* details.treatment summary,
+.treatment h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-family: Georgia, Times, 'Times New Roman', serif;
+    letter-spacing: 0px;
+    background-color: lightgrey;
+    padding: 5px;
+}
+.treatment h2 {
+    font-size: 1.5rem;
+    font-weight: 400;
+} */
+ul.pids {
+    list-style: none;
+    font-weight: bold;
+}
+ul.pids li {
+    line-height: 10px;
+    font-size: 80%;
+}
+ul.pids a {
+    font-weight: normal;
+}
+p.journal {
+    font-size: 1.1em;
+}
+.xml-marker {
+    border: 1px solid lightblue;
+    background-color: lightblue;
+    border-radius: 5px;
+    color: #444;
+    font-size: 1rem;
+    padding: 2px;
+}
+
+details {
+    border-radius: 3px;
+    background: #EEE;
+}
+
+.treatment p.summary,
+details summary {
+    font-size: 17px;
+    vertical-align: top;
+    background: #333;
+    color: #FFF;
+    border-radius: 3px;
+    padding: 5px 10px;
+    outline: none;
+}
+
+.treatment p.summary,
+details[open] summary {
+    background: #69c773;
+    color: #333;
+}
+
+details ul {
+    padding: 15px;
+}
+
+/* Hide the default marker. */    
+details summary::-webkit-details-marker {
+    display:none;
+    cursor: pointer;
+}
+
+details > summary {
+    display:block;
+    cursor: pointer;
+}
