@@ -9,56 +9,40 @@ const communityCheckBoxes = document.querySelectorAll('input[name=communities]')
 const allCommunities = document.querySelector('input[value="all communities"]');
 const refreshCacheSelector = document.querySelector('input[name=refreshCache]');
 const refreshCacheWarning = document.querySelector('#refreshCacheWarning');
-const article = document.querySelector('article');
+
+const chartContainer = document.querySelector('#chart-container');
+//const footer = document.querySelector('footer');
+const wrapper = document.querySelector('#wrapper');
 const resourceSelector = document.querySelector('#resourceSelector');
 const figcaptionHeight = '30px';
 let figcaptions = []; 
 const treatmentInfo = document.querySelector('#treatmentInfo');
-
-// various divs to be populated later
-const charts = document.querySelector('#charts');
-const about = document.querySelector('#about');
-const privacy = document.querySelector('#privacy');
-const images = document.querySelector('#images');
-const carousel = document.querySelector('#carousel');
-const treatments = document.querySelector('#treatments');
-const treatment = document.querySelector('#treatment');
-
-// templates
-const tmplImages = document.querySelector('#templateImages').innerHTML;
-const tmplCarousel = document.querySelector('#templateCarousel').innerHTML;
-const tmplTreatments = document.querySelector('#templateTreatments').innerHTML;
-const tmplTreatment = document.querySelector('#templateTreatment').innerHTML;
-
-Mustache.parse(tmplImages);
-Mustache.parse(tmplCarousel);
-Mustache.parse(tmplTreatments);
-Mustache.parse(tmplTreatment);
+const statistics = {
+    "treatments": 0,
+    "specimens": 0,
+    "male specimens": 0,
+    "female specimens": 0,
+    "treatments with specimens": 0,
+    "treatments with male specimens": 0,
+    "treatments with female specimens": 0,
+    "images": 0
+};
 
 // default number of records to fetch
 let size = 30;
-//let chart;
-const DATA = {
-    charts: {
-        statistics: {
-            treatments: 0,
-            specimens: 0,
-            "male specimens": 0,
-            "female specimens": 0,
-            "treatments with specimens": 0,
-            "treatments with male specimens": 0,
-            "treatments with female specimens": 0,
-            images: 0
-        }
+
+const data = {
+    sectionChart: {
+        visibility: "hidden"
     },
-    // about: {
-    //     visibility: "hide"
-    // },
-    // privacy: {
-    //     visibility: "hide"
-    // },
-    images: {
-        // visibility: "hide",
+    sectionAbout: {
+        visibility: "hidden"
+    },
+    sectionPrivacy: {
+        visibility: "hidden"
+    },
+    sectionImages: {
+        visibility: "hidden",
         recordsFound: 45,
         from: 1,
         to: 30,
@@ -76,8 +60,8 @@ const DATA = {
             next: 31
         }
     },
-    carousel: {
-        visibility: "hide",
+    sectionCarousel: {
+        visibility: "hidden",
         figures: [
             {
                 imgBlur: "",
@@ -88,8 +72,8 @@ const DATA = {
             }
         ]
     },
-    treatments: {
-        // visibility: "hide",
+    sectionTreatments: {
+        visibility: "hidden",
         recordsFound: 45,
         from: 1,
         to: 30,
@@ -111,11 +95,11 @@ const DATA = {
             next: 31
         }
     },
-    treatment: {
-        // visibility: "hide",
+    sectionTreatment: {
+        visibility: "hidden",
         treatmentTitle: "",
         zenodeo: "",
-        treatmentId: "",
+        treatmentId, "",
         doi: "",
         zenodoDep: "",
         authorsList: "",
@@ -147,6 +131,29 @@ const DATA = {
     }
 }
 
+// templates
+// const tmplPager = document.querySelector('#templatePager').innerHTML;
+// Mustache.parse(tmplPager);
+
+// const tmplRecordsFound = document.querySelector('#templateRecordsFound').innerHTML;
+// Mustache.parse(tmplRecordsFound);
+
+// const tmplMasonry = document.querySelector('#templateMasonry').innerHTML;
+// Mustache.parse(tmplMasonry);
+
+// const tmplCarousel = document.querySelector('#templateCarousel').innerHTML;
+// Mustache.parse(tmplCarousel);
+
+// const tmplTreatmentsFTS = document.querySelector('#templateTreatmentsFTS').innerHTML;
+// Mustache.parse(tmplTreatmentsFTS);
+
+// const tmplTreatment = document.querySelector('#templateTreatment').innerHTML;
+// Mustache.parse(tmplTreatment);
+
+const tmplWidget = document.querySelector('#templateWidget').innerHTML;
+Mustache.parse(tmplTreatment);
+
+
 // map params
 const map = {
     url: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
@@ -155,8 +162,8 @@ const map = {
     accessToken: 'pk.eyJ1IjoicHVua2lzaCIsImEiOiJjajhvOXY0dW8wMTA3MndvMzBlamlhaGZyIn0.3Ye8NRiiGyjJ1fud7VbtOA'
 }
 
-function goGetIt(event) {
-  
+const goGetIt = function(event) {
+
     if (!location.search && q.value === '') {
 
         // neither is there an event, that is, nothing has
@@ -189,17 +196,17 @@ function goGetIt(event) {
         setVisualElements('queryStart');
         fetchResource[qp.resource](qp);
     }
-}
+};
 
-function isXml(s) {
+const isXml = function(s) {
     if (s.length === 32) {
         return true;
     }
 
     return false;
-}
+};
 
-function urlDeconstruct(s) {
+const urlDeconstruct = function(s) {
     
     // removing any leading '?'
     if (s.substr(0, 1) === '?') {
@@ -213,9 +220,9 @@ function urlDeconstruct(s) {
     }
 
     return qp;
-}
+};
 
-function urlConstruct(form) {
+const urlConstruct = function(form) {
 
     let queryParams = {};
 
@@ -257,13 +264,13 @@ function urlConstruct(form) {
     }
 
     return queryParams;
-}
+};
 
 const goHome = function() {
     location.search = '/'
 };
 
-function makeLayout(imagesOfRecords) {
+const makeLayout = function(imagesOfRecords) {
         
     let imgCount = 0;
     let figures = [];
@@ -312,19 +319,14 @@ function makeLayout(imagesOfRecords) {
     }
 
     return [figures, imgCount];
-}
+};
 
-function niceNumbers(num) {
-    if (num < 10) {
-        return ['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine'][num];
-    }
-    else {
-        return num;
-    }
-}
+const niceNumbers = function(num) {
+    return ['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine'][num];
+};
 
 // https://andylangton.co.uk/blog/development/get-viewportwindow-size-width-and-height-javascript
-function getHeightofVisibleViewport() {
+const getHeightofVisibleViewport = function() {
 
     let viewportwidth;
     let viewportheight;
@@ -353,181 +355,328 @@ function getHeightofVisibleViewport() {
     }
 
     return (viewportwidth - header.clientHeight);
-}
+};
 
-function setVisualElements(state) {
+/*
+const toggleStateViews = {
+    about: about,
+    privacy: privacy,
+    chart: chartContainer
+};
+
+const manageToggleStates = function(view) {
+    const v = toggleStateViews[view];
+
+    // remove v
+    if (v.classList.contains('show')) {
+        v.classList.remove('show');
+        history.pushState('', `Ocellus: ${view}`, view);
+
+        if (savedState.wrapper === 'show') {
+            wrapper.classList.add('show');
+        }
+        else {
+            wrapper.classList.remove('show');
+        }
+
+        if (!savedState.history.url) {
+            savedState.history.data = '';
+            savedState.history.title = '';
+            savedState.history.url = 'index.html';
+        }
+
+        history.pushState(savedState.history.data, savedState.history.title, savedState.history.url);
+
+        if (savedState.footer === 'relative') {
+            footer.classList.add('relative');
+        }
+        else {
+            footer.classList.remove('relative');
+        }
+    }
+
+    // show v
+    else {
+
+        throbber.classList.remove('show');
+
+        if (wrapper.classList.contains('show')) {
+            savedState.wrapper = 'show';
+            wrapper.classList.remove('show');
+        }
+
+        if (view === 'privacy') {
+            const ov = toggleStateViews.about;
+            
+            if (ov.classList.contains('show')) {
+                ov.classList.remove('show');
+            }
+
+            if (location.search !== null) {
+                savedState.history.data = '';
+                savedState.history.title = '';
+                savedState.history.url = location.search;
+
+                history.pushState('', `Ocellus: ${view}`, view);
+            }
+        }
+        
+        v.classList.add('show');
+
+        const visibleViewportHeight = getHeightofVisibleViewport();
+        if (v.clientHeight < visibleViewportHeight) {
+            // console.log(1)
+            if (footer.classList.contains('relative')) {
+                // console.log(2)
+                savedState.footer = 'relative';
+                footer.classList.remove('relative');
+            }
+            
+        }
+        else {
+            // console.log(3)
+            if (!footer.classList.contains('relative')) {
+                // console.log(4)
+                savedState.footer = '';
+                footer.classList.add('relative');
+            }
+            
+        }
+    }
+};
+
+const savedState = {
+    wrapper: '',
+    history: {
+        data: '',
+        title: '',
+        url: ''
+    }
+};
+*/
+
+const setVisualElements = function(state) {
 
     // blank state (initial state)
     if (state === 'blank') {
-        // throbber.classList.remove('show');
-        // charts.classList.remove('hide');
-        // about.classList.remove('show');
-        // privacy.classList.remove('show');
-        // images.classList.remove('show');
-        // carousel.classList.remove('show');
-        // treatments.classList.remove('show');
-        // treatment.classList.remove('show');
-        Object.keys(divs).forEach(d => {
-            for (let i in divs[d]) {
-                document.getElementById(i).classList.remove(divs[d][i])
-            }
-        })
-
-        charts.classList.add('show');
+        throbber.classList.remove('show');
+        wrapper.classList.remove('show');
+        about.classList.remove('show');
+        //footer.classList.remove('relative');
     }
     
     // about state
-    else if (state === 'about-open') {
-        Object.keys(divs).forEach(d => {
-            for (let i in divs[d]) {
-                document.getElementById(i).classList.remove(divs[d][i])
-            }
-        })
+    else if (state === 'about') {
 
-        about.classList.add('show');
-        // throbber.classList.remove('show');
-        // charts.classList.add('hide');
-        // about.classList.add('show');
-        // privacy.classList.remove('show');
-        // images.classList.remove('show');
-        // carousel.classList.remove('show');
-        // treatments.classList.remove('show');
-        // treatment.classList.remove('show');
-    }
+        //manageToggleStates('about');
+        // remove about
+        // if (about.classList.contains('show')) {
+        //     about.classList.remove('show');
+        //     history.pushState('', 'Ocellus: about', 'about');
 
-    // about state
-    else if (state === 'about-close') {
-        Object.keys(divs).forEach(d => {
-            for (let i in divs[d]) {
-                document.getElementById(i).classList.remove(divs[d][i])
-            }
-        })
+        //     if (savedState.wrapper === 'show') {
+        //         wrapper.classList.add('show');
+        //     }
+        //     else {
+        //         wrapper.classList.remove('show');
+        //     }
 
-        charts.classList.add('show');
-        // throbber.classList.remove('show');
-        // charts.classList.remove('hide');
-        // about.classList.remove('show');
-        // privacy.classList.remove('show');
-        // images.classList.remove('show');
-        // carousel.classList.remove('show');
-        // treatments.classList.remove('show');
-        // treatment.classList.remove('show');
+        //     if (!savedState.history.url) {
+        //         savedState.history.data = '';
+        //         savedState.history.title = '';
+        //         savedState.history.url = 'index.html';
+        //     }
+            
+        //     history.pushState(savedState.history.data, savedState.history.title, savedState.history.url);
+
+        //     if (savedState.footer === 'relative') {
+        //         footer.classList.add('relative');
+        //     }
+        //     else {
+        //         footer.classList.remove('relative');
+        //     }
+        // }
+
+        // // show about
+        // else {
+
+        //     throbber.classList.remove('show');
+
+        //     if (wrapper.classList.contains('show')) {
+        //         savedState.wrapper = 'show';
+        //         wrapper.classList.remove('show');
+        //     }
+
+        //     if (privacy.classList.contains('show')) {
+        //         privacy.classList.remove('show');
+        //     }
+
+        //     if (location.search !== null) {
+        //         savedState.history.data = '';
+        //         savedState.history.title = '';
+        //         savedState.history.url = location.search;
+
+        //         history.pushState('', 'Ocellus: about', 'about');
+        //     }
+            
+        //     about.classList.add('show');
+
+        //     const visibleViewportHeight = getHeightofVisibleViewport();
+        //     if (about.clientHeight < visibleViewportHeight) {
+
+        //         if (footer.classList.contains('relative')) {
+        //             savedState.footer = 'relative';
+        //             footer.classList.remove('relative');
+        //         }
+                
+        //     }
+        //     else {
+
+        //         if (!footer.classList.contains('relative')) {
+        //             savedState.footer = '';
+        //             footer.classList.add('relative');
+        //         }
+                
+        //     }
+        // }
     }
 
     // privacy state
-    else if (state === 'privacy-open') {
-        throbber.classList.remove('show');
-        charts.classList.add('hide');
-        about.classList.remove('show');
-        privacy.classList.add('show');
-        images.classList.remove('show');
-        carousel.classList.remove('show');
-        treatments.classList.remove('show');
-        treatment.classList.remove('show');
+    else if (state === 'privacy') {
+
+        //manageToggleStates('privacy');
+        // remove privacy
+        // if (privacy.classList.contains('show')) {
+        //     privacy.classList.remove('show');
+        //     history.pushState('', 'Ocellus: privacy', 'privacy');
+
+        //     if (savedState.wrapper === 'show') {
+        //         wrapper.classList.add('show');
+        //     }
+        //     else {
+        //         wrapper.classList.remove('show');
+        //     }
+
+        //     if (!savedState.history.url) {
+        //         savedState.history.data = '';
+        //         savedState.history.title = '';
+        //         savedState.history.url = 'index.html';
+        //     }
+
+        //     history.pushState(savedState.history.data, savedState.history.title, savedState.history.url);
+
+        //     if (savedState.footer === 'relative') {
+        //         footer.classList.add('relative');
+        //     }
+        //     else {
+        //         footer.classList.remove('relative');
+        //     }
+        // }
+
+        // // show privacy
+        // else {
+
+        //     throbber.classList.remove('show');
+
+        //     if (wrapper.classList.contains('show')) {
+        //         savedState.wrapper = 'show';
+        //         wrapper.classList.remove('show');
+        //     }
+
+        //     if (about.classList.contains('show')) {
+        //         about.classList.remove('show');
+        //     }
+
+        //     if (location.search !== null) {
+        //         savedState.history.data = '';
+        //         savedState.history.title = '';
+        //         savedState.history.url = location.search;
+
+        //         history.pushState('', 'Ocellus: privacy', 'privacy');
+        //     }
+            
+        //     privacy.classList.add('show');
+
+        //     const visibleViewportHeight = getHeightofVisibleViewport();
+        //     if (privacy.clientHeight < visibleViewportHeight) {
+
+        //         if (footer.classList.contains('relative')) {
+        //             savedState.footer = 'relative';
+        //             footer.classList.remove('relative');
+        //         }
+                
+        //     }
+        //     else {
+
+        //         if (!footer.classList.contains('relative')) {
+        //             savedState.footer = '';
+        //             footer.classList.add('relative');
+        //         }
+                
+        //     }
+        // }
     }
 
-    else if (state === 'privacy-close') {
-        throbber.classList.remove('show');
-        charts.classList.remove('hide');
-        about.classList.remove('show');
-        privacy.classList.remove('show');
-        images.classList.remove('show');
-        carousel.classList.remove('show');
-        treatments.classList.remove('show');
-        treatment.classList.remove('show');
-    }
+    // else if (state === 'chart') {
+    //     manageToggleStates('chart');
+    // }
 
     // query start
     else if (state === 'queryStart') {
         throbber.classList.add('show');
-        charts.classList.add('show');
         about.classList.remove('show');
         privacy.classList.remove('show');
-        images.classList.remove('show');
-        carousel.classList.remove('show');
-        treatments.classList.remove('show');
-        treatment.classList.remove('show');
+        chartContainer.classList.remove('show');
     }
     
     // query end no result
     else if (state === 'queryEndNoResult') {
         throbber.classList.remove('show');
-        charts.classList.remove('show');
+        wrapper.classList.remove('show');
         about.classList.remove('show');
         privacy.classList.remove('show');
-        images.classList.remove('show');
-        carousel.classList.remove('show');
-        treatments.classList.remove('show');
-        treatment.classList.remove('show');
+        chartContainer.classList.remove('show');
+        //footer.classList.remove('relative');
         refreshCacheSelector.checked = false;
     }
     
     // query end with result
-    else if (state === 'queryEndWithTreatments') {
+    else if (state === 'queryEndWithResult') {
         throbber.classList.remove('show');
-        charts.classList.add('show');
+        wrapper.classList.add('show');
         about.classList.remove('show');
         privacy.classList.remove('show');
-        images.classList.remove('show');
-        carousel.classList.remove('show');
-        treatments.classList.add('show');
-        treatment.classList.remove('show');
-        refreshCacheSelector.checked = false;
-    }
 
-    else if (state === 'queryEndWithTreatment') {
-        throbber.classList.remove('show');
-        charts.classList.add('hide');
-        about.classList.remove('show');
-        privacy.classList.remove('show');
-        images.classList.remove('show');
-        carousel.classList.remove('show');
-        treatments.classList.remove('show');
-        treatment.classList.add('show');
-        refreshCacheSelector.checked = false;
-    }
 
-    else if (state === 'queryEndWithImages') {
-        throbber.classList.remove('show');
-        charts.classList.add('show');
-        about.classList.remove('show');
-        privacy.classList.remove('show');
-        images.classList.add('show');
-        carousel.classList.remove('show');
-        treatments.classList.remove('show');
-        treatment.classList.remove('show');
+        chartContainer.classList.add('show');
+        //footer.classList.add('relative');
+
+        // const visibleViewportHeight = getHeightofVisibleViewport();
+        // if (wrapper.clientHeight < visibleViewportHeight) {
+        //     footer.classList.remove('relative');
+        // }
+        // else {
+        //     footer.classList.add('relative');
+        // }
+
         refreshCacheSelector.checked = false;
     }
 
     // carousel on
     else if (state === 'turnCarouselOn') {
-        throbber.classList.remove('show');
-        charts.classList.remove('show');
-        about.classList.remove('show');
-        privacy.classList.remove('show');
-        images.classList.remove('show');
-        carousel.classList.add('show');
-        treatments.classList.remove('show');
-        treatment.classList.remove('show');
-        refreshCacheSelector.checked = false;
+        wrapper.classList.remove('show');
+        carouselContainer.classList.add('show');
     }
 
     // carousel off
     else if (state === 'turnCarouselOff') {
-        throbber.classList.remove('show');
-        charts.classList.remove('show');
-        about.classList.remove('show');
-        privacy.classList.remove('show');
-        images.classList.add('show');
-        carousel.classList.remove('show');
-        treatments.classList.remove('show');
-        treatment.classList.remove('show');
-        refreshCacheSelector.checked = false;
+        wrapper.classList.add('show');
+        carouselContainer.classList.remove('show');
     }
     
-}
+};
 
-function makeUris(qp, setHistory = true) {
+const makeUris = function(qp, setHistory = true) {
     let hrefArray1 = [];
     let hrefArray2 = [];
 
@@ -558,11 +707,11 @@ function makeUris(qp, setHistory = true) {
         uri: uri
     }
 
-}
+};
 
-function makeMap(mcs) {
+const makeMap = function(mcs) {
 
-    
+    document.querySelector('#map').classList.toggle('show');
 
     // initialize the map and add the layers to it
     const mcmap = L.map('map', {
@@ -582,7 +731,6 @@ function makeMap(mcs) {
     const markers = [];
     mcs.forEach(mc => {
         if (mc.latitude && mc.longitude) {
-            //console.log(mc.latitude, mc.longitude)
             const marker = L.marker([mc.latitude, mc.longitude]).addTo(mcmap);
             marker.bindPopup(mc.typeStatus);
             markers.push(marker)
@@ -592,9 +740,10 @@ function makeMap(mcs) {
     const bounds = new L.featureGroup(markers).getBounds();
     mcmap.fitBounds(bounds);
     
-}
+};
 
-function makePager(data, search, page) {
+
+const makePager = function(data, search, page) {
 
     if (data.recordsFound && (data.recordsFound >= size)) {
         if (page) {
@@ -644,9 +793,9 @@ function makePager(data, search, page) {
 
     data.pager = true;
     return data;
-}
+};
 
-function submitReporter(event) {
+const submitReporter = function(event) {
 
     const send = event.target;
     const form = send.parentElement;
@@ -694,9 +843,9 @@ function submitReporter(event) {
 
     event.preventDefault();
     event.stopPropagation();
-}
+};
 
-function toggleReporter(event) {
+const toggleReporter = function(event) {
 
     const r = event.target;
     const f = r.parentElement.querySelector('form');
@@ -709,9 +858,9 @@ function toggleReporter(event) {
 
     event.preventDefault();
     event.stopPropagation();
-}
+};
 
-function cancelReporter(event) {
+const cancelReporter = function(event) {
 
     const c = event.target;
     const f = c.parentElement;
@@ -729,34 +878,51 @@ function cancelReporter(event) {
 
 const fetchResource = {
 
+    // count: function(qp) {
+
+    //     const setPlaceHolderMessage = function() {
+    //         q.placeholder = `search ${counts[qp.resource]} ${qp.resource}`;
+    //     };
+
+    //     if (counts[qp.resource] === 0) {
+    //         const {search, uri} = makeUris(qp, false);
+    //         x(uri, (xh) => {
+    //             counts[qp.resource] = xh.value.count;
+    //             setPlaceHolderMessage();
+    //         });
+    //     }
+    //     else {
+    //         setPlaceHolderMessage();
+    //     }
+        
+    // },
+
     stats: function(qp) {
 
         const setPlaceHolderMessage = function(resource) {
-            q.placeholder = `search ${DATA.charts.statistics[resource]} ${resource}`;
+            q.placeholder = `search ${statistics[resource]} ${resource}`;
         };
 
         if (qp.resource === 'all') {
             let {search, uri} = makeUris({resource: 'treatments', stats: true}, false);
             x(uri, (xh) => {
                 for (let k in xh.value) {
-                    DATA.charts.statistics[k] = xh.value[k];
+                    statistics[k] = xh.value[k];
                 }
                 setPlaceHolderMessage('treatments');
-                chart = statsChart();
-                setVisualElements('blank');
-                // let {search, uri} = makeUris({resource: 'images', stats: true}, false);
-                // x(uri, (xh) => {
-                //     statistics.images = xh.value.images;
-                //     chart = statsChart();
-                //     setVisualElements('blank')
-                // });
+
+                let {search, uri} = makeUris({resource: 'images', stats: true}, false);
+                x(uri, (xh) => {
+                    statistics.images = xh.value.images;
+                    chart = statsChart();
+                });
             });
         }
-        else if (DATA.charts.statistics[qp.resource] === 0) {
+        else if (statistics[qp.resource] === 0) {
             const {search, uri} = makeUris(qp, false);
             x(uri, (xh) => {
                 for (let k in xh.value) {
-                    DATA.charts.statistics[k] = xh.value[k];
+                    statistics[k] = xh.value[k];
                 }
                 setPlaceHolderMessage(qp.resource);
                 chart = statsChart();
@@ -776,42 +942,26 @@ const fetchResource = {
 
         // single treatment
         if (qp.treatmentId) {
-            console.log('getting a single treatment ' + qp.treatmentId)
             callback = function(xh) {
 
                 //let data = xh.value;
 
-                DATA.treatment = xh.value;
+                let data = xh.value;
     
                 if (qp.format === 'xml') {
-                    return DATA.treatment;
+                    return data;
                 }
 
                 else {
                     
-                    //[DATA.treatment.figures, DATA.treatment.imgCount] = makeLayout(xh.value.images.images);
-
-                    //data.imgCount = niceNumbers(data.imgCount);
-                    DATA.treatment.imgCount = niceNumbers(xh.value.imgCount);
-                    DATA.treatment.zenodeo = zenodeo;
-
-                    if (DATA.treatment.materialsCitations.length) {
-                        DATA.treatment.mapState = 'open';
-                    }
-                    
+                    [data.figures, data.imgCount] = makeLayout(data.images.images);
+                    data.imgCount = niceNumbers(data.imgCount);
+                    data.zenodeo = zenodeo;
     
-                    //wrapper.innerHTML = Mustache.render(tmplTreatment, data);
-                    // DATA.sectionCharts.visibility = "hide";
-                    // DATA.sectionTreatment.visibility = "show";
-                    // article.innerHTML = Mustache.render(
-                    //     tmplWidget, 
-                    //     DATA
-                    // );
-                    treatment.innerHTML = Mustache.render(tmplTreatment, DATA.treatment);
-                    setVisualElements('queryEndWithTreatment');
-                    
+                    wrapper.innerHTML = Mustache.render(tmplTreatment, data);
+                    setVisualElements('queryEndWithResult');
     
-                    if (xh.value.imgCount !== 'Zero') {
+                    if (data.imgCount !== 'Zero') {
                         const figs = document.querySelectorAll('figcaption > a');
                         // const reporters = document.querySelectorAll('.report');
                         // const submitters = document.querySelectorAll('.submit');
@@ -825,12 +975,9 @@ const fetchResource = {
                         }
                     }
     
-                    if (DATA.treatment.materialsCitations.length) {
-                        //console.log(DATA.treatment.materialsCitations)
-                       
-                        
-                        document.querySelector('#map').classList.add('show');
-                        makeMap(DATA.treatment.materialsCitations);
+                    if (data.materialsCitations.length) {
+                        makeMap(data.materialsCitations);
+                        data.mapState = 'open';
                     }
                     
                 }
@@ -840,64 +987,52 @@ const fetchResource = {
         
         // many treatments
         else {
-            console.log('getting many treatments')
             callback = function(xh) {
 
-                // let data = {
-                //     recordsFound: 0,
-                //     treatments: [],
-                //     prev: '',
-                //     next: '',
-                //     previd: 0,
-                //     nextid: 0,
-                //     pager: false
-                // };
+                let data = {
+                    recordsFound: 0,
+                    treatments: [],
+                    prev: '',
+                    next: '',
+                    previd: 0,
+                    nextid: 0,
+                    pager: false
+                };
 
-                
-                DATA.treatments.recordsFound = niceNumbers(xh.value.recordsFound);
-                DATA.treatments.from = xh.value.from;
-                DATA.treatments.to = xh.value.to;
-                DATA.treatments.treatments = xh.value.treatments;
+                data.treatments = xh.value.treatments;
+                data.previd = xh.value.previd;
+                data.nextid = xh.value.nextid;
+                data.recordsFound = niceNumbers(xh.value.recordsFound);
+                data.from = xh.value.from;
+                data.to = xh.value.to;
 
-                // data.previd = xh.value.previd;
-                // data.nextid = xh.value.nextid;
-                
-                
-
-                //data = makePager(data, search);
+                data = makePager(data, search);
                 //data.found = niceNumbers(xh.value.length);
                 
-
-                // DATA.sectionCharts.visibility = "show";
-                // DATA.sectionTreatments.visibility = "show";
-                // article.innerHTML = Mustache.render(
-                //     tmplWidget, 
-                //     DATA
-                // );
-                //console.log(DATA.treatments)
-                treatments.innerHTML = Mustache.render(tmplTreatments, DATA.treatments);
-                //treatments.classList.add('show');
-                setVisualElements('queryEndWithTreatments');
+                wrapper.innerHTML = Mustache.render(
+                    tmplTreatmentsFTS, 
+                    data, 
+                    { templatePager: tmplPager, templateRecordsFound: tmplRecordsFound }
+                );
 
                 for (let k in xh.value.statistics) {
-                    DATA.charts.statistics[k] = xh.value.statistics[k];
+                    statistics[k] = xh.value.statistics[k];
                 }
 
-                chart = statsChart();
-                // if (chart) {
-                //     chart.data.datasets[0].data = Object.values(statistics);
-                //     chart.options.scales.yAxes[0].ticks.min = 0;
+                if (chart) {
+                    chart.data.datasets[0].data = Object.values(statistics);
+                    chart.options.scales.yAxes[0].ticks.min = 0;
 
-                //     // https://stackoverflow.com/questions/1669190/find-the-min-max-element-of-an-array-in-javascript/30834687#30834687
-                //     chart.options.scales.yAxes[0].ticks.max = Math.max(...Object.values(statistics));
+                    // https://stackoverflow.com/questions/1669190/find-the-min-max-element-of-an-array-in-javascript/30834687#30834687
+                    chart.options.scales.yAxes[0].ticks.max = Math.max(...Object.values(statistics));
     
-                //     chart.update();
-                // }
-                // else {
-                //     chart = statsChart();
-                // }
+                    chart.update();
+                }
+                else {
+                    chart = statsChart();
+                }
                 
-                
+                setVisualElements('queryEndWithResult');
 
                 // add clickEvent to links to get more details of a treatment
                 const treatmentLinks = document.querySelectorAll('.treatmentLink');
@@ -1159,74 +1294,127 @@ const getStats = function(resource) {
     fetchResource.stats({resource: resource, stats: true});
 };
 
-const chartWithChartjs = function() {
-    return new Chart(chart, {
+let chart;
+const statsChart = function() {
+    const ctx = document.getElementById('chart');
+    return new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: Object.keys(DATA.charts.statistics),
+            labels: Object.keys(statistics),
             datasets: [{
                 label: 'statistics',
-                data: Object.values(DATA.charts.statistics),
-                datalabels: { color: '#000000' },
-                backgroundColor: '#ff0000',
+                data: Object.values(statistics),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)'
+                ],
                 borderWidth: 1
             }]
         },
         options: {
             scales: {
                 yAxes: [{
-                    ticks: { beginAtZero: true }
+                    ticks: { 
+                        beginAtZero: true 
+                    }
                 }],
                 xAxes: [{
-                    scaleLabel: { fontSize: 8 }
+                    scaleLabel: {
+                        fontSize: 8
+                    }
                 }]
             },
-            responsive: true,
-            tooltips: { enabled: false },
-            legend: { display: false }
+            responsive: true
         }
     });
 };
 
-const chartwithChartist = function() {
-    const chartData = {
-
-        // A labels array that can contain any sort of values
-        labels: Object.keys(DATA.charts.statistics),
-
-        // Our series array that contains series objects or in this case series data arrays
-        series: [
-            Object.values(DATA.charts.statistics)
-        ]
-    };
-
-    const chartOptions = {
-        plugins: [
-            Chartist.plugins.ctPointLabels({
-                textAnchor: 'middle'
-            })
-        ],
-        seriesBarDistance: 20,
-    };
-    
-    new Chartist.Bar('.ct-chart', chartData, chartOptions);
-};
-
-
-const statsChart = function() {
-    
-    // DATA.sectionCharts.visibility = "show";
-    // article.innerHTML = Mustache.render(
-    //     tmplWidget, 
-    //     DATA
-    // );
-
-    return chartWithChartjs();
-    //return chartwithChartist();
-};
+// aboutOpen.addEventListener('click', toggleAbout);
+// aboutClose.addEventListener('click', toggleAbout);
+// privacyOpen.addEventListener('click', togglePrivacy);
+// privacyClose.addEventListener('click', togglePrivacy);
 
 communitiesSelector.addEventListener('click', toggleCommunities);
 refreshCacheSelector.addEventListener('click', toggleRefreshCache);
+
+const goGetIt2 = function(event) {
+
+    if (!location.search && q.value === '') {
+
+        // neither is there an event, that is, nothing has
+        // been clicked, nor there are any search params, 
+        // that is, we are not trying to load a preformed 
+        // URL sent by someone. This means something is not 
+        // right. In this case, default to a blank form
+        setVisualElements('blank');
+        q.placeholder = "c'mon, enter something";
+        return false;
+    }
+
+    let qp;
+
+    if (event) {
+
+        // click of a button
+        event.preventDefault();
+        event.stopPropagation();
+
+        // construct URL based on form fields
+        qp = urlConstruct(form);
+    }
+    else if (location.search) {
+    
+        // deconstruct URL based on location.search
+        qp = urlDeconstruct(location.search);
+    }
+
+    chartContainer.classList.remove('show');
+    const modal = document.querySelectorAll('.modal');
+    for (let i = 0, j = modal.length; i < j; i++) {
+        modal[i].classList.remove('show');
+    }
+
+    wrapper.classList.add('show');
+
+    if (Math.random() < 0.5) {
+
+        fetch('wrapper.html')
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('HTTP error, status = ' + response.status);
+                }
+
+                return response.text();
+            })
+            .then(function(response) {
+
+                wrapper.innerHTML = response;
+                // const visibleViewportHeight = getHeightofVisibleViewport();
+                // if (wrapper.clientHeight >= visibleViewportHeight) {
+                //     footer.classList.add('relative');
+                // }
+                // else if (thisModal.clientHeight < visibleViewportHeight) {
+                //     footer.classList.remove('relative');
+                // }
+            });
+    }
+};
 
 form.addEventListener('submit', goGetIt);
 formButton.addEventListener('click', goGetIt);
@@ -1245,35 +1433,50 @@ const modalOpenFunc = function(event) {
     event.preventDefault();
     event.stopPropagation();
 
-    // const modal = document.querySelectorAll('.modal');
-    // for (let i = 0, j = modal.length; i < j; i++) {
-    //     modal[i].classList.remove('show');
-    // }
+    const modal = document.querySelectorAll('.modal');
+    for (let i = 0, j = modal.length; i < j; i++) {
+        modal[i].classList.remove('show');
+    }
 
-    // const nonModal = document.querySelectorAll('.nonModal');
-    // for (let i = 0, j = nonModal.length; i < j; i++) {
-    //     if (nonModal[i].classList.contains('show')) {
-    //         savedNonModal = nonModal[i].id;
-    //         nonModal[i].classList.remove('show');
-    //     }
-    // }
+    const nonModal = document.querySelectorAll('.nonModal');
+    for (let i = 0, j = nonModal.length; i < j; i++) {
+        if (nonModal[i].classList.contains('show')) {
+            savedNonModal = nonModal[i].id;
+            nonModal[i].classList.remove('show');
+        }
+    }
+    // console.log(`savedNonModal: ${savedNonModal}`)
 
-    // const thisModal = document.querySelector(`#${this.innerText}`);
-    // thisModal.classList.add('show');
-    // chartContainer.classList.remove('show');
-    // DATA.sectionAbout.visibility = "show";
-    // article.innerHTML = Mustache.render(
-    //     tmplWidget, 
-    //     DATA
-    // );
-    setVisualElements("about-open");
+    const thisModal = document.querySelector(`#${this.innerText}`);
+    thisModal.classList.add('show');
+    chartContainer.classList.remove('show');
+
+    // const visibleViewportHeight = getHeightofVisibleViewport();
+    // if (thisModal.clientHeight >= visibleViewportHeight) {
+    //     footer.classList.add('relative');
+    // }
+    // else if (thisModal.clientHeight < visibleViewportHeight) {
+    //     footer.classList.remove('relative');
+    // }
 };
 
 const modalCloseFunc = function(event) {
     event.preventDefault();
     event.stopPropagation();
 
-    setVisualElements("about-close");
+    const modal = document.querySelectorAll('.modal');
+    for (let i = 0, j = modal.length; i < j; i++) {
+        modal[i].classList.remove('show');
+    }
+
+    if (savedNonModal) {
+        document.querySelector(`#${savedNonModal}`).classList.add('show');
+    }
+    else {
+        chartContainer.classList.add('show');
+    }
+    
+    //footer.classList.remove('relative');
 };
 
 const modalOpen = document.querySelectorAll('.modal-open');
@@ -1293,22 +1496,4 @@ if (location.search) {
 else {
     fetchResource.stats({resource: 'all', stats: true});
     q.focus();
-}
-
-
-const divs = {
-    pre: {
-        throbber: 'show'
-    },
-    modals: {
-        charts: 'show',
-        about: 'show',
-        privacy: 'show'
-    },
-    results: {
-        images: 'show',
-        carousel: 'show',
-        treatments: 'show',
-        treatment: 'show'
-    }
 }

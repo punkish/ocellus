@@ -1,562 +1,80 @@
-/*
-css Ocellus
-created by P Kishor
-GitHub: https://github.com/punkish/ocellus
-License: Released into the public domain under CC0
-*/
-
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    min-height: 100vh;
+}
+article {
+    flex: 1 1 0%;
+    margin: auto;
+    padding: 0rem;
+    width: 100%;
+    max-width: 960px;
+}
 a {
     color: blue;
 }
+h3 {
+    font-size: 2rem;
+}
+#charts,
+#about,
+#privacy,
+#images,
+#carousel,
+#treatments,
+#treatment {
+    display: none;
+}
+#charts.show,
+#about.show,
+#privacy.show,
+#images.show,
+#carousel.show,
+#treatments.show,
+#treatment.show {
+    display: block;
+}
 
+/* header */
 header {
-    padding-top: 10px;
     background-color: #f5f5f5;
     border-bottom: 1px solid silver;
-    /* background-image: url('/img/bug.gif');
-    background-repeat: no-repeat; */
-}
-
-.title {
-    margin-bottom: 10px;
-    line-height: 15px;
-    text-align: center;
-}
-a.main-title {
-    text-decoration: none;
-    color: black;
-    margin-bottom: 0;
-}
-.sub-title {
-    margin-top: -5px;
-    font-size: 0.85rem;
-}
-
-button {
-    cursor: pointer;
-}
-
-.off-block {
-    display: block;
-    visibility: hidden;
-}
-.off-none {
-    display: none;
-    visibility: hidden;
-}
-.on {
-    visibility: visible;
-}
-
-.warning {
-    color: red;
-} 
-
-#ssForm,
-#fSearch {
-    margin: 0;
-    font-size: 1rem;
-}
-.searchContainer {
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-/*
-hide the searchChooser widget on screens 
-smaller than 375px width
-*/
-.searchChooser {
-    font-size: 1rem;
-    margin-left: 45px;
-    cursor: pointer;
-    visibility: hidden;
-}
-nav {
-    font-size: 1rem;
-    margin-left: 45px;
-}
-nav label {
-    float: left;
-    margin-right: 10px;
-}
-nav label.searchFocus {
-    text-decoration: none;
-    color: white;
-    background-color: grey;
-    padding: 2px 5px;
-    border-radius: 2px;
-}
-nav input[type="radio"] {
-    display: none;
-}
-.searchWidget {
-    width: 100%;
     position: relative;
-    border: none;
-    clear: both;
-    display: table;
+    margin-bottom: 5rem;
 }
-.searchTopBar {
-    position: relative;
-}
-
-#sSearch .searchInputs,
-#fSearch .searchInputs {
-    width: calc( 100% - 90px );
-    float: left;
-    background-color: white;
-    border: 1px solid #444;
-    padding: 0;
-}
-#sSearch .searchInputs {
-    height: 38px;
-}
-#fSearch .searchInputs {
-    height: auto;
-}
-#q {
-    width: calc( 100% - 25px );
-    border: none;
-    border-radius: 0;
-}
-#q::placeholder { /* Most modern browsers support this now. */
-    color: green;
-}
-.searchButton {
-    border-radius: 0 5px 5px 0;
-    background-color: #444;
-    border: 1px solid #444;
-    color: white !important;
-    padding-left: 12px;
-    height: 40px;
-    width: 40px;
-    position: relative;
-    font-size: unset;
-    line-height: unset;
-    margin-bottom: 0;
-}
-.searchButton:hover {
-    background-color: green !important;
-}
-#searchMessage {
-    font-size: 1rem;
-    margin-left: 45px;
-}
-#refreshCacheWarning {
-    color: red;
-    line-height: 1.1em;
-    margin-left: 45px;
-    display: block;
-    visibility: hidden;
-}
-#refreshCacheWarning.show {
-    visibility: visible;
-}
-.searchParams {
-    position: relative;
-    width: calc( 100% - 30px );
-    min-height: 38px;
-    height: auto;
-    float: left;
-}
-
-#q:focus {
-    color: green;
-}
-
-.off-none {
-    visibility: hidden;
-    display: none;
-}
-/* end simple search */
-
-
-h3 {
-    font-size: 14px;
-    text-align: center;
-    letter-spacing: revert;
-}
-.transition-050 {
-        -moz-transition     : 0.50s;
-    -webkit-transition      : 0.50s;
-        -ms-transition      : 0.50s;
-            -o-transition   : 0.50s;
-            transition      : 0.50s;
-}
-.opacity85{ 
-    opacity: 0.85; 
-    filter: alpha(opacity=85); 
-}
-
-#wrapper {
-    width: 100%;
-    margin: 0 auto;
-    background-color: white;
-    opacity: 1;
-    display: none;
-}
-#wrapper.show {
-    display: block;
+header > div {
+    padding: 1rem;
 }
 footer {
-    bottom: 0;
     text-align: center;
-    width: 100%;
-    cursor: pointer;
-    position: fixed;
-}
-footer.relative {
-    position: relative;
+    padding: 0;
 }
 footer img {
     width: 80%;
     max-width: 480px;
 }
 
-.grid {
-    margin: 0em 0;
-    padding: 0;
-    font-size: .85em;
-    display: flex;
-    flex-wrap: wrap;
-}
-.masonry {
-    margin: 0;
-    padding: 0;
-    -moz-column-gap: 1em;
-    -webkit-column-gap: 1em;
-    column-gap: 1em;
-    font-size: .85em;
-    -moz-column-count: 1;
-    -webkit-column-count: 1;
-    column-count: 1;
-    width: 99%;
-}
-.item {
-    width: 100%;
-    padding: 0px;
-    border: 0px solid black;
-}
-.masonry figure {
-    position: relative;
-    overflow: hidden;
-    border: 1px solid #000;
-    /* min-height: 200px; */
-    height: auto;
-    margin: 0 0 1em 0 !important;
-
-    /* avoid figures splitting across columns */
-    /* see https://stackoverflow.com/a/17415553/183692 */
-    overflow: hidden; /* fix for Firefox */
-    break-inside: avoid-column;
-    -webkit-column-break-inside: avoid;
-    text-align: center;
-}
-.masonry figure img {
-    width: 100%;
-/*     border: 0px solid silver; */
-    margin-bottom: 0px;
-    cursor: pointer;
-}
-.masonry figcaption {
-    background: rgba(250, 250, 250, 0.8);
-    position: absolute;
-    bottom: 0px;
-    left: 0;
-    width: 100%;
-    max-height: 30px;
-    padding: 5px;
-    text-align: left;
-    line-height: 1.5em;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    font-size: 1.2em;
-    font-weight: 400;
-    opacity: 1 !important;
-    border: 0px solid grey;
-    cursor: pointer;
-}
-.masonry figcaption a {
-    cursor: pointer;
-    
-    text-decoration: underline;
-    text-decoration-color: blue;
-/*     text-decoration-style: double; */
-}
-.masonry figcaption a.transition-050 {
-    text-decoration: none;
-    color: black;
-/*     font-weight: bold; */
-}
-.text {
-    color: #000;
-    background-color: #fff;
-    font-size:1em;
-}
-.desc {
-    display: block;
-    padding: 0px;
-}
-
-/* Add animation to "page content" */
-.animate-bottom {
-    position: relative;
-    -webkit-animation-name: animatebottom;
-    -webkit-animation-duration: 1s;
-    animation-name: animatebottom;
-    animation-duration: 1s
-}
-@-webkit-keyframes animatebottom {
-    from { bottom:-100px; opacity:0 } 
-    to { bottom:0px; opacity:1 }
-}
-@keyframes animatebottom { 
-    from{ bottom:-100px; opacity:0 } 
-    to{ bottom:0; opacity:1 }
-}
-#pager {
-    margin: 0 auto;
-    z-index: 1;
-    text-align: center;
-    margin-top: 1em;
-    margin-bottom: 6em;
-} 
-#prev {
-    margin-right: 1em;
-} 
-#next {
-    margin-left: 1em;
-} 
-#prev:visited,
-#next:visited {
-    color: blue;
-}
-
-.autocomplete-suggestions {
-    border: 1px solid lightgrey !important;
-    margin-top: 2px;
-}
-.autocomplete-suggestion {
-    font-size: 0.8em;
-}
-#carouselContainer {
-    cursor: pointer;
-    display: none;
-}
-#carouselContainer.show {
-    display: block;
-}
-figure {
-    margin: 0;
-    position: relative;
-}    
-.carouselOff {
-    position: absolute;
-    left: 0;
-    z-index: 100;
-    background-color: white;
-    opacity: 0.8;
-    padding: 0px;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    text-transform: uppercase;
-    font-weight: 800;
-    border-radius: 50%;
-    border: 0px white solid;
-}
-.carouselOff:hover {
-    background-color: yellow;
-}
-.widget {
-    position: absolute;
-    border: 0px solid red;
-    width: 100%;
-    z-index: 100;
-}
-.widget form {
-    visibility: hidden;
-}
-.widget form .imageReport,
-.widget .status {
-    z-index: 100;
-    background-color: white;
-    opacity: 0.8;
-    padding: 0px;
-    width: calc(100% - 90px);
-    height: 40px !important;
-    border: 1px grey solid;
-    border-radius: 0px;
-    text-align: left;
-    float: left;
-    border-radius: 0 5px 5px 5px;
-}
-.widget form .imageReport {
-    padding: 5px;
-}
-.widget .status {
-    padding: 2px;
-    visibility: hidden;
-    display: none;
-}
-.widget button {
-    background-color: white;
-    opacity: 0.8;
-    padding: 0px;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    text-transform: uppercase;
-    font-weight: 800;
-    border-radius: 50%;
-    border: 1px grey solid;
-    font-size: 7px;
-}
-.widget button.report {
-    visibility: hidden;
-    display: none;
-    position: absolute;
-    right: 0;
-}
-.masonry figure:hover > .widget button.report {
-    visibility: visible;
-    display: block;
-    cursor: pointer;
-}
-.widget button.submit:hover {
-    background-color: green;
-    color:white;
-}
-.widget button.cancel:hover {
-    background-color: orange;
-}
-
-.widget button.report:hover {
-    background-color: yellow;
-}
-
-.image-wrapper {
-    width: 100%;
-    position: relative;
-    margin-top: 20px;
-    border: 1px solid;
-    text-align: center;
-}
-
-.image-wrapper img {
-    width:100%
-}
-
-.image-wrapper > figcaption {
-    padding: 20px;
-    text-align: left;
-}
-
-/* treatments */
-details {
-    margin-bottom: 1rem;
-    cursor: pointer;
-}
-details p {
-    padding: 1.5rem;
-    font-family: serif;
-    font-size: 1.2em;
-}
-/* end treatments */
-
-/* lazyload classes */
-.lazyload {
-	opacity: 0;
-}
-.lazyloading {
-	opacity: 1;
-	transition: opacity 300ms;
-	background: #f7f7f7 url(../../img/loader.gif) no-repeat center;
-}
-.lazyloaded {
-	opacity: 1;
-	transition: opacity 300ms;
-}
-/* end lazyload classes */
-
-#map { 
-    height: 300px; 
-    margin-bottom: 20px;
-    display: none;
-}
-#map.show {
-    display: block;
-}
-/* Larger than mobile */
-@media (min-width: 400px) {
-    .treatment h1 {
-        font-size: 2rem;
-    }
-    .masonry {
-        -moz-column-count: 2;
-        -webkit-column-count: 2;
-        column-count: 2;
+/* Larger than mobile (default point when grid becomes active) */
+@media (min-width: 600px) {
+    header > div {
+        display: flex;
+        flex-direction: row;
     }
 }
 
-/* Larger than phablet (also point when grid becomes active) */
-@media (min-width: 550px) {
-    .column,
-    .columns {
-        margin-left: 10px !important;
-    }
-    
-    header {
-        margin-top: 0;
-    }
-    
+/* Larger than phablet */
+@media (min-width: 900px) {
     .title {
-        /* float: left; */
-        width: 90px;
-        margin-top: 25px !important;
+        width: 100px;
+        padding-top: 27px;
+        margin-left: 10rem;
     }
-/*     .searchContainer {
-        float: left;
-        width: calc( 100% - 90px );
-    } */
+    #ssForm,
+    #fSearch {
+        margin-right: 10rem;
+    }
 }
 
 /* Larger than tablet */
-@media (min-width: 750px) {
-    
-    .column,
-    .columns {
-        margin-left:0 !important;
-    }
-    .masonry {
-        -moz-column-count: 3;
-        -webkit-column-count: 3;
-        column-count: 3;
-    }
-}
-
-/* Larger than desktop */
-@media (min-width: 1000px) {
-    .treatment h1 {
-        font-size: 3rem;
-    }
-    h3 {
-        font-size: 16px;
-    }
-    .masonry {
-        -moz-column-count: 4;
-        -webkit-column-count: 4;
-        column-count: 4;
-    }
-}
-
-/* Larger than Desktop HD */
-@media (min-width: 1200px) {
-    .masonry {
-        -moz-column-count: 5;
-        -webkit-column-count: 5;
-        column-count: 5;
-    }
-}
+@media (min-width: 1200px) {}

@@ -1,0 +1,978 @@
+/*
+css Ocellus
+created by P Kishor
+GitHub: https://github.com/punkish/ocellus
+License: Released into the public domain under CC0
+*/
+
+/* https://stackoverflow.com/questions/55210829/how-to-fix-footer-in-the-end-of-the-page */
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    min-height: 100vh;
+}
+#main {
+    flex: 1 1 0%;
+    padding: 1rem;
+}
+a {
+    color: blue;
+}
+header {
+    padding-top: 10px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid silver;
+    /* background-image: url('/img/bug.gif');
+    background-repeat: no-repeat; */
+}
+.title {
+    margin-bottom: 10px;
+    line-height: 15px;
+    text-align: center;
+}
+a.main-title {
+    text-decoration: none;
+    color: black;
+    margin-bottom: 0;
+}
+.sub-title {
+    margin-top: -5px;
+    font-size: 0.85rem;
+}
+button {
+    cursor: pointer;
+}
+.off-block {
+    display: block;
+    visibility: hidden;
+}
+.off-none {
+    display: none;
+    visibility: hidden;
+}
+.on {
+    visibility: visible;
+}
+/* communities select box */
+
+/* https://chrisbracco.com/a-simple-css-tooltip/ */
+/* Add this attribute to the element that needs a tooltip */
+[data-tooltip] {
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+}
+
+/* Hide the tooltip content by default */
+[data-tooltip]:before,
+[data-tooltip]:after {
+    visibility: hidden;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Position tooltip above the element */
+[data-tooltip]:before {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    margin-bottom: 0px;
+    margin-left: -12px;
+    padding: 7px;
+    width: 100px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px 3px 0 0;
+    background-color: #000;
+    background-color: hsla(0, 0%, 20%, 0.9);
+    color: #fff;
+    content: attr(data-tooltip);
+    text-align: center;
+    font-size: 10px;
+    line-height: 1;
+}
+
+/* Triangle hack to make tooltip look like a speech bubble */
+[data-tooltip]:after {
+    position: absolute;
+    bottom: 23px;
+    left: 50%;
+    margin-left: -5px;
+    width: 0;
+    border-top: 5px solid #000;
+    border-top: 5px solid hsla(0, 0%, 20%, 0.9);
+    border-right: 5px solid transparent;
+    border-left: 5px solid transparent;
+    content: " ";
+    font-size: 0;
+    line-height: 0;
+}
+
+/* Show tooltip content on hover */
+[data-tooltip]:hover:before,
+[data-tooltip]:hover:after {
+    visibility: visible;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
+    opacity: 1;
+}
+.drop-down {
+    width: 40px;
+    background: whitesmoke;
+    height: 38px;
+    float: left;
+    cursor: pointer;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+    border-top: 1px solid black;
+    border-radius: 5px 0 0 5px;
+}
+.drop-down div.communities {
+    position: relative;
+    top: 23px;
+    left:-1px;
+    background: whitesmoke;
+    width: 130px;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+    transition: 500ms all ease-out;
+    border: 1px solid black;
+    border-top: none;
+    /* opacity:0; */
+    visibility: hidden;
+    z-index: 1000;
+}
+.drop-down.open {
+    border-radius: 5px 0 0 0px;
+    border-bottom: none;
+    z-index: 1;
+}
+.drop-down.open div.communities {
+    max-height: 150px;
+    /* opacity:1; */
+    visibility: visible;
+}
+.drop-down .arrow-down {
+    width: 0;
+    margin: 0 auto;
+    top: 30%;
+    left: -5px;
+    position: relative;
+}
+div.switches {
+	clear: both;
+	margin: 10px 5px;
+}
+div.switches input,
+div.switches label {
+	float: left;
+    font-weight: normal;
+}
+div.switches input {
+	margin-right: 5px;
+}
+input.switch:empty {
+	margin-left: -999px;
+}
+input.switch:empty ~ label {
+	position: relative;
+	float: left;
+	line-height: 1.6em;
+	text-indent: 4em;
+/* 	margin: 0.2em 0; */
+	cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+input.switch:empty ~ label:before, 
+input.switch:empty ~ label:after {
+	position: absolute;
+	display: block;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	content: ' ';
+	width: 36px;
+	background-color: #f5f5f5;
+	border-radius: 50px;
+	box-shadow: inset 0 1px 0 rgba(0,0,0,0.3);
+	-webkit-transition: all 100ms ease-in;
+  transition: all 100ms ease-in;
+}
+input.switch:empty ~ label:after {
+	width: 13px;
+    height: 13px;
+	top: 0.1em;
+	bottom: 0.1em;
+	margin-left: 0.1em;
+	background-color: #fff;
+	border-radius: 50px;
+}
+input.switch:checked ~ label:before {
+	background-color: green;
+}
+input.switch:checked ~ label:after {
+	margin-left: 2.1em;
+}
+  /* end communities select box */
+
+/* throbber */
+.throbber {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    border-bottom: 1px solid silver;
+    margin-bottom: 20px;
+    transition: opacity 0.3s ease;
+    background-size: 30px 30px;
+    background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.1) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1) 75%, transparent 75%, transparent);
+    animation: barberpole 0.5s linear infinite;
+    opacity: 0;
+}
+.throbber.show {
+    opacity: 1;
+}
+@keyframes barberpole {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 60px 30px;
+    }
+}
+/* end throbber */
+
+.warning {
+    color: red;
+}
+#ssForm,
+#fSearch {
+    margin: 0;
+    font-size: 1rem;
+}
+.searchContainer {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/*
+hide the searchChooser widget on screens 
+smaller than 375px width
+*/
+.searchChooser {
+    font-size: 1rem;
+    margin-left: 45px;
+    cursor: pointer;
+    visibility: hidden;
+}
+nav {
+    font-size: 1rem;
+    margin-left: 45px;
+}
+nav label {
+    float: left;
+    margin-right: 10px;
+}
+nav label.searchFocus {
+    text-decoration: none;
+    color: white;
+    background-color: grey;
+    padding: 2px 5px;
+    border-radius: 2px;
+}
+nav input[type="radio"] {
+    display: none;
+}
+.searchWidget {
+    width: 100%;
+    position: relative;
+    border: none;
+    clear: both;
+    display: table;
+}
+.searchTopBar {
+    position: relative;
+}
+
+#sSearch .searchInputs,
+#fSearch .searchInputs {
+    width: calc( 100% - 90px );
+    float: left;
+    background-color: white;
+    border: 1px solid #444;
+    padding: 0;
+}
+#sSearch .searchInputs {
+    height: 38px;
+}
+#fSearch .searchInputs {
+    height: auto;
+}
+#q {
+    width: calc( 100% - 25px );
+    border: none;
+    border-radius: 0;
+}
+#q::placeholder { /* Most modern browsers support this now. */
+    color: green;
+}
+.searchButton {
+    border-radius: 0 5px 5px 0;
+    background-color: #444;
+    border: 1px solid #444;
+    color: white !important;
+    padding-left: 12px;
+    height: 40px;
+    width: 40px;
+    position: relative;
+    font-size: unset;
+    line-height: unset;
+    margin-bottom: 0;
+}
+.searchButton:hover {
+    background-color: green !important;
+}
+#searchMessage {
+    font-size: 1rem;
+    margin-left: 45px;
+}
+#refreshCacheWarning {
+    color: red;
+    line-height: 1.1em;
+    margin-left: 45px;
+    display: block;
+    visibility: hidden;
+}
+#refreshCacheWarning.show {
+    visibility: visible;
+}
+.searchParams {
+    position: relative;
+    width: calc( 100% - 30px );
+    min-height: 38px;
+    height: auto;
+    float: left;
+}
+#q:focus {
+    color: green;
+}
+.off-none {
+    visibility: hidden;
+    display: none;
+}
+/* end simple search */
+
+h3 {
+    font-size: 14px;
+    text-align: center;
+    letter-spacing: revert;
+}
+.transition-050 {
+        -moz-transition     : 0.50s;
+    -webkit-transition      : 0.50s;
+        -ms-transition      : 0.50s;
+            -o-transition   : 0.50s;
+            transition      : 0.50s;
+}
+.opacity85{ 
+    opacity: 0.85; 
+    filter: alpha(opacity=85); 
+}
+footer {
+    text-align: center;
+    padding: 0;
+}
+footer img {
+    width: 80%;
+    max-width: 480px;
+}
+#wrapper {
+    width: 100%;
+    margin: 0 auto;
+    background-color: white;
+    opacity: 1;
+    display: none;
+}
+#wrapper.show {
+    display: block;
+}
+#carouselContainer {
+    cursor: pointer;
+}
+#chart-container {
+    display: none;
+    position: relative; 
+    width:80vw;
+}
+#chart-container.show {
+    display: block;
+}
+.nonModal,
+.modal {
+    display: none;
+}
+.modal.show {
+    display: block;
+}
+.modal-text {
+    margin-top: 12px;
+    font-size: 1.5rem;
+    font-family: serif;
+}
+
+#privacy-link,
+#about-link {
+    cursor: pointer;
+}
+.modal-close {
+    cursor: pointer;
+    -moz-transition: all 1s ease-in-out;
+    -webkit-transition: all 1s ease-in-out;
+    -o-transition: all 1s ease-in-out;
+    -ms-transition: all 1s ease-in-out;
+    transition: all 1s ease-in-out;
+    -moz-animation: blink normal 2s infinite ease-in-out;
+    -webkit-animation: blink normal 2s infinite ease-in-out;
+    -ms-animation: blink normal 2s infinite ease-in-out;
+    animation: blink normal 2s infinite ease-in-out;
+}
+/* about-close fade-in fade-out */
+@keyframes blink {
+    0%   { color: rgba(0,0,0,1  ) }
+    25%  { color: rgba(0,0,0,0.5) }
+    50%  { color: rgba(0,0,0,0  ) }
+    75%  { color: rgba(0,0,0,0.5) }
+    100% { color: rgba(0,0,0,1  ) }
+}
+@-webkit-keyframes blink {
+    0%   { color: rgba(0,0,0,1  ) }
+    25%  { color: rgba(0,0,0,0.5) }
+    50%  { color: rgba(0,0,0,0  ) }
+    75%  { color: rgba(0,0,0,0.5) }
+    100% { color: rgba(0,0,0,1  ) }
+}
+.grid {
+    margin: 0em 0;
+    padding: 0;
+    font-size: .85em;
+    display: flex;
+    flex-wrap: wrap;
+}
+.masonry {
+    margin: 0;
+    padding: 0;
+    -moz-column-gap: 1em;
+    -webkit-column-gap: 1em;
+    column-gap: 1em;
+    font-size: .85em;
+    -moz-column-count: 1;
+    -webkit-column-count: 1;
+    column-count: 1;
+    width: 99%;
+}
+.item {
+    width: 100%;
+    padding: 0px;
+    border: 0px solid black;
+}
+.masonry figure {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #000;
+    /* min-height: 200px; */
+    height: auto;
+    margin: 0 0 1em 0 !important;
+
+    /* avoid figures splitting across columns */
+    /* see https://stackoverflow.com/a/17415553/183692 */
+    overflow: hidden; /* fix for Firefox */
+    break-inside: avoid-column;
+    -webkit-column-break-inside: avoid;
+    text-align: center;
+}
+.masonry figure img {
+    width: 100%;
+/*     border: 0px solid silver; */
+    margin-bottom: 0px;
+    cursor: pointer;
+}
+.masonry figcaption {
+    background: rgba(250, 250, 250, 0.8);
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+    max-height: 30px;
+    padding: 5px;
+    text-align: left;
+    line-height: 1.5em;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font-size: 1.2em;
+    font-weight: 400;
+    opacity: 1 !important;
+    border: 0px solid grey;
+    cursor: pointer;
+}
+.masonry figcaption a {
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: blue;
+/*     text-decoration-style: double; */
+}
+.masonry figcaption a.transition-050 {
+    text-decoration: none;
+    color: black;
+/*     font-weight: bold; */
+}
+.text {
+    color: #000;
+    background-color: #fff;
+    font-size:1em;
+}
+.desc {
+    display: block;
+    padding: 0px;
+}
+
+/* Add animation to "page content" */
+.animate-bottom {
+    position: relative;
+    -webkit-animation-name: animatebottom;
+    -webkit-animation-duration: 1s;
+    animation-name: animatebottom;
+    animation-duration: 1s
+}
+@-webkit-keyframes animatebottom {
+    from { bottom:-100px; opacity:0 } 
+    to { bottom:0px; opacity:1 }
+}
+@keyframes animatebottom { 
+    from{ bottom:-100px; opacity:0 } 
+    to{ bottom:0; opacity:1 }
+}
+#pager {
+    margin: 0 auto;
+    z-index: 1;
+    text-align: center;
+    margin-top: 1em;
+    margin-bottom: 6em;
+} 
+#prev {
+    margin-right: 1em;
+} 
+#next {
+    margin-left: 1em;
+} 
+#prev:visited,
+#next:visited {
+    color: blue;
+}
+.autocomplete-suggestions {
+    border: 1px solid lightgrey !important;
+    margin-top: 2px;
+}
+.autocomplete-suggestion {
+    font-size: 0.8em;
+}
+figure {
+    margin: 0;
+    position: relative;
+}    
+.carouselOff {
+    position: absolute;
+    left: 0;
+    z-index: 100;
+    background-color: white;
+    opacity: 0.8;
+    padding: 0px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-transform: uppercase;
+    font-weight: 800;
+    border-radius: 50%;
+    border: 0px white solid;
+}
+.carouselOff:hover {
+    background-color: yellow;
+}
+.widget {
+    position: absolute;
+    border: 0px solid red;
+    width: 100%;
+    z-index: 100;
+}
+.widget form {
+    visibility: hidden;
+}
+.widget form .imageReport,
+.widget .status {
+    z-index: 100;
+    background-color: white;
+    opacity: 0.8;
+    padding: 0px;
+    width: calc(100% - 90px);
+    height: 40px !important;
+    border: 1px grey solid;
+    border-radius: 0px;
+    text-align: left;
+    float: left;
+    border-radius: 0 5px 5px 5px;
+}
+.widget form .imageReport {
+    padding: 5px;
+}
+.widget .status {
+    padding: 2px;
+    visibility: hidden;
+    display: none;
+}
+.widget button {
+    background-color: white;
+    opacity: 0.8;
+    padding: 0px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-transform: uppercase;
+    font-weight: 800;
+    border-radius: 50%;
+    border: 1px grey solid;
+    font-size: 7px;
+}
+.widget button.report {
+    visibility: hidden;
+    display: none;
+    position: absolute;
+    right: 0;
+}
+.masonry figure:hover > .widget button.report {
+    visibility: visible;
+    display: block;
+    cursor: pointer;
+}
+.widget button.submit:hover {
+    background-color: green;
+    color:white;
+}
+.widget button.cancel:hover {
+    background-color: orange;
+}
+.widget button.report:hover {
+    background-color: yellow;
+}
+.image-wrapper {
+    width: 100%;
+    position: relative;
+    margin-top: 20px;
+    border: 1px solid;
+    text-align: center;
+}
+.image-wrapper img {
+    width:100%
+}
+.image-wrapper > figcaption {
+    padding: 20px;
+    text-align: left;
+}
+
+/* treatments */
+details {
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+details p {
+    padding: 1.5rem;
+    font-family: serif;
+    font-size: 1.2em;
+}
+/* end treatments */
+
+/* lazyload classes */
+.lazyload {
+	opacity: 0;
+}
+.lazyloading {
+	opacity: 1;
+	transition: opacity 300ms;
+	background: #f7f7f7 url(../../img/loader.gif) no-repeat center;
+}
+.lazyloaded {
+	opacity: 1;
+	transition: opacity 300ms;
+}
+/* end lazyload classes */
+
+/* treatment */
+#treatmentInfo {
+    position: -webkit-sticky;
+    position: -moz-sticky;
+    position: -ms-sticky;
+    position: -o-sticky;
+    position: sticky;
+    top: 0px;
+    background-color: white;
+    padding-bottom: 5px;
+    z-index: 100;
+}
+ul.pids {
+    list-style: none;
+    font-weight: bold;
+}
+ul.pids li {
+    line-height: 10px;
+    font-size: 80%;
+}
+ul.pids a {
+    font-weight: normal;
+}
+p.journal {
+    font-size: 1.1em;
+}
+.xml-marker {
+    border: 1px solid lightblue;
+    background-color: lightblue;
+    border-radius: 5px;
+    color: #444;
+    font-size: 1rem;
+    padding: 2px;
+}
+details {
+    border-radius: 3px;
+    background: #EEE;
+}
+.treatment p.summary,
+details summary {
+    font-size: 17px;
+    vertical-align: top;
+    background: #333;
+    color: #FFF;
+    border-radius: 3px;
+    padding: 5px 10px;
+    outline: none;
+}
+.treatment p.summary,
+details[open] summary {
+    background: #69c773;
+    color: #333;
+}
+details ul {
+    padding: 15px;
+}
+
+/* Hide the default marker. */    
+details summary::-webkit-details-marker {
+    display:none;
+    cursor: pointer;
+}
+details > summary {
+    display:block;
+    cursor: pointer;
+}
+/* end treatment */
+
+#map { 
+    height: 300px; 
+    margin-bottom: 20px;
+    display: none;
+}
+#map.show {
+    display: block;
+}
+
+/* taxon tree */
+ul.classification {
+    list-style: none;
+}
+.kingdom,
+.phylum,
+.order,
+.family,
+.genus,
+.species {
+    border-top-width: 20px;
+    border-top-style: solid;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 0px solid grey;
+    height: 0px;
+    line-height: 0;
+    margin-top: 0px;
+    margin-bottom: 2px;
+}
+.kingdom {
+    border-top-color: #e8e8e8;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    width: 100px;
+}
+.phylum {
+    border-top-color: #d8d8d8;
+    width: 80px;
+    margin-left: 10px
+}
+.order {
+    border-top-color: #b8b8b8;
+    width: 60px;
+    margin-left: 20px
+}
+.family {
+    border-top: 20px solid #989898;
+    width: 40px;
+    margin-left: 30px
+}
+.genus {
+    border-top-color: #787878;
+    width: 20px;
+    margin-left: 40px
+}
+.species {
+    border-top-color: #585858;
+    width: 0px;
+    margin-left: 50px
+}
+.kingdom > .txn,
+.phylum > .txn,
+.order > .txn,
+.family > .txn,
+.genus > .txn,
+.species > .txn {
+    margin-top: -10px;
+    width: 100px;
+    font-size: 1rem;
+}
+.kingdom > .txn {
+    margin-left: 110px;
+}
+.phylum > .txn {
+    margin-left: 90px;
+}
+.order > .txn {
+    margin-left: 70px;
+}
+.family > .txn {
+    margin-left: 50px;
+}
+.genus > .txn {
+    margin-left: 30px;
+}
+.species > .txn {
+    margin-left: 10px;
+}
+/* end classification */
+
+/* xml */
+p.xml {
+    font-family: Georgia, Times, 'Times New Roman', serif;
+    margin-top: 24px;
+}
+emphasis {
+    font-weight: bold;
+}
+mods\:title,
+mods\:roleTerm {
+    font-weight: 800;
+}
+mods\:title:after,
+mods\:name:after,
+subSubSection paragraph heading {
+    content: '\A';
+}
+paragraph {
+    display: table;
+    margin-top: 12px;
+}
+taxonomicname {
+    font-style: italic;
+}
+mods\:namePart {
+    font-style: italic
+}
+location {
+    background-color: lightgreen;
+}
+geocoordinate {
+    border: 1px dotted grey;
+    border-radius: 5px;
+    padding: 2px;
+}
+/* end xml */
+
+/* Larger than mobile */
+@media (min-width: 400px) {
+    .treatment h1 {
+        font-size: 2rem;
+    }
+    .masonry {
+        -moz-column-count: 2;
+        -webkit-column-count: 2;
+        column-count: 2;
+    }
+}
+
+/* Larger than phablet (also point when grid becomes active) */
+@media (min-width: 550px) {
+    .column,
+    .columns {
+        margin-left: 10px !important;
+    }
+    header {
+        margin-top: 0;
+    }
+    .title {
+        /* float: left; */
+        width: 90px;
+        margin-top: 25px !important;
+    }
+/*     .searchContainer {
+        float: left;
+        width: calc( 100% - 90px );
+    } */
+}
+
+/* Larger than tablet */
+@media (min-width: 750px) {
+    .column,
+    .columns {
+        margin-left:0 !important;
+    }
+    .masonry {
+        -moz-column-count: 3;
+        -webkit-column-count: 3;
+        column-count: 3;
+    }
+}
+
+/* Larger than desktop */
+@media (min-width: 1000px) {
+    .treatment h1 {
+        font-size: 3rem;
+    }
+    h3 {
+        font-size: 16px;
+    }
+    .masonry {
+        -moz-column-count: 4;
+        -webkit-column-count: 4;
+        column-count: 4;
+    }
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 1200px) {
+    .masonry {
+        -moz-column-count: 5;
+        -webkit-column-count: 5;
+        column-count: 5;
+    }
+}

@@ -1,5 +1,3 @@
-/* communities select box */
-
 /* https://chrisbracco.com/a-simple-css-tooltip/ */
 /* Add this attribute to the element that needs a tooltip */
 [data-tooltip] {
@@ -63,10 +61,8 @@
     filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
     opacity: 1;
 }
-
 .drop-down {
     width: 40px;
-/*     background: #afafaf; */
     background: whitesmoke;
     height: 38px;
     float: left;
@@ -76,12 +72,10 @@
     border-top: 1px solid black;
     border-radius: 5px 0 0 5px;
 }
-
 .drop-down div.communities {
     position: relative;
     top: 23px;
     left:-1px;
-/*     background: #afafaf; */
     background: whitesmoke;
     width: 130px;
     padding: 0px;
@@ -90,22 +84,10 @@
     transition: 500ms all ease-out;
     border: 1px solid black;
     border-top: none;
-    opacity:0;
+    /* opacity:0; */
+    visibility: hidden;
+    z-index: 1;
 }
-/* .drop-down div.communities label {
-    border: none;
-    padding: 13px 0 0 5px;
-    margin: 0;
-    font-weight: normal;
-    cursor: pointer;
-}
-.drop-down div.communities label input {
-    margin-right: 5px;
-}
-.drop-down div.communities label:hover{
-    background-color: #444;
-    color: white;
-} */
 .drop-down.open {
     border-radius: 5px 0 0 0px;
     border-bottom: none;
@@ -113,7 +95,8 @@
 }
 .drop-down.open div.communities {
     max-height: 150px;
-    opacity:1;
+    /* opacity:1; */
+    visibility: visible;
 }
 .drop-down .arrow-down {
     width: 0;
@@ -122,26 +105,21 @@
     left: -5px;
     position: relative;
 }
-
 div.switches {
 	clear: both;
 	margin: 10px 5px;
 }
-
 div.switches input,
 div.switches label {
 	float: left;
     font-weight: normal;
 }
-
 div.switches input {
 	margin-right: 5px;
 }
-
 input.switch:empty {
 	margin-left: -999px;
 }
-
 input.switch:empty ~ label {
 	position: relative;
 	float: left;
@@ -154,7 +132,6 @@ input.switch:empty ~ label {
   -ms-user-select: none;
   user-select: none;
 }
-
 input.switch:empty ~ label:before, 
 input.switch:empty ~ label:after {
 	position: absolute;
@@ -170,7 +147,6 @@ input.switch:empty ~ label:after {
 	-webkit-transition: all 100ms ease-in;
   transition: all 100ms ease-in;
 }
-
 input.switch:empty ~ label:after {
 	width: 13px;
     height: 13px;
@@ -179,15 +155,11 @@ input.switch:empty ~ label:after {
 	margin-left: 0.1em;
 	background-color: #fff;
 	border-radius: 50px;
-/* 	box-shadow: inset 0 -0.2em 0 rgba(0,0,0,0.2); */
 }
-
 input.switch:checked ~ label:before {
 	background-color: green;
 }
-
 input.switch:checked ~ label:after {
 	margin-left: 2.1em;
 }
-  
-/* end communities select box */
+/* end header: communities select box */

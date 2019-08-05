@@ -10,28 +10,15 @@ module.exports = function(grunt) {
             },
             target: {
                 files: {
-                        'blr/js/scripts-es.min.js': [
-                            "blr/fancysearch/fancysearch.js",
-                            "blr/js/config.js",
-                            'js/ocellus.js',
-                            "blr/js/facets.js"
-                        ]
-                    }
-            }
-        },
-
-        "uglify": {
-            options: {
-                mangle: false
-            },
-            target: {
-                files: {
-                        'blr/js/scripts.min.js': [
-                            "blr/js/cookies.js",
+                        'js/scripts.min.js': [
                             "js/lazysizes.min.js",
-                            'js/mustache.min.js',
-                            'JavaScript-autoComplete/auto-complete.js'
-
+                            "js/mustache.min.js",
+                            "JavaScript-autoComplete/auto-complete.min.js",
+                            "leaflet/leaflet.js",
+                            "node_modules/chart.js/dist/Chart.js",
+                            "node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js",
+                            "js/config.js",
+                            "js/ocellus.js"
                         ]
                     }
             }
@@ -44,14 +31,20 @@ module.exports = function(grunt) {
             },
             target: {
                 files: {
-                    'blr/css/styles.min.css': [
-                        "Skeleton-2.0.4/css/normalize-7.0.0.min.css",
-                        "Skeleton-2.0.4/css/skeleton.min.css",
+                    'css/styles.min.css': [
+                        "Barebones-3.0.1/css/normalize.css",
+                        "Barebones-3.0.1/css/barebones.css",
+                        "leaflet/leaflet.css",
                         "JavaScript-autoComplete/auto-complete.css",
-                        "blr/fancysearch/fancysearch.css",
-                        "blr/css/ocellus.css",
-                        "blr/css/xml.css",
-                        'css/throbber.css'
+                        "css/ocellus.css",
+                        "css/ocellus-header-title.css",
+                        "css/ocellus-header-simple-search.css",
+                        "css/ocellus-throbber.css",
+                        "css/ocellus-communities-select-boxes.css",
+                        "css/ocellus-treatments.css",
+                        "css/ocellus-treatment.css",
+                        "css/ocellus-taxon-tree.css",
+                        "css/ocellus-xml.css"
                     ]
                 }
             }
@@ -62,5 +55,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
 
     // Default task(s).
-    grunt.registerTask('default', ['uglify-es', 'uglify', 'cssmin']);
+    grunt.registerTask('default', ['uglify-es', 'cssmin']);
 };

@@ -1,0 +1,16 @@
+/* header: title */
+.title {
+    margin-bottom: 10px;
+    line-height: 15px;
+    text-align: center;
+}
+a.main-title {
+    text-decoration: none;
+    color: black;
+    margin-bottom: 0;
+}
+.sub-title {
+    margin-top: -5px;
+    font-size: 0.85rem;
+}
+/* end header: title */

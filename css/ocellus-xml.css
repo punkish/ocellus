@@ -1,43 +1,41 @@
+/* xml */
 p.xml {
     font-family: Georgia, Times, 'Times New Roman', serif;
-    margin-top: 24px;
+    margin-top: 2rem;
+    font-size: 1.2rem;
 }
-
 emphasis {
     font-weight: bold;
 }
-
 mods\:title,
 mods\:roleTerm {
     font-weight: 800;
 }
-
 mods\:title:after,
 mods\:name:after,
 subSubSection paragraph heading {
     content: '\A';
-    /* white-space: pre; */
 }
-
+mods\:identifier {
+    color: blue;
+}
 paragraph {
     display: table;
     margin-top: 12px;
 }
-
 taxonomicname {
     font-style: italic;
 }
-
 mods\:namePart {
-    font-style: italic
+    font-style: italic;
 }
-
 location {
     background-color: lightgreen;
 }
-
 geocoordinate {
     border: 1px dotted grey;
+    background-color: lightgreen;
     border-radius: 5px;
     padding: 2px;
 }
+/* end xml */

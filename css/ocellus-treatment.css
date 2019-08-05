@@ -1,36 +1,47 @@
-/* for xml styling, see ocellus-xml.css */
-
-#treatmentInfo {
+/* single treatment (no xml – for xml styling, see ocellus-xml */
+#treatment h2 {
+    z-index: 2;
+    background-color: white;
+    padding: 5px;
+    height: 40px;
+    font-size: 21px;
+    border-bottom: 1px solid black;
     position: -webkit-sticky;
     position: -moz-sticky;
     position: -ms-sticky;
     position: -o-sticky;
     position: sticky;
+}
+h2.treatmentTitle {
+    top: 0px;
+}
+h2.map {
+    top: 51px;
+}
+h2.figures {
+    top: 102px;
+}
+h2.citations {
+    top: 153px;
+}
+h2.xmltext {
+    top: 204px;
+}
+h2 ~ div {
+    padding: 2rem;
+}
+#treatmentInfo {
     top: 0px;
     background-color: white;
     padding-bottom: 5px;
-    z-index: 100;
 }
-/* details.treatment summary,
-.treatment h1 {
-    font-size: 1.5rem;
-    font-weight: 800;
-    font-family: Georgia, Times, 'Times New Roman', serif;
-    letter-spacing: 0px;
-    background-color: lightgrey;
-    padding: 5px;
-}
-.treatment h2 {
-    font-size: 1.5rem;
-    font-weight: 400;
-} */
 ul.pids {
     list-style: none;
     font-weight: bold;
 }
 ul.pids li {
-    line-height: 10px;
-    font-size: 80%;
+    line-height: 2rem;
+    /* font-size: 80%; */
 }
 ul.pids a {
     font-weight: normal;
@@ -47,39 +58,16 @@ p.journal {
     padding: 2px;
 }
 
-details {
-    border-radius: 3px;
-    background: #EEE;
+/* map */
+#map {
+    z-index: 1;
+    height: 300px; 
+    margin-bottom: 20px;
+    display: none;
+    /*! width: 100%; */
 }
-
-.treatment p.summary,
-details summary {
-    font-size: 17px;
-    vertical-align: top;
-    background: #333;
-    color: #FFF;
-    border-radius: 3px;
-    padding: 5px 10px;
-    outline: none;
+#map.show {
+    display: block;
 }
-
-.treatment p.summary,
-details[open] summary {
-    background: #69c773;
-    color: #333;
-}
-
-details ul {
-    padding: 15px;
-}
-
-/* Hide the default marker. */    
-details summary::-webkit-details-marker {
-    display:none;
-    cursor: pointer;
-}
-
-details > summary {
-    display:block;
-    cursor: pointer;
-}
+/* end map */
+/* end treatments */

@@ -1,7 +1,7 @@
+/* taxon tree */
 ul.classification {
     list-style: none;
 }
-
 .kingdom,
 .phylum,
 .order,
@@ -59,7 +59,6 @@ ul.classification {
     width: 100px;
     font-size: 1rem;
 }
-
 .kingdom > .txn {
     margin-left: 110px;
 }

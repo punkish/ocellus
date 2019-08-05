@@ -1,27 +1,60 @@
-#privacy,
-#about {
+#wrapper {
+    width: 100%;
+    margin: 0 auto;
+    background-color: white;
+    opacity: 1;
     display: none;
 }
-#privacy.show,
-#about.show {
+#wrapper.show {
     display: block;
 }
-#privacy-text,
-#about-text {
-    margin-top: 12px;
-}
-.privacy,
-.about {
-    font-size: 1.5rem;
-}
-#privacy-link,
-#privacy-close,
-#about-link, 
-#about-close {
+#carouselContainer {
     cursor: pointer;
 }
-#privacy-close,
-#about-close {
+
+#chart-container {
+    display: none;
+    position: relative; 
+    width:80vw;
+}
+
+#chart-container.show {
+    display: block;
+}
+
+/* #privacy,
+#about,
+#wrapper,
+#carouselContainer {
+    display: block;
+}
+#privacy.show,
+#about.show,
+#wrapper.show,
+#carouselContainer.show {
+    display: block;
+} */
+
+.nonModal,
+.modal {
+    display: none;
+}
+.modal.show {
+    display: block;
+}
+.modal-text {
+    margin-top: 12px;
+    font-size: 1.5rem;
+    font-family: serif;
+}
+
+#privacy-link,
+#about-link {
+    cursor: pointer;
+}
+
+.modal-close {
+    cursor: pointer;
     -moz-transition: all 1s ease-in-out;
     -webkit-transition: all 1s ease-in-out;
     -o-transition: all 1s ease-in-out;
