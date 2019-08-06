@@ -1,3 +1,4 @@
+const withAjax = false;
 const zenodoRecord = 'https://zenodo.org/record/';
 const header = document.querySelector('header');
 const form = document.querySelector('form[name=simpleSearch]');
@@ -16,6 +17,7 @@ let figcaptions = [];
 const treatmentInfo = document.querySelector('#treatmentInfo');
 
 // various divs to be populated later
+const throbber = document.querySelector('#throbber');
 const charts = document.querySelector('#charts');
 const about = document.querySelector('#about');
 const privacy = document.querySelector('#privacy');
@@ -23,6 +25,23 @@ const images = document.querySelector('#images');
 const carousel = document.querySelector('#carousel');
 const treatments = document.querySelector('#treatments');
 const treatment = document.querySelector('#treatment');
+
+const divs = {
+    pre: {
+        throbber: throbber
+    },
+    modals: {
+        charts: charts,
+        about: about,
+        privacy: privacy
+    },
+    results: {
+        images: images,
+        carousel: carousel,
+        treatments: treatments,
+        treatment: treatment
+    }
+}
 
 // templates
 const tmplImages = document.querySelector('#templateImages').innerHTML;
@@ -357,177 +376,127 @@ function getHeightofVisibleViewport() {
 
 function setVisualElements(state) {
 
+    const hideEverything = function(resetRc = true) {
+
+        // hide everything
+        for (let c in divs) {
+            let coll = divs[c];
+            for (let d in coll) {
+                coll[d].classList.remove('show')
+            }
+        }
+
+        if (resetRc) {
+            refreshCacheSelector.checked = false;
+        }
+    }
+
     // blank state (initial state)
     if (state === 'blank') {
-        // throbber.classList.remove('show');
-        // charts.classList.remove('hide');
-        // about.classList.remove('show');
-        // privacy.classList.remove('show');
-        // images.classList.remove('show');
-        // carousel.classList.remove('show');
-        // treatments.classList.remove('show');
-        // treatment.classList.remove('show');
-        Object.keys(divs).forEach(d => {
-            for (let i in divs[d]) {
-                document.getElementById(i).classList.remove(divs[d][i])
-            }
-        })
+        hideEverything();
 
+        // show the chart
         charts.classList.add('show');
     }
     
-    // about state
+    // open about state
     else if (state === 'about-open') {
-        Object.keys(divs).forEach(d => {
-            for (let i in divs[d]) {
-                document.getElementById(i).classList.remove(divs[d][i])
-            }
-        })
+        hideEverything(true);
 
+        // show about
         about.classList.add('show');
-        // throbber.classList.remove('show');
-        // charts.classList.add('hide');
-        // about.classList.add('show');
-        // privacy.classList.remove('show');
-        // images.classList.remove('show');
-        // carousel.classList.remove('show');
-        // treatments.classList.remove('show');
-        // treatment.classList.remove('show');
     }
 
-    // about state
+    // close about state
     else if (state === 'about-close') {
-        Object.keys(divs).forEach(d => {
-            for (let i in divs[d]) {
-                document.getElementById(i).classList.remove(divs[d][i])
-            }
-        })
+        hideEverything(true);
 
+        // show chart
         charts.classList.add('show');
-        // throbber.classList.remove('show');
-        // charts.classList.remove('hide');
-        // about.classList.remove('show');
-        // privacy.classList.remove('show');
-        // images.classList.remove('show');
-        // carousel.classList.remove('show');
-        // treatments.classList.remove('show');
-        // treatment.classList.remove('show');
     }
 
     // privacy state
     else if (state === 'privacy-open') {
-        throbber.classList.remove('show');
-        charts.classList.add('hide');
-        about.classList.remove('show');
+        hideEverything(true);
+
+        // show privacy
         privacy.classList.add('show');
-        images.classList.remove('show');
-        carousel.classList.remove('show');
-        treatments.classList.remove('show');
-        treatment.classList.remove('show');
     }
 
     else if (state === 'privacy-close') {
-        throbber.classList.remove('show');
-        charts.classList.remove('hide');
-        about.classList.remove('show');
-        privacy.classList.remove('show');
-        images.classList.remove('show');
-        carousel.classList.remove('show');
-        treatments.classList.remove('show');
-        treatment.classList.remove('show');
+        hideEverything(true);
+
+        // show chart
+        charts.classList.add('show');
     }
 
     // query start
     else if (state === 'queryStart') {
+        hideEverything(true);
+
+        // turn on the throbber
         throbber.classList.add('show');
-        charts.classList.add('show');
-        about.classList.remove('show');
-        privacy.classList.remove('show');
-        images.classList.remove('show');
-        carousel.classList.remove('show');
-        treatments.classList.remove('show');
-        treatment.classList.remove('show');
     }
     
     // query end no result
     else if (state === 'queryEndNoResult') {
-        throbber.classList.remove('show');
-        charts.classList.remove('show');
-        about.classList.remove('show');
-        privacy.classList.remove('show');
-        images.classList.remove('show');
-        carousel.classList.remove('show');
-        treatments.classList.remove('show');
-        treatment.classList.remove('show');
-        refreshCacheSelector.checked = false;
+        hideEverything();
     }
     
     // query end with result
     else if (state === 'queryEndWithTreatments') {
-        throbber.classList.remove('show');
+        hideEverything();
+
+        // show charts and treatments
         charts.classList.add('show');
-        about.classList.remove('show');
-        privacy.classList.remove('show');
-        images.classList.remove('show');
-        carousel.classList.remove('show');
         treatments.classList.add('show');
-        treatment.classList.remove('show');
-        refreshCacheSelector.checked = false;
     }
 
     else if (state === 'queryEndWithTreatment') {
-        throbber.classList.remove('show');
-        charts.classList.add('hide');
-        about.classList.remove('show');
-        privacy.classList.remove('show');
-        images.classList.remove('show');
-        carousel.classList.remove('show');
-        treatments.classList.remove('show');
+        hideEverything();
+
+        // show single treatment
         treatment.classList.add('show');
-        refreshCacheSelector.checked = false;
     }
 
     else if (state === 'queryEndWithImages') {
-        throbber.classList.remove('show');
+        hideEverything();
+
+        // show charts and images
         charts.classList.add('show');
-        about.classList.remove('show');
-        privacy.classList.remove('show');
-        images.classList.add('show');
-        carousel.classList.remove('show');
-        treatments.classList.remove('show');
-        treatment.classList.remove('show');
-        refreshCacheSelector.checked = false;
+        treatment.classList.add('show');
     }
 
     // carousel on
     else if (state === 'turnCarouselOn') {
-        throbber.classList.remove('show');
-        charts.classList.remove('show');
-        about.classList.remove('show');
-        privacy.classList.remove('show');
-        images.classList.remove('show');
+        hideEverything();
+
+        // show carousel
         carousel.classList.add('show');
-        treatments.classList.remove('show');
-        treatment.classList.remove('show');
-        refreshCacheSelector.checked = false;
     }
 
     // carousel off
     else if (state === 'turnCarouselOff') {
-        throbber.classList.remove('show');
-        charts.classList.remove('show');
-        about.classList.remove('show');
-        privacy.classList.remove('show');
-        images.classList.add('show');
-        carousel.classList.remove('show');
-        treatments.classList.remove('show');
-        treatment.classList.remove('show');
+        
+        // hide everything
+        for (let c in divs) {
+            let coll = divs[c];
+            for (let d in coll) {
+                coll[d].classList.remove('show')
+            }
+        }
+
         refreshCacheSelector.checked = false;
+
+        // show charts and images
+        charts.classList.add('show');
+        treatment.classList.add('show');
     }
     
 }
 
 function makeUris(qp, setHistory = true) {
+
     let hrefArray1 = [];
     let hrefArray2 = [];
 
@@ -735,33 +704,39 @@ const fetchResource = {
             q.placeholder = `search ${DATA.charts.statistics[resource]} ${resource}`;
         };
 
-        if (qp.resource === 'all') {
-            let {search, uri} = makeUris({resource: 'treatments', stats: true}, false);
-            x(uri, (xh) => {
-                for (let k in xh.value) {
-                    DATA.charts.statistics[k] = xh.value[k];
-                }
-                setPlaceHolderMessage('treatments');
-                chart = statsChart();
-                setVisualElements('blank');
-                // let {search, uri} = makeUris({resource: 'images', stats: true}, false);
-                // x(uri, (xh) => {
-                //     statistics.images = xh.value.images;
-                //     chart = statsChart();
-                //     setVisualElements('blank')
-                // });
-            });
-        }
-        else if (DATA.charts.statistics[qp.resource] === 0) {
+        // if (qp.resource === 'all') {
+
+        //     // get the treatments and their stats
+        //     let {search, uri} = makeUris({
+        //         resource: 'treatments', 
+        //         stats: true
+        //     }, false);
+
+        //     x(uri, (xh) => {
+        //         for (let k in xh.value) {
+        //             DATA.charts.statistics[k] = xh.value[k];
+        //         }
+
+        //         setPlaceHolderMessage('treatments');
+        //         chart = statsChart();
+        //         setVisualElements('blank');
+        //     });
+        // }
+
+        if (DATA.charts.statistics[qp.resource] === 0) {
+
             const {search, uri} = makeUris(qp, false);
+
             x(uri, (xh) => {
                 for (let k in xh.value) {
                     DATA.charts.statistics[k] = xh.value[k];
                 }
                 setPlaceHolderMessage(qp.resource);
                 chart = statsChart();
+                setVisualElements('blank');
             });
         }
+
         else {
             setPlaceHolderMessage(qp.resource);
             chart = statsChart();
@@ -770,13 +745,15 @@ const fetchResource = {
 
     treatments: function(qp) {
 
+        console.log('fetching ' + qp.resource)
+
         const {search, uri} = makeUris(qp);
 
         let callback;
 
         // single treatment
         if (qp.treatmentId) {
-            console.log('getting a single treatment ' + qp.treatmentId)
+            //console.log('getting a single treatment ' + qp.treatmentId)
             callback = function(xh) {
 
                 //let data = xh.value;
@@ -799,14 +776,6 @@ const fetchResource = {
                         DATA.treatment.mapState = 'open';
                     }
                     
-    
-                    //wrapper.innerHTML = Mustache.render(tmplTreatment, data);
-                    // DATA.sectionCharts.visibility = "hide";
-                    // DATA.sectionTreatment.visibility = "show";
-                    // article.innerHTML = Mustache.render(
-                    //     tmplWidget, 
-                    //     DATA
-                    // );
                     treatment.innerHTML = Mustache.render(tmplTreatment, DATA.treatment);
                     setVisualElements('queryEndWithTreatment');
                     
@@ -840,7 +809,7 @@ const fetchResource = {
         
         // many treatments
         else {
-            console.log('getting many treatments')
+            //console.log('getting many treatments')
             callback = function(xh) {
 
                 // let data = {
@@ -853,7 +822,11 @@ const fetchResource = {
                 //     pager: false
                 // };
 
+                DATA.treatments.resource = 'treatments';
+                DATA.treatments.whereCondition = xh.value.whereCondition;
                 
+
+                DATA.treatments.condition = ''
                 DATA.treatments.recordsFound = niceNumbers(xh.value.recordsFound);
                 DATA.treatments.from = xh.value.from;
                 DATA.treatments.to = xh.value.to;
@@ -868,15 +841,7 @@ const fetchResource = {
                 //data.found = niceNumbers(xh.value.length);
                 
 
-                // DATA.sectionCharts.visibility = "show";
-                // DATA.sectionTreatments.visibility = "show";
-                // article.innerHTML = Mustache.render(
-                //     tmplWidget, 
-                //     DATA
-                // );
-                //console.log(DATA.treatments)
                 treatments.innerHTML = Mustache.render(tmplTreatments, DATA.treatments);
-                //treatments.classList.add('show');
                 setVisualElements('queryEndWithTreatments');
 
                 for (let k in xh.value.statistics) {
@@ -900,18 +865,21 @@ const fetchResource = {
                 
 
                 // add clickEvent to links to get more details of a treatment
-                const treatmentLinks = document.querySelectorAll('.treatmentLink');
-                for (let i = 0, j = treatmentLinks.length; i < j; i++) {
-                    const t = treatmentLinks[i];
-                    const qp = urlDeconstruct(t.search);
+                if (withAjax) {
+                    const treatmentLinks = document.querySelectorAll('.treatmentLink');
+                    
+                    for (let i = 0, j = treatmentLinks.length; i < j; i++) {
+                        const t = treatmentLinks[i];
+                        const qp = urlDeconstruct(t.search);
 
-                    t.addEventListener('click', function(event) {
-                        event.stopPropagation();
-                        event.preventDefault();
-                        
-                        setVisualElements('queryStart');
-                        fetchResource['treatments'](qp);
-                    });
+                        t.addEventListener('click', function(event) {
+                            event.stopPropagation();
+                            event.preventDefault();
+                            
+                            setVisualElements('queryStart');
+                            fetchResource['treatments'](qp);
+                        });
+                    }
                 }
 
             };
@@ -976,19 +944,6 @@ const fetchResource = {
 const toggleRefreshCache = function(event) {
     refreshCacheWarning.classList.toggle('show');
 };
-
-// const toggleAbout = function(event) {
-//     setVisualElements('about');
-// };
-
-// const togglePrivacy = function(event) {
-//     event.stopPropagation();
-//     event.preventDefault();
-
-//     setVisualElements('privacy');
-
-//     return false;
-// };
 
 const chooseUrlFlags = function (element) {
 
@@ -1194,7 +1149,8 @@ const chartwithChartist = function() {
         // A labels array that can contain any sort of values
         labels: Object.keys(DATA.charts.statistics),
 
-        // Our series array that contains series objects or in this case series data arrays
+        // Our series array that contains series objects or in
+        // this case series data arrays
         series: [
             Object.values(DATA.charts.statistics)
         ]
@@ -1214,58 +1170,25 @@ const chartwithChartist = function() {
 
 
 const statsChart = function() {
-    
-    // DATA.sectionCharts.visibility = "show";
-    // article.innerHTML = Mustache.render(
-    //     tmplWidget, 
-    //     DATA
-    // );
-
     return chartWithChartjs();
-    //return chartwithChartist();
 };
 
 communitiesSelector.addEventListener('click', toggleCommunities);
 refreshCacheSelector.addEventListener('click', toggleRefreshCache);
 
-form.addEventListener('submit', goGetIt);
-formButton.addEventListener('click', goGetIt);
+if (withAjax) {
+    form.addEventListener('submit', goGetIt);
+    formButton.addEventListener('click', goGetIt);
+}
+
 suggest(q);
 activateUrlFlagSelectors();
 
-
-// const about = document.querySelector('#about');
-// const aboutOpen = document.querySelector('#about-link');
-// const aboutClose = document.querySelector('#about-close');
-// const privacy = document.querySelector('#privacy');
-// const privacyOpen = document.querySelector('#privacy-link');
-// const privacyClose = document.querySelector('#privacy-close');
 let savedNonModal;
 const modalOpenFunc = function(event) {
     event.preventDefault();
     event.stopPropagation();
 
-    // const modal = document.querySelectorAll('.modal');
-    // for (let i = 0, j = modal.length; i < j; i++) {
-    //     modal[i].classList.remove('show');
-    // }
-
-    // const nonModal = document.querySelectorAll('.nonModal');
-    // for (let i = 0, j = nonModal.length; i < j; i++) {
-    //     if (nonModal[i].classList.contains('show')) {
-    //         savedNonModal = nonModal[i].id;
-    //         nonModal[i].classList.remove('show');
-    //     }
-    // }
-
-    // const thisModal = document.querySelector(`#${this.innerText}`);
-    // thisModal.classList.add('show');
-    // chartContainer.classList.remove('show');
-    // DATA.sectionAbout.visibility = "show";
-    // article.innerHTML = Mustache.render(
-    //     tmplWidget, 
-    //     DATA
-    // );
     setVisualElements("about-open");
 };
 
@@ -1291,24 +1214,13 @@ if (location.search) {
     goGetIt();
 }
 else {
-    fetchResource.stats({resource: 'all', stats: true});
+    //fetchResource.stats({resource: 'all', stats: true});
+    fetchResource.stats({resource: 'treatments', stats: true});
     q.focus();
 }
 
-
-const divs = {
-    pre: {
-        throbber: 'show'
-    },
-    modals: {
-        charts: 'show',
-        about: 'show',
-        privacy: 'show'
-    },
-    results: {
-        images: 'show',
-        carousel: 'show',
-        treatments: 'show',
-        treatment: 'show'
-    }
-}
+// window.onpopstate = function(event) {
+//     // alert("location: " + document.location + ", state: " + JSON.stringify(event.state));
+//     goGetIt();
+//     //console.log(history)
+// };

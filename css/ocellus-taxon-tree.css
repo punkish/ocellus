@@ -22,26 +22,26 @@ ul.classification {
     border-top-color: #e8e8e8;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    width: 100px;
+    width: 120px;
 }
 .phylum {
     border-top-color: #d8d8d8;
-    width: 80px;
+    width: 100px;
     margin-left: 10px
 }
 .order {
     border-top-color: #b8b8b8;
-    width: 60px;
+    width: 80px;
     margin-left: 20px
 }
 .family {
     border-top: 20px solid #989898;
-    width: 40px;
+    width: 60px;
     margin-left: 30px
 }
 .genus {
     border-top-color: #787878;
-    width: 20px;
+    width: 40px;
     margin-left: 40px
 }
 .species {

@@ -75,7 +75,8 @@
                         <input class="urlFlag" type="checkbox" name="refreshCache" value="">
                     </div>
 
-                    <button id="ssGo" name="simpleSearch" class="searchButton">go</button>
+                    <!-- <button id="ssGo" name="simpleSearch" class="searchButton">go</button> -->
+                    <button id="ssGo" class="searchButton">go</button>
                     <div id="fSearch" class="off-none"></div>
                     <a id="searchChooser" class="searchChooser" href="">switch to fancy search</a>
                     <div id="refreshCacheWarning">This will refresh the cache; you probably don’t want this.</div>
@@ -156,7 +157,7 @@
     
     <!-- template for fulltext search of treatments -->
     <script id="templateTreatments" type="x-tmpl-mustache">
-        <h3>{{recordsFound}} records found. {{from}} to {{to}} shown below.</h3>
+        <h3>{{recordsFound}} {{resource}} found where {{{whereCondition}}}. {{from}} to {{to}} shown below.</h3>
     
         {{#treatments}}
         <details open>

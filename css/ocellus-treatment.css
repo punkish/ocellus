@@ -16,16 +16,16 @@ h2.treatmentTitle {
     top: 0px;
 }
 h2.map {
-    top: 51px;
+    top: 40px;
 }
 h2.figures {
-    top: 102px;
+    top: 80px;
 }
 h2.citations {
-    top: 153px;
+    top: 120px;
 }
 h2.xmltext {
-    top: 204px;
+    top: 160px;
 }
 h2 ~ div {
     padding: 2rem;
