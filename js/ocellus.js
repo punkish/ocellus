@@ -441,6 +441,8 @@ function setVisualElements(state) {
     // query end no result
     else if (state === 'queryEndNoResult') {
         hideEverything();
+
+        treatments.classList.add('show');
     }
     
     // query end with result
@@ -812,74 +814,102 @@ const fetchResource = {
             //console.log('getting many treatments')
             callback = function(xh) {
 
-                // let data = {
-                //     recordsFound: 0,
-                //     treatments: [],
-                //     prev: '',
-                //     next: '',
-                //     previd: 0,
-                //     nextid: 0,
-                //     pager: false
-                // };
-
                 DATA.treatments.resource = 'treatments';
-                DATA.treatments.whereCondition = xh.value.whereCondition;
                 
+                const qryCols = Object.keys(xh.value.whereCondition);
+                const qryVals = Object.values(xh.value.whereCondition);
 
-                DATA.treatments.condition = ''
-                DATA.treatments.recordsFound = niceNumbers(xh.value.recordsFound);
-                DATA.treatments.from = xh.value.from;
-                DATA.treatments.to = xh.value.to;
-                DATA.treatments.treatments = xh.value.treatments;
+                let i = 0;
+                const j = qryCols.length;
 
-                // data.previd = xh.value.previd;
-                // data.nextid = xh.value.nextid;
-                
-                
+                DATA.treatments.whereCondition = '';
 
-                //data = makePager(data, search);
-                //data.found = niceNumbers(xh.value.length);
-                
-
-                treatments.innerHTML = Mustache.render(tmplTreatments, DATA.treatments);
-                setVisualElements('queryEndWithTreatments');
-
-                for (let k in xh.value.statistics) {
-                    DATA.charts.statistics[k] = xh.value.statistics[k];
-                }
-
-                chart = statsChart();
-                // if (chart) {
-                //     chart.data.datasets[0].data = Object.values(statistics);
-                //     chart.options.scales.yAxes[0].ticks.min = 0;
-
-                //     // https://stackoverflow.com/questions/1669190/find-the-min-max-element-of-an-array-in-javascript/30834687#30834687
-                //     chart.options.scales.yAxes[0].ticks.max = Math.max(...Object.values(statistics));
-    
-                //     chart.update();
-                // }
-                // else {
-                //     chart = statsChart();
-                // }
-                
-                
-
-                // add clickEvent to links to get more details of a treatment
-                if (withAjax) {
-                    const treatmentLinks = document.querySelectorAll('.treatmentLink');
-                    
-                    for (let i = 0, j = treatmentLinks.length; i < j; i++) {
-                        const t = treatmentLinks[i];
-                        const qp = urlDeconstruct(t.search);
-
-                        t.addEventListener('click', function(event) {
-                            event.stopPropagation();
-                            event.preventDefault();
-                            
-                            setVisualElements('queryStart');
-                            fetchResource['treatments'](qp);
-                        });
+                if (j === 1) {
+                    if (qryCols[0] === 'text') {
+                        DATA.treatments.whereCondition = `<span class='qryVal'>${qryVals[i]}</span> is in the text`;
                     }
+                    else {
+                        DATA.treatments.whereCondition = `<span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>`;
+                    }
+                }
+                else if (j === 2) {
+                    DATA.treatments.whereCondition = `<span class='qryCol'>${qryCols[0]}</span> is <span class='qryVal'>${qryVals[0]}</span> and <span class='qryCol'>${qryCols[1]}</span> is <span class='qryVal'>${qryVals[1]}</span>`;
+                }
+                else {
+                    for (; i < j; i++) {
+                        if (i == j - 1) {
+                            DATA.treatments.whereCondition += `and <span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>`;
+                        }
+                        else {
+                            DATA.treatments.whereCondition += `<span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>, `;
+                        }
+                    }
+                }
+                
+
+                //console.log(DATA.treatments.whereCondition);
+
+                if (xh.value.recordsFound) {
+                    
+                    DATA.treatments.successful = true;
+                    DATA.treatments.recordsFound = niceNumbers(xh.value.recordsFound);
+                    DATA.treatments.from = xh.value.from;
+                    DATA.treatments.to = xh.value.to;
+                    DATA.treatments.treatments = xh.value.treatments;
+
+                    DATA.treatments.previd = xh.value.previd;
+                    DATA.treatments.nextid = xh.value.nextid;
+                    
+                    DATA.treatments = makePager(DATA.treatments, search);
+                    //DATA.treatments.found = niceNumbers(xh.value.length);
+                    
+
+                    treatments.innerHTML = Mustache.render(tmplTreatments, DATA.treatments);
+                    setVisualElements('queryEndWithTreatments');
+
+                    for (let k in xh.value.statistics) {
+                        DATA.charts.statistics[k] = xh.value.statistics[k];
+                    }
+
+                    chart = statsChart();
+                    // if (chart) {
+                    //     chart.data.datasets[0].data = Object.values(statistics);
+                    //     chart.options.scales.yAxes[0].ticks.min = 0;
+
+                    //     // https://stackoverflow.com/questions/1669190/find-the-min-max-element-of-an-array-in-javascript/30834687#30834687
+                    //     chart.options.scales.yAxes[0].ticks.max = Math.max(...Object.values(statistics));
+        
+                    //     chart.update();
+                    // }
+                    // else {
+                    //     chart = statsChart();
+                    // }
+                    
+                    
+
+                    // add clickEvent to links to get more details of a treatment
+                    if (withAjax) {
+                        const treatmentLinks = document.querySelectorAll('.treatmentLink');
+                        
+                        for (let i = 0, j = treatmentLinks.length; i < j; i++) {
+                            const t = treatmentLinks[i];
+                            const qp = urlDeconstruct(t.search);
+
+                            t.addEventListener('click', function(event) {
+                                event.stopPropagation();
+                                event.preventDefault();
+                                
+                                setVisualElements('queryStart');
+                                fetchResource['treatments'](qp);
+                            });
+                        }
+                    }
+                }
+                else {
+                    DATA.treatments.successful = false;
+                    DATA.treatments.recordsFound = 'No';
+                    treatments.innerHTML = Mustache.render(tmplTreatments, DATA.treatments);
+                    setVisualElements('queryEndNoResult');
                 }
 
             };

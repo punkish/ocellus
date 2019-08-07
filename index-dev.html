@@ -9,8 +9,22 @@
     <meta name="copyright" content="CC0 Public Domain Dedication">
     
     <title>ocellus^3</title>
+    
+    <link rel="stylesheet" href="Barebones-3.0.1/css/normalize.css">
+    <link rel="stylesheet" href="Barebones-3.0.1/css/barebones.css">
+    <link rel="stylesheet" href="leaflet/leaflet.css">
+    <link rel="stylesheet" href="JavaScript-autoComplete/auto-complete.css">
+    <link rel="stylesheet" href="css/ocellus.css">
+    <link rel="stylesheet" href="css/ocellus-header-title.css">
+    <link rel="stylesheet" href="css/ocellus-header-simple-search.css">
+    <link rel="stylesheet" href="css/ocellus-throbber.css">
+    <link rel="stylesheet" href="css/ocellus-communities-select-boxes.css">
+    <link rel="stylesheet" href="css/ocellus-treatments.css">
+    <link rel="stylesheet" href="css/ocellus-treatment.css">
+    <link rel="stylesheet" href="css/ocellus-taxon-tree.css">
+    <link rel="stylesheet" href="css/ocellus-xml.css">
    
-    <link rel="stylesheet" href="css/styles.min.css">
+    <!-- <link rel="stylesheet" href="css/styles.min.css"> -->
     <link rel="icon" type="image/png" href="img/ocellus.png">
 </head>
 <body>
@@ -72,6 +86,7 @@
 
         <div id="throbber" class="throbber"></div>
     </header>
+    <!-- <div class="grid-container full"> -->
     <article>
         <section id="charts">
             <canvas id="chart"></canvas>
@@ -96,6 +111,7 @@
         <section id="treatments"></section>
         <section id="treatment"></section>
     </article>
+    <!-- </div> -->
 
     <footer><img src="img/fish.jpg"></footer>
 
@@ -141,8 +157,9 @@
     
     <!-- template for fulltext search of treatments -->
     <script id="templateTreatments" type="x-tmpl-mustache">
-        <h3>{{recordsFound}} {{resource}} found where {{{whereCondition}}}. {{from}} to {{to}} shown below.</h3>
+        <h3>{{recordsFound}} {{resource}} found where {{{whereCondition}}}. {{#successful}}{{from}} to {{to}} shown below.{{/successful}}</h3>
     
+        {{#successful}}
         {{#treatments}}
         <details open>
             <summary>{{treatmentTitle}}</summary>
@@ -158,6 +175,7 @@
             <p>{{{s}}} <a class="treatmentLink" href="/index.html?resource=treatments&treatmentId={{treatmentId}}">more</a></p>
         </details>
         {{/treatments}}
+        
     
         {{#pager}}
         <div id="pager">
@@ -165,6 +183,7 @@
             {{#next}}<a href="{{next}}" id="next" class="pager">next</a> ▶{{/next}}
         </div>
         {{/pager}}
+        {{/successful}}
     </script>
     
     <!-- template for a single treatment -->
@@ -267,7 +286,16 @@
         </div>
     </script>
 
+    <script src="js/lazysizes.min.js"></script>
+    <script src="js/mustache.min.js"></script>
+    <script src="JavaScript-autoComplete/auto-complete.min.js"></script>
+    <!-- <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script> -->
+    <script src="leaflet/leaflet.js"></script>
+    <script src="node_modules/chart.js/dist/Chart.js"></script>
+    <script src="node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js"></script>
+    <!-- <script src="node_modules/chartist/dist/chartist.min.js"></script>
+    <script src="node_modules/chartist-plugin-pointlabels/dist/chartist-plugin-pointlabels.min.js"></script> -->
     <script src="js/config.js"></script>
-    <script src="js/scripts.min.js"></script>
+    <script src="js/ocellus.js"></script>
 </body>
 </html>
