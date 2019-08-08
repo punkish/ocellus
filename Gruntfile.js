@@ -4,23 +4,16 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
-        "uglify-es": {
+        'uglify': {
             options: {
                 mangle: false
             },
             target: {
                 files: {
-                        'js/ocellus.min.js': [
-                            // "js/lazysizes.min.js",
-                            // "js/mustache.min.js",
-                            // "JavaScript-autoComplete/auto-complete.min.js",
-                            // "leaflet/leaflet.js",
-                            // "node_modules/chart.js/dist/Chart.js",
-                            // "node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js",
-                            // "js/config.js",
-                            "js/ocellus.js"
-                        ]
-                    }
+                    'js/ocellus.min.js': [
+                        "js/ocellus.js"
+                    ]
+                }
             }
         },
 
@@ -34,7 +27,6 @@ module.exports = function(grunt) {
                     'css/styles.min.css': [
                         "Barebones-3.0.1/css/normalize.css",
                         "Barebones-3.0.1/css/barebones.css",
-                        "leaflet/leaflet.css",
                         "JavaScript-autoComplete/auto-complete.css",
                         "css/ocellus.css",
                         "css/ocellus-header-title.css",
@@ -60,17 +52,15 @@ module.exports = function(grunt) {
             // },
             target: {
                 files: {
-                        'js/scripts.min.js': [
-                            "js/lazysizes.min.js",
-                            "js/mustache.min.js",
-                            "JavaScript-autoComplete/auto-complete.min.js",
-                            "leaflet/leaflet.js",
-                            "node_modules/chart.js/dist/Chart.js",
-                            "node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js",
-                            //"js/config.js",
-                            "js/ocellus.js"
-                        ]
-                    }
+                    'js/scripts.min.js': [
+                        "js/lazysizes.min.js",
+                        "js/mustache.min.js",
+                        "JavaScript-autoComplete/auto-complete.min.js",
+                        "node_modules/chart.js/dist/Chart.js",
+                        "node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js",
+                        "js/ocellus.min.js"
+                    ]
+                }
             }
         },
 
@@ -82,5 +72,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
 
     // Default task(s).
-    grunt.registerTask('default', ['cssmin', 'concat']);
+    grunt.registerTask('default', ['uglify', 'cssmin', 'concat']);
 };
