@@ -1,6 +1,5 @@
 const withAjax = false;
 const zenodoRecord = 'https://zenodo.org/record/';
-const header = document.querySelector('header');
 const form = document.querySelector('form[name=simpleSearch]');
 const formButton = document.querySelector('button[name=simpleSearch]');
 const q = document.querySelector('input[name=q]');
@@ -10,11 +9,10 @@ const communityCheckBoxes = document.querySelectorAll('input[name=communities]')
 const allCommunities = document.querySelector('input[value="all communities"]');
 const refreshCacheSelector = document.querySelector('input[name=refreshCache]');
 const refreshCacheWarning = document.querySelector('#refreshCacheWarning');
-const article = document.querySelector('article');
 const resourceSelector = document.querySelector('#resourceSelector');
 const figcaptionHeight = '30px';
 let figcaptions = []; 
-const treatmentInfo = document.querySelector('#treatmentInfo');
+const modalToggle = document.querySelectorAll('.modal-toggle');
 
 // various divs to be populated later
 const throbber = document.querySelector('#throbber');
@@ -26,37 +24,38 @@ const carousel = document.querySelector('#carousel');
 const treatments = document.querySelector('#treatments');
 const treatment = document.querySelector('#treatment');
 
-const divs = {
-    pre: {
-        throbber: throbber
-    },
-    modals: {
-        charts: charts,
-        about: about,
-        privacy: privacy
-    },
-    results: {
-        images: images,
-        carousel: carousel,
-        treatments: treatments,
-        treatment: treatment
-    }
+const panels = {
+    throbber: throbber,
+    about: about,
+    privacy: privacy,
+    images: images,
+    carousel: carousel,
+    treatments: treatments,
+    treatment: treatment
 }
 
 // templates
+const tmplPager = document.querySelector('#templatePager').innerHTML;
+const tmplRecordsFound = document.querySelector('#templateRecordsFound').innerHTML;
 const tmplImages = document.querySelector('#templateImages').innerHTML;
 const tmplCarousel = document.querySelector('#templateCarousel').innerHTML;
 const tmplTreatments = document.querySelector('#templateTreatments').innerHTML;
 const tmplTreatment = document.querySelector('#templateTreatment').innerHTML;
 
+Mustache.parse(tmplPager);
+Mustache.parse(tmplRecordsFound);
 Mustache.parse(tmplImages);
 Mustache.parse(tmplCarousel);
 Mustache.parse(tmplTreatments);
 Mustache.parse(tmplTreatment);
 
+const tmplPartials = { 
+    templatePager: tmplPager, 
+    templateRecordsFound: tmplRecordsFound 
+};
+
 // default number of records to fetch
 let size = 30;
-//let chart;
 const DATA = {
     charts: {
         statistics: {
@@ -70,12 +69,6 @@ const DATA = {
             images: 0
         }
     },
-    // about: {
-    //     visibility: "hide"
-    // },
-    // privacy: {
-    //     visibility: "hide"
-    // },
     images: {
         // visibility: "hide",
         recordsFound: 45,
@@ -173,6 +166,14 @@ const map = {
     id: 'mapbox.streets',
     accessToken: 'pk.eyJ1IjoicHVua2lzaCIsImEiOiJjajhvOXY0dW8wMTA3MndvMzBlamlhaGZyIn0.3Ye8NRiiGyjJ1fud7VbtOA'
 }
+
+const fetchReceive = function(response) {
+    if (!response.ok) {
+        throw new Error('HTTP error, status = ' + response.status);
+    }
+
+    return response.json();
+};
 
 function goGetIt(event) {
   
@@ -278,7 +279,7 @@ function urlConstruct(form) {
     return queryParams;
 }
 
-const goHome = function() {
+function goHome() {
     location.search = '/'
 };
 
@@ -342,159 +343,112 @@ function niceNumbers(num) {
     }
 }
 
-// https://andylangton.co.uk/blog/development/get-viewportwindow-size-width-and-height-javascript
-function getHeightofVisibleViewport() {
-
-    let viewportwidth;
-    let viewportheight;
-     
-    // the more standards compliant browsers 
-    // (mozilla/netscape/opera/IE7) use window.innerWidth 
-    // and window.innerHeight
-    if (typeof window.innerWidth !== 'undefined') {
-         viewportwidth = window.innerWidth,
-         viewportheight = window.innerHeight
-    }
-     
-    // IE6 in standards compliant mode (i.e. with a 
-    // valid doctype as the first line in the document)
-    else if (typeof document.documentElement !== 'undefined'
-        && typeof document.documentElement.clientWidth !==
-        'undefined' && document.documentElement.clientWidth !== 0) {
-          viewportwidth = document.documentElement.clientWidth,
-          viewportheight = document.documentElement.clientHeight
-    }
-     
-    // older versions of IE
-    else {
-        viewportwidth = document.getElementsByTagName('body')[0].clientWidth,
-        viewportheight = document.getElementsByTagName('body')[0].clientHeight
-    }
-
-    return (viewportwidth - header.clientHeight);
-}
+let savedVisualState;
+let saveableVisualStates = ['treatments', 'treatment', 'images'];
 
 function setVisualElements(state) {
 
-    const hideEverything = function(resetRc = true) {
+    const hideEverything = function(obj) {
+        const {except, resetRefreshCache} = obj;
 
-        // hide everything
-        for (let c in divs) {
-            let coll = divs[c];
-            for (let d in coll) {
-                coll[d].classList.remove('show')
+        console.log(`hiding everything except ${except.join(', ')}`)
+
+        if (savedVisualState) {
+            except.push(savedVisualState);
+        }
+
+        // hide everything except…
+        for (const p in panels) {
+
+            const panel = panels[p];       
+
+            if (except.indexOf(p) > -1) {
+                panel.classList.remove('hidden-panel');
+                panel.classList.add('visible-panel');
+            }
+            else {
+                
+                if (panel.classList.contains('visible-panel')) {
+                    if (saveableVisualStates.indexOf(p) > -1) {
+                        savedVisualState = p;
+                    }
+                }
+
+                panel.classList.remove('visible-panel');
+                panel.classList.add('hidden-panel');
             }
         }
 
-        if (resetRc) {
+        if (resetRefreshCache) {
             refreshCacheSelector.checked = false;
         }
     }
 
     // blank state (initial state)
-    if (state === 'blank') {
-        hideEverything();
-
-        // show the chart
-        charts.classList.add('show');
+    if (state === 'treatments') {
+        hideEverything({except: ['treatments'], resetRefreshCache: false});
     }
     
     // open about state
     else if (state === 'about-open') {
-        hideEverything(true);
-
-        // show about
-        about.classList.add('show');
+        hideEverything({except: ['about'], resetRefreshCache: false});
     }
 
     // close about state
     else if (state === 'about-close') {
-        hideEverything(true);
-
-        // show chart
-        charts.classList.add('show');
+        hideEverything({except: ['treatments'], resetRefreshCache: false});
     }
 
     // privacy state
     else if (state === 'privacy-open') {
-        hideEverything(true);
-
-        // show privacy
-        privacy.classList.add('show');
+        hideEverything({except: ['privacy'], resetRefreshCache: false});
     }
 
     else if (state === 'privacy-close') {
-        hideEverything(true);
-
-        // show chart
-        charts.classList.add('show');
+        hideEverything({except: ['treatments'], resetRefreshCache: false});
     }
 
     // query start
     else if (state === 'queryStart') {
-        hideEverything(true);
-
-        // turn on the throbber
-        throbber.classList.add('show');
+        hideEverything({except: ['throbber'], resetRefreshCache: true});
     }
     
     // query end no result
     else if (state === 'queryEndNoResult') {
-        hideEverything();
-
-        treatments.classList.add('show');
+        hideEverything({except: ['treatments'], resetRefreshCache: true});
     }
     
     // query end with result
     else if (state === 'queryEndWithTreatments') {
-        hideEverything();
-
-        // show charts and treatments
-        charts.classList.add('show');
-        treatments.classList.add('show');
+        hideEverything({except: ['treatments'], resetRefreshCache: true});
     }
 
     else if (state === 'queryEndWithTreatment') {
-        hideEverything();
-
-        // show single treatment
-        treatment.classList.add('show');
+        hideEverything({except: ['treatment'], resetRefreshCache: true});
     }
 
     else if (state === 'queryEndWithImages') {
-        hideEverything();
-
-        // show charts and images
-        charts.classList.add('show');
-        treatment.classList.add('show');
+        hideEverything({
+            except: ['images', 'charts'], 
+            resetRefreshCache: true
+        });
     }
 
     // carousel on
     else if (state === 'turnCarouselOn') {
-        hideEverything();
-
-        // show carousel
-        carousel.classList.add('show');
+        hideEverything({
+            except: ['carousel'], 
+            resetRefreshCache: true
+        });
     }
 
     // carousel off
     else if (state === 'turnCarouselOff') {
-        
-        // hide everything
-        for (let c in divs) {
-            let coll = divs[c];
-            for (let d in coll) {
-                coll[d].classList.remove('show')
-            }
-        }
-
-        refreshCacheSelector.checked = false;
-
-        // show charts and images
-        charts.classList.add('show');
-        treatment.classList.add('show');
+        hideEverything({
+            except: ['images', 'charts'], 
+            resetRefreshCache: true
+        });
     }
-    
 }
 
 function makeUris(qp, setHistory = true) {
@@ -532,8 +486,6 @@ function makeUris(qp, setHistory = true) {
 }
 
 function makeMap(mcs) {
-
-    
 
     // initialize the map and add the layers to it
     const mcmap = L.map('map', {
@@ -729,14 +681,25 @@ const fetchResource = {
 
             const {search, uri} = makeUris(qp, false);
 
-            x(uri, (xh) => {
-                for (let k in xh.value) {
-                    DATA.charts.statistics[k] = xh.value[k];
-                }
-                setPlaceHolderMessage(qp.resource);
-                chart = statsChart();
-                setVisualElements('blank');
-            });
+            fetch(uri)
+                .then(fetchReceive)
+                .then(function(xh) {
+
+                    for (let k in xh.value) {
+                        DATA.charts.statistics[k] = xh.value[k];
+                    }
+    
+                    setPlaceHolderMessage(qp.resource);
+    
+                    treatments.innerHTML = Mustache.render(
+                        tmplTreatments,
+                        {}
+                    );
+    
+                    chart = statsChart();
+                    setVisualElements('treatments');
+                    
+                });
         }
 
         else {
@@ -746,227 +709,198 @@ const fetchResource = {
     },
 
     treatments: function(qp) {
-
-        console.log('fetching ' + qp.resource)
-
         const {search, uri} = makeUris(qp);
-
-        let callback;
 
         // single treatment
         if (qp.treatmentId) {
-            //console.log('getting a single treatment ' + qp.treatmentId)
-            callback = function(xh) {
+            console.log('getting a single treatment ' + qp.treatmentId)
 
-                //let data = xh.value;
-
-                DATA.treatment = xh.value;
-    
-                if (qp.format === 'xml') {
-                    return DATA.treatment;
-                }
-
-                else {
-                    
-                    //[DATA.treatment.figures, DATA.treatment.imgCount] = makeLayout(xh.value.images.images);
-
-                    //data.imgCount = niceNumbers(data.imgCount);
-                    DATA.treatment.imgCount = niceNumbers(xh.value.imgCount);
-                    DATA.treatment.zenodeo = zenodeo;
-
-                    if (DATA.treatment.materialsCitations.length) {
-                        DATA.treatment.mapState = 'open';
+            fetch(uri)
+                .then(fetchReceive)
+                .then(function(xh) {    
+                    DATA.treatment = xh.value;
+        
+                    if (qp.format === 'xml') {
+                        return DATA.treatment;
                     }
-                    
-                    treatment.innerHTML = Mustache.render(tmplTreatment, DATA.treatment);
-                    setVisualElements('queryEndWithTreatment');
-                    
     
-                    if (xh.value.imgCount !== 'Zero') {
-                        const figs = document.querySelectorAll('figcaption > a');
-                        // const reporters = document.querySelectorAll('.report');
-                        // const submitters = document.querySelectorAll('.submit');
-                        // const cancellers = document.querySelectorAll('.cancel');
+                    else {
+                        DATA.treatment.imgCount = niceNumbers(xh.value.imgCount);
+                        DATA.treatment.zenodeo = zenodeo;
+    
+                        if (DATA.treatment.materialsCitations.length) {
+                            DATA.treatment.mapState = 'open';
+                        }
                         
-                        for (let i = 0, j = figs.length; i < j; i++) {
-                            figs[i].addEventListener('click', toggleFigcaption);
-                            // reporters[i].addEventListener('click', toggleReporter);
-                            // submitters[i].addEventListener('click', submitReporter);
-                            // cancellers[i].addEventListener('click', cancelReporter);
+                        treatment.innerHTML = Mustache.render(
+                            tmplTreatment, 
+                            DATA.treatment
+                        );
+    
+                        setVisualElements('queryEndWithTreatment');
+                        
+        
+                        if (xh.value.imgCount !== 'Zero') {
+                            const figs = document.querySelectorAll('figcaption > a');
+                            // const reporters = document.querySelectorAll('.report');
+                            // const submitters = document.querySelectorAll('.submit');
+                            // const cancellers = document.querySelectorAll('.cancel');
+                            
+                            for (let i = 0, j = figs.length; i < j; i++) {
+                                figs[i].addEventListener('click', toggleFigcaption);
+                                // reporters[i].addEventListener('click', toggleReporter);
+                                // submitters[i].addEventListener('click', submitReporter);
+                                // cancellers[i].addEventListener('click', cancelReporter);
+                            }
+                        }
+        
+                        if (DATA.treatment.materialsCitations.length) {
+                            document.querySelector('#map').classList.add('show');
+                            makeMap(DATA.treatment.materialsCitations);
                         }
                     }
-    
-                    if (DATA.treatment.materialsCitations.length) {
-                        //console.log(DATA.treatment.materialsCitations)
-                       
-                        
-                        document.querySelector('#map').classList.add('show');
-                        makeMap(DATA.treatment.materialsCitations);
-                    }
-                    
-                }
-    
-            };
+        
+                });
         }
         
         // many treatments
         else {
-            //console.log('getting many treatments')
-            callback = function(xh) {
 
-                DATA.treatments.resource = 'treatments';
-                
-                const qryCols = Object.keys(xh.value.whereCondition);
-                const qryVals = Object.values(xh.value.whereCondition);
+            console.log('getting many treatments')
+            fetch(uri)
+                .then(fetchReceive)
+                .then(function(xh) {
 
-                let i = 0;
-                const j = qryCols.length;
-
-                DATA.treatments.whereCondition = '';
-
-                if (j === 1) {
-                    if (qryCols[0] === 'text') {
-                        DATA.treatments.whereCondition = `<span class='qryVal'>${qryVals[i]}</span> is in the text`;
-                    }
-                    else {
-                        DATA.treatments.whereCondition = `<span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>`;
-                    }
-                }
-                else if (j === 2) {
-                    DATA.treatments.whereCondition = `<span class='qryCol'>${qryCols[0]}</span> is <span class='qryVal'>${qryVals[0]}</span> and <span class='qryCol'>${qryCols[1]}</span> is <span class='qryVal'>${qryVals[1]}</span>`;
-                }
-                else {
-                    for (; i < j; i++) {
-                        if (i == j - 1) {
-                            DATA.treatments.whereCondition += `and <span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>`;
+                    DATA.treatments.resource = 'treatments';
+                    
+                    const qryCols = Object.keys(xh.value.whereCondition);
+                    const qryVals = Object.values(xh.value.whereCondition);
+    
+                    let i = 0;
+                    const j = qryCols.length;
+    
+                    DATA.treatments.whereCondition = '';
+    
+                    if (j === 1) {
+                        if (qryCols[0] === 'text') {
+                            DATA.treatments.whereCondition = `<span class='qryVal'>${qryVals[i]}</span> is in the text`;
                         }
                         else {
-                            DATA.treatments.whereCondition += `<span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>, `;
+                            DATA.treatments.whereCondition = `<span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>`;
                         }
                     }
-                }
-                
-
-                //console.log(DATA.treatments.whereCondition);
-
-                if (xh.value.recordsFound) {
-                    
-                    DATA.treatments.successful = true;
-                    DATA.treatments.recordsFound = niceNumbers(xh.value.recordsFound);
-                    DATA.treatments.from = xh.value.from;
-                    DATA.treatments.to = xh.value.to;
-                    DATA.treatments.treatments = xh.value.treatments;
-
-                    DATA.treatments.previd = xh.value.previd;
-                    DATA.treatments.nextid = xh.value.nextid;
-                    
-                    DATA.treatments = makePager(DATA.treatments, search);
-                    //DATA.treatments.found = niceNumbers(xh.value.length);
-                    
-
-                    treatments.innerHTML = Mustache.render(tmplTreatments, DATA.treatments);
-                    setVisualElements('queryEndWithTreatments');
-
-                    for (let k in xh.value.statistics) {
-                        DATA.charts.statistics[k] = xh.value.statistics[k];
+                    else if (j === 2) {
+                        DATA.treatments.whereCondition = `<span class='qryCol'>${qryCols[0]}</span> is <span class='qryVal'>${qryVals[0]}</span> and <span class='qryCol'>${qryCols[1]}</span> is <span class='qryVal'>${qryVals[1]}</span>`;
                     }
-
-                    chart = statsChart();
-                    // if (chart) {
-                    //     chart.data.datasets[0].data = Object.values(statistics);
-                    //     chart.options.scales.yAxes[0].ticks.min = 0;
-
-                    //     // https://stackoverflow.com/questions/1669190/find-the-min-max-element-of-an-array-in-javascript/30834687#30834687
-                    //     chart.options.scales.yAxes[0].ticks.max = Math.max(...Object.values(statistics));
-        
-                    //     chart.update();
-                    // }
-                    // else {
-                    //     chart = statsChart();
-                    // }
-                    
-                    
-
-                    // add clickEvent to links to get more details of a treatment
-                    if (withAjax) {
-                        const treatmentLinks = document.querySelectorAll('.treatmentLink');
+                    else {
+                        for (; i < j; i++) {
+                            if (i == j - 1) {
+                                DATA.treatments.whereCondition += `and <span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>`;
+                            }
+                            else {
+                                DATA.treatments.whereCondition += `<span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>, `;
+                            }
+                        }
+                    }
                         
-                        for (let i = 0, j = treatmentLinks.length; i < j; i++) {
-                            const t = treatmentLinks[i];
-                            const qp = urlDeconstruct(t.search);
+                    if (xh.value.recordsFound) {
+                        
+                        DATA.treatments.successful = true;
+                        DATA.treatments.recordsFound = niceNumbers(xh.value.recordsFound);
+                        DATA.treatments.from = xh.value.from;
+                        DATA.treatments.to = xh.value.to;
+                        DATA.treatments.treatments = xh.value.treatments;
+    
+                        DATA.treatments.previd = xh.value.previd;
+                        DATA.treatments.nextid = xh.value.nextid;
+                        
+                        DATA.treatments = makePager(DATA.treatments, search);
+                        
+                        treatments.innerHTML = Mustache.render(
+                            tmplTreatments, 
+                            DATA.treatments,
+                            tmplPartials
+                        );
+    
+                        setVisualElements('queryEndWithTreatments');
+    
+                        for (let k in xh.value.statistics) {
+                            DATA.charts.statistics[k] = xh.value.statistics[k];
+                        }
+    
+                        chart = statsChart();
 
-                            t.addEventListener('click', function(event) {
-                                event.stopPropagation();
-                                event.preventDefault();
-                                
-                                setVisualElements('queryStart');
-                                fetchResource['treatments'](qp);
-                            });
+                        // add clickEvent to links to get more details of a treatment
+                        if (withAjax) {
+                            const treatmentLinks = document.querySelectorAll('.treatmentLink');
+                            
+                            for (let i = 0, j = treatmentLinks.length; i < j; i++) {
+                                const t = treatmentLinks[i];
+                                const qp = urlDeconstruct(t.search);
+    
+                                t.addEventListener('click', function(event) {
+                                    event.stopPropagation();
+                                    event.preventDefault();
+                                    
+                                    setVisualElements('queryStart');
+                                    fetchResource['treatments'](qp);
+                                });
+                            }
                         }
                     }
-                }
-                else {
-                    DATA.treatments.successful = false;
-                    DATA.treatments.recordsFound = 'No';
-                    treatments.innerHTML = Mustache.render(tmplTreatments, DATA.treatments);
-                    setVisualElements('queryEndNoResult');
-                }
-
-            };
+                    else {
+                        DATA.treatments.successful = false;
+                        DATA.treatments.recordsFound = 'No';
+                        treatments.innerHTML = Mustache.render(
+                            tmplTreatments, 
+                            DATA.treatments,
+                            tmplPartials
+                        );
+    
+                        setVisualElements('queryEndNoResult');
+                    }
+    
+                });
         }
-
-        x(uri, callback);
-        
-        return false;
     },
     
     images: function(qp) {
 
         const {search, uri} = makeUris(qp);
 
-        const callback = function(xh) {
-
-            let data = {
-                recordsFound: 0,
-                imagesFound: 0,
-                figures: [],
-                prev: '',
-                next: '',
-                pager: false
-            };
-
-            const {total, imagesOfRecords} = xh.value;
-
-            data.recordsFound = total;
-            [data.figures, data.imagesFound] = makeLayout(imagesOfRecords);
-            
-            data = makePager(data, search, qp.page);
-            data.recordsFound = niceNumbers(data.recordsFound);
-
-            wrapper.innerHTML = Mustache.render(
-                tmplMasonry, 
-                data, 
-                { templatePager: tmplPager, templateRecordsFound: tmplRecordsFound }
-            );
-            setVisualElements('queryEndWithResult');     
-
-            const figs = document.querySelectorAll('figcaption > a');
-            for (let i = 0, j = figs.length; i < j; i++) {
-                figs[i].addEventListener('click', toggleFigcaption);
-            }
-
-            const carousel = document.querySelectorAll('.carousel');
-            for (let i = 0, j = carousel.length; i < j; i++) {
-                carousel[i].addEventListener('click', function(event) {
-                    turnCarouselOn(data, data.figures[i].recId);
-                });
-            }
-            
-        };
-
-        x(uri, callback);
-        
-        return false;
+        fetch(uri)
+            .then(fetchReceive)
+            .then(function(xh) {
+    
+                const {total, imagesOfRecords} = xh.value;
+    
+                DATA.images.recordsFound = total;
+                [DATA.images.figures, DATA.images.imagesFound] = makeLayout(imagesOfRecords);
+                
+                DATA.images = makePager(DATA.images, search, qp.page);
+                DATA.images.recordsFound = niceNumbers(data.recordsFound);
+    
+                images.innerHTML = Mustache.render(
+                    tmplImages, 
+                    DATA.images, 
+                    tmplPartials
+                );
+    
+                setVisualElements('queryEndWithResult');     
+    
+                const figs = document.querySelectorAll('figcaption > a');
+                for (let i = 0, j = figs.length; i < j; i++) {
+                    figs[i].addEventListener('click', toggleFigcaption);
+                }
+    
+                const carousel = document.querySelectorAll('.carousel');
+                for (let i = 0, j = carousel.length; i < j; i++) {
+                    carousel[i].addEventListener('click', function(event) {
+                        turnCarouselOn(DATA.images, DATA.images.figures[i].recId);
+                    });
+                }
+                
+            });
     }
 
 };
@@ -1026,51 +960,17 @@ const toggleCommunities = function(event) {
     communitiesSelector.classList.toggle('open');
 };
 
-const defaultHeaders = [
-    {k: "Content-Type", v: "application/json;charset=UTF-8"}
-];
-
-const x = function(url, callback, headers = defaultHeaders, payload = '') {
-
-    const method = 'GET';
-    const xh = new XMLHttpRequest();
-
-    xh.onload = function(e) {
-        if (xh.readyState === 4) {
-            if (xh.status === 200) {
-                const res = JSON.parse(xh.responseText);
-                callback(res);
-            }
-        }
-    };
-
-    xh.onerror = function(e) {
-        console.error(xh.statusText);
-    };
-
-    xh.open(method, url, true);
-
-    if (headers.length) {
-        
-        for (let i = 0, j = headers.length; i < j; i++) {
-            xh.setRequestHeader(headers[i].k, headers[i].v);
-        }
-    }
-
-    xh.send(payload);
-};
-
 const suggest = function(field) {
-
     new autoComplete({
         selector: field,
         minChars: 3,
         source: function(term, response) {
-            try { x.abort() } catch(e) {}
-            x(`${zenodeo}/v2/families?q=${term}`, response)
+            try { fetch.abort() } catch(e) {}
+            fetch(`${zenodeo}/v2/families?q=${term}`)
+                .then(fetchReceive)
+                .then(response);
         }
     });
-    
 };
 
 const toggleFigcaption = function(event) {
@@ -1119,7 +1019,11 @@ const activateUrlFlagSelectors = function() {
 
 const turnCarouselOn = function(data, recId) {
 
-    carousel.innerHTML = Mustache.render(tmplCarousel, data);
+    carousel.innerHTML = Mustache.render(
+        tmplCarousel, 
+        data
+    );
+
     setVisualElements('turnCarouselOn');
 
     const carouselOff = document.querySelectorAll('.carouselOff');
@@ -1144,7 +1048,7 @@ const getStats = function(resource) {
     fetchResource.stats({resource: resource, stats: true});
 };
 
-const chartWithChartjs = function() {
+const statsChart = function() {
     return new Chart(chart, {
         type: 'bar',
         data: {
@@ -1173,71 +1077,30 @@ const chartWithChartjs = function() {
     });
 };
 
-const chartwithChartist = function() {
-    const chartData = {
+const modalToggleFunc = function(event) {
+    event.preventDefault();
+    event.stopPropagation();
 
-        // A labels array that can contain any sort of values
-        labels: Object.keys(DATA.charts.statistics),
-
-        // Our series array that contains series objects or in
-        // this case series data arrays
-        series: [
-            Object.values(DATA.charts.statistics)
-        ]
-    };
-
-    const chartOptions = {
-        plugins: [
-            Chartist.plugins.ctPointLabels({
-                textAnchor: 'middle'
-            })
-        ],
-        seriesBarDistance: 20,
-    };
-    
-    new Chartist.Bar('.ct-chart', chartData, chartOptions);
-};
-
-
-const statsChart = function() {
-    return chartWithChartjs();
+    setVisualElements(this.id);
 };
 
 communitiesSelector.addEventListener('click', toggleCommunities);
 refreshCacheSelector.addEventListener('click', toggleRefreshCache);
 
-if (withAjax) {
-    form.addEventListener('submit', goGetIt);
-    formButton.addEventListener('click', goGetIt);
-}
-
 suggest(q);
 activateUrlFlagSelectors();
 
-let savedNonModal;
-const modalOpenFunc = function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    setVisualElements("about-open");
-};
-
-const modalCloseFunc = function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    setVisualElements("about-close");
-};
-
-const modalOpen = document.querySelectorAll('.modal-open');
-const modalClose = document.querySelectorAll('.modal-close');
-
-for (let i = 0, j = modalOpen.length; i < j; i++) {
-    modalOpen[i].addEventListener('click', modalOpenFunc);
+for (let i = 0, j = modalToggle.length; i < j; i++) {
+    modalToggle[i].addEventListener('click', modalToggleFunc);
 }
 
-for (let i = 0, j = modalClose.length; i < j; i++) {
-    modalClose[i].addEventListener('click', modalCloseFunc);
+if (withAjax) {
+    form.addEventListener('submit', goGetIt);
+    formButton.addEventListener('click', goGetIt);
+
+    window.onpopstate = function(event) {
+        goGetIt();
+    };
 }
 
 if (location.search) {
@@ -1248,9 +1111,3 @@ else {
     fetchResource.stats({resource: 'treatments', stats: true});
     q.focus();
 }
-
-// window.onpopstate = function(event) {
-//     // alert("location: " + document.location + ", state: " + JSON.stringify(event.state));
-//     goGetIt();
-//     //console.log(history)
-// };

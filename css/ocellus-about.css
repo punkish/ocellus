@@ -35,12 +35,15 @@
     display: block;
 } */
 
-.nonModal,
+/* .nonModal,
 .modal {
     display: none;
 }
 .modal.show {
     display: block;
+} */
+.modal {
+    cursor: pointer;
 }
 .modal-text {
     margin-top: 12px;

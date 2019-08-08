@@ -27,7 +27,10 @@ a {
 h3 {
     font-size: 2rem;
 }
-#charts,
+.modal-toggle {
+    cursor: pointer;
+}
+/* #charts,
 #about,
 #privacy,
 #images,
@@ -45,7 +48,14 @@ h3 {
 #treatment.show {
     display: block;
     padding: 2rem;
+} */
+.hidden-panel {
+    display: none;
 }
+.visible-panel {
+    display: block;
+    padding: 2rem;
+} 
 
 /* header */
 header {

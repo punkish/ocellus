@@ -9,10 +9,21 @@
     <meta name="copyright" content="CC0 Public Domain Dedication">
     
     <title>ocellus^3</title>
+    
+    <link rel="stylesheet" href="Barebones-3.0.1/css/normalize.css">
+    <link rel="stylesheet" href="Barebones-3.0.1/css/barebones.css">
+    <link rel="stylesheet" href="leaflet/leaflet.css">
+    <link rel="stylesheet" href="JavaScript-autoComplete/auto-complete.css">
+    <link rel="stylesheet" href="css/ocellus.css">
+    <link rel="stylesheet" href="css/ocellus-header-title.css">
+    <link rel="stylesheet" href="css/ocellus-header-simple-search.css">
+    <link rel="stylesheet" href="css/ocellus-throbber.css">
+    <link rel="stylesheet" href="css/ocellus-communities-select-boxes.css">
+    <link rel="stylesheet" href="css/ocellus-treatments.css">
+    <link rel="stylesheet" href="css/ocellus-treatment.css">
+    <link rel="stylesheet" href="css/ocellus-taxon-tree.css">
+    <link rel="stylesheet" href="css/ocellus-xml.css">
    
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
-    <link rel="stylesheet" href="css/styles.min.css">
-
     <link rel="icon" type="image/png" href="img/ocellus.png">
 </head>
 <body>
@@ -76,7 +87,9 @@
     </header>
     <!-- <div class="grid-container full"> -->
     <article>
-
+        <section id="charts" class="hidden-panel">
+            <canvas id="chart"></canvas>
+        </section>
         <section id="about" class="hidden-panel">
             <a id="about-close" class="modal-toggle">close</a>
             <div class="modal-text">
@@ -85,14 +98,12 @@
                 <p>For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country. The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up">Internet Archive</a> and has no known copyright restrictions. Please check out our <a id="privacy-open" href="/privacy" class="warning modal-toggle">privacy</a> policy or contact <a href="mailto:blr@plazi.org">Plazi</a> for more information or to provide feedback.</p>
             </div>
         </section>
-
         <section id="privacy" class="hidden-panel">
             <a id="privacy-close" class="modal-toggle">close</a>
             <div class="modal-text">
                 <p>We track nothing whatsoever. Please contact <a href="mailto:blr@plazi.org">Plazi</a> for more information or to provide feedback.</p>
             </div>
         </section>
-
         <section id="images" class="hidden-panel"></section>
         <section id="carousel" class="hidden-panel"></section>
         <section id="treatments" class="hidden-panel"></section>
@@ -102,27 +113,10 @@
 
     <footer><img src="img/fish.jpg"></footer>
 
-    <!-- partials -->
-    <script id="templatePager" type="x-tmpl-mustache">
-        {{#pager}}
-        <div id="pager">
-            {{#prev}}◀ <a href="{{prev}}" id="prev" class="pager">prev</a>{{/prev}}
-            {{#next}}<a href="{{next}}" id="next" class="pager">next</a> ▶{{/next}}
-        </div>
-        {{/pager}}
-    </script>
-    
-    <script id="templateRecordsFound" type="x-tmpl-mustache">
-        <h3>{{recordsFound}} {{resource}} found where {{{whereCondition}}}. {{#successful}}{{from}} to {{to}} shown below.{{/successful}}</h3>
-    </script>
-    <!-- end partials -->
-
     <!-- template for the masonry wall of images -->
     <script id="templateImages" type="x-tmpl-mustache">
-        {{> templateRecordsFound}}
+        <h3>{{recordsFound}} records found. {{from}} to {{to}} shown below.</h3>
         
-        <canvas id="chart"></canvas>
-
         <div id="masonry" class="masonry">
             {{#figures}}
             <figure class="item">
@@ -136,7 +130,12 @@
             {{/figures}}
         </div>
         
-        {{> templatePager}}
+        {{#pager}}
+        <div id="pager">
+            {{#prev}}◀ <a href="{{prev}}" id="prev" class="pager">prev</a>{{/prev}}
+            {{#next}}<a href="{{next}}" id="next" class="pager">next</a> ▶{{/next}}
+        </div>
+        {{/pager}}
     </script>
     
     <!-- template for the vertical carousel -->
@@ -156,9 +155,7 @@
     
     <!-- template for fulltext search of treatments -->
     <script id="templateTreatments" type="x-tmpl-mustache">
-        {{> templateRecordsFound}}
-
-        <canvas id="chart"></canvas>
+        <h3>{{recordsFound}} {{resource}} found where {{{whereCondition}}}. {{#successful}}{{from}} to {{to}} shown below.{{/successful}}</h3>
     
         {{#successful}}
         {{#treatments}}
@@ -177,7 +174,13 @@
         </details>
         {{/treatments}}
         
-        {{> templatePager}}
+    
+        {{#pager}}
+        <div id="pager">
+            {{#prev}}◀ <a href="{{prev}}" id="prev" class="pager">prev</a>{{/prev}}
+            {{#next}}<a href="{{next}}" id="next" class="pager">next</a> ▶{{/next}}
+        </div>
+        {{/pager}}
         {{/successful}}
     </script>
     
@@ -281,8 +284,15 @@
         </div>
     </script>
 
-    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
+    <script src="js/lazysizes.min.js"></script>
+    <script src="js/mustache.min.js"></script>
+    <script src="JavaScript-autoComplete/auto-complete.min.js"></script>
+    <script src="leaflet/leaflet.js"></script>
+    <script src="node_modules/chart.js/dist/Chart.js"></script>
+    <script src="node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js"></script>
+    <!-- <script src="node_modules/chartist/dist/chartist.min.js"></script>
+    <script src="node_modules/chartist-plugin-pointlabels/dist/chartist-plugin-pointlabels.min.js"></script> -->
     <script src="js/config.js"></script>
-    <script src="js/scripts.min.js"></script>
+    <script src="js/ocellus.js"></script>
 </body>
 </html>

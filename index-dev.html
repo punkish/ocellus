@@ -24,7 +24,6 @@
     <link rel="stylesheet" href="css/ocellus-taxon-tree.css">
     <link rel="stylesheet" href="css/ocellus-xml.css">
    
-    <!-- <link rel="stylesheet" href="css/styles.min.css"> -->
     <link rel="icon" type="image/png" href="img/ocellus.png">
 </head>
 <body>
@@ -33,7 +32,7 @@
         <div>
             <div class="title">
                 <a href="/" class="main-title">Ocellus<sup>3</sup></a><br>
-                <a id="about-link" class="modal-open sub-title msg">about</a>
+                <a id="about-open" class="modal-toggle sub-title msg">about</a>
             </div>
 
             <form name="simpleSearch" class="searchContainer" id="ssForm" method="GET">
@@ -84,41 +83,57 @@
             </form>
         </div>
 
-        <div id="throbber" class="throbber"></div>
+        <div id="throbber" class="throbber hidden-panel"></div>
     </header>
     <!-- <div class="grid-container full"> -->
     <article>
-        <section id="charts">
-            <canvas id="chart"></canvas>
-            <!-- <div class="ct-chart ct-perfect-fourth"></div> -->
-        </section>
-        <section id="about">
-            <a id="about-close" class="modal-close">close</a>
-            <div id="about-text" class="modal-text">
+
+        <section id="about" class="hidden-panel">
+            <a id="about-close" class="modal-toggle">close</a>
+            <div class="modal-text">
                 <p>Ocellus is a frontend to the Biodiversity Literature Repository (BLR) with almost 200K images on <a href="https://zenodo.org" target="_blank">Zenodo</a>, more than 300K taxonomic treatments in <a href="http://treatmentbank.org" target="_blank">TreatmentBank</a>, and 800,000 citations on <a href="https://refbank.org" target="_blank">RefBank</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API that queries, analyzes and aggregates results from these various repositories via a single, unified interface. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes,and Ocellus will retrieve the results for you.</p>
         
-                <p>For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country. The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up">Internet Archive</a> and has no known copyright restrictions. Please check out our <a id="privacy-link" href="/privacy" class="warning modal-open">privacy</a> policy or contact <a href="mailto:blr@plazi.org">Plazi</a> for more information or to provide feedback.</p>
+                <p>For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country. The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up">Internet Archive</a> and has no known copyright restrictions. Please check out our <a id="privacy-open" href="/privacy" class="warning modal-toggle">privacy</a> policy or contact <a href="mailto:blr@plazi.org">Plazi</a> for more information or to provide feedback.</p>
             </div>
         </section>
-        <section id="privacy">
-            <a id="privacy-close" class="modal-close">close</a>
-            <div id="privacy-text" class="modal-text">
+
+        <section id="privacy" class="hidden-panel">
+            <a id="privacy-close" class="modal-toggle">close</a>
+            <div class="modal-text">
                 <p>We track nothing whatsoever. Please contact <a href="mailto:blr@plazi.org">Plazi</a> for more information or to provide feedback.</p>
             </div>
         </section>
-        <section id="images"></section>
-        <section id="carousel"></section>
-        <section id="treatments"></section>
-        <section id="treatment"></section>
+
+        <section id="images" class="hidden-panel"></section>
+        <section id="carousel" class="hidden-panel"></section>
+        <section id="treatments" class="hidden-panel"></section>
+        <section id="treatment" class="hidden-panel"></section>
     </article>
     <!-- </div> -->
 
     <footer><img src="img/fish.jpg"></footer>
 
+    <!-- partials -->
+    <script id="templatePager" type="x-tmpl-mustache">
+        {{#pager}}
+        <div id="pager">
+            {{#prev}}◀ <a href="{{prev}}" id="prev" class="pager">prev</a>{{/prev}}
+            {{#next}}<a href="{{next}}" id="next" class="pager">next</a> ▶{{/next}}
+        </div>
+        {{/pager}}
+    </script>
+    
+    <script id="templateRecordsFound" type="x-tmpl-mustache">
+        <h3>{{recordsFound}} {{resource}} found where {{{whereCondition}}}. {{#successful}}{{from}} to {{to}} shown below.{{/successful}}</h3>
+    </script>
+    <!-- end partials -->
+
     <!-- template for the masonry wall of images -->
     <script id="templateImages" type="x-tmpl-mustache">
-        <h3>{{recordsFound}} records found. {{from}} to {{to}} shown below.</h3>
+        {{> templateRecordsFound}}
         
+        <canvas id="chart"></canvas>
+
         <div id="masonry" class="masonry">
             {{#figures}}
             <figure class="item">
@@ -132,12 +147,7 @@
             {{/figures}}
         </div>
         
-        {{#pager}}
-        <div id="pager">
-            {{#prev}}◀ <a href="{{prev}}" id="prev" class="pager">prev</a>{{/prev}}
-            {{#next}}<a href="{{next}}" id="next" class="pager">next</a> ▶{{/next}}
-        </div>
-        {{/pager}}
+        {{> templatePager}}
     </script>
     
     <!-- template for the vertical carousel -->
@@ -157,7 +167,9 @@
     
     <!-- template for fulltext search of treatments -->
     <script id="templateTreatments" type="x-tmpl-mustache">
-        <h3>{{recordsFound}} {{resource}} found where {{{whereCondition}}}. {{#successful}}{{from}} to {{to}} shown below.{{/successful}}</h3>
+        {{> templateRecordsFound}}
+
+        <canvas id="chart"></canvas>
     
         {{#successful}}
         {{#treatments}}
@@ -176,13 +188,7 @@
         </details>
         {{/treatments}}
         
-    
-        {{#pager}}
-        <div id="pager">
-            {{#prev}}◀ <a href="{{prev}}" id="prev" class="pager">prev</a>{{/prev}}
-            {{#next}}<a href="{{next}}" id="next" class="pager">next</a> ▶{{/next}}
-        </div>
-        {{/pager}}
+        {{> templatePager}}
         {{/successful}}
     </script>
     
@@ -289,7 +295,6 @@
     <script src="js/lazysizes.min.js"></script>
     <script src="js/mustache.min.js"></script>
     <script src="JavaScript-autoComplete/auto-complete.min.js"></script>
-    <!-- <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script> -->
     <script src="leaflet/leaflet.js"></script>
     <script src="node_modules/chart.js/dist/Chart.js"></script>
     <script src="node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js"></script>
