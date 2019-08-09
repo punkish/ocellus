@@ -16,7 +16,7 @@ const modalToggle = document.querySelectorAll('.modal-toggle');
 
 // various divs to be populated later
 const throbber = document.querySelector('#throbber');
-const charts = document.querySelector('#charts');
+//const chart = document.querySelector('#chart');
 const about = document.querySelector('#about');
 const privacy = document.querySelector('#privacy');
 const images = document.querySelector('#images');
@@ -37,17 +37,17 @@ const panels = {
 // templates
 const tmplPager = document.querySelector('#templatePager').innerHTML;
 const tmplRecordsFound = document.querySelector('#templateRecordsFound').innerHTML;
-const tmplImages = document.querySelector('#templateImages').innerHTML;
-const tmplCarousel = document.querySelector('#templateCarousel').innerHTML;
-const tmplTreatments = document.querySelector('#templateTreatments').innerHTML;
-const tmplTreatment = document.querySelector('#templateTreatment').innerHTML;
+const tmpl_images = document.querySelector('#templateImages').innerHTML;
+const tmpl_carousel = document.querySelector('#templateCarousel').innerHTML;
+const tmpl_treatments = document.querySelector('#templateTreatments').innerHTML;
+const tmpl_treatment = document.querySelector('#templateTreatment').innerHTML;
 
 Mustache.parse(tmplPager);
 Mustache.parse(tmplRecordsFound);
-Mustache.parse(tmplImages);
-Mustache.parse(tmplCarousel);
-Mustache.parse(tmplTreatments);
-Mustache.parse(tmplTreatment);
+Mustache.parse(tmpl_images);
+Mustache.parse(tmpl_carousel);
+Mustache.parse(tmpl_treatments);
+Mustache.parse(tmpl_treatment);
 
 const tmplPartials = { 
     templatePager: tmplPager, 
@@ -57,19 +57,20 @@ const tmplPartials = {
 // default number of records to fetch
 let size = 30;
 const DATA = {
-    charts: {
-        statistics: {
-            treatments: 0,
-            specimens: 0,
-            "male specimens": 0,
-            "female specimens": 0,
-            "treatments with specimens": 0,
-            "treatments with male specimens": 0,
-            "treatments with female specimens": 0,
-            images: 0
-        }
-    },
+    // charts: {
+    //     statistics: {
+    //         treatments: 0,
+    //         specimens: 0,
+    //         "male specimens": 0,
+    //         "female specimens": 0,
+    //         "treatments with specimens": 0,
+    //         "treatments with male specimens": 0,
+    //         "treatments with female specimens": 0,
+    //         images: 0
+    //     }
+    // },
     images: {
+        statistics: {},
         // visibility: "hide",
         recordsFound: 45,
         from: 1,
@@ -101,6 +102,7 @@ const DATA = {
         ]
     },
     treatments: {
+        statistics: {},
         // visibility: "hide",
         recordsFound: 45,
         from: 1,
@@ -388,6 +390,10 @@ function setVisualElements(state) {
     if (state === 'treatments') {
         hideEverything({except: ['treatments'], resetRefreshCache: false});
     }
+
+    else if (state === 'images') {
+        hideEverything({except: ['images'], resetRefreshCache: false});
+    }
     
     // open about state
     else if (state === 'about-open') {
@@ -429,7 +435,7 @@ function setVisualElements(state) {
 
     else if (state === 'queryEndWithImages') {
         hideEverything({
-            except: ['images', 'charts'], 
+            except: ['images'], 
             resetRefreshCache: true
         });
     }
@@ -650,13 +656,15 @@ function cancelReporter(event) {
     event.stopPropagation();
 };
 
+const setPlaceHolderMessage = function(resource, number) {
+    q.placeholder = `search ${number} ${resource}`;
+};
+
 const fetchResource = {
 
     stats: function(qp) {
 
-        const setPlaceHolderMessage = function(resource) {
-            q.placeholder = `search ${DATA.charts.statistics[resource]} ${resource}`;
-        };
+        
 
         // if (qp.resource === 'all') {
 
@@ -677,7 +685,8 @@ const fetchResource = {
         //     });
         // }
 
-        if (DATA.charts.statistics[qp.resource] === 0) {
+        //console.log(qp.resource)
+        //if (DATA[qp.resource].statistics === 0) {
 
             const {search, uri} = makeUris(qp, false);
 
@@ -685,27 +694,46 @@ const fetchResource = {
                 .then(fetchReceive)
                 .then(function(xh) {
 
-                    for (let k in xh.value) {
-                        DATA.charts.statistics[k] = xh.value[k];
+                    // for (let k in xh.value) {
+                    //     DATA.charts.statistics[k] = xh.value[k];
+                    // }
+                    DATA[qp.resource].statistics = xh.value;
+    
+                    
+    
+                    if (qp.resource === 'treatments') {
+                        treatments.innerHTML = Mustache.render(
+                            tmpl_treatments,
+                            {}
+                        );
+
+                        setPlaceHolderMessage(
+                            'treatments',
+                            DATA.treatments.statistics.treatments
+                        )
+                    }
+                    else if (qp.resource === 'images') {
+                        images.innerHTML = Mustache.render(
+                            tmpl_images,
+                            {}
+                        );
+
+                        setPlaceHolderMessage(
+                            'open access images',
+                            DATA.images.statistics.open
+                        )
                     }
     
-                    setPlaceHolderMessage(qp.resource);
-    
-                    treatments.innerHTML = Mustache.render(
-                        tmplTreatments,
-                        {}
-                    );
-    
-                    chart = statsChart();
-                    setVisualElements('treatments');
+                    statsChart(DATA[qp.resource].statistics);
+                    setVisualElements(qp.resource);
                     
                 });
-        }
+        //}
 
-        else {
-            setPlaceHolderMessage(qp.resource);
-            chart = statsChart();
-        }
+        // else {
+        //     setPlaceHolderMessage(qp.resource);
+        //     chart = statsChart();
+        // }
     },
 
     treatments: function(qp) {
@@ -733,7 +761,7 @@ const fetchResource = {
                         }
                         
                         treatment.innerHTML = Mustache.render(
-                            tmplTreatment, 
+                            tmpl_treatment, 
                             DATA.treatment
                         );
     
@@ -817,18 +845,18 @@ const fetchResource = {
                         DATA.treatments = makePager(DATA.treatments, search);
                         
                         treatments.innerHTML = Mustache.render(
-                            tmplTreatments, 
+                            tmpl_treatments, 
                             DATA.treatments,
                             tmplPartials
                         );
     
                         setVisualElements('queryEndWithTreatments');
     
-                        for (let k in xh.value.statistics) {
-                            DATA.charts.statistics[k] = xh.value.statistics[k];
-                        }
+                        // for (let k in xh.value.statistics) {
+                        //     DATA.charts.statistics[k] = xh.value.statistics[k];
+                        // }
     
-                        chart = statsChart();
+                        statsChart(DATA.treatments.statistics);
 
                         // add clickEvent to links to get more details of a treatment
                         if (withAjax) {
@@ -852,7 +880,7 @@ const fetchResource = {
                         DATA.treatments.successful = false;
                         DATA.treatments.recordsFound = 'No';
                         treatments.innerHTML = Mustache.render(
-                            tmplTreatments, 
+                            tmpl_treatments, 
                             DATA.treatments,
                             tmplPartials
                         );
@@ -872,22 +900,57 @@ const fetchResource = {
             .then(fetchReceive)
             .then(function(xh) {
     
-                const {total, imagesOfRecords} = xh.value;
+                DATA.images.resource = 'images';
+
+                /* calculate whereCondtion */
+                const qryCols = Object.keys(xh.value.whereCondition);
+                const qryVals = Object.values(xh.value.whereCondition);
+
+                let i = 0;
+                const j = qryCols.length;
+
+                DATA.images.whereCondition = '';
+
+                if (j === 1) {
+                    if (qryCols[0] === 'text') {
+                        DATA.images.whereCondition = `<span class='qryVal'>${qryVals[i]}</span> is in the text`;
+                    }
+                    else {
+                        DATA.images.whereCondition = `<span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>`;
+                    }
+                }
+                else if (j === 2) {
+                    DATA.images.whereCondition = `<span class='qryCol'>${qryCols[0]}</span> is <span class='qryVal'>${qryVals[0]}</span> and <span class='qryCol'>${qryCols[1]}</span> is <span class='qryVal'>${qryVals[1]}</span>`;
+                }
+                else {
+                    for (; i < j; i++) {
+                        if (i == j - 1) {
+                            DATA.images.whereCondition += `and <span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>`;
+                        }
+                        else {
+                            DATA.images.whereCondition += `<span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>, `;
+                        }
+                    }
+                }
+
+                //const {total, imagesOfRecords} = xh.value;
     
-                DATA.images.recordsFound = total;
-                [DATA.images.figures, DATA.images.imagesFound] = makeLayout(imagesOfRecords);
+                DATA.images.recordsFound = xh.value.recordsFound;
+                [DATA.images.figures, DATA.images.imagesFound] = makeLayout(xh.value.images);
                 
                 DATA.images = makePager(DATA.images, search, qp.page);
-                DATA.images.recordsFound = niceNumbers(data.recordsFound);
+                DATA.images.recordsFound = niceNumbers(xh.value.recordsFound);
     
                 images.innerHTML = Mustache.render(
-                    tmplImages, 
+                    tmpl_images, 
                     DATA.images, 
                     tmplPartials
                 );
     
-                setVisualElements('queryEndWithResult');     
+                setVisualElements('queryEndWithImages');     
     
+                statsChart(xh.value.statistics);
+                
                 const figs = document.querySelectorAll('figcaption > a');
                 for (let i = 0, j = figs.length; i < j; i++) {
                     figs[i].addEventListener('click', toggleFigcaption);
@@ -1020,7 +1083,7 @@ const activateUrlFlagSelectors = function() {
 const turnCarouselOn = function(data, recId) {
 
     carousel.innerHTML = Mustache.render(
-        tmplCarousel, 
+        tmpl_carousel, 
         data
     );
 
@@ -1048,14 +1111,16 @@ const getStats = function(resource) {
     fetchResource.stats({resource: resource, stats: true});
 };
 
-const statsChart = function() {
+const statsChart = function(statistics) {
+
+    const chart = document.querySelector('#chart');
     return new Chart(chart, {
         type: 'bar',
         data: {
-            labels: Object.keys(DATA.charts.statistics),
+            labels: Object.keys(statistics),
             datasets: [{
                 label: 'statistics',
-                data: Object.values(DATA.charts.statistics),
+                data: Object.values(statistics),
                 datalabels: { color: '#000000' },
                 backgroundColor: '#ff0000',
                 borderWidth: 1
