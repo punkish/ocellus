@@ -36,7 +36,9 @@ module.exports = function(grunt) {
                         "css/ocellus-treatments.css",
                         "css/ocellus-treatment.css",
                         "css/ocellus-taxon-tree.css",
-                        "css/ocellus-xml.css"
+                        "css/ocellus-xml.css",
+                        "css/ocellus-images.css",
+                        "css/ocellus-pager.css"
                     ]
                 }
             }
@@ -46,10 +48,6 @@ module.exports = function(grunt) {
             options : {
               sourceMap :true
             },
-            // dist : {
-            //   src  : ['www/js/**/*.js'],
-            //   dest : '.tmp/main.js'
-            // },
             target: {
                 files: {
                     'js/scripts.min.js': [

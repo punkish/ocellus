@@ -234,6 +234,19 @@ function urlDeconstruct(s) {
         q.value = qp.q;
     }
 
+    const rtLabels = resourceSelector.querySelectorAll('label');
+    const rtInputs = resourceSelector.querySelectorAll('input');
+
+    for (let i = 0; i < rtLabels.length; i++) {
+        if (qp.resource === rtInputs[i].value) {
+            rtLabels[i].classList.add('searchFocus');
+            //getStats(rtInputs[i].value);
+        }
+        else {
+            rtLabels[i].classList.remove('searchFocus');
+        }
+    }
+
     return qp;
 }
 
@@ -532,7 +545,7 @@ function makePager(data, search, page) {
             let prev = 'page=';
             let next = 'page=';
             
-            prev += (page === 1) ? 1 : page - 1;
+            prev += (page >= 2) ? page - 1 : 1;
             next += parseInt(page) + 1;
 
             data.prev = '?' + search.replace(/page=\d+/, prev);
@@ -903,37 +916,14 @@ const fetchResource = {
                 DATA.images.resource = 'images';
 
                 /* calculate whereCondtion */
-                const qryCols = Object.keys(xh.value.whereCondition);
-                const qryVals = Object.values(xh.value.whereCondition);
-
-                let i = 0;
-                const j = qryCols.length;
-
                 DATA.images.whereCondition = '';
-
-                if (j === 1) {
-                    if (qryCols[0] === 'text') {
-                        DATA.images.whereCondition = `<span class='qryVal'>${qryVals[i]}</span> is in the text`;
-                    }
-                    else {
-                        DATA.images.whereCondition = `<span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>`;
-                    }
-                }
-                else if (j === 2) {
-                    DATA.images.whereCondition = `<span class='qryCol'>${qryCols[0]}</span> is <span class='qryVal'>${qryVals[0]}</span> and <span class='qryCol'>${qryCols[1]}</span> is <span class='qryVal'>${qryVals[1]}</span>`;
-                }
-                else {
-                    for (; i < j; i++) {
-                        if (i == j - 1) {
-                            DATA.images.whereCondition += `and <span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>`;
-                        }
-                        else {
-                            DATA.images.whereCondition += `<span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>, `;
+                for (let k in xh.value.whereCondition) {
+                    if (k !== 'page' || k !== 'size' || k !== 'communities') {
+                        if (k === 'q') {
+                            DATA.images.whereCondition = `<span class='qryVal'>${xh.value.whereCondition[k]}</span> is in the text`;
                         }
                     }
                 }
-
-                //const {total, imagesOfRecords} = xh.value;
     
                 DATA.images.recordsFound = xh.value.recordsFound;
                 [DATA.images.figures, DATA.images.imagesFound] = makeLayout(xh.value.images);
