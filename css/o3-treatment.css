@@ -1,0 +1,36 @@
+/*****************************************/
+/* ocellus^3: treatment                  */
+/*****************************************/
+table.treatmentPIDs {
+    width: 100%;
+}
+table.treatmentPIDs th {
+    text-align: right;
+}
+.treatment ul.citations {
+    text-align: left;
+    list-style-position: outside;
+    padding: 2rem;
+}
+.treatment ul.citations li {
+    margin-bottom: 1.5rem;
+}
+.treatment figcaption {
+    text-align: left;
+}
+.xml-marker {
+    border: 1px solid grey;
+    border-radius: 5px;
+    color: #444;
+    font-size: 1rem;
+    padding: 2px;
+    cursor: pointer;
+}
+.xml-marker:hover {
+    background-color: green;
+    color: white;
+}
+#map { 
+    height: 300px; 
+    margin-bottom: 20px;
+}

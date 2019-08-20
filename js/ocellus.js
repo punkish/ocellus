@@ -1,496 +1,618 @@
-const withAjax = false;
-const zenodoRecord = 'https://zenodo.org/record/';
-const form = document.querySelector('form[name=simpleSearch]');
-const formButton = document.querySelector('button[name=simpleSearch]');
-const q = document.querySelector('input[name=q]');
-const urlFlagSelectors = document.querySelectorAll('.urlFlag');
-const communitiesSelector = document.querySelector('.drop-down');
-const communityCheckBoxes = document.querySelectorAll('input[name=communities]');
-const allCommunities = document.querySelector('input[value="all communities"]');
-const refreshCacheSelector = document.querySelector('input[name=refreshCache]');
-const refreshCacheWarning = document.querySelector('#refreshCacheWarning');
-const resourceSelector = document.querySelector('#resourceSelector');
-const figcaptionHeight = '30px';
-let figcaptions = []; 
-const modalToggle = document.querySelectorAll('.modal-toggle');
-
-// various divs to be populated later
-const throbber = document.querySelector('#throbber');
-//const chart = document.querySelector('#chart');
-const about = document.querySelector('#about');
-const privacy = document.querySelector('#privacy');
-const images = document.querySelector('#images');
-const carousel = document.querySelector('#carousel');
-const treatments = document.querySelector('#treatments');
-const treatment = document.querySelector('#treatment');
-
-const panels = {
-    throbber: throbber,
-    about: about,
-    privacy: privacy,
-    images: images,
-    carousel: carousel,
-    treatments: treatments,
-    treatment: treatment
+/*! 2019-08-20 */
+if (typeof(OCELLUS) === 'undefined' || typeof(OCELLUS) !== 'object') {
+    OCELLUS = {};
 }
 
-// templates
-const tmplPager = document.querySelector('#templatePager').innerHTML;
-const tmplRecordsFound = document.querySelector('#templateRecordsFound').innerHTML;
-const tmpl_images = document.querySelector('#templateImages').innerHTML;
-const tmpl_carousel = document.querySelector('#templateCarousel').innerHTML;
-const tmpl_treatments = document.querySelector('#templateTreatments').innerHTML;
-const tmpl_treatment = document.querySelector('#templateTreatment').innerHTML;
+OCELLUS.templates = {
 
-Mustache.parse(tmplPager);
-Mustache.parse(tmplRecordsFound);
-Mustache.parse(tmpl_images);
-Mustache.parse(tmpl_carousel);
-Mustache.parse(tmpl_treatments);
-Mustache.parse(tmpl_treatment);
+    // start: partials //////////////////////
+    pager: document.querySelector('#template-pager').innerHTML,
+    'records-found': document.querySelector('#template-records-found').innerHTML,
+    charts: document.querySelector('#template-charts').innerHTML,
+    figures: document.querySelector('#template-figures').innerHTML,
+    // end: partials //////////////////////
 
-const tmplPartials = { 
-    templatePager: tmplPager, 
-    templateRecordsFound: tmplRecordsFound 
+    treatments: document.querySelector('#template-treatments').innerHTML,
+    treatment: document.querySelector('#template-treatment').innerHTML,
+    images: document.querySelector('#template-images').innerHTML
 };
 
-// default number of records to fetch
-let size = 30;
-const DATA = {
-    // charts: {
-    //     statistics: {
-    //         treatments: 0,
-    //         specimens: 0,
-    //         "male specimens": 0,
-    //         "female specimens": 0,
-    //         "treatments with specimens": 0,
-    //         "treatments with male specimens": 0,
-    //         "treatments with female specimens": 0,
-    //         images: 0
-    //     }
-    // },
-    images: {
-        statistics: {},
-        // visibility: "hide",
-        recordsFound: 45,
-        from: 1,
-        to: 30,
-        figures: [
-            {
-                imgBlur: "",
-                imgA: "",
-                recId: "",
-                title: "",
-                zenodoRecord: ""
-            }
-        ],
-        pager: {
-            prev: 0,
-            next: 31
-        }
-    },
-    carousel: {
-        visibility: "hide",
-        figures: [
-            {
-                imgBlur: "",
-                imgA: "",
-                recId: "",
-                title: "",
-                zenodoRecord: ""
-            }
-        ]
-    },
-    treatments: {
-        statistics: {},
-        // visibility: "hide",
-        recordsFound: 45,
-        from: 1,
-        to: 30,
-        treatments: [
-            {
-                treatmentTitle: "",
-                images: [
-                    {
-                        thumb50: "",
-                        imageTitle: ""
-                    }
-                ],
-                s: "",
-                treatmentId: ""
-            }
-        ],
-        pager: {
-            prev: 0,
-            next: 31
-        }
-    },
-    treatment: {
-        // visibility: "hide",
-        treatmentTitle: "",
-        zenodeo: "",
-        treatmentId: "",
-        doi: "",
-        zenodoDep: "",
-        authorsList: "",
-        journalYear: "", 
-        articleTitle: "",
-        journalTitle: "",
-        journalVolume: "",
-        journalIssue: "",
-        pages: "",
-        taxonStats: {
+OCELLUS['template-partials'] = {};
 
-        },
-        mapState: "",
-        figures: [
-            {
-                imgBlur: "",
-                imgA: "",
-                recId: "",
-                title: "",
-                zenodoRecord: ""
-            }
-        ],
-        citations: [
-            {
-                citation: ""
-            }
-        ],
-        xml: ""
+OCELLUS.figcaptionHeight = '30px';
+OCELLUS.figcaptions = [];
+
+OCELLUS.compileTemplates = function() {
+    for (let t in OCELLUS.templates) {
+        Mustache.parse(OCELLUS.templates[t]);
     }
+
+    OCELLUS['template-partials']['template-pager'] = OCELLUS.templates.pager;
+    OCELLUS['template-partials']['template-records-found'] = OCELLUS.templates['records-found'];
+    OCELLUS['template-partials']['template-charts'] = OCELLUS.templates.charts;
+    OCELLUS['template-partials']['template-figures'] = OCELLUS.templates.figures;
+};
+
+OCELLUS.dom = {
+
+    // modals
+    maintenance: document.querySelector('#maintenance'),
+    about: document.querySelector('#about'),
+    privacy: document.querySelector('#privacy'),
+    ip: document.querySelector('#ip'),
+    contact: document.querySelector('#contact'),
+    panels: document.querySelectorAll('.panel'),
+    modalOpen: document.querySelectorAll('.modal-open'),
+    modalClose: document.querySelectorAll('.modal-close'),
+    throbber: document.querySelector('#throbber'),
+
+    // form elements
+    form: document.querySelector('form[name=simpleSearch]'),
+    inputs: document.querySelectorAll('form[name=simpleSearch] input'),
+    q: document.querySelector('#q'),
+    urlFlagSelectors: document.querySelectorAll('.urlFlag'),
+    resourceSelector: document.querySelector('#resourceSelector'),
+    goGetIt: document.querySelector('#go-get-it'),
+    communitiesSelector: document.querySelector('.drop-down'),
+    communityCheckBoxes: document.querySelectorAll('input[name=communities]'),
+    allCommunities: document.querySelector('input[value="all communities"]'),
+    refreshCacheSelector: document.querySelector('input[name=refreshCache]'),
+    urlFlagSelectors: document.querySelectorAll('.urlFlag'),
+
+    // results panels
+    treatments: document.querySelector('#treatments'),
+    bigmap: document.querySelector('#bigmap')
+};
+
+OCELLUS.saveable = ['treatments'],
+
+OCELLUS.savedState = null;
+
+OCELLUS.model = {
+    treatments: {},
+    treatment: {},
+    images: {}
 }
 
-// map params
-const map = {
+OCELLUS.size = 30;
+
+OCELLUS.map = {
     url: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     id: 'mapbox.streets',
     accessToken: 'pk.eyJ1IjoicHVua2lzaCIsImEiOiJjajhvOXY0dW8wMTA3MndvMzBlamlhaGZyIn0.3Ye8NRiiGyjJ1fud7VbtOA'
-}
-
-const fetchReceive = function(response) {
-    if (!response.ok) {
-        throw new Error('HTTP error, status = ' + response.status);
-    }
-
-    return response.json();
 };
 
-function goGetIt(event) {
-  
-    if (!location.search && q.value === '') {
+OCELLUS.init = function(state) {
+    const {maintenance} = state || {maintenance: false};
+    
+    // make sure all panels are hidden
+    OCELLUS.toggle(OCELLUS.dom.panels, 'off');
 
-        // neither is there an event, that is, nothing has
-        // been clicked, nor there are any search params, 
-        // that is, we are not trying to load a preformed 
-        // URL sent by someone. This means something is not 
-        // right. In this case, default to a blank form
-        setVisualElements('blank');
-        q.placeholder = "c'mon, enter something";
-        return false;
+    if (maintenance) {
+        OCELLUS.toggle(OCELLUS.dom.maintenance, 'on');
+        return;
     }
     else {
-        
-        let qp;
-        if (event) {
+        OCELLUS.addEvents(OCELLUS.dom.modalOpen, OCELLUS.modalOpen);
+        OCELLUS.addEvents(OCELLUS.dom.modalClose, OCELLUS.modalClose);
+        OCELLUS.addEvents(OCELLUS.dom.goGetIt, OCELLUS.goGetIt);
+        OCELLUS.addEvents(OCELLUS.dom.communitiesSelector, OCELLUS.toggleCommunities);
+        OCELLUS.addEvents(OCELLUS.dom.refreshCacheSelector, OCELLUS.toggleRefreshCache);
+        OCELLUS.suggest(OCELLUS.dom.q);
+        OCELLUS.activateUrlFlagSelectors();
 
-            event.preventDefault();
-            event.stopPropagation();
+        OCELLUS.compileTemplates();
 
-            // construct URL based on form fields
-            qp = urlConstruct(form);
-        }
-        else if (location.search) {
-    
-            // deconstruct URL based on location.search
-            qp = urlDeconstruct(location.search);
-        }
-
-        // throbber.classList.toggle('show');
-        setVisualElements('queryStart');
-        fetchResource[qp.resource](qp);
-    }
-}
-
-function isXml(s) {
-    if (s.length === 32) {
-        return true;
-    }
-
-    return false;
-}
-
-function urlDeconstruct(s) {
-    
-    // removing any leading '?'
-    if (s.substr(0, 1) === '?') {
-        s = s.substr(1);
-    }
-
-    const qp = {};
-    s.split('&').forEach(p => { r = p.split('='); qp[r[0]] = r[1] });
-    if (qp.q) {
-        q.value = qp.q;
-    }
-
-    const rtLabels = resourceSelector.querySelectorAll('label');
-    const rtInputs = resourceSelector.querySelectorAll('input');
-
-    for (let i = 0; i < rtLabels.length; i++) {
-        if (qp.resource === rtInputs[i].value) {
-            rtLabels[i].classList.add('searchFocus');
-            //getStats(rtInputs[i].value);
+        if (location.search) {
+            //console.log('getting results based on location')
+            OCELLUS.goGetIt();
         }
         else {
-            rtLabels[i].classList.remove('searchFocus');
+            //console.log('getting stats')
+            OCELLUS.getResource({resource: 'treatments'});
+            OCELLUS.dom.q.focus();
+        }
+    }
+};
+
+/*
+map = {
+    base: [
+        'templates',
+        'template-partials',
+        'compileTemplates',
+        'dom',
+        'saveable',
+        'model',
+        'size',
+        'init'
+    ],
+
+    utils: [
+        'statsChart',
+        'niceNumbers',
+        'formatSearchCriteria',
+        'makeUris',
+        'getResource',
+        'syntheticData',
+        'fetchReceive',
+        'isXml',
+        'urlDeconstruct',
+        'urlConstruct',
+        'makePager',
+        'goGetIt'
+    ],
+
+    treatments: [
+        'getOneTreatment',
+        'getManyTreatments',
+        'getTreatments',
+        'makeMap'
+    ],
+
+    eventlisterners: [
+        'modalOpen',
+        'modalClose',
+        'addEvents',
+        'turnOff',
+        'turnOn',
+        'toggle'
+    ]
+}
+*/
+if (typeof(OCELLUS) === 'undefined' || typeof(OCELLUS) !== 'object') {
+    OCELLUS = {};
+}
+
+OCELLUS.modalOpen = function(event) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    for (let i = 0, j = OCELLUS.saveable.length; i < j; i++) {
+        
+        const s = document.getElementById(OCELLUS.saveable[i]);
+
+        // is any of the saveable panel 'on'?
+        if (s.classList.contains('visible')) {
+
+            // yes, so save it for later
+            OCELLUS.savedState = OCELLUS.saveable[i];
+
+            // now turn it off
+            OCELLUS.turnOff(s);
+            break;
         }
     }
 
-    return qp;
-}
+    // close all modals
+    OCELLUS.toggle(OCELLUS.dom.panels, 'off');
 
-function urlConstruct(form) {
+    const id = event.target.hash.substr(1);
+    OCELLUS.toggle(OCELLUS.dom[id], 'on');
+};
 
-    let queryParams = {};
+OCELLUS.modalClose = function(event) {
+    event.stopPropagation();
+    event.preventDefault();
 
-    const q = form.querySelector('input[name=q]').value;
+    const id = event.target.hash.substr(1);
+    OCELLUS.toggle(OCELLUS.dom[id], 'off');
 
-    if (isXml(q)) {
-        queryParams.treatmentId = q;
-        queryParams.resource = 'treatment';
-        const rc = urlFlagSelectors.querySelector('input[name=refreshCache');
-        if (rc.checked) {
-            queryParams.refreshCache = true;
+    // is a panel already in a savedState? if yes, turn it 'on'
+    if (OCELLUS.savedState) {
+        const s = document.getElementById(OCELLUS.savedState);
+        OCELLUS.turnOn(s);
+        OCELLUS.savedState = null;
+    }
+};
+
+OCELLUS.addEvents = function(elements, func) {
+    const len = elements.length;
+
+    if (len > 1) {
+        for (let i = 0, j = len; i < j; i++) {
+            elements[i].addEventListener('click', func);
         }
     }
     else {
-        queryParams.q = q;
-        for (let i = 0, j = urlFlagSelectors.length; i < j; i++) {
+        elements.addEventListener('click', func);
+    }
+};
 
-            const element = urlFlagSelectors[i];
-            
-            if (element.checked) {
-                queryParams[element.name] = element.value;
+OCELLUS.turnOff = function(element) {
+    element.classList.remove('visible'); 
+    element.classList.add('hidden');
+};
+
+OCELLUS.turnOn = function(element) {
+    element.classList.add('visible');
+    element.classList.remove('hidden');
+};
+
+OCELLUS.toggle = function(elements, state) {
+    const len = elements.length;
+
+    if (state === 'on') {
+        if (len > 1) {
+            for (let i = 0, j = len; i < j; i++) {
+                OCELLUS.turnOn(elements[i]);
             }
-    
-        }
-    
-        if (queryParams.resource === 'images') {
-            queryParams.page = form.querySelector('input[name=page]').value;
-            queryParams.access_right = 'open';
-            queryParams.type = 'image';
-        }
-        else if (queryParams.resource === 'treatments') {
-            delete queryParams.communities;
-            queryParams.id = form.querySelector('input[name=id]').value;
-        }
-
-        // number of records to fetch
-        queryParams.size = size;
-        
-    }
-
-    return queryParams;
-}
-
-function goHome() {
-    location.search = '/'
-};
-
-function makeLayout(imagesOfRecords) {
-        
-    let imgCount = 0;
-    let figures = [];
-
-    for (let record in imagesOfRecords) {
-        
-        const images = imagesOfRecords[record].images;
-        const j = images.length;
-        imgCount = imgCount + j;
-        const recId = record.split('/').pop();
-
-        let imgBlur; // 10 pixels wide
-        let imgA_; // 50 pixels 
-        let imgA; // 250 pixels 
-        let imgB; // 400
-        let imgC; // 960
-        let imgD; // 1200
-
-        if (imagesOfRecords[record].thumb250 === 'na') {
-            imgBlur = imgA_ = imgA = imgB = imgC = imgD = 'img/kein-preview.png';
         }
         else {
-            imgA = imagesOfRecords[record].thumb250;
-            imgBlur = imgA.replace('250', '10');
-            imgA_ = imgA.replace('250', '50');
-            imgB = imgA.replace('250,', '400,');
-            imgC = imgA.replace('250,', '960,');
-            imgD = imgA.replace('250,', '1200,');
+            OCELLUS.turnOn(elements);
         }
-
-        const figure = {
-            title: imagesOfRecords[record].title,
-            creators: imagesOfRecords[record].creators,
-            recId: recId,
-            zenodoRecord: zenodoRecord + recId,
-            imageSrc: images[0],
-            imgBlur: imgBlur,
-            imgA: imgA,
-            imgA_: imgA_,
-            imgB: imgB,
-            imgC: imgC,
-            imgD: imgD
-        };
-        
-        figures.push(figure)
     }
-
-    return [figures, imgCount];
+    else if (state === 'off') {
+        if (len > 1) {
+            for (let i = 0, j = len; i < j; i++) {
+                OCELLUS.turnOff(elements[i]);
+            }
+        }
+        else {
+            OCELLUS.turnOff(elements);
+        }
+    }
+};
+if (typeof(OCELLUS) === 'undefined' || typeof(OCELLUS) !== 'object') {
+    OCELLUS = {};
 }
 
-function niceNumbers(num) {
+OCELLUS.getImages = function(queryObj, search, uri) {
+
+    fetch(uri)
+        .then(OCELLUS.fetchReceive)
+        .then(function(res) {
+
+            const data = res.value;
+
+            OCELLUS.model.images.resource = 'images';
+            OCELLUS.model.images['records-found'] = data.recordsFound;
+            OCELLUS.model.images.statistics = data.statistics;
+
+            OCELLUS.model.images['search-criteria'] = OCELLUS.formatSearchCriteria(data.whereCondition);
+            
+            [OCELLUS.model.images.figures, OCELLUS.model.images.imagesFound] = makeLayout(data.images);
+            
+            makePager(OCELLUS.model.images, search, queryObj.page);
+            OCELLUS.model.images['records-found'] = niceNumbers(xh.value.recordsFound);
+
+            OCELLUS.dom.images.innerHTML = Mustache.render(
+                OCELLUS.templates.images, 
+                OCELLUS.model.images, 
+                OCELLUS['template-partials']
+            );   
+
+            OCELLUS.statsChart(OCELLUS.model.images.statistics);
+            
+            const figs = document.querySelectorAll('figcaption > a');
+            for (let i = 0, j = figs.length; i < j; i++) {
+                figs[i].addEventListener('click', OCELLUS.toggleFigcaption);
+            }
+
+            const carousel = document.querySelectorAll('.carousel');
+            for (let i = 0, j = carousel.length; i < j; i++) {
+                carousel[i].addEventListener('click', function(event) {
+                    turnCarouselOn(OCELLUS.model.images, OCELLUS.model.images.figures[i].recId);
+                });
+            }
+            
+            OCELLUS.toggle(OCELLUS.dom.throbber, 'off');
+            OCELLUS.toggle(OCELLUS.dom.images, 'on');
+        });
+};
+if (typeof(OCELLUS) === 'undefined' || typeof(OCELLUS) !== 'object') {
+    OCELLUS = {};
+}
+
+OCELLUS.getOneTreatment = function(uri, search) {
+    
+    fetch(uri)
+        .then(OCELLUS.fetchReceive)
+        .then(function(res) {    
+            OCELLUS.model.treatment = res.value;
+
+            if (uri.indexOf('xml') > -1) {
+                return OCELLUS.model.treatment;
+            }
+
+            else {
+                OCELLUS.model.treatment.imgCount = OCELLUS.niceNumbers(OCELLUS.model.treatment.imgCount);
+                OCELLUS.model.treatment.zenodeo = zenodeo;
+
+                if (OCELLUS.model.treatment['related-records'].materialsCitations.length) {
+                    OCELLUS.model.treatment.materialsCitations = OCELLUS.model.treatment['related-records'].materialsCitations;
+                    OCELLUS.model.treatment.mapState = 'open';
+                }
+
+                if (OCELLUS.model.treatment['related-records'].bibRefCitations.length) {
+                    OCELLUS.model.treatment.bibRefCitations = OCELLUS.model.treatment['related-records'].bibRefCitations;
+                    OCELLUS.model.treatment.bibRefCitationsState = 'open';
+                }
+
+                if (OCELLUS.model.treatment['related-records'].figureCitations.length) {
+                    OCELLUS.model.treatment.figureCitations = OCELLUS.model.treatment['related-records'].figureCitations;
+                    OCELLUS.model.treatment.figureCitationsState = 'open';
+                }
+
+                if (OCELLUS.model.treatment['related-records'].treatmentAuthors.length) {
+                    OCELLUS.model.treatment.treatmentAuthors = OCELLUS.model.treatment['related-records'].treatmentAuthors;
+                    OCELLUS.model.treatment.treatmentAuthorsList = OCELLUS.formatAuthorsList(OCELLUS.model.treatment['related-records'].treatmentAuthors);
+                }
+                
+                OCELLUS.dom.treatments.innerHTML = Mustache.render(
+                    OCELLUS.templates.treatment, 
+                    OCELLUS.model.treatment,
+                    OCELLUS['template-partials']
+                );        
+
+                if (OCELLUS.model.treatment.imgCount !== 'Zero') {
+                    const figs = document.querySelectorAll('figcaption > a');
+                    // const reporters = document.querySelectorAll('.report');
+                    // const submitters = document.querySelectorAll('.submit');
+                    // const cancellers = document.querySelectorAll('.cancel');
+                    
+                    for (let i = 0, j = figs.length; i < j; i++) {
+                        figs[i].addEventListener('click', OCELLUS.toggleFigcaption);
+                        // reporters[i].addEventListener('click', toggleReporter);
+                        // submitters[i].addEventListener('click', submitReporter);
+                        // cancellers[i].addEventListener('click', cancelReporter);
+                    }
+                }
+
+                if (OCELLUS.model.treatment['related-records'].materialsCitations.length) {
+                    //document.querySelector('#map').classList.add('show');
+                    OCELLUS.makeMap(OCELLUS.model.treatment.materialsCitations);
+                }
+
+                OCELLUS.toggle(OCELLUS.dom.throbber, 'off');
+                OCELLUS.toggle(OCELLUS.dom.treatments, 'on');
+            }
+
+        });
+};
+
+OCELLUS.getManyTreatments = function(uri, search) {
+
+    fetch(uri)
+        .then(OCELLUS.fetchReceive)
+        .then(function(res) {
+            OCELLUS.model.treatments = res.value;
+
+            if (OCELLUS.model.treatments['num-of-records']) {
+
+                OCELLUS.model.treatments.resource = 'treatments';
+
+                if (OCELLUS.model.treatments['num-of-records'] > 0) {
+                    if (OCELLUS.model.treatments.records && OCELLUS.model.treatments.records.length) {
+                        OCELLUS.model.treatments.successful = true;
+                        OCELLUS.model.treatments['num-of-records'] = OCELLUS.niceNumbers(OCELLUS.model.treatments['num-of-records']);
+                        OCELLUS.model.treatments.from = OCELLUS.niceNumbers(OCELLUS.model.treatments.from);
+
+                        if (OCELLUS.model.treatments.to < 10) {
+                            OCELLUS.model.treatments.to = OCELLUS.niceNumbers(OCELLUS.model.treatments.to).toLowerCase();
+                        }
+                        
+                        OCELLUS.model.treatments['search-criteria-text'] = OCELLUS.formatSearchCriteria(OCELLUS.model.treatments['search-criteria']);
+                        OCELLUS.makePager(OCELLUS.model.treatments, search, false);
+                    }
+                    else {
+                        OCELLUS.model.treatments.successful = false;
+                    }
+                    
+                    OCELLUS.dom.treatments.innerHTML = Mustache.render(
+                        OCELLUS.templates.treatments, 
+                        OCELLUS.model.treatments,
+                        OCELLUS['template-partials']
+                    );
+
+                    const tabs = new Tabs({ elem: "tabs", open: 0 });
+                    OCELLUS.statsChart(OCELLUS.model.treatments.statistics);
+                    OCELLUS.dom.q.placeholder = `search ${OCELLUS.model.treatments['num-of-records']} treatments`;
+                }
+                else {
+                    OCELLUS.model.treatments.successful = false;
+                    OCELLUS.model.treatments['num-of-records'] = 'No';
+
+                    OCELLUS.dom.treatments.innerHTML = Mustache.render(
+                        OCELLUS.templates.treatments, 
+                        OCELLUS.model.treatments,
+                        OCELLUS['template-partials']
+                    );
+                }
+
+            }
+
+            OCELLUS.toggle(OCELLUS.dom.throbber, 'off');
+            OCELLUS.toggle(OCELLUS.dom.treatments, 'on');
+
+        });
+};
+
+OCELLUS.getTreatments = function(queryObj, search, uri) {
+
+    // single treatment
+    if (queryObj.treatmentId) {
+        console.log('getting a single treatment ' + queryObj.treatmentId);
+        OCELLUS.getOneTreatment(uri, search);
+    }
+    
+    // many treatments
+    else {
+        console.log('getting many treatments from ' + uri);
+        OCELLUS.getManyTreatments(uri, search);
+    }
+};
+
+OCELLUS.makeMap = function(mcs) {
+
+    // initialize the map and add the layers to it
+    const mcmap = L.map('map', {
+        center: [0, 0],
+        zoom: 8,
+        scrollWheelZoom: false
+    });
+
+    L.tileLayer(OCELLUS.map.url, {
+        attribution: OCELLUS.map.attribution,
+        maxZoom: 18,
+        id: OCELLUS.map.id,
+        accessToken: OCELLUS.map.accessToken
+    }).addTo(mcmap);
+
+    // https://stackoverflow.com/questions/16845614/zoom-to-fit-all-markers-in-mapbox-or-leaflet
+    const markers = [];
+    mcs.forEach(mc => {
+        if (mc.latitude && mc.longitude) {
+            const marker = L.marker([mc.latitude, mc.longitude]).addTo(mcmap);
+            marker.bindPopup(mc.typeStatus);
+            markers.push(marker)
+        }
+    })
+
+    const bounds = new L.featureGroup(markers).getBounds();
+    mcmap.fitBounds(bounds);
+}
+if (typeof(OCELLUS) === 'undefined' || typeof(OCELLUS) !== 'object') {
+    OCELLUS = {};
+}
+
+OCELLUS.statsChart = function(statistics) {
+
+    // Disable automatic style injection
+    Chart.platform.disableCSSInjection = true;
+
+    const charts = document.querySelectorAll('.chart');
+
+    /*
+    statistics = [
+        {
+            'chart-name': 'Chart one',
+            'x-axis': {
+                name: 'materials citations',
+                values: []
+            },
+            'y-axis': {
+                name: 'collecting codes',
+                values: []
+            }
+        }
+    ]
+    */
+
+    for (let i = 0, j = charts.length; i < j; i++) {
+        const ctx = charts[i].getContext('2d');
+        return new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: statistics[i]['x-axis'].values,
+                datasets: [{
+                    label: statistics[i]['chart-name'],
+                    data: statistics[i]['y-axis'].values,
+                    datalabels: { color: '#000000' },
+                    backgroundColor: '#ff0000',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: { beginAtZero: true }
+                    }],
+                    xAxes: [{
+                        scaleLabel: { fontSize: 8 }
+                    }]
+                },
+                responsive: true,
+                tooltips: { enabled: false },
+                legend: { display: false }
+            }
+        });
+    }
+};
+
+OCELLUS.niceNumbers = function(num) {
     if (num < 10) {
         return ['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine'][num];
     }
     else {
         return num;
     }
-}
+};
 
-let savedVisualState;
-let saveableVisualStates = ['treatments', 'treatment', 'images'];
+OCELLUS.formatSearchCriteria = function(queryObject) {
 
-function setVisualElements(state) {
-
-    const hideEverything = function(obj) {
-        const {except, resetRefreshCache} = obj;
-
-        console.log(`hiding everything except ${except.join(', ')}`)
-
-        if (savedVisualState) {
-            except.push(savedVisualState);
+    function str(el) {
+        if (el[0] === 'q') {
+            return `<span class='crit-val'>${el[1]}</span> is in the <span class='crit-key'>text</span>`
         }
-
-        // hide everything except…
-        for (const p in panels) {
-
-            const panel = panels[p];       
-
-            if (except.indexOf(p) > -1) {
-                panel.classList.remove('hidden-panel');
-                panel.classList.add('visible-panel');
-            }
-            else {
-                
-                if (panel.classList.contains('visible-panel')) {
-                    if (saveableVisualStates.indexOf(p) > -1) {
-                        savedVisualState = p;
-                    }
-                }
-
-                panel.classList.remove('visible-panel');
-                panel.classList.add('hidden-panel');
-            }
-        }
-
-        if (resetRefreshCache) {
-            refreshCacheSelector.checked = false;
+        else {
+            return `<span class='crit-key'>${el[0]}</span> is <span class='crit-val'>${el[1]}</span>`
         }
     }
 
-    // blank state (initial state)
-    if (state === 'treatments') {
-        hideEverything({except: ['treatments'], resetRefreshCache: false});
+    const remove = ['id', 'size', 'communities', 'page'];
+    remove.forEach(e => { if (Object.keys(queryObject).indexOf(e) > -1) { delete(queryObject[e]) }})
+
+    let c = '';
+    const el = Object.entries(queryObject);
+    const l = el.length;
+    if (l === 1) {
+        c += str(el[0]);
+    }
+    else if (l === 2) {
+        c += `${str(el[0])} and ${str(el[1])}`;
+    }
+    else {
+        const ab = el.slice(0, l - 1);
+        const last = el[l - 1];
+        c += ab.map(e => str(e)).join(', ') + ' and ' + str(last);
     }
 
-    else if (state === 'images') {
-        hideEverything({except: ['images'], resetRefreshCache: false});
+    return c;
+};
+
+OCELLUS.formatAuthorsList = function(treatmentAuthors) {
+
+    let c = '';
+    const l = treatmentAuthors.length;
+    if (l === 1) {
+        c += treatmentAuthors[0].author
     }
-    
-    // open about state
-    else if (state === 'about-open') {
-        hideEverything({except: ['about'], resetRefreshCache: false});
+    else if (l === 2) {
+        c += `${treatmentAuthors[0].author} and ${treatmentAuthors[1].author}`;
+    }
+    else {
+        const ab = treatmentAuthors.slice(0, l - 1);
+        const last = treatmentAuthors[l - 1].author;
+        c += ab.map(e => e.author).join(', ') + ' and ' + last;
     }
 
-    // close about state
-    else if (state === 'about-close') {
-        hideEverything({except: ['treatments'], resetRefreshCache: false});
-    }
+    return c;
+};
 
-    // privacy state
-    else if (state === 'privacy-open') {
-        hideEverything({except: ['privacy'], resetRefreshCache: false});
-    }
-
-    else if (state === 'privacy-close') {
-        hideEverything({except: ['treatments'], resetRefreshCache: false});
-    }
-
-    // query start
-    else if (state === 'queryStart') {
-        hideEverything({except: ['throbber'], resetRefreshCache: true});
-    }
-    
-    // query end no result
-    else if (state === 'queryEndNoResult') {
-        hideEverything({except: ['treatments'], resetRefreshCache: true});
-    }
-    
-    // query end with result
-    else if (state === 'queryEndWithTreatments') {
-        hideEverything({except: ['treatments'], resetRefreshCache: true});
-    }
-
-    else if (state === 'queryEndWithTreatment') {
-        hideEverything({except: ['treatment'], resetRefreshCache: true});
-    }
-
-    else if (state === 'queryEndWithImages') {
-        hideEverything({
-            except: ['images'], 
-            resetRefreshCache: true
-        });
-    }
-
-    // carousel on
-    else if (state === 'turnCarouselOn') {
-        hideEverything({
-            except: ['carousel'], 
-            resetRefreshCache: true
-        });
-    }
-
-    // carousel off
-    else if (state === 'turnCarouselOff') {
-        hideEverything({
-            except: ['images', 'charts'], 
-            resetRefreshCache: true
-        });
-    }
-}
-
-function makeUris(qp, setHistory = true) {
+OCELLUS.makeUris = function (queryObj, setHistory = true) {
 
     let hrefArray1 = [];
     let hrefArray2 = [];
 
-    for (let p in qp) {
+    for (let p in queryObj) {
 
         // We don't want to send 'resource' to Zenodeo
         // because 'resource' is already in the uri
         if (p !== 'resource') {
-            hrefArray1.push(p + '=' + qp[p]);
+            hrefArray1.push(p + '=' + queryObj[p]);
         }
 
         // We don't want 'refreshCache' in the browser
         // address bar
         if (p !== 'refreshCache') {
-            hrefArray2.push(p + '=' + qp[p]);
+            hrefArray2.push(p + '=' + queryObj[p]);
         }
     }
 
-    const uri = `${zenodeo}/v2/${qp.resource}?${hrefArray1.join('&')}`;
+    const uri = `${OCELLUS.zenodeo}/v2/${queryObj.resource}?${hrefArray1.join('&')}`;
+
     const search = hrefArray2.join('&');
 
     if (setHistory) {
@@ -502,481 +624,269 @@ function makeUris(qp, setHistory = true) {
         uri: uri
     }
 
-}
+};
 
-function makeMap(mcs) {
+OCELLUS.getResource = function(queryObj) {
+    const {search, uri} = OCELLUS.makeUris(queryObj);
 
-    // initialize the map and add the layers to it
-    const mcmap = L.map('map', {
-        center: [0, 0],
-        zoom: 8,
-        scrollWheelZoom: false
-    });
+    if (queryObj.resource === 'treatments') {
+        OCELLUS.getTreatments(queryObj, search, uri);
+    }
+    else if (queryObj.resource === 'images') {
+        OCELLUS.getImages(queryObj, search, uri);
+    }
+};
 
-    L.tileLayer(map.url, {
-        attribution: map.attribution,
-        maxZoom: 18,
-        id: map.id,
-        accessToken: map.accessToken
-    }).addTo(mcmap);
+OCELLUS.syntheticData = function(resource, queryObj) {
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
 
-    // https://stackoverflow.com/questions/16845614/zoom-to-fit-all-markers-in-mapbox-or-leaflet
-    const markers = [];
-    mcs.forEach(mc => {
-        if (mc.latitude && mc.longitude) {
-            //console.log(mc.latitude, mc.longitude)
-            const marker = L.marker([mc.latitude, mc.longitude]).addTo(mcmap);
-            marker.bindPopup(mc.typeStatus);
-            markers.push(marker)
+    const alpha = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+
+    function getRandomString(len) {
+        let s = '';
+        for (let i = 0; i < len; i++) {
+            s += alpha[getRandomInt(26)]
         }
-    })
 
-    const bounds = new L.featureGroup(markers).getBounds();
-    mcmap.fitBounds(bounds);
-    
-}
+        return s;
+    }
 
-function makePager(data, search, page) {
+    resource.statistics = {
+        'below 10': 0,
+        '10 to 50': 0,
+        'above 50': 0
+    }
 
-    if (data.recordsFound && (data.recordsFound >= size)) {
-        if (page) {
-
-            // making pager for images
-            let prev = 'page=';
-            let next = 'page=';
-            
-            prev += (page >= 2) ? page - 1 : 1;
-            next += parseInt(page) + 1;
-
-            data.prev = '?' + search.replace(/page=\d+/, prev);
-            data.next = '?' + search.replace(/page=\d+/, next);
-            
+    const numOfRecords = getRandomInt(100);
+    for (let i = 0; i < numOfRecords; i++) {
+        const age = getRandomInt(100);
+        resource.data.push({name: getRandomString(getRandomInt(10)), age: age});
+        if (age < 10) {
+            resource.statistics['below 10']++;
+        }
+        else if (age > 50) {
+            resource.statistics['above 50']++;
         }
         else {
+            resource.statistics['10 to 50']++;
+        }
+    }
 
-            // making pager for treatments
-            let prev = 'id=' + data.previd;
-            let next = 'id=' + data.nextid;
+    resource['records-found'] = OCELLUS.niceNumbers(numOfRecords);
+    resource.resource = 'treatments';
+    
+    resource['search-criteria'] = OCELLUS.formatSearchCriteria(queryObj);
 
-            if (data.previd !== '') {
-                if (search.indexOf('id') > -1) {
-                    data.prev = '?' + search.replace(/id=\d+/, prev);
-                }
-                else {
-                    data.prev = `?${search}&${prev}`;
-                }
-            }
-            else {
-                data.prev = '';
-            }
+    resource.successful = true;
+    resource.from = 'One';
+    resource.to = 30;
+};
 
-            if (data.nextid !== '') {
-                if (search.indexOf('id') > -1) {
-                    data.next = '?' + search.replace(/id=\d+/, next);
-                }
-                else {
-                    data.next = `?${search}&${next}`;
-                }
-            }
-            else {
-                data.next = '';
+OCELLUS.fetchReceive = function(response) {
+    if (!response.ok) {
+        throw new Error('HTTP error, status = ' + response.status);
+    }
+
+    return response.json();
+};
+
+OCELLUS.isXml = function(s) {
+    if (s.length === 32) {
+        return true;
+    }
+
+    return false;
+};
+
+OCELLUS.urlDeconstruct = function(s) {
+    
+    // remove any leading '?'
+    if (s.substr(0, 1) === '?') {
+        s = s.substr(1);
+    }
+
+    const queryObject = {};
+    s.split('&').forEach(p => { r = p.split('='); queryObject[r[0]] = r[1] });
+    if (queryObject.q) {
+        q.value = queryObject.q;
+    }
+
+    const rtLabels = OCELLUS.dom.resourceSelector.querySelectorAll('label');
+    const rtInputs = OCELLUS.dom.resourceSelector.querySelectorAll('input');
+
+    for (let i = 0; i < rtLabels.length; i++) {
+        if (queryObject.resource === rtInputs[i].value) {
+            rtLabels[i].classList.add('searchFocus');
+        }
+        else {
+            rtLabels[i].classList.remove('searchFocus');
+        }
+    }
+
+    return queryObject;
+};
+
+OCELLUS.urlConstruct = function() {
+
+    const queryObject = {};
+
+    const inputs = OCELLUS.dom.inputs;
+    for (let i = 0, j = inputs.length; i < j; i++) {
+        const input = inputs[i];
+        if (input.type === 'radio' || input.type === 'checkbox') {
+            if (input.checked) {
+                queryObject[input.name] = input.value;
             }
         }
+        else {
+            queryObject[input.name] = input.value;
+        }
+    }
+
+    if (queryObject.resource === 'images') {
+        queryObject.access_right = 'open';
+    }
+
+    queryObject.page = 1;
+    queryObject.id = 0;
+
+    return queryObject;
+};
+
+OCELLUS.makePager = function(data, search) {
+
+    if (search.substr(0, 1) === '?') {
+        search = search.substr(1);
+    }
+
+    const queryObject = {};
+    search.split('&').forEach(p => { r = p.split('='); queryObject[r[0]] = r[1] });
+
+    if (data['num-of-records'] && (data['num-of-records'] >= OCELLUS.size)) {
+        data.prev = '?' + search.replace(/page=\d+/, `page=${data.prevpage}`);
+        data.next = '?' + search.replace(/page=\d+/, `page=${data.nextpage}`);
     }
 
     data.pager = true;
     return data;
-}
-
-function submitReporter(event) {
-
-    const send = event.target;
-    const form = send.parentElement;
-    const widget = form.parentElement;
-    const report = widget.querySelector('.report');
-    const reporter = form.querySelector('.imageReport');
-    const recId = form.querySelector('input[name="recId"]').value;
-    const status = widget.querySelector('.status');
-
-    // Send a POST request to /repos/:owner/:repo/issues with JSON
-    const github = 'https://api.github.com/repos/plazi/Biodiversity-Literature-Repository/issues';
-
-    const payload = JSON.stringify({
-        "title": `problem with record id: ${recId}`,
-        "body": reporter.innerText,
-        "assignee": "myrmoteras",
-        "milestone": 1,
-        "labels": [
-            "images"
-        ]
-    });
-
-    const method = 'POST';
-    const url = github;
-    const callback = function() {
-
-            // show widget
-            form.style.visibility = 'hidden';
-            status.innerHTML = 'Thank you for submitting the report!';
-            status.style.visibility = 'visible';
-            status.style.display = 'block';
-
-            setInterval(function() {
-                status.style.visibility = 'hidden';
-                status.style.display = 'none';
-                report.style.visibility = 'visible';
-            }, 3000);
-    };
-    const headers = [
-        {k: "Content-type", v: "application/json"},
-        {k: "Authorization", v: "Basic " + btoa("blruser:xucqE5-tezmab-ruqgyr")}
-    ]
-
-    x(method, url, callback, headers, payload);
-
-    event.preventDefault();
-    event.stopPropagation();
-}
-
-function toggleReporter(event) {
-
-    const r = event.target;
-    const f = r.parentElement.querySelector('form');
-
-    // show widget
-    f.style.visibility = 'visible';
-
-    // hide report button
-    r.style.visibility = 'hidden';
-
-    event.preventDefault();
-    event.stopPropagation();
-}
-
-function cancelReporter(event) {
-
-    const c = event.target;
-    const f = c.parentElement;
-    const r = f.parentElement.querySelector('.report');
-
-    // show widget
-    f.style.visibility = 'hidden';
-
-    // hide report button
-    r.style.visibility = 'visible';
-
-    event.preventDefault();
-    event.stopPropagation();
 };
 
-const setPlaceHolderMessage = function(resource, number) {
-    q.placeholder = `search ${number} ${resource}`;
+OCELLUS.goGetIt = function(event) {
+
+    if (!location.search && OCELLUS.dom.q.value === '') {
+
+        // neither is there an event, that is, nothing has
+        // been clicked, nor there are any search params, 
+        // that is, we are not trying to load a preformed 
+        // URL sent by someone. This means something is not 
+        // right. In this case, default to a blank form
+        OCELLUS.toggle(OCELLUS.dom.panels, 'off');
+        OCELLUS.dom.q.placeholder = "c’mon, enter something";
+        return false;
+    }
+    else {
+        
+        let qp;
+        if (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            // construct URL based on form fields
+            qp = OCELLUS.urlConstruct(OCELLUS.dom.form);
+        }
+        else if (location.search) {
+    
+            // deconstruct URL based on location.search
+            qp = OCELLUS.urlDeconstruct(location.search);
+        }
+
+        OCELLUS.toggle(OCELLUS.dom.throbber, 'on');
+        OCELLUS.getResource(qp);
+    }
 };
 
-const fetchResource = {
+OCELLUS.toggleRefreshCache = function(event) {
+    OCELLUS.dom.refreshCacheWarning.classList.toggle('show');
+};
 
-    stats: function(qp) {
+OCELLUS.toggleCommunities = function(event) {
+    OCELLUS.dom.communitiesSelector.classList.toggle('open');
+};
 
-        
+OCELLUS.toggleFigcaption = function(event) {
 
-        // if (qp.resource === 'all') {
-
-        //     // get the treatments and their stats
-        //     let {search, uri} = makeUris({
-        //         resource: 'treatments', 
-        //         stats: true
-        //     }, false);
-
-        //     x(uri, (xh) => {
-        //         for (let k in xh.value) {
-        //             DATA.charts.statistics[k] = xh.value[k];
-        //         }
-
-        //         setPlaceHolderMessage('treatments');
-        //         chart = statsChart();
-        //         setVisualElements('blank');
-        //     });
-        // }
-
-        //console.log(qp.resource)
-        //if (DATA[qp.resource].statistics === 0) {
-
-            const {search, uri} = makeUris(qp, false);
-
-            fetch(uri)
-                .then(fetchReceive)
-                .then(function(xh) {
-
-                    // for (let k in xh.value) {
-                    //     DATA.charts.statistics[k] = xh.value[k];
-                    // }
-                    DATA[qp.resource].statistics = xh.value;
-    
-                    
-    
-                    if (qp.resource === 'treatments') {
-                        treatments.innerHTML = Mustache.render(
-                            tmpl_treatments,
-                            {}
-                        );
-
-                        setPlaceHolderMessage(
-                            'treatments',
-                            DATA.treatments.statistics.treatments
-                        )
-                    }
-                    else if (qp.resource === 'images') {
-                        images.innerHTML = Mustache.render(
-                            tmpl_images,
-                            {}
-                        );
-
-                        setPlaceHolderMessage(
-                            'open access images',
-                            DATA.images.statistics.open
-                        )
-                    }
-    
-                    statsChart(DATA[qp.resource].statistics);
-                    setVisualElements(qp.resource);
-                    
-                });
-        //}
-
-        // else {
-        //     setPlaceHolderMessage(qp.resource);
-        //     chart = statsChart();
-        // }
-    },
-
-    treatments: function(qp) {
-        const {search, uri} = makeUris(qp);
-
-        // single treatment
-        if (qp.treatmentId) {
-            console.log('getting a single treatment ' + qp.treatmentId)
-
-            fetch(uri)
-                .then(fetchReceive)
-                .then(function(xh) {    
-                    DATA.treatment = xh.value;
-        
-                    if (qp.format === 'xml') {
-                        return DATA.treatment;
-                    }
-    
-                    else {
-                        DATA.treatment.imgCount = niceNumbers(xh.value.imgCount);
-                        DATA.treatment.zenodeo = zenodeo;
-    
-                        if (DATA.treatment.materialsCitations.length) {
-                            DATA.treatment.mapState = 'open';
-                        }
-                        
-                        treatment.innerHTML = Mustache.render(
-                            tmpl_treatment, 
-                            DATA.treatment
-                        );
-    
-                        setVisualElements('queryEndWithTreatment');
-                        
-        
-                        if (xh.value.imgCount !== 'Zero') {
-                            const figs = document.querySelectorAll('figcaption > a');
-                            // const reporters = document.querySelectorAll('.report');
-                            // const submitters = document.querySelectorAll('.submit');
-                            // const cancellers = document.querySelectorAll('.cancel');
-                            
-                            for (let i = 0, j = figs.length; i < j; i++) {
-                                figs[i].addEventListener('click', toggleFigcaption);
-                                // reporters[i].addEventListener('click', toggleReporter);
-                                // submitters[i].addEventListener('click', submitReporter);
-                                // cancellers[i].addEventListener('click', cancelReporter);
-                            }
-                        }
-        
-                        if (DATA.treatment.materialsCitations.length) {
-                            document.querySelector('#map').classList.add('show');
-                            makeMap(DATA.treatment.materialsCitations);
-                        }
-                    }
-        
-                });
-        }
-        
-        // many treatments
-        else {
-
-            console.log('getting many treatments')
-            fetch(uri)
-                .then(fetchReceive)
-                .then(function(xh) {
-
-                    DATA.treatments.resource = 'treatments';
-                    
-                    const qryCols = Object.keys(xh.value.whereCondition);
-                    const qryVals = Object.values(xh.value.whereCondition);
-    
-                    let i = 0;
-                    const j = qryCols.length;
-    
-                    DATA.treatments.whereCondition = '';
-    
-                    if (j === 1) {
-                        if (qryCols[0] === 'text') {
-                            DATA.treatments.whereCondition = `<span class='qryVal'>${qryVals[i]}</span> is in the text`;
-                        }
-                        else {
-                            DATA.treatments.whereCondition = `<span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>`;
-                        }
-                    }
-                    else if (j === 2) {
-                        DATA.treatments.whereCondition = `<span class='qryCol'>${qryCols[0]}</span> is <span class='qryVal'>${qryVals[0]}</span> and <span class='qryCol'>${qryCols[1]}</span> is <span class='qryVal'>${qryVals[1]}</span>`;
-                    }
-                    else {
-                        for (; i < j; i++) {
-                            if (i == j - 1) {
-                                DATA.treatments.whereCondition += `and <span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>`;
-                            }
-                            else {
-                                DATA.treatments.whereCondition += `<span class='qryCol'>${qryCols[i]}</span> is <span class='qryVal'>${qryVals[i]}</span>, `;
-                            }
-                        }
-                    }
-                        
-                    if (xh.value.recordsFound) {
-                        
-                        DATA.treatments.successful = true;
-                        DATA.treatments.recordsFound = niceNumbers(xh.value.recordsFound);
-                        DATA.treatments.from = xh.value.from;
-                        DATA.treatments.to = xh.value.to;
-                        DATA.treatments.treatments = xh.value.treatments;
-    
-                        DATA.treatments.previd = xh.value.previd;
-                        DATA.treatments.nextid = xh.value.nextid;
-                        
-                        DATA.treatments = makePager(DATA.treatments, search);
-                        
-                        treatments.innerHTML = Mustache.render(
-                            tmpl_treatments, 
-                            DATA.treatments,
-                            tmplPartials
-                        );
-    
-                        setVisualElements('queryEndWithTreatments');
-    
-                        // for (let k in xh.value.statistics) {
-                        //     DATA.charts.statistics[k] = xh.value.statistics[k];
-                        // }
-    
-                        statsChart(DATA.treatments.statistics);
-
-                        // add clickEvent to links to get more details of a treatment
-                        if (withAjax) {
-                            const treatmentLinks = document.querySelectorAll('.treatmentLink');
-                            
-                            for (let i = 0, j = treatmentLinks.length; i < j; i++) {
-                                const t = treatmentLinks[i];
-                                const qp = urlDeconstruct(t.search);
-    
-                                t.addEventListener('click', function(event) {
-                                    event.stopPropagation();
-                                    event.preventDefault();
-                                    
-                                    setVisualElements('queryStart');
-                                    fetchResource['treatments'](qp);
-                                });
-                            }
-                        }
-                    }
-                    else {
-                        DATA.treatments.successful = false;
-                        DATA.treatments.recordsFound = 'No';
-                        treatments.innerHTML = Mustache.render(
-                            tmpl_treatments, 
-                            DATA.treatments,
-                            tmplPartials
-                        );
-    
-                        setVisualElements('queryEndNoResult');
-                    }
-    
-                });
-        }
-    },
-    
-    images: function(qp) {
-
-        const {search, uri} = makeUris(qp);
-
-        fetch(uri)
-            .then(fetchReceive)
-            .then(function(xh) {
-    
-                DATA.images.resource = 'images';
-
-                /* calculate whereCondtion */
-                DATA.images.whereCondition = '';
-                for (let k in xh.value.whereCondition) {
-                    if (k !== 'page' || k !== 'size' || k !== 'communities') {
-                        if (k === 'q') {
-                            DATA.images.whereCondition = `<span class='qryVal'>${xh.value.whereCondition[k]}</span> is in the text`;
-                        }
-                    }
-                }
-    
-                DATA.images.recordsFound = xh.value.recordsFound;
-                [DATA.images.figures, DATA.images.imagesFound] = makeLayout(xh.value.images);
-                
-                DATA.images = makePager(DATA.images, search, qp.page);
-                DATA.images.recordsFound = niceNumbers(xh.value.recordsFound);
-    
-                images.innerHTML = Mustache.render(
-                    tmpl_images, 
-                    DATA.images, 
-                    tmplPartials
-                );
-    
-                setVisualElements('queryEndWithImages');     
-    
-                statsChart(xh.value.statistics);
-                
-                const figs = document.querySelectorAll('figcaption > a');
-                for (let i = 0, j = figs.length; i < j; i++) {
-                    figs[i].addEventListener('click', toggleFigcaption);
-                }
-    
-                const carousel = document.querySelectorAll('.carousel');
-                for (let i = 0, j = carousel.length; i < j; i++) {
-                    carousel[i].addEventListener('click', function(event) {
-                        turnCarouselOn(DATA.images, DATA.images.figures[i].recId);
-                    });
-                }
-                
-            });
+    // find and store all the figcaptions on the page in 
+    // an array. This is done only once since figcaptions 
+    // is a global var
+    if (OCELLUS.figcaptions.length == 0) {
+        OCELLUS.figcaptions = document.querySelectorAll('figcaption');
     }
 
+    let fc = this.parentElement.style.maxHeight;
+    
+    if (fc === OCELLUS.figcaptionHeight || fc === '') {
+        let i = 0;
+        for (; i < OCELLUS.figcaptions.length; i++) {
+            OCELLUS.figcaptions[i].style.maxHeight = OCELLUS.figcaptionHeight;
+        }
+
+        this.parentElement.style.maxHeight =  '100%';
+        this.parentElement.style.overflow = 'auto';
+    }
+    else {
+        this.parentElement.style.maxHeight =  OCELLUS.figcaptionHeight;
+        this.parentElement.style.overflow = 'hidden';
+    }
 };
 
-const toggleRefreshCache = function(event) {
-    refreshCacheWarning.classList.toggle('show');
+OCELLUS.suggest = function(field) {
+    new autoComplete({
+        selector: field,
+        minChars: 3,
+        source: function(term, response) {
+            try { fetch.abort() } catch(e) {}
+            fetch(`${zenodeo}/v2/families?q=${term}`)
+                .then(OCELLUS.fetchReceive)
+                .then(response);
+        }
+    });
 };
 
-const chooseUrlFlags = function (element) {
+OCELLUS.activateUrlFlagSelectors = function() {
+    for (let i = 0, j = OCELLUS.dom.urlFlagSelectors.length; i < j; i++) {
+
+        const element = OCELLUS.dom.urlFlagSelectors[i];
+        element.addEventListener('click', function(event) {
+    
+            OCELLUS.chooseUrlFlags(element);
+            
+            if (element.name === 'communities') {
+                OCELLUS.dom.communitiesSelector.classList.remove('open');
+            }
+    
+        })
+    }
+};
+
+OCELLUS.chooseUrlFlags = function (element) {
 
     if (element.name === 'communities') {
 
         if (element.value === 'all communities') {
 
+            const j = OCELLUS.dom.communityCheckBoxes.length;
             if (element.checked === true) {
-                for (let i = 0, j = communityCheckBoxes.length; i < j; i++) {
-                    communityCheckBoxes[i].checked = true;
+                for (let i = 0; i < j; i++) {
+                    OCELLUS.dom.communityCheckBoxes[i].checked = true;
                 }
             }
             else {
-                for (let i = 0, j = communityCheckBoxes.length; i < j; i++) {
-                    if (communityCheckBoxes[i].value !== 'all communities') {
-                        communityCheckBoxes[i].checked = false;
+                for (let i = 0; i < j; i++) {
+                    if (OCELLUS.dom.communityCheckBoxes[i].value !== 'all communities') {
+                        OCELLUS.dom.communityCheckBoxes[i].checked = false;
                     }
                 }
             }
@@ -985,18 +895,18 @@ const chooseUrlFlags = function (element) {
         else {
 
             // uncheck 'all communities'
-            allCommunities.checked = false;
+            OCELLUS.dom.allCommunities.checked = false;
         }
     }
     else if (element.name === 'resource') {
 
-        const rtLabels = resourceSelector.querySelectorAll('label');
-        const rtInputs = resourceSelector.querySelectorAll('input');
+        const rtLabels = OCELLUS.dom.resourceSelector.querySelectorAll('label');
+        const rtInputs = OCELLUS.dom.resourceSelector.querySelectorAll('input');
 
         for (let i = 0; i < rtLabels.length; i++) {
             if (element.value === rtInputs[i].value) {
                 rtLabels[i].classList.add('searchFocus');
-                getStats(rtInputs[i].value);
+                OCELLUS.getResource({resource: rtInputs[i].value, stats: true});
             }
             else {
                 rtLabels[i].classList.remove('searchFocus');
@@ -1008,161 +918,4 @@ const chooseUrlFlags = function (element) {
     }
 
 };
-
-const toggleCommunities = function(event) {
-    communitiesSelector.classList.toggle('open');
-};
-
-const suggest = function(field) {
-    new autoComplete({
-        selector: field,
-        minChars: 3,
-        source: function(term, response) {
-            try { fetch.abort() } catch(e) {}
-            fetch(`${zenodeo}/v2/families?q=${term}`)
-                .then(fetchReceive)
-                .then(response);
-        }
-    });
-};
-
-const toggleFigcaption = function(event) {
-
-    // find and store all the figcaptions on the page in 
-    // an array. This is done only once since figcaptions 
-    // is a global var
-    if (figcaptions.length == 0) {
-        figcaptions = document.querySelectorAll('figcaption');
-        figcaptionLength = figcaptions.length;
-    }
-
-    let fc = this.parentElement.style.maxHeight;
-    
-    if (fc === figcaptionHeight || fc === '') {
-        let i = 0;
-        for (; i < figcaptionLength; i++) {
-            figcaptions[i].style.maxHeight = figcaptionHeight;
-        }
-
-        this.parentElement.style.maxHeight =  '100%';
-        this.parentElement.style.overflow = 'auto';
-    }
-    else {
-        this.parentElement.style.maxHeight =  figcaptionHeight;
-        this.parentElement.style.overflow = 'hidden';
-    }
-    
-};
-
-const activateUrlFlagSelectors = function() {
-    for (let i = 0, j = urlFlagSelectors.length; i < j; i++) {
-
-        const element = urlFlagSelectors[i];
-        element.addEventListener('click', function(event) {
-    
-            chooseUrlFlags(element);
-            
-            if (element.name === 'communities') {
-                communitiesSelector.classList.remove('open');
-            }
-    
-        })
-    }
-};
-
-const turnCarouselOn = function(data, recId) {
-
-    carousel.innerHTML = Mustache.render(
-        tmpl_carousel, 
-        data
-    );
-
-    setVisualElements('turnCarouselOn');
-
-    const carouselOff = document.querySelectorAll('.carouselOff');
-    for (let i = 0, j = carouselOff.length; i < j; i++) {
-        carouselOff[i].addEventListener('click', turnCarouselOff);
-    }
-    
-    const newhash = '#' + recId;
-    if (history.pushState) {
-        history.pushState(null, null, newhash);
-    }
-    else {
-        location.hash = newhash;
-    }
-};
-
-const turnCarouselOff = function(event) {
-    setVisualElements('turnCarouselOff');
-};
-
-const getStats = function(resource) {
-    fetchResource.stats({resource: resource, stats: true});
-};
-
-const statsChart = function(statistics) {
-
-    const chart = document.querySelector('#chart');
-    return new Chart(chart, {
-        type: 'bar',
-        data: {
-            labels: Object.keys(statistics),
-            datasets: [{
-                label: 'statistics',
-                data: Object.values(statistics),
-                datalabels: { color: '#000000' },
-                backgroundColor: '#ff0000',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: { beginAtZero: true }
-                }],
-                xAxes: [{
-                    scaleLabel: { fontSize: 8 }
-                }]
-            },
-            responsive: true,
-            tooltips: { enabled: false },
-            legend: { display: false }
-        }
-    });
-};
-
-const modalToggleFunc = function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    setVisualElements(this.id);
-};
-
-communitiesSelector.addEventListener('click', toggleCommunities);
-refreshCacheSelector.addEventListener('click', toggleRefreshCache);
-
-suggest(q);
-activateUrlFlagSelectors();
-
-for (let i = 0, j = modalToggle.length; i < j; i++) {
-    modalToggle[i].addEventListener('click', modalToggleFunc);
-}
-
-if (withAjax) {
-    form.addEventListener('submit', goGetIt);
-    formButton.addEventListener('click', goGetIt);
-
-    window.onpopstate = function(event) {
-        goGetIt();
-    };
-}
-
-if (location.search) {
-    goGetIt();
-}
-else {
-    //fetchResource.stats({resource: 'all', stats: true});
-    fetchResource.stats({resource: 'treatments', stats: true});
-    q.focus();
-}
+//# sourceMappingURL=ocellus.js.map

@@ -1,0 +1,115 @@
+/*****************************************/
+/* ocellus^3: form simple search         */
+/*****************************************/
+
+.searchContainer {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/*
+hide the searchChooser widget on screens 
+smaller than 375px width
+*/
+.searchChooser {
+    font-size: 1rem;
+    margin-left: 45px;
+    cursor: pointer;
+    visibility: hidden;
+}
+nav {
+    font-size: 1rem;
+    margin-left: 45px;
+}
+nav label {
+    float: left;
+    margin-right: 10px;
+}
+nav label.searchFocus {
+    text-decoration: none;
+    color: white;
+    background-color: grey;
+    padding: 2px 5px;
+    border-radius: 2px;
+}
+nav input[type="radio"] {
+    display: none;
+}
+.searchWidget {
+    width: 100%;
+    position: relative;
+    border: none;
+    clear: both;
+    display: table;
+}
+.searchTopBar {
+    position: relative;
+}
+
+#sSearch .searchInputs,
+#fSearch .searchInputs {
+    width: calc( 100% - 90px );
+    float: left;
+    background-color: white;
+    border: 1px solid #444;
+    padding: 0;
+}
+#sSearch .searchInputs {
+    height: 38px;
+}
+#fSearch .searchInputs {
+    height: auto;
+}
+#q {
+    width: calc( 100% - 25px );
+    border: none;
+    border-radius: 0;
+    height: 36px;
+}
+#q::placeholder { /* Most modern browsers support this now. */
+    color: #444;
+}
+.searchButton {
+    border-radius: 0 5px 5px 0;
+    background-color: #444;
+    border: 1px solid #444;
+    color: white !important;
+    padding-left: 12px;
+    height: 38px;
+    width: 40px;
+    position: relative;
+    font-size: unset;
+    line-height: unset;
+    margin-bottom: 0;
+}
+.searchButton:hover {
+    background-color: green !important;
+}
+#searchMessage {
+    font-size: 1rem;
+    margin-left: 45px;
+}
+#refreshCacheWarning {
+    color: red;
+    line-height: 1.1em;
+    margin-left: 45px;
+    display: block;
+    visibility: hidden;
+}
+#refreshCacheWarning.show {
+    visibility: visible;
+}
+.searchParams {
+    position: relative;
+    width: calc( 100% - 30px );
+    min-height: 38px;
+    height: auto;
+    float: left;
+}
+#q:focus {
+    color: green;
+}
+.off-none {
+    visibility: hidden;
+    display: none;
+}

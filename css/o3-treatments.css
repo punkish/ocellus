@@ -1,0 +1,28 @@
+/*****************************************/
+/* ocellus^3: treatments                 */
+/*****************************************/
+#treatments h3.records-found {
+    font-size: 3rem;
+}
+#treatments details p {
+    font-family: serif;
+    font-size: 2rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    text-align: left;
+}
+#treatments details summary {
+    outline: none;
+    padding: 5px;
+    border-bottom: 1px solid black;
+    text-align: left;
+    font-size: 2rem;
+    cursor: pointer;
+}
+.js-tabs__header li {
+    margin-bottom: 0px !important;
+}
+.js-tabs__title {
+    color: black;
+    text-decoration: none;
+}

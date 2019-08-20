@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en" id="html">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="The Biodiversity Literature Repository Explorer">
+    <meta name="version" content="3.0">
+    <meta name="author" content="Puneet Kishor">
+    <meta name="copyright" content="CC0 Public Domain Dedication">
+    
+    <title>ocellus^3</title>
+   
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
+    <link rel="stylesheet" href="css/styles.min.css">
+
+    <link rel="icon" type="image/png" href="img/ocellus.png">
+</head>
+<body>
+
+    <header>
+        <div>
+            <div class="title">
+                <a href="/" class="main-title">Ocellus<sup>3</sup></a><br>
+                <a id="about-open" class="modal-toggle sub-title msg">about</a>
+            </div>
+
+            <form name="simpleSearch" class="searchContainer" id="ssForm" method="GET">
+                <nav id="resourceSelector">
+                    <label for="resource-treatments" class="searchFocus">treatments</label>
+                    <input id="resource-treatments" class="urlFlag" type="radio" name="resource" value="treatments" checked=true>
+
+                    <label for="resource-images">images</label>
+                    <input id="resource-images" class="urlFlag" type="radio" name="resource" value="images">
+                </nav>
+
+                <div id="sSearch" class="searchWidget">
+                    <div class="drop-down">
+                        <div class="arrow-down" data-tooltip="choose a community">•••</div>
+                        <div class="communities">
+                            <div class="switches">
+                                <input class="urlFlag switch" type="checkbox" id="switch1" name="communities" value="all communities">
+                                <label for="switch1">all communities</label>
+                            </div>
+                            
+                            <div class="switches">
+                                <input class="urlFlag" type="checkbox" id="switch2" name="communities" value="biosyslit" checked=true>
+                                <label for="switch2">biosyslit</label>
+                            </div>
+                            
+                            <div class="switches">	
+                                <input class="urlFlag" type="checkbox" id="switch3" name="communities" value="belgiumherbarium">
+                                <label for="switch3">belgiumherbarium</label>
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                    <div class="searchInputs">
+                        <input type="hidden" name="page" value="1">
+                        <input type="hidden" name="size" value="30">
+                        <input type="hidden" name="id" value="0">
+                        <input id="q" name="q" type="text" required placeholder="search for something">
+                        <input class="urlFlag" type="checkbox" name="refreshCache" value="">
+                    </div>
+
+                    <button id="ssGo" class="searchButton" disabled>go</button>
+                    <div id="fSearch" class="off-none"></div>
+                    <a id="searchChooser" class="searchChooser" href="">switch to fancy search</a>
+                    <div id="refreshCacheWarning">This will refresh the cache; you probably don’t want this.</div>
+                </div>
+            </form>
+            
+        </div>
+
+        <div id="throbber" class="throbber hidden-panel"></div>
+    </header>
+    <!-- <div class="grid-container full"> -->
+    <article>
+
+        <!-- <section id="maintenance" style="text-align: center; padding: 4rem;">
+            <p>We'll be back soon as we've finished some housecleaning, upgrades and repairs.</p>
+        </section> -->
+        <section id="about" class="hidden-panel">
+            <a id="about-close" class="modal-toggle">close</a>
+            <div class="modal-text">
+                <p>Ocellus is a frontend to the Biodiversity Literature Repository (BLR) with almost 200K images on <a href="https://zenodo.org" target="_blank">Zenodo</a>, more than 300K taxonomic treatments in <a href="http://treatmentbank.org" target="_blank">TreatmentBank</a>, and 800,000 citations on <a href="https://refbank.org" target="_blank">RefBank</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API that queries, analyzes and aggregates results from these various repositories via a single, unified interface. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes,and Ocellus will retrieve the results for you.</p>
+        
+                <p>For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country. The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up">Internet Archive</a> and has no known copyright restrictions. Please check out our <a id="privacy-open" href="/privacy" class="warning modal-toggle">privacy</a> policy or contact <a href="mailto:blr@plazi.org">Plazi</a> for more information or to provide feedback.</p>
+            </div>
+        </section>
+
+        <section id="privacy" class="hidden-panel">
+            <a id="privacy-close" class="modal-toggle">close</a>
+            <div class="modal-text">
+                <p>We track nothing whatsoever. Please contact <a href="mailto:blr@plazi.org">Plazi</a> for more information or to provide feedback.</p>
+            </div>
+        </section>
+
+        <section id="images" class="hidden-panel"></section>
+        <section id="carousel" class="hidden-panel"></section>
+        <section id="treatments" class="hidden-panel"></section>
+        <section id="treatment" class="hidden-panel"></section>
+    </article>
+    <!-- </div> -->
+
+    <footer><img src="img/fish.jpg"></footer>
+
+    <!-- partials -->
+    <script id="templatePager" type="x-tmpl-mustache">
+        {{#pager}}
+        <div id="pager">
+            {{#prev}}◀ <a href="{{prev}}" id="prev" class="pager">prev</a>{{/prev}}
+            {{#next}}<a href="{{next}}" id="next" class="pager">next</a> ▶{{/next}}
+        </div>
+        {{/pager}}
+    </script>
+    
+    <script id="templateRecordsFound" type="x-tmpl-mustache">
+        <h3>{{recordsFound}} {{resource}} found where {{{whereCondition}}}. {{#successful}}{{from}} to {{to}} shown below.{{/successful}}</h3>
+    </script>
+    <!-- end partials -->
+
+    <!-- template for the masonry wall of images -->
+    <script id="templateImages" type="x-tmpl-mustache">
+        {{> templateRecordsFound}}
+        
+        <canvas id="chart"></canvas>
+
+        <div id="masonry" class="masonry">
+            {{#figures}}
+            <figure class="item">
+                <a href="#carousel" class="carousel"><img src="{{imgBlur}}" width="250" data-src="{{imgA}}" class="lazyload" data-recid="{{recId}}"></a>
+                
+                <figcaption class="transition-050 opacity85 text">
+                    <a class="transition-050">rec ID: {{recId}}</a>
+                    <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
+                </figcaption>
+            </figure>
+            {{/figures}}
+        </div>
+        
+        {{> templatePager}}
+    </script>
+    
+    <!-- template for the vertical carousel -->
+    <script id="templateCarousel" type="x-tmpl-mustache"> 
+        {{#figures}}
+        <figure id="{{recId}}" class="image-wrapper">
+            <div class="carouselOff">x</div>
+            <a href="{{imageSrc}}" target="_blank">
+                <img src="{{imgA}}" data-src="{{imgC}}"  class="lazyload" alt="{{title}}" data-recid="{{recId}}"></a>
+            <figcaption>
+                <a class="transition-050">rec ID: {{recId}}</a>
+                <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
+            </figcaption>
+        </figure>
+        {{/figures}}
+    </script>
+    
+    <!-- template for fulltext search of treatments -->
+    <script id="templateTreatments" type="x-tmpl-mustache">
+        {{> templateRecordsFound}}
+
+        <canvas id="chart"></canvas>
+    
+        {{#successful}}
+        {{#treatments}}
+        <details open>
+            <summary>{{treatmentTitle}}</summary>
+            
+            <!--
+            <div class='masonry'>
+                {{#images}}
+                <a href="#carousel" class="carousel"><img src="{{thumb50}}" width="50" alt="{{imageTitle}}"></a> 
+                {{/images}}
+            </div>
+            -->
+    
+            <p>{{{s}}} <a class="treatmentLink" href="/index.html?resource=treatments&treatmentId={{treatmentId}}">more</a></p>
+        </details>
+        {{/treatments}}
+        
+        {{> templatePager}}
+        {{/successful}}
+    </script>
+    
+    <!-- template for a single treatment -->
+    <script id="templateTreatment" type="x-tmpl-mustache">
+        <h2 class="treatmentTitle">{{treatmentTitle}}</h2>
+        <div>
+            <div id="treatmentInfo">
+                <ul class="pids">
+                    <li class="treatmentId">Treatment ID: <a href="{{zenodeo}}/v2/treatments?treatmentId={{treatmentId}}&format=xml" target="_blank">{{treatmentId}}</a> <span class="xml-marker">&lt;xml&gt;</span></li>
+                    <li class="doi">DOI: <a href="{{doi}}" target="_blank">{{doi}}</a></li>
+                    <li class="zenodoDep">Zenodo deposit: <a href="https://www.zenodo.org/record/{{zenodoDep}}" target="_blank">{{zenodoDep}}</a></li>
+                </ul>
+                
+                <p class="journal">{{authorsList}}. {{journalYear}}. {{articleTitle}}. <i>{{journalTitle}}</i>, Vol. {{journalVolume}}, Issue {{journalIssue}}, pages {{pages}}</p>
+            </div>
+    
+            <ul class="classification">
+                {{#taxonStats}}
+                <li class="kingdom">
+                    <div class="txn">
+                        <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{kingdom.qryObj.kingdom}}">{{kingdom.qryObj.kingdom}}</a> [{{kingdom.num.num}}]
+                    </div>
+                </li>
+                <li class="phylum">
+                    <div class="txn">
+                        <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{phylum.qryObj.kingdom}}&phylum={{phylum.qryObj.phylum}}">{{phylum.qryObj.phylum}}</a> [{{phylum.num.num}}]
+                    </div>
+                </li>
+                <li class="order">
+                    <div class="txn">
+                        <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{order.qryObj.kingdom}}&phylum={{order.qryObj.phylum}}&order={{order.qryObj.order}}">{{order.qryObj.order}}</a> [{{order.num.num}}]
+                    </div>
+                </li>
+                <li class="family">
+                    <div class="txn">
+                        <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{family.qryObj.kingdom}}&phylum={{family.qryObj.phylum}}&order={{family.qryObj.order}}&family={{family.qryObj.family}}">{{family.qryObj.family}}</a> [{{family.num.num}}]
+                    </div>
+                </li>
+                <li class="genus">
+                    <div class="txn">
+                        <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{genus.qryObj.kingdom}}&phylum={{genus.qryObj.phylum}}&order={{genus.qryObj.order}}&family={{genus.qryObj.family}}&genus={{genus.qryObj.genus}}">{{genus.qryObj.genus}}</a> [{{genus.num.num}}]
+                    </div>
+                </li>
+                <li class="species">
+                    <div class="txn">
+                        <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{species.qryObj.kingdom}}&phylum={{species.qryObj.phylum}}&order={{species.qryObj.order}}&family={{species.qryObj.family}}&genus={{species.qryObj.genus}}&species={{species.qryObj.species}}">{{species.qryObj.species}}</a> [{{species.num.num}}]
+                    </div>
+                </li>
+                {{/taxonStats}}
+            </ul>
+        </div>
+
+        <h2 class="map">Map</h2>
+        <div id="map"></div>
+
+        <h2 class="figures">Figures</h2>
+        
+        <div>
+            {{#figures}}
+            <figure class='item'>
+                <a href="#carousel" class="carousel"><img src="{{thumbnailUri}}" width="250" data-src="{{httpUri}}" class="lazyload" data-recid="{{figureCitationId}}"></a>
+                
+                <figcaption class="transition-050 opacity85 text">
+                    <a class="transition-050">rec ID: {{figureCitationId}}</a>
+                    <div class="transition-050 desc">{{captionText}}</div>
+                </figcaption>
+            </figure>
+            {{/figures}}
+        </div>
+
+    <!-- <details class="treatment">
+        <h2 class="figures">Figures</h2>
+        <div id="masonry" class="masonry">
+            {{#figures}}
+            <figure class='item'>
+                <a href="#carousel" class="carousel"><img src="{{imgBlur}}" width="250" data-src="{{imgA}}" class="lazyload" data-recid="{{recId}}"></a>
+                
+                <figcaption class="transition-050 opacity85 text">
+                    <a class="transition-050">rec ID: {{recId}}</a>
+                    <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
+                </figcaption>
+            </figure>
+            {{/figures}}
+        </div>
+    </details> -->
+
+
+        <h2 class="citations">Citations</h2>
+        <div>
+            <ul class="citations">
+                {{#citations}}
+                <li>{{citation}}</li>
+                {{/citations}}
+            </ul>
+        </div>
+
+        <h2 class="xmltext">Treatment Text</h2>
+        <div>
+            <p class="xml">{{{xml}}}</p>
+        </div>
+    </script>
+
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
+    <script src="js/config.js"></script>
+    <script src="js/scripts.min.js"></script>
+</body>
+</html>

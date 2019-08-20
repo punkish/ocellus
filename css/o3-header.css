@@ -1,0 +1,35 @@
+/*****************************************/
+/* ocellus^3: header                     */
+/*****************************************/
+
+.grid-container.four-one {
+	grid-template-columns: 4fr 1fr; 
+    grid-template-rows: 1fr; 
+    grid-column-gap: 10px;
+    grid-row-gap: 0px; 
+}
+header {
+/*     padding: 2rem 0rem 0rem 1rem; */
+    background-color: #f5f5f5;
+    font-family: sans-serif;
+    border-bottom: 1px solid silver;
+}
+.title {
+    line-height: 15px;
+    text-align: center;
+/*     margin-bottom: 15px; */
+}
+a.main-title {
+    text-decoration: none;
+    color: black;
+    margin-bottom: 0;
+}
+.sub-title {
+    margin-top: -5px;
+    font-size: 1rem;
+}
+#ssForm,
+#fSearch {
+    width: 100%;
+    font-size: 1rem;
+}

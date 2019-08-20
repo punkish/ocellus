@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>2 Way Data Binding</title>
+</head>
+<body>
+Name: <input class="name" type="text">
+<input class="name" type="text">
+<hr />
+Age: <input class="age" type="text">
+<input class="age" type="text">
+<script>
+var $scope = {};
+(function () {
+    var bindClasses = ["name", "age"];
+    var attachEvent = function (classNames) {
+        classNames.forEach(function (className) {
+            var elements = document.getElementsByClassName(className);
+            for (var index in elements) {
+                elements[index].onkeyup = function () {
+                    for (var index in elements) {
+                        elements[index].value = this.value;
+                    }
+                }
+            }
+            Object.defineProperty($scope, className, {
+                set: function (newValue) {
+                    for (var index in elements) {
+                        elements[index].value = newValue;
+                    }
+                }
+            });
+        });
+    };
+    attachEvent(bindClasses);
+})();
+</script>
+</body>
+</html>

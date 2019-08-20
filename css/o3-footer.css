@@ -1,0 +1,12 @@
+/*****************************************/
+/* ocellus^3: footer                     */
+/*****************************************/
+
+footer {
+    text-align: center;
+    padding: 0;
+}
+footer img {
+    width: 80%;
+    max-width: 480px;
+}

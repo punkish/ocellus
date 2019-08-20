@@ -1,0 +1,16 @@
+/*****************************************/
+/* ocellus^3: article                    */
+/*****************************************/
+
+article {
+    flex: 1 1 0%;
+    padding: 1rem;
+    width: 90%;
+    max-width: 960px;
+}
+article section {
+    padding: 2rem;
+}
+article section p {
+    text-align: left;
+}
