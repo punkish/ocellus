@@ -15,7 +15,7 @@ OCELLUS.getOneTreatment = function(uri, search) {
 
             else {
                 OCELLUS.model.treatment.imgCount = OCELLUS.niceNumbers(OCELLUS.model.treatment.imgCount);
-                OCELLUS.model.treatment.zenodeo = zenodeo;
+                OCELLUS.model.treatment.zenodeo = OCELLUS.zenodeo;
 
                 if (OCELLUS.model.treatment['related-records'].materialsCitations.length) {
                     OCELLUS.model.treatment.materialsCitations = OCELLUS.model.treatment['related-records'].materialsCitations;
