@@ -34,7 +34,20 @@ OCELLUS.statsChart = function(statistics) {
                 datasets: [{
                     label: statistics[i]['chart-name'],
                     data: statistics[i]['y-axis'].values,
-                    datalabels: { color: '#000000' },
+                    datalabels: { 
+                        color: '#000000',
+                        formatter: function(value, context) {
+                            if (value > 1000000) {
+                                return `${Math.round(value/1000000)}M`
+                            }
+                            else if (value > 1000) {
+                                return `${Math.round(value/1000)}K`
+                            }
+                            else {
+                                return value;
+                            } 
+                        }
+                    },
                     backgroundColor: '#ff0000',
                     borderWidth: 1
                 }]
@@ -42,7 +55,22 @@ OCELLUS.statsChart = function(statistics) {
             options: {
                 scales: {
                     yAxes: [{
-                        ticks: { beginAtZero: true }
+                        ticks: { 
+                            beginAtZero: true,
+
+                            // Include a dollar sign in the ticks
+                            callback: function(value, index, values) {
+                                if (value > 1000000) {
+                                    return `${value/1000000}M`
+                                }
+                                else if (value > 1000) {
+                                    return `${value/1000}K`
+                                }
+                                else {
+                                    return value;
+                                }
+                            }
+                        }
                     }],
                     xAxes: [{
                         scaleLabel: { fontSize: 8 }

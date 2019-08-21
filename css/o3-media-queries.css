@@ -33,7 +33,11 @@
 }
 
 /* Larger than phablet */
-@media (min-width: 900px) {}
+@media (min-width: 900px) {
+    article {
+        width: 90%;
+    }
+}
 
 /* Larger than tablet */
 @media (min-width: 1200px) {}

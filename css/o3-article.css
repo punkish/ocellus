@@ -5,7 +5,7 @@
 article {
     flex: 1 1 0%;
     padding: 1rem;
-    width: 90%;
+    width: 100%;
     max-width: 960px;
 }
 article section {
@@ -13,4 +13,8 @@ article section {
 }
 article section p {
     text-align: left;
+}
+.js-tabs {
+    width: 100%;
+    margin: 0;
 }
