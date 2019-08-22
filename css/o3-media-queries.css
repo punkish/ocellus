@@ -30,12 +30,20 @@
         font-size: 1rem;
         max-width: 960px;
     }
+    .treatmentInfo table th,
+    .treatmentInfo table td {
+        font-size: 15px;
+    }
 }
 
 /* Larger than phablet */
 @media (min-width: 900px) {
     article {
         width: 90%;
+    }
+    .treatmentInfo table th,
+    .treatmentInfo table td {
+        font-size: 20px;
     }
 }
 
