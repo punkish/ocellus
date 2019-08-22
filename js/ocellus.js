@@ -1,4 +1,4 @@
-/*! 2019-08-21 */
+/*! 2019-08-22 */
 if (typeof(OCELLUS) === 'undefined' || typeof(OCELLUS) !== 'object') {
     OCELLUS = {};
 }
@@ -80,7 +80,8 @@ OCELLUS.map = {
     url: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     id: 'mapbox.streets',
-    accessToken: 'pk.eyJ1IjoicHVua2lzaCIsImEiOiJjajhvOXY0dW8wMTA3MndvMzBlamlhaGZyIn0.3Ye8NRiiGyjJ1fud7VbtOA'
+    accessToken: 'pk.eyJ1IjoicHVua2lzaCIsImEiOiJjajhvOXY0dW8wMTA3MndvMzBlamlhaGZyIn0.3Ye8NRiiGyjJ1fud7VbtOA',
+    leaflet: {}
 };
 
 OCELLUS.init = function(state) {
@@ -406,8 +407,12 @@ OCELLUS.getManyTreatments = function(uri, search) {
                         OCELLUS['template-partials']
                     );
 
-                    const tabs = new Tabs({ elem: "tabs", open: 0 });
+                    
                     OCELLUS.statsChart(OCELLUS.model.treatments.statistics);
+                    //OCELLUS.makeMap(OCELLUS.model.treatments.map);
+                    const tabs = new Tabs({ elem: "tabs", open: 0 });
+                    //tabs.open(1);
+                    
                     OCELLUS.dom.q.placeholder = `search ${OCELLUS.model.treatments['num-of-records']} treatments`;
                 }
                 else {
@@ -425,6 +430,7 @@ OCELLUS.getManyTreatments = function(uri, search) {
 
             OCELLUS.toggle(OCELLUS.dom.throbber, 'off');
             OCELLUS.toggle(OCELLUS.dom.treatments, 'on');
+            OCELLUS.map.leaflet.invalidateSize();
 
         });
 };
@@ -433,45 +439,61 @@ OCELLUS.getTreatments = function(queryObj, search, uri) {
 
     // single treatment
     if (queryObj.treatmentId) {
-        console.log('getting a single treatment ' + queryObj.treatmentId);
+        //console.log('getting a single treatment ' + queryObj.treatmentId);
         OCELLUS.getOneTreatment(uri, search);
     }
     
     // many treatments
     else {
-        console.log('getting many treatments from ' + uri);
+        //console.log('getting many treatments from ' + uri);
         OCELLUS.getManyTreatments(uri, search);
     }
 };
 
-OCELLUS.makeMap = function(mcs) {
+OCELLUS.makeMap = function(points) {
 
     // initialize the map and add the layers to it
-    const mcmap = L.map('map', {
+    OCELLUS.map.leaflet = L.map('map', {
         center: [0, 0],
-        zoom: 8,
+        zoom: 2,
         scrollWheelZoom: false
     });
 
-    L.tileLayer(OCELLUS.map.url, {
+    const tiles = L.tileLayer(OCELLUS.map.url, {
         attribution: OCELLUS.map.attribution,
         maxZoom: 18,
         id: OCELLUS.map.id,
         accessToken: OCELLUS.map.accessToken
-    }).addTo(mcmap);
+    }).addTo(OCELLUS.map.leaflet);
 
     // https://stackoverflow.com/questions/16845614/zoom-to-fit-all-markers-in-mapbox-or-leaflet
     const markers = [];
-    mcs.forEach(mc => {
-        if (mc.latitude && mc.longitude) {
+    points.forEach(p => {
+        if (typeof(p.latitude) === 'number' && typeof(p.longitude) === 'number') {
+
+            const title = mc.treatmentTitle;
+            
             const marker = L.marker([mc.latitude, mc.longitude]).addTo(mcmap);
-            marker.bindPopup(mc.typeStatus);
+            marker.bindPopup(mc.typeStatus + '<br>' + title);
             markers.push(marker)
         }
-    })
+    });
 
-    const bounds = new L.featureGroup(markers).getBounds();
-    mcmap.fitBounds(bounds);
+    OCELLUS.map.leaflet.addLayer(markers);
+    
+    
+
+    // const bounds = new L.featureGroup(markers).getBounds();
+    // console.log(foo);
+    // console.log(bounds);
+
+    // const b = [
+    //     [-35.331112, 149.775],
+    //     [-37.331387, 138.7475]
+    // ];
+
+    //mcmap.fitBounds(new L.featureGroup(markers).getBounds().pad(0.5));
+
 }
 if (typeof(OCELLUS) === 'undefined' || typeof(OCELLUS) !== 'object') {
     OCELLUS = {};

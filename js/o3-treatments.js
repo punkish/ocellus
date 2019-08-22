@@ -169,30 +169,9 @@ OCELLUS.makeMap = function(points) {
 
             const title = mc.treatmentTitle;
             
-            const marker = L.marker(
-                [mc.latitude, mc.longitude],
-                { title: title } 
-            );
-            
             const marker = L.marker([mc.latitude, mc.longitude]).addTo(mcmap);
-            marker.bindPopup(mc.typeStatus);
+            marker.bindPopup(mc.typeStatus + '<br>' + title);
             markers.push(marker)
-        }
-    })
-
-    const markers = L.markerClusterGroup();
-    
-    mcs.forEach(mc => {
-        if (typeof(mc.latitude) === 'number' && typeof(mc.longitude) === 'number') {
-            const title = mc.treatmentTitle;
-            
-            const marker = L.marker(
-                [mc.latitude, mc.longitude],
-                { title: title } 
-            );
-
-            marker.bindPopup(title);
-            markers.addLayer(marker);
         }
     });
 
