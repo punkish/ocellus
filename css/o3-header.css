@@ -1,35 +1,41 @@
 /*****************************************/
-/* ocellus^3: header                     */
+/* blr: header                           */
 /*****************************************/
 
-.grid-container.four-one {
-	grid-template-columns: 4fr 1fr; 
-    grid-template-rows: 1fr; 
-    grid-column-gap: 10px;
-    grid-row-gap: 0px; 
+header > div > div {
+    margin: auto;
+    width: 110px;
 }
-header {
-    padding: 2rem 2rem 1rem 2rem;
-    background-color: #f5f5f5;
-    font-family: sans-serif;
-    border-bottom: 1px solid silver;
+.titleContainer {
+    background-image: url(/img/bug.gif);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    display: block;
+    width: 100px;
+    height: 100px;
 }
-.title {
-    line-height: 15px;
-    text-align: center;
-/*     margin-bottom: 15px; */
-}
-a.main-title {
+.titleContainer .title {
     text-decoration: none;
     color: black;
-    margin-bottom: 0;
 }
-.sub-title {
-    margin-top: -5px;
-    font-size: 1rem;
+
+/* Larger than mobile (default point when grid becomes active) */
+@media (min-width: 600px) {
+    header > div {
+        width: 500px;
+    }
 }
-#ssForm,
-#fSearch {
-    width: 100%;
-    font-size: 1rem;
+    
+/* Larger than phablet */
+@media (min-width: 900px) {
+    header > div {
+        width: 600px;
+    }
+}
+
+/* Larger than tablet */
+@media (min-width: 1200px) {
+    header > div {
+        width: 900px;
+    }
 }

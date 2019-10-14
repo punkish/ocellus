@@ -1,181 +1,188 @@
-if (typeof(OCELLUS) === 'undefined' || typeof(OCELLUS) !== 'object') {
-    OCELLUS = {};
-}
+if (typeof(BLR) === 'undefined' || typeof(BLR) !== 'object') BLR = {};
 
-OCELLUS.getOneTreatment = function(uri, search) {
-    
+if (!('treatments' in BLR)) BLR.treatments = {};
+
+BLR.treatments.getOneTreatment = function(uri) {
     fetch(uri)
-        .then(OCELLUS.fetchReceive)
+        .then(BLR.utils.fetchReceive)
         .then(function(res) {    
-            OCELLUS.model.treatment = res.value;
-
+            BLR.base.model.treatment = res.value;
             if (uri.indexOf('xml') > -1) {
-                return OCELLUS.model.treatment;
+                return BLR.base.model.treatment;
             }
-
             else {
-                OCELLUS.model.treatment.imgCount = OCELLUS.niceNumbers(OCELLUS.model.treatment.imgCount);
-                OCELLUS.model.treatment.zenodeo = OCELLUS.zenodeo;
+                BLR.treatments.loadOneTreatment(BLR.base.model);
+            }
+        });
+};
 
-                if (OCELLUS.model.treatment['related-records'].materialsCitations.length) {
-                    OCELLUS.model.treatment.materialsCitations = OCELLUS.model.treatment['related-records'].materialsCitations;
-                    OCELLUS.model.treatment.mapState = 'open';
-                }
+BLR.treatments.loadOneTreatment = function(data) {
+    data.treatment.imgCount = BLR.utils.niceNumbers(data.treatment.imgCount);
+    data.treatment.zenodeo = BLR.base.zenodeo;
 
-                if (OCELLUS.model.treatment['related-records'].bibRefCitations.length) {
-                    OCELLUS.model.treatment.bibRefCitations = OCELLUS.model.treatment['related-records'].bibRefCitations;
-                    OCELLUS.model.treatment.bibRefCitationsState = 'open';
-                }
+    if (data.treatment['related-records'].materialsCitations.length) {
+        data.treatment.materialsCitations = data.treatment['related-records'].materialsCitations;
+        data.treatment.mapState = 'open';
+    }
 
-                if (OCELLUS.model.treatment['related-records'].figureCitations.length) {
-                    OCELLUS.model.treatment.figureCitations = OCELLUS.model.treatment['related-records'].figureCitations;
-                    OCELLUS.model.treatment.figureCitationsState = 'open';
-                }
+    if (data.treatment['related-records'].bibRefCitations.length) {
+        data.treatment.bibRefCitations = data.treatment['related-records'].bibRefCitations;
+        data.treatment.bibRefCitationsState = 'open';
+    }
 
-                if (OCELLUS.model.treatment['related-records'].treatmentAuthors.length) {
-                    OCELLUS.model.treatment.treatmentAuthors = OCELLUS.model.treatment['related-records'].treatmentAuthors;
-                    OCELLUS.model.treatment.treatmentAuthorsList = OCELLUS.formatAuthorsList(OCELLUS.model.treatment['related-records'].treatmentAuthors);
+    if (data.treatment['related-records'].figureCitations.length) {
+        data.treatment.figureCitations = data.treatment['related-records'].figureCitations;
+        data.treatment.figureCitationsState = 'open';
+    }
+
+    if (data.treatment['related-records'].treatmentAuthors.length) {
+        data.treatment.treatmentAuthors = data.treatment['related-records'].treatmentAuthors;
+        data.treatment.treatmentAuthorsList = BLR.utils.formatAuthorsList(data.treatment['related-records'].treatmentAuthors);
+    }
+    
+    BLR.base.dom.treatment.results.innerHTML = Mustache.render(
+        BLR.base.templates.wholes.treatment, 
+        data.treatment,
+        BLR.base.templates.partials
+    );        
+
+    if (data.treatment.imgCount !== 'Zero') {
+        const figs = document.querySelectorAll('figcaption > a');
+        // const reporters = document.querySelectorAll('.report');
+        // const submitters = document.querySelectorAll('.submit');
+        // const cancellers = document.querySelectorAll('.cancel');
+        
+        for (let i = 0, j = figs.length; i < j; i++) {
+            figs[i].addEventListener('click', BLR.utils.toggleFigcaption);
+            // reporters[i].addEventListener('click', toggleReporter);
+            // submitters[i].addEventListener('click', submitReporter);
+            // cancellers[i].addEventListener('click', cancelReporter);
+        }
+    }
+
+    if (data.treatment['related-records'].materialsCitations.length) {
+        BLR.treatments.makeMap(data.treatment.materialsCitations);
+    }
+    
+
+    BLR.utils.turnOffAll();
+    BLR.eventlisteners.toggle(BLR.base.dom.throbber, 'off');
+    BLR.eventlisteners.toggle(BLR.base.dom.treatment.section, 'on');
+    BLR.base.map.leaflet.invalidateSize();
+};
+
+BLR.treatments.loadManyTreatments = function(data) {
+    if (data.treatments['num-of-records']) {
+
+        data.treatments.resource = 'treatments';
+
+        if (data.treatments['num-of-records'] > 0) {
+            if (data.treatments.records && data.treatments.records.length) {
+                data.treatments.successful = true;
+                data.treatments['num-of-records'] = BLR.utils.niceNumbers(data.treatments['num-of-records']);
+                data.treatments.from = BLR.utils.niceNumbers(data.treatments.from);
+
+                if (data.treatments.to < 10) {
+                    data.treatments.to = BLR.utils.niceNumbers(data.treatments.to).toLowerCase();
                 }
                 
-                OCELLUS.dom.treatments.innerHTML = Mustache.render(
-                    OCELLUS.templates.treatment, 
-                    OCELLUS.model.treatment,
-                    OCELLUS['template-partials']
-                );        
-
-                if (OCELLUS.model.treatment.imgCount !== 'Zero') {
-                    const figs = document.querySelectorAll('figcaption > a');
-                    // const reporters = document.querySelectorAll('.report');
-                    // const submitters = document.querySelectorAll('.submit');
-                    // const cancellers = document.querySelectorAll('.cancel');
-                    
-                    for (let i = 0, j = figs.length; i < j; i++) {
-                        figs[i].addEventListener('click', OCELLUS.toggleFigcaption);
-                        // reporters[i].addEventListener('click', toggleReporter);
-                        // submitters[i].addEventListener('click', submitReporter);
-                        // cancellers[i].addEventListener('click', cancelReporter);
-                    }
-                }
-
-                if (OCELLUS.model.treatment['related-records'].materialsCitations.length) {
-                    //document.querySelector('#map').classList.add('show');
-                    OCELLUS.makeMap(OCELLUS.model.treatment.materialsCitations);
-                }
-
-                OCELLUS.toggle(OCELLUS.dom.throbber, 'off');
-                OCELLUS.toggle(OCELLUS.dom.treatments, 'on');
+                data.treatments['search-criteria-text'] = BLR.utils.formatSearchCriteria(
+                    data.treatments['search-criteria'],
+                    data.treatments['num-of-records'],
+                    'treatments'
+                );
+                
+                BLR.utils.makePager(data.treatments);
             }
+            else {
+                data.treatments.successful = false;
+            }
+            
+            BLR.base.dom.treatments.results.innerHTML = Mustache.render(
+                BLR.base.templates.wholes.treatments, 
+                data.treatments,
+                BLR.base.templates.partials
+            );
 
-        });
+            
+            //BLR.utils.statsChart(data.treatments.statistics);
+            //BLR.makeMap(BLR.model.treatments.map);
+            //const tabs = new Tabby('[data-tabs]');
+ 
+            //tabs.open(1);
+        }
+        else {
+            data.treatments.successful = false;
+            data.treatments['num-of-records'] = 'No';
+
+            BLR.base.dom.treatments.results.innerHTML = Mustache.render(
+                BLR.base.templates.wholes.treatments, 
+                data.treatments,
+                BLR.base.templates.partials
+            );
+        }
+
+    }
+
+    BLR.utils.turnOffAll();
+    BLR.eventlisteners.toggle(BLR.base.dom.throbber, 'off');
+    BLR.eventlisteners.toggle(BLR.base.dom.treatments.section, 'on');
 };
 
-OCELLUS.getManyTreatments = function(uri, search) {
-
+BLR.treatments.getManyTreatments = function(uri) {
     fetch(uri)
-        .then(OCELLUS.fetchReceive)
+        .then(BLR.utils.fetchReceive)
         .then(function(res) {
-            OCELLUS.model.treatments = res.value;
-
-            if (OCELLUS.model.treatments['num-of-records']) {
-
-                OCELLUS.model.treatments.resource = 'treatments';
-
-                if (OCELLUS.model.treatments['num-of-records'] > 0) {
-                    if (OCELLUS.model.treatments.records && OCELLUS.model.treatments.records.length) {
-                        OCELLUS.model.treatments.successful = true;
-                        OCELLUS.model.treatments['num-of-records'] = OCELLUS.niceNumbers(OCELLUS.model.treatments['num-of-records']);
-                        OCELLUS.model.treatments.from = OCELLUS.niceNumbers(OCELLUS.model.treatments.from);
-
-                        if (OCELLUS.model.treatments.to < 10) {
-                            OCELLUS.model.treatments.to = OCELLUS.niceNumbers(OCELLUS.model.treatments.to).toLowerCase();
-                        }
-                        
-                        OCELLUS.model.treatments['search-criteria-text'] = OCELLUS.formatSearchCriteria(OCELLUS.model.treatments['search-criteria']);
-                        OCELLUS.makePager(OCELLUS.model.treatments, search, false);
-                    }
-                    else {
-                        OCELLUS.model.treatments.successful = false;
-                    }
-                    
-                    OCELLUS.dom.treatments.innerHTML = Mustache.render(
-                        OCELLUS.templates.treatments, 
-                        OCELLUS.model.treatments,
-                        OCELLUS['template-partials']
-                    );
-
-                    
-                    OCELLUS.statsChart(OCELLUS.model.treatments.statistics);
-                    //OCELLUS.makeMap(OCELLUS.model.treatments.map);
-                    const tabs = new Tabs({ elem: "tabs", open: 0 });
-                    //tabs.open(1);
-                    
-                    OCELLUS.dom.q.placeholder = `search ${OCELLUS.model.treatments['num-of-records']} treatments`;
-                }
-                else {
-                    OCELLUS.model.treatments.successful = false;
-                    OCELLUS.model.treatments['num-of-records'] = 'No';
-
-                    OCELLUS.dom.treatments.innerHTML = Mustache.render(
-                        OCELLUS.templates.treatments, 
-                        OCELLUS.model.treatments,
-                        OCELLUS['template-partials']
-                    );
-                }
-
-            }
-
-            OCELLUS.toggle(OCELLUS.dom.throbber, 'off');
-            OCELLUS.toggle(OCELLUS.dom.treatments, 'on');
-            OCELLUS.map.leaflet.invalidateSize();
-
+            BLR.base.model.treatments = res.value;
+            BLR.treatments.loadManyTreatments(BLR.base.model);
         });
 };
 
-OCELLUS.getTreatments = function(queryObj, search, uri) {
+BLR.treatments.getTreatments = function(uri) {
 
     // single treatment
-    if (queryObj.treatmentId) {
-        //console.log('getting a single treatment ' + queryObj.treatmentId);
-        OCELLUS.getOneTreatment(uri, search);
+    if (uri.indexOf('treatmentId') > -1) {
+        BLR.treatments.getOneTreatment(uri);
     }
     
     // many treatments
     else {
-        //console.log('getting many treatments from ' + uri);
-        OCELLUS.getManyTreatments(uri, search);
+        BLR.treatments.getManyTreatments(uri);
     }
 };
 
-OCELLUS.makeMap = function(points) {
+BLR.treatments.makeMap = function(points) {
 
     // initialize the map and add the layers to it
-    OCELLUS.map.leaflet = L.map('map', {
+    BLR.base.map.leaflet = L.map('map', {
         center: [0, 0],
         zoom: 2,
         scrollWheelZoom: false
     });
 
-    const tiles = L.tileLayer(OCELLUS.map.url, {
-        attribution: OCELLUS.map.attribution,
+    const tiles = L.tileLayer(BLR.base.map.url, {
+        attribution: BLR.base.map.attribution,
         maxZoom: 18,
-        id: OCELLUS.map.id,
-        accessToken: OCELLUS.map.accessToken
-    }).addTo(OCELLUS.map.leaflet);
+        id: BLR.base.map.id,
+        accessToken: BLR.base.map.accessToken
+    }).addTo(BLR.base.map.leaflet);
 
     // https://stackoverflow.com/questions/16845614/zoom-to-fit-all-markers-in-mapbox-or-leaflet
     const markers = [];
     points.forEach(p => {
         if (typeof(p.latitude) === 'number' && typeof(p.longitude) === 'number') {
 
-            const title = mc.treatmentTitle;
+            const title = points.treatmentTitle;
             
-            const marker = L.marker([mc.latitude, mc.longitude]).addTo(mcmap);
-            marker.bindPopup(mc.typeStatus + '<br>' + title);
+            const marker = L.marker([p.latitude, p.longitude]).addTo(BLR.base.map.leaflet);
+            marker.bindPopup(p.typeStatus + '<br>' + title);
             markers.push(marker)
         }
     });
 
-    OCELLUS.map.leaflet.addLayer(markers);
+    const bounds = new L.featureGroup(markers).getBounds();
+    BLR.base.map.leaflet.fitBounds(bounds);
+   //BLR.base.map.leaflet.addLayer(markers);
     
     
 

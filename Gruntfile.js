@@ -12,8 +12,8 @@ module.exports = function(grunt) {
 
             // 7. minify ocellus.js -> ocellus.min.js
             ocellusJs: {
-                src: ['js/ocellus.js'],
-                dest: 'js/ocellus.min.js'
+                src: ['js/o3.js'],
+                dest: 'js/o3.min.js'
             }
         },
         
@@ -24,15 +24,18 @@ module.exports = function(grunt) {
                 roundingPrecision: -1
             },
 
-            // 2. minify ocellus.css -> ocellus.min.css
+            // 2. minify o3.css -> o3.min.css
             ocellusCss: {
-                src: ['css/ocellus.css'],
-                dest: 'css/ocellus.min.css'
+                src: ['css/o3.css'],
+                dest: 'css/o3.min.css'
             },
 
             // 3. minify barebones.css -> barebones.min.css
             barebonesCss: {
-                src: ['Barebones-3.0.1/css/normalize.css', 'Barebones-3.0.1/css/barebones.css'],
+                src: [
+                    'Barebones-3.0.1/css/normalize.css', 
+                    'Barebones-3.0.1/css/barebones.css'
+                ],
                 dest: 'css/barebones.min.css'
             },
 
@@ -56,16 +59,16 @@ module.exports = function(grunt) {
                 banner: '/*! <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
 
-            // 1. concat all ocellus css -> ocellus.css
+            // 1. concat all o3 css -> o3.css
             ocellusCss: {
                 src: ['css/o3-*.css'],
-                dest: 'css/ocellus.css',
+                dest: 'css/o3.css',
             },
 
-            // 6. concat all ocellus js -> ocellus.js
+            // 6. concat all o3 js -> ocellus.js
             ocellusJs: {
                 src: ['js/o3-*.js'],
-                dest: 'js/ocellus.js',
+                dest: 'js/o3.js',
             },
 
             // 5. concat all min css -> styles.min.css
@@ -73,11 +76,11 @@ module.exports = function(grunt) {
                 src: [
                     'css/barebones.min.css', 
                     'css/auto-complete.min.css', 
-                    'node_modules/chart.js/dist/Chart.min.css',
-                    'css/vanilla-js-tabs.min.css',
-                    'css/ocellus.min.css'
+                    //'node_modules/chart.js/dist/Chart.min.css',
+                    //'css/vanilla-js-tabs.min.css',
+                    'css/o3.min.css'
                 ],
-                dest: 'css/styles.min.css',
+                dest: 'css/ocellus-bundle.min.css',
             },
 
             // 8, concat all min js -> scripts.min.js
@@ -86,12 +89,12 @@ module.exports = function(grunt) {
                     'js/lazysizes.min.js', 
                     'js/mustache.min.js', 
                     'JavaScript-autoComplete/auto-complete.min.js',
-                    'node_modules/chart.js/dist/Chart.min.js',
-                    'node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js',
-                    'vanilla-js-tabs-master/dist/vanilla-js-tabs.min.js',
-                    'js/ocellus.min.js'
+                    //'node_modules/chart.js/dist/Chart.min.js',
+                    //'node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js',
+                    //'vanilla-js-tabs-master/dist/vanilla-js-tabs.min.js',
+                    'js/o3.min.js'
                 ],
-                dest: 'js/scripts.min.js',
+                dest: 'js/ocellus-bundle.min.js',
             }
         }
     });

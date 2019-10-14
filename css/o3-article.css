@@ -1,20 +1,24 @@
 /*****************************************/
-/* ocellus^3: article                    */
+/* blr: article                          */
 /*****************************************/
 
 article {
     flex: 1 1 0%;
-    padding: 1rem;
     width: 100%;
     max-width: 960px;
-}
-article section {
-    padding: 2rem;
+    display: flex;
+    justify-content: center;
 }
 article section p {
     text-align: left;
 }
-.js-tabs {
-    width: 100%;
-    margin: 0;
+article .searchCriteria {
+    margin-bottom: 2rem;
+}
+
+/* Larger than mobile (default point when grid becomes active) */
+@media (min-width: 600px) {
+    article section {
+        padding: 3rem;
+    }
 }

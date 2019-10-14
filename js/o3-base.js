@@ -1,81 +1,74 @@
-if (typeof(OCELLUS) === 'undefined' || typeof(OCELLUS) !== 'object') {
-    OCELLUS = {};
-}
+if (typeof(BLR) === 'undefined' || typeof(BLR) !== 'object') BLR = {};
 
-OCELLUS.templates = {
+if (!('base' in BLR)) BLR.base = {};
 
-    // start: partials //////////////////////
-    pager: document.querySelector('#template-pager').innerHTML,
-    'records-found': document.querySelector('#template-records-found').innerHTML,
-    charts: document.querySelector('#template-charts').innerHTML,
-    figures: document.querySelector('#template-figures').innerHTML,
-    // end: partials //////////////////////
-
-    treatments: document.querySelector('#template-treatments').innerHTML,
-    treatment: document.querySelector('#template-treatment').innerHTML,
-    images: document.querySelector('#template-images').innerHTML
-};
-
-OCELLUS['template-partials'] = {};
-
-OCELLUS.figcaptionHeight = '30px';
-OCELLUS.figcaptions = [];
-
-OCELLUS.compileTemplates = function() {
-    for (let t in OCELLUS.templates) {
-        Mustache.parse(OCELLUS.templates[t]);
-    }
-
-    OCELLUS['template-partials']['template-pager'] = OCELLUS.templates.pager;
-    OCELLUS['template-partials']['template-records-found'] = OCELLUS.templates['records-found'];
-    OCELLUS['template-partials']['template-charts'] = OCELLUS.templates.charts;
-    OCELLUS['template-partials']['template-figures'] = OCELLUS.templates.figures;
-};
-
-OCELLUS.dom = {
-
-    // modals
-    maintenance: document.querySelector('#maintenance'),
-    about: document.querySelector('#about'),
-    privacy: document.querySelector('#privacy'),
-    ip: document.querySelector('#ip'),
-    contact: document.querySelector('#contact'),
+BLR.base.size = 30;
+BLR.base.zenodo = 'https://zenodo.org/record/';
+BLR.base.dom = {
     panels: document.querySelectorAll('.panel'),
-    modalOpen: document.querySelectorAll('.modal-open'),
-    modalClose: document.querySelectorAll('.modal-close'),
+    modals: document.querySelectorAll('.modal'),
+    resources: document.querySelectorAll('.resource'),
+    headerContainer: document.querySelector('header'),
+
+    header: document.querySelector('#header'),
+    index: document.querySelector('#index'),
     throbber: document.querySelector('#throbber'),
 
-    // form elements
-    form: document.querySelector('form[name=simpleSearch]'),
-    inputs: document.querySelectorAll('form[name=simpleSearch] input'),
-    q: document.querySelector('#q'),
-    urlFlagSelectors: document.querySelectorAll('.urlFlag'),
-    resourceSelector: document.querySelector('#resourceSelector'),
-    goGetIt: document.querySelector('#go-get-it'),
-    communitiesSelector: document.querySelector('.drop-down'),
-    communityCheckBoxes: document.querySelectorAll('input[name=communities]'),
-    allCommunities: document.querySelector('input[value="all communities"]'),
-    refreshCacheSelector: document.querySelector('input[name=refreshCache]'),
-    urlFlagSelectors: document.querySelectorAll('.urlFlag'),
+    form: document.querySelector('form'),
+    q: document.querySelector('form input[name=q]'),
+    go: document.querySelector('form input[name=go]'),
+    resourceSelector: document.querySelector('form > nav'),
+    urlFlagSelectors: document.querySelectorAll('form .urlFlag'),
+    communitiesSelector: document.querySelector('form .drop-down'),
+    communityCheckBoxes: document.querySelectorAll('form input[name=communities]'),
+    allCommunities: document.querySelector('form input[value="all communities"]'),
+    refreshCacheSelector: document.querySelector('form input[name=refreshCache]'),
+    refreshCacheWarning: document.querySelector('form .refreshCacheWarning'),
 
-    // results panels
-    treatments: document.querySelector('#treatments'),
-    bigmap: document.querySelector('#bigmap')
+    title: document.querySelector('a.title'),
+
+    'modal-open': document.querySelectorAll('.modal-open'),
+    'modal-close': document.querySelectorAll('.modal-close'),  
+    
+    map: document.querySelector('#map'),
+    images: {
+        section: document.querySelector('#images'),
+        searchCriteria: document.querySelector('#images .searchCriteria'),
+        charts: document.querySelector('#images .charts'),
+        results: document.querySelector('#images .results')
+    },
+    treatment: {
+        section: document.querySelector('#treatment'),
+        searchCriteria: document.querySelector('#treatment .searchCriteria'),
+        charts: document.querySelector('#treatment .charts'),
+        results: document.querySelector('#treatment .results')
+    },
+    treatments: {
+        section: document.querySelector('#treatments'),
+        searchCriteria: document.querySelector('#treatments .searchCriteria'),
+        charts: document.querySelector('#treatments .charts'),
+        results: document.querySelector('#treatments .results')
+    },
+    wrapper: document.querySelector('#wrapper')
 };
 
-OCELLUS.saveable = ['treatments'],
+BLR.base.templates = {
 
-OCELLUS.savedState = null;
+    partials: {
+        'template-pager': document.querySelector('#template-pager').innerHTML,
+        'template-records-found': document.querySelector('#template-records-found').innerHTML,
+        'template-charts': document.querySelector('#template-charts').innerHTML,
+        'template-figures': document.querySelector('#template-figures').innerHTML
+    },
 
-OCELLUS.model = {
-    treatments: {},
-    treatment: {},
-    images: {}
-}
+    wholes: {
+        treatments: document.querySelector('#template-treatments').innerHTML,
+        treatment: document.querySelector('#template-treatment').innerHTML,
+        images: document.querySelector('#template-images').innerHTML
+    }
+};
 
-OCELLUS.size = 30;
-
-OCELLUS.map = {
+BLR.base.map = {
     url: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     id: 'mapbox.streets',
@@ -83,81 +76,37 @@ OCELLUS.map = {
     leaflet: {}
 };
 
-OCELLUS.init = function(state) {
-    const {maintenance} = state || {maintenance: false};
-    
-    // make sure all panels are hidden
-    OCELLUS.toggle(OCELLUS.dom.panels, 'off');
+BLR.base.modals = Array.from(BLR.base.dom.modals).map(m => m.id);
 
-    if (maintenance) {
-        OCELLUS.toggle(OCELLUS.dom.maintenance, 'on');
-        return;
+BLR.base.resources = Array.from(BLR.base.dom.resources).map(m => m.id);
+
+BLR.base.resource = '';
+
+BLR.base.defaultResource = 'images';
+BLR.base.figcaptionHeight = '30px';
+BLR.base.figcaptions = []; 
+BLR.base.savedPanel = {
+    id: '',
+    search: ''
+};
+
+BLR.base.model = {
+    treatments: {},
+    images: {}
+};
+
+BLR.base.compileTemplates = function() {
+    for (let t in BLR.base.templates.wholes) {
+        Mustache.parse(BLR.base.templates.wholes[t]);
     }
-    else {
-        OCELLUS.addEvents(OCELLUS.dom.modalOpen, OCELLUS.modalOpen);
-        OCELLUS.addEvents(OCELLUS.dom.modalClose, OCELLUS.modalClose);
-        OCELLUS.addEvents(OCELLUS.dom.goGetIt, OCELLUS.goGetIt);
-        OCELLUS.addEvents(OCELLUS.dom.communitiesSelector, OCELLUS.toggleCommunities);
-        OCELLUS.addEvents(OCELLUS.dom.refreshCacheSelector, OCELLUS.toggleRefreshCache);
-        OCELLUS.suggest(OCELLUS.dom.q);
-        OCELLUS.activateUrlFlagSelectors();
 
-        OCELLUS.compileTemplates();
-
-        if (location.search) {
-            //console.log('getting results based on location')
-            OCELLUS.goGetIt();
-        }
-        else {
-            //console.log('getting stats')
-            OCELLUS.getResource({resource: 'treatments'});
-            OCELLUS.dom.q.focus();
-        }
+    for (let t in BLR.base.templates.partials) {
+        Mustache.parse(BLR.base.templates.partials[t]);
     }
 };
 
-/*
-map = {
-    base: [
-        'templates',
-        'template-partials',
-        'compileTemplates',
-        'dom',
-        'saveable',
-        'model',
-        'size',
-        'init'
-    ],
-
-    utils: [
-        'statsChart',
-        'niceNumbers',
-        'formatSearchCriteria',
-        'makeUris',
-        'getResource',
-        'syntheticData',
-        'fetchReceive',
-        'isXml',
-        'urlDeconstruct',
-        'urlConstruct',
-        'makePager',
-        'goGetIt'
-    ],
-
-    treatments: [
-        'getOneTreatment',
-        'getManyTreatments',
-        'getTreatments',
-        'makeMap'
-    ],
-
-    eventlisterners: [
-        'modalOpen',
-        'modalClose',
-        'addEvents',
-        'turnOff',
-        'turnOn',
-        'toggle'
-    ]
-}
-*/
+BLR.base.init = function() {
+    BLR.base.compileTemplates();
+    BLR.utils.addEvents();
+    BLR.utils.linkLoad();
+};
