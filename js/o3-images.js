@@ -12,13 +12,22 @@ BLR.images.makeLayout = function(records) {
             zenodoRecord: BLR.base.zenodo + records[i].id,
             description: records[i].description,
             doi: records[i].doi,
-            imgBlur: records[i].thumbs['10'],
-            img50: records[i].thumbs['50'],
-            img100: records[i].thumbs['100'],
-            img250: records[i].thumbs['250'],
-            img750: records[i].thumbs['750'],
-            image1200: records[i].thumbs['1200']
+            imgBlur: 'img/kein-preview.png',
+            img50: 'img/kein-preview.png',
+            img100: 'img/kein-preview.png',
+            img250: 'img/kein-preview.png',
+            img750: 'img/kein-preview.png',
+            image1200: 'img/kein-preview.png'
         };
+
+        if (records[i].thumbs) {
+            figure.imgBlur = records[i].thumbs['10'];
+            figure.img50 = records[i].thumbs['50'];
+            figure.img100 = records[i].thumbs['100'];
+            figure.img250 = records[i].thumbs['250'];
+            figure.img750 = records[i].thumbs['750'];
+            figure.image1200 = records[i].thumbs['1200'];
+        }
         
         figures.push(figure)
     }
