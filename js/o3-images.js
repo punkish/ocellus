@@ -9,7 +9,7 @@ BLR.images.makeLayout = function(records) {
     for (let i = 0, j = records.length; i < j; i++) {
         const figure = {
             title: records[i].title,
-            creators: records[i].creators.map(c => c.name),
+            creators: records[i].creators ? records[i].creators.map(c => c.name) : [],
             recId: records[i].id,
             zenodoRecord: BLR.base.zenodo + records[i].id,
             description: records[i].description,
