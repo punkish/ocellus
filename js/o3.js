@@ -264,8 +264,6 @@ if (typeof(BLR) === 'undefined' || typeof(BLR) !== 'object') BLR = {};
 if (!('images' in BLR)) BLR.images = {};
 
 BLR.images.makeLayout = function(records) {
-        
-    //let imgCount = 0;
     let figures = [];
     for (let i = 0, j = records.length; i < j; i++) {
         const figure = {
@@ -286,51 +284,6 @@ BLR.images.makeLayout = function(records) {
         figures.push(figure)
     }
 
-    /*
-    for (let record in imagesOfRecords) {
-        
-        const images = imagesOfRecords[record].images;
-        const j = images.length;
-        //imgCount = imgCount + j;
-        const recId = record.split('/').pop();
-
-        let imgBlur; // 10 pixels wide
-        let imgA_; // 50 pixels 
-        let imgA; // 250 pixels 
-        let imgB; // 400
-        let imgC; // 960
-        let imgD; // 1200
-
-        if (imagesOfRecords[record].thumb250 === 'na') {
-            imgBlur = imgA_ = imgA = imgB = imgC = imgD = 'img/kein-preview.png';
-        }
-        else {
-            imgA    = imagesOfRecords[record].thumb250;
-            imgBlur = imgA.replace('/250,', '/10,');
-            imgA_   = imgA.replace('/250,', '/50,');
-            imgB    = imgA.replace('/250,', '/400,');
-            imgC    = imgA.replace('/250,', '/960,');
-            imgD    = imgA.replace('/250,', '/1200,');
-        }
-
-        const figure = {
-            title: imagesOfRecords[record].title,
-            creators: imagesOfRecords[record].creators,
-            recId: recId,
-            zenodoRecord: BLR.base.zenodo + recId,
-            imageSrc: images[0],
-            imgBlur: imgBlur,
-            imgA: imgA,
-            imgA_: imgA_,
-            imgB: imgB,
-            imgC: imgC,
-            imgD: imgD
-        };
-        
-        figures.push(figure)
-    }
-    */
-    //return [figures, imgCount];
     return figures;
 };
 
