@@ -33,23 +33,23 @@ module.exports = function(grunt) {
             // 3. minify barebones.css -> barebones.min.css
             barebonesCss: {
                 src: [
-                    'Barebones-3.0.1/css/normalize.css', 
-                    'Barebones-3.0.1/css/barebones.css'
+                    'libs/Barebones-3.0.1/css/normalize.css', 
+                    'libs/Barebones-3.0.1/css/barebones.css'
                 ],
                 dest: 'css/barebones.min.css'
             },
 
             // 4. minify autocomplete.css -> autocomplete.min.css
             autocompleteCss: {
-                src: ['JavaScript-autoComplete/auto-complete.css'],
+                src: ['libs/JavaScript-autoComplete/auto-complete.css'],
                 dest: 'css/auto-complete.min.css'
             },
 
             // 4a. minify vanilla-js-tabs.css -> vanilla-js-tabs.min.css
-            vanillaTabsCss: {
-                src: ['vanilla-js-tabs-master/dist/vanilla-js-tabs.css'],
-                dest: 'css/vanilla-js-tabs.min.css'
-            }
+            // vanillaTabsCss: {
+            //     src: ['vanilla-js-tabs-master/dist/vanilla-js-tabs.css'],
+            //     dest: 'css/vanilla-js-tabs.min.css'
+            // }
         },
         
         concat: {
@@ -61,13 +61,13 @@ module.exports = function(grunt) {
 
             // 1. concat all o3 css -> o3.css
             ocellusCss: {
-                src: ['css/o3-*.css'],
+                src: ['dev/css/o3-*.css'],
                 dest: 'css/o3.css',
             },
 
             // 6. concat all o3 js -> ocellus.js
             ocellusJs: {
-                src: ['js/o3-*.js'],
+                src: ['dev/js/o3-*.js'],
                 dest: 'js/o3.js',
             },
 
@@ -86,9 +86,9 @@ module.exports = function(grunt) {
             // 8, concat all min js -> scripts.min.js
             allJs: {
                 src: [
-                    'js/lazysizes.min.js', 
-                    'js/mustache.min.js', 
-                    'JavaScript-autoComplete/auto-complete.min.js',
+                    'libs/lazysizes.min.js', 
+                    'libs/mustache.min.js', 
+                    'libs/JavaScript-autoComplete/auto-complete.min.js',
                     //'node_modules/chart.js/dist/Chart.min.js',
                     //'node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js',
                     //'vanilla-js-tabs-master/dist/vanilla-js-tabs.min.js',
@@ -121,7 +121,7 @@ module.exports = function(grunt) {
             "cssmin:autocompleteCss",
 
             // 4a. minify vanilla-js-tabs.css -> vanilla-js-tabs.min.css
-            "cssmin:vanillaTabsCss",
+            //"cssmin:vanillaTabsCss",
         
             // 5. concat all min css -> styles.min.css
             "concat:allCss",
