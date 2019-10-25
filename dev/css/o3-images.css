@@ -225,8 +225,24 @@
 
 @media (min-width: 1920px) {
     .masonry {
-        -moz-column-count: 18;
-        -webkit-column-count: 18;
-        column-count: 18;
+        -moz-column-count: 8;
+        -webkit-column-count: 8;
+        column-count: 8;
+    }
+}
+
+@media (min-width: 2300px) {
+    .masonry {
+        -moz-column-count: 9;
+        -webkit-column-count: 9;
+        column-count: 9;
+    }
+}
+
+@media (min-width: 2500px) {
+    .masonry {
+        -moz-column-count: 10;
+        -webkit-column-count: 10;
+        column-count: 10;
     }
 }

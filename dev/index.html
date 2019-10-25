@@ -12,15 +12,16 @@
     
     <title>ocellus^3</title>
     
-    <link rel="icon" type="image/png" href="img/ocellus.png">
+    <link rel="icon" type="image/png" href="../img/ocellus.png">
 
-    <link rel="stylesheet" href="Barebones-3.0.1/css/normalize.css">
-    <link rel="stylesheet" href="Barebones-3.0.1/css/barebones.css">
+    <!-- all the css between ***************** get packaged into a single bundle for production -->
+    <!-- ********************************************************* -->
+    <link rel="stylesheet" href="../Barebones-3.0.1/css/normalize.css">
+    <link rel="stylesheet" href="../Barebones-3.0.1/css/barebones.css">
 
-    <link rel="stylesheet" href="node_modules/chart.js/dist/Chart.min.css">
-    <link rel="stylesheet" href="node_modules/tabbyjs/dist/css/tabby-ui.min.css">
+    <!-- <link rel="stylesheet" href="node_modules/chart.js/dist/Chart.min.css">
+    <link rel="stylesheet" href="node_modules/tabbyjs/dist/css/tabby-ui.min.css"> -->
     <link rel="stylesheet" href="JavaScript-autoComplete/auto-complete.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/> 
     <link rel="stylesheet" href="css/o3-article.css">
     <link rel="stylesheet" href="css/o3-base.css">
     <link rel="stylesheet" href="css/o3-charts.css">
@@ -37,6 +38,9 @@
     <link rel="stylesheet" href="css/o3-treatments.css">
     <link rel="stylesheet" href="css/o3-xml.css">
     <link rel="stylesheet" href="css/o3-tabby.css">
+    <!-- ********************************************************* -->
+
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>  -->
 </head>
 <body>
 
@@ -83,7 +87,7 @@
                 <div class="searchInputs">
                     <input name="q" type="search" required placeholder=""> 
                     <input name="refreshCache" class="urlFlag" type="checkbox" value="true">
-                    <input name="size" value="30" type="hidden">
+                    <input name="size" value="60" type="hidden">
                     <input name="page" value="1" type="hidden">
                     <input name="go" type="submit" value="GO">
                 </div> 
@@ -342,7 +346,7 @@
     <div id="masonry" class="masonry">
         {{#figures}}
         <figure class="item">
-            <a href="#carousel" class="carousel"><img src="{{imgBlur}}" width="250" data-src="{{img250}}" class="lazyload" data-recid="{{recId}}"></a>
+            <a href="#carousel" class="carousel"><img src="../img/bug.gif" width="250" data-src="{{img250}}" class="lazyload" data-recid="{{recId}}"></a>
             
             <figcaption class="transition-050 opacity85 text">
                 <a class="transition-050">rec ID: {{recId}}</a>
@@ -355,28 +359,33 @@
     {{> template-pager}}
 {{/successful}}
 </script>
-    
-<script src="js/lazysizes.min.js"></script>
-<script src="node_modules/chart.js/dist/Chart.min.js"></script>
-<script src="node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js"></script>
-<!-- <script src="node_modules/tabbyjs/dist/js/tabby.polyfills.min.js"></script> -->
-<script src="JavaScript-autoComplete/auto-complete.min.js"></script>
-<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
-<script src="js/mustache.min.js"></script>
+
+<!-- <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script> -->
 
 <!-- config.js sets the value for zenodeo API server -->
-<script src="js/config.js"></script>
+<script src="../js/config.js"></script>
 
+<!-- all the scripts between ********* get packaged into a single bundle in production -->
+<!-- ********************************************************* -->
+<script src="../js/lazysizes.min.js"></script>
+<!-- <script src="node_modules/chart.js/dist/Chart.min.js"></script>
+<script src="node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js"></script>
+<script src="node_modules/tabbyjs/dist/js/tabby.polyfills.min.js"></script> -->
+<script src="../JavaScript-autoComplete/auto-complete.min.js"></script>
+<script src="../js/mustache.min.js"></script>
 <script src="js/o3-base.js"></script>
 <script src="js/o3-eventlisteners.js"></script>
 <script src="js/o3-utils.js"></script>
 <script src="js/o3-treatments.js"></script>
 <script src="js/o3-images.js"></script>
+<!-- ********************************************************* -->
 
 <script type="text/javascript">
 window.onload = function(e) {
     BLR.base.init();
 };
 </script>
+
+<script src="//instant.page/2.0.1" type="module" defer integrity="sha384-4Duao6N1ACKAViTLji8I/8e8H5Po/i/04h4rS5f9fQD6bXBBZhqv5am3/Bf/xalr"></script>
 </body>
 </html>

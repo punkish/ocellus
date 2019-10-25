@@ -1,4 +1,4 @@
-/*! 2019-10-14 */
+/*! 2019-10-25 */
 /*****************************************/
 /* blr: article                          */
 /*****************************************/
@@ -634,6 +634,14 @@ header > div > div {
         -moz-column-count: 5;
         -webkit-column-count: 5;
         column-count: 5;
+    }
+}
+
+@media (min-width: 1920px) {
+    .masonry {
+        -moz-column-count: 18;
+        -webkit-column-count: 18;
+        column-count: 18;
     }
 }
 /*****************************************/

@@ -68,7 +68,8 @@ html {
 	--base-font-size: 62.5%;
 	
 	/* Grid Defaults - default to match orig skeleton settings */
-	--grid-max-width: 960px;
+  /* --grid-max-width: 960px; */
+  --grid-max-width: 100%;
 }
 
 /*  Dark Theme

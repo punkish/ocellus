@@ -14,6 +14,9 @@
     
     <link rel="icon" type="image/png" href="img/ocellus.png">
 
+    <link rel="stylesheet" href="Barebones-3.0.1/css/normalize.css">
+    <link rel="stylesheet" href="Barebones-3.0.1/css/barebones.css">
+
     <!-- <link rel="stylesheet" href="node_modules/chart.js/dist/Chart.min.css">
     <link rel="stylesheet" href="node_modules/tabbyjs/dist/css/tabby-ui.min.css">
     <link rel="stylesheet" href="JavaScript-autoComplete/auto-complete.css">
@@ -36,31 +39,11 @@
                     images
                     <input name="resource" class="urlFlag" type="radio" value="images" checked=true>
                 </label>
-                <!-- <label>
-                    treatments
-                    <input name="resource" class="urlFlag" type="radio" value="treatments">
-                </label> -->
             </nav>
         
             <div class="searchWidget">
                 <div class="drop-down">
                     <div class="arrow-down" data-tooltip="choose a community">•••</div>
-                    <!-- <div class="communities">
-                        <label class="switches">
-                            all communities
-                            <input name="communities" class="urlFlag switch" type="checkbox" value="all communities">
-                        </label>
-                    
-                        <label class="switches">
-                            biosyslit
-                            <input name="communities" class="urlFlag" type="checkbox" value="biosyslit" checked=true>
-                        </label>
-        
-                        <label class="switches">
-                            belgiumherbarium
-                            <input name="communities" class="urlFlag" type="checkbox" value="belgiumherbarium">
-                        </label>
-                    </div> -->
                 </div>
                 
                 <div class="searchInputs">
@@ -325,7 +308,7 @@
     <div id="masonry" class="masonry">
         {{#figures}}
         <figure class="item">
-            <a href="#carousel" class="carousel"><img src="{{imgBlur}}" width="250" data-src="{{img250}}" class="lazyload" data-recid="{{recId}}"></a>
+            <a href="#carousel" class="carousel"><img src="../img/bug.gif" width="250" data-src="{{img250}}" class="lazyload" data-recid="{{recId}}"></a>
             
             <figcaption class="transition-050 opacity85 text">
                 <a class="transition-050">rec ID: {{recId}}</a>
@@ -351,5 +334,7 @@ window.onload = function(e){
     BLR.base.init();
 }
 </script>
+
+<script src="//instant.page/2.0.1" type="module" defer integrity="sha384-4Duao6N1ACKAViTLji8I/8e8H5Po/i/04h4rS5f9fQD6bXBBZhqv5am3/Bf/xalr"></script>
 </body>
 </html>
