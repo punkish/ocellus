@@ -6,28 +6,20 @@ BLR.images.makeLayout = function(records) {
     let figures = [];
     for (let i = 0, j = records.length; i < j; i++) {
         const figure = {
-            title: records[i].title,
-            creators: records[i].creators ? records[i].creators.map(c => c.name) : [],
-            recId: records[i].id,
+            title       : records[i].title,
+            creators    : records[i].creators ? records[i].creators.map(c => c.name) : [],
+            recId       : records[i].id,
             zenodoRecord: BLR.base.zenodo + records[i].id,
-            description: records[i].description,
-            doi: records[i].doi,
-            imgBlur: 'img/kein-preview.png',
-            img50: 'img/kein-preview.png',
-            img100: 'img/kein-preview.png',
-            img250: 'img/kein-preview.png',
-            img750: 'img/kein-preview.png',
-            image1200: 'img/kein-preview.png'
+            description : records[i].description,
+            doi         : records[i].doi,
+            img         : records[i].thumbs ? true : false,
+            img10       : records[i].thumbs['10']   || '',
+            img50       : records[i].thumbs['50']   || '',
+            img100      : records[i].thumbs['100']  || '',
+            img250      : records[i].thumbs['250']  || '',
+            img750      : records[i].thumbs['750']  || '',
+            img1200     : records[i].thumbs['1200'] || ''
         };
-
-        if (records[i].thumbs) {
-            figure.imgBlur = records[i].thumbs['10'];
-            figure.img50 = records[i].thumbs['50'];
-            figure.img100 = records[i].thumbs['100'];
-            figure.img250 = records[i].thumbs['250'];
-            figure.img750 = records[i].thumbs['750'];
-            figure.image1200 = records[i].thumbs['1200'];
-        }
         
         figures.push(figure)
     }
@@ -37,13 +29,18 @@ BLR.images.makeLayout = function(records) {
 
 BLR.images.turnCarouselOn = function(data, recId) {
 
-    BLR.base.dom.carousel.innerHTML = Mustache.render(tmplCarousel, data);
-    BLR.base.dom.wrapper.classList.remove('show');
-    BLR.base.dom.carouselContainer.classList.add('show');
+    BLR.base.dom.carousel.results.innerHTML = Mustache.render(
+        BLR.base.templates.wholes.carousel, 
+        BLR.base.model.images,
+        BLR.base.templates.partials
+    );
 
     const carouselOff = document.querySelectorAll('.carouselOff');
     for (let i = 0, j = carouselOff.length; i < j; i++) {
-        carouselOff[i].addEventListener('click', turnCarouselOff);
+        carouselOff[i].addEventListener(
+            'click', 
+            BLR.images.turnCarouselOff
+        );
     }
     
     const newhash = '#' + recId;
@@ -53,11 +50,21 @@ BLR.images.turnCarouselOn = function(data, recId) {
     else {
         location.hash = newhash;
     }
+
+    BLR.utils.turnOffAll();
+    BLR.eventlisteners.toggle(BLR.base.dom.carousel.section, 'on');
+
+    if (history.pushState) {
+        history.pushState(null, null, '');
+    }
+    else {
+        location.hash = '';
+    }
 };
 
 BLR.images.turnCarouselOff = function(event) {
-    BLR.base.dom.wrapper.classList.add('show');
-    BLR.base.dom.carouselContainer.classList.remove('show');
+    BLR.utils.turnOffAll();
+    BLR.eventlisteners.toggle(BLR.base.dom.images.section, 'on');
 };
 
 BLR.images.getImages = function(uri) {
@@ -115,10 +122,10 @@ BLR.images.getImages = function(uri) {
                         figs[i].addEventListener('click', BLR.eventlisteners.toggleFigcaption);
                     }
 
-                    const carousel = document.querySelectorAll('.carousel');
+                    const carousel = document.querySelectorAll('.lazyload');
                     for (let i = 0, j = carousel.length; i < j; i++) {
                         carousel[i].addEventListener('click', function(event) {
-                            BLR.images.turnCarouselOn(data, data.figures[i].recId);
+                            BLR.images.turnCarouselOn(BLR.base.model.images, BLR.base.model.images.figures[i].recId);
                         });
                     }
                     

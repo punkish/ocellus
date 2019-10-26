@@ -37,6 +37,11 @@ BLR.base.dom = {
         charts: document.querySelector('#images .charts'),
         results: document.querySelector('#images .results')
     },
+    carousel: {
+        section: document.querySelector('#carousel'),
+        searchCriteria: document.querySelector('#carousel .searchCriteria'),
+        results: document.querySelector('#carousel .results')
+    },
     treatment: {
         section: document.querySelector('#treatment'),
         searchCriteria: document.querySelector('#treatment .searchCriteria'),
@@ -58,13 +63,15 @@ BLR.base.templates = {
         'template-pager': document.querySelector('#template-pager').innerHTML,
         'template-records-found': document.querySelector('#template-records-found').innerHTML,
         'template-charts': document.querySelector('#template-charts').innerHTML,
-        'template-figures': document.querySelector('#template-figures').innerHTML
+        'template-figures': document.querySelector('#template-figures').innerHTML,
+        'template-kein-preview': document.querySelector('#template-kein-preview').innerHTML
     },
 
     wholes: {
         treatments: document.querySelector('#template-treatments').innerHTML,
         treatment: document.querySelector('#template-treatment').innerHTML,
-        images: document.querySelector('#template-images').innerHTML
+        images: document.querySelector('#template-images').innerHTML,
+        carousel: document.querySelector('#template-carousel').innerHTML
     }
 };
 

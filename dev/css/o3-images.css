@@ -69,7 +69,7 @@
 /*     text-decoration-style: double; */
 }
 .masonry figcaption a.transition-050 {
-    text-decoration: none;
+    /*! text-decoration: none; */
     color: black;
 /*     font-weight: bold; */
 }
@@ -99,7 +99,40 @@
     from{ bottom:-100px; opacity:0 } 
     to{ bottom:0; opacity:1 }
 }
+
+.carousel-cell {
+    border: 15px solid lightgrey;
+    position: relative;
+}
+
+.carousel-cell img {
+    border: 1px solid black;
+}
+
 .carouselOff {
+    cursor: pointer;
+}
+
+.carouselOff:hover {
+    background-color: yellow;
+}
+
+.kein-preview {
+    text-align: left;
+    padding: 10px;
+    background-color: lightgrey;
+}
+
+.kein-preview ul {
+    list-style: none;
+}
+
+.kein-preview ul li:first-child {
+    font-weight: bold;
+    font-size: large;
+}
+
+/* .carouselOff {
     position: absolute;
     left: 0;
     z-index: 100;
@@ -116,11 +149,14 @@
 }
 .carouselOff:hover {
     background-color: yellow;
-}
+} */
+
 .widget {
     position: absolute;
+    right: 5px;
+    top: 5px;
     border: 0px solid red;
-    width: 100%;
+/*     width: 100%; */
     z-index: 100;
 }
 .widget form {

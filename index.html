@@ -17,10 +17,7 @@
     <link rel="stylesheet" href="libs/Barebones-3.0.1/css/normalize.css">
     <link rel="stylesheet" href="libs/Barebones-3.0.1/css/barebones.css">
 
-    <!-- <link rel="stylesheet" href="node_modules/chart.js/dist/Chart.min.css">
-    <link rel="stylesheet" href="node_modules/tabbyjs/dist/css/tabby-ui.min.css">
-    <link rel="stylesheet" href="JavaScript-autoComplete/auto-complete.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/> -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/> -->
     
     <link rel="stylesheet" href="css/ocellus-bundle.min.css">
 </head>
@@ -135,6 +132,11 @@
         <div class="charts"></div>
         <div class="results"></div>
     </section>
+
+    <section id="carousel" class="panel resource hidden">
+        <div class="searchCriteria"></div>
+        <div class="results"></div>
+    </section>
 </article>
 
 <footer class="grid-container full"><img src="img/fish.jpg"></footer>
@@ -177,6 +179,17 @@
         </figcaption>
     </figure>
     {{/figureCitations}}
+</div>
+</script>
+
+<script id="template-kein-preview" type="x-tmpl-mustache">
+<div class="kein-preview">
+    <ul>
+        <li>preview not available</li>
+        <li>aperçu non disponible</li>
+        <li>vista previa no disponible</li>
+        <li>Vorschau nicht verfügbar</li>
+    </ul>
 </div>
 </script>
 <!-- end partials -->
@@ -308,7 +321,13 @@
     <div id="masonry" class="masonry">
         {{#figures}}
         <figure class="item">
-            <a href="#carousel" class="carousel"><img src="../img/bug.gif" width="250" data-src="{{img250}}" class="lazyload" data-recid="{{recId}}"></a>
+            {{#img}}
+            <img src="../img/bug.gif" width="100%" data-src="{{img250}}" class="lazyload" data-recid="{{recId}}">
+            {{/img}}
+
+            {{^img}}
+            {{> template-kein-preview}}
+            {{/img}}
             
             <figcaption class="transition-050 opacity85 text">
                 <a class="transition-050">rec ID: {{recId}}</a>
@@ -321,6 +340,24 @@
     {{> template-pager}}
 {{/successful}}
 </script>
+
+<script id="template-carousel" type="x-tmpl-mustache">
+{{#figures}}
+<figure class="carousel-cell">
+    <div class="widget"><button class="carouselOff">x</button></div>
+
+    {{#img}}
+    <img src="../img/bug.gif" width="100%" data-src="{{img1200}}" class="lazyload" data-recid="{{recId}}">
+    {{/img}}
+
+    {{^img}}
+    {{> template-kein-preview}}
+    {{/img}}
+
+    <figcaption>record ID {{recId}}: {{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></figcaption>
+</figure>
+{{/figures}}
+</script> 
 
 <!-- <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" 
    integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
