@@ -115,7 +115,7 @@ BLR.eventlisteners.goGetIt = function(event) {
     history.pushState('', '', browserUri);
 
     // construct Zenodeo URI from fields
-    const zenodeoUri = BLR.utils.makeZenodeoUriFromInputs();
+    const zenodeoUri = BLR.utils.makeZenodeoUri('inputs');
     BLR.utils.loadResource(zenodeoUri);
 };
 

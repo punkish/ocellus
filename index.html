@@ -1,64 +1,98 @@
-<!DOCTYPE html>
-<html lang="en" id="html">
+<!doctype html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Ocellus, a Biodiversity Literature Repository (BLR) Explorer">
-    <meta name="version" content="3.0">
+    <meta name="version" content="4.0">
     <meta name="author" content="Puneet Kishor">
     <meta name="copyright" content="CC0 Public Domain Dedication">
 
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
     
-    <title>ocellus^3</title>
-    
-    <link rel="icon" type="image/png" href="img/ocellus.png">
+    <title>ocellus^fs</title>
 
-    <link rel="stylesheet" href="libs/Barebones-3.0.1/css/normalize.css">
-    <link rel="stylesheet" href="libs/Barebones-3.0.1/css/barebones.css">
+    <link rel="icon" type="image/png" href="../img/ocellus.png">
 
-    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/> -->
-    
     <link rel="stylesheet" href="css/ocellus-bundle.min.css">
-</head>
-<body>
 
+</head>
+
+<body>
+    
 <header>
-    <div id="header" class="grid-container full">
-        <div class="titleContainer">
-            <a href="/" class="title logo-intro">Ocellus<sup>3</sup></a>
-            <a href="about.html" class="modal-open sub-title">about</a>
+    <a href="index.html" class="title logo-intro">Ocellus<small>4</small></a><br>
+    <a href="about.html" class="modal-open sub-title">about</a>
+    
+    <form method="GET">
+
+        <nav>
+            <label class="searchFocus">
+                images
+                <input name="resource" class="urlFlag" type="radio" value="images" checked=true>
+            </label>
+            <!-- <label>
+                treatments
+                <input name="resource" class="urlFlag" type="radio" value="treatments">
+            </label> -->
+        </nav>
+
+        <div id="searchInputs">
+            <div id="searchWidget">
+
+                <div class="drop-down">
+                    <div class="arrow-down" data-tooltip="choose a community">
+                        •••
+                    </div>
+                    <div class="communities">
+                        <label class="switches">
+                            <input name="communities" class="urlFlag" type="checkbox" value="biosyslit" checked=true> 
+                            BioSysLit
+                        </label>
+                        <br>
+                        <label class="switches">
+                            <input name="communities" class="urlFlag" type="checkbox" value="belgiumherbarium"> 
+                            Belgium Herbarium
+                        </label>
+                    </div>
+                </div>
+
+                <div id="searchContainers">
+
+                    <input name="refreshCache" class="urlFlag" type="checkbox" value="true">
+
+                    <div id="ss-container" class="inputs">
+                        <div id="ss-help" class="fs-help"></div>
+                        <div id="ss-widget" class="fs-widget">
+                            <input type="search" name="q" class="ss" placeholder="search for images"> 
+                            <input type="submit" name="go" class="fs-button-primary" value="go">
+                        </div>
+                    </div>
+                
+                    <div id="fs-container" class="inputs"></div>
+
+                    <div id="toggleSearch">
+                        <!-- <a href="#fancysearch">switch to fancy search</a> -->
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="commonInputs">
+                <input name="size" value="30" type="hidden">
+                <input name="page" value="1" type="hidden">
+            </div>
         </div>
 
-        <form name="simpleSearch" class="panel searchContainer" method="GET">
-            <nav>
-                <label class="searchFocus">
-                    images
-                    <input name="resource" class="urlFlag" type="radio" value="images" checked=true>
-                </label>
-            </nav>
+        <div class="refreshCacheWarning hidden">
+            This will refresh the cache; you probably don’t want this.
+        </div>
         
-            <div class="searchWidget">
-                <div class="drop-down">
-                    <div class="arrow-down" data-tooltip="choose a community">•••</div>
-                </div>
-                
-                <div class="searchInputs">
-                    <input name="q" type="search" required placeholder=""> 
-                    <input name="refreshCache" class="urlFlag" type="checkbox" value="true">
-                    <input name="size" value="30" type="hidden">
-                    <input name="page" value="1" type="hidden">
-                    <input name="go" type="submit" value="GO">
-                </div> 
-            </div>
-        
-            <div class="refreshCacheWarning">This will refresh the cache; you probably don’t want this.</div>
-        </form>
-    </div>
+    </form>
+
     <div id="throbber" class="hidden"></div>
 </header>
 
-<article class="grid-container full">
+<main>
     <section id="index" class="panel modal hidden"></section>
 
     <section id="closed" class="panel modal hidden">
@@ -114,19 +148,7 @@
             <p>Biodiversity Literature Repository (BLR aka biolitrepo) is a production of Plazi in partnership with Pensoft Publishers, Sofia, Bulgaria and Zenodo/CERN, Geneva, with generous support from Arcadia Foundation, UK. Please contact <a href="mailto:blr@plazi.org">Plazi</a> for more information or to provide feedback.</p>
         </div>
     </section>
-
-    <section id="treatments" class="panel resource hidden">
-        <div class="searchCriteria"></div>
-        <div class="charts"></div>
-        <div class="results"></div>
-    </section>
-
-    <section id="treatment" class="panel resource hidden">
-        <div class="searchCriteria"></div>
-        <div class="charts"></div>
-        <div class="results"></div>
-    </section>
-
+    
     <section id="images" class="panel resource hidden">
         <div class="searchCriteria"></div>
         <div class="charts"></div>
@@ -137,9 +159,10 @@
         <div class="searchCriteria"></div>
         <div class="results"></div>
     </section>
-</article>
 
-<footer class="grid-container full"><img src="img/fish.jpg"></footer>
+</main>
+
+<footer><img src="../img/fish.jpg"></footer>
 
 <!-- partials -->
 <script id="template-pager" type="x-tmpl-mustache">
@@ -152,19 +175,7 @@
 </script>
 
 <script id="template-records-found" type="x-tmpl-mustache">
-<h3 class="records-found">{{num-of-records}} {{resource}} found where {{{search-criteria-text}}}. {{#successful}}{{from}} to {{to}} shown below.{{/successful}}</h3>
-</script>
-
-<script id="template-charts" type="x-tmpl-mustache">
-<ul data-tabs>
-    {{#charts}}
-    <li><a {{#default}}data-tabby-default{{/default}} href="#{{chart-id}}">{{title}}</a></li>
-    {{/charts}}
-</ul>
-
-{{#charts}}
-<div id="{{chart-id}}"><canvas class="chart"></canvas></div>
-{{/charts}}
+<p class="records-found">{{num-of-records}} {{resource}} found where {{{search-criteria-text}}}. {{#successful}}{{from}} to {{to}} shown below.{{/successful}}</p>
 </script>
 
 <script id="template-figures" type="x-tmpl-mustache">
@@ -194,131 +205,19 @@
 </script>
 <!-- end partials -->
 
-<script id="template-treatments" type="x-tmpl-mustache">
-{{#successful}}
-    {{> template-records-found}}
-{{/successful}}
-
-{{> template-charts}}
-
-{{#successful}}
-    {{#records}}
-    <details open>
-        <summary>{{treatmentTitle}}</summary>
-
-        <div>
-        <p>… {{{context}}} … <a class="treatmentLink" href="?treatmentId={{treatmentId}}">more</a></p>
-        
-        <figure class='item'>
-            <img src="{{httpUri}}" width="250" data-src="{{httpUri}}" class="lazyload" data-recid="{{recId}}">
-            
-            <figcaption class="transition-050 opacity85 text">
-                <p class="transition-050 desc">{{captionText}}</p>
-            </figcaption>
-        </figure>
-        </div>
-    
-    </details>
-    {{/records}}
-    
-    {{> template-pager}}
-{{/successful}}
-</script>
-    
-<!-- template for a single treatment -->
-<script id="template-treatment" type="x-tmpl-mustache">
-<div class="treatment">
-    <details class="treatmentTitle" open>
-        <summary>{{treatmentTitle}}</summary>
-
-        <div class="treatmentInfo">
-            <table>
-                <tbody>
-                    <tr><th>Treatment ID:</th><td><a href="{{zenodeo}}/v2/treatments?treatmentId={{treatmentId}}&format=xml" target="_blank">{{treatmentId}}</a> <span class="xml-marker">&lt;xml&gt;</span></td></tr>
-                    <tr><th>DOI:</th><td><a href="{{doi}}" target="_blank">{{doi}}</a></td></tr>
-                    <tr><th>Zenodo deposit:</th><td><a href="https://www.zenodo.org/record/{{zenodoDep}}" target="_blank">{{zenodoDep}}</a></td></tr>
-                </tbody>
-            </table>
-            
-            <!-- author, year, title, journal, volume, issue, pagenmubers -->    
-            <p class="journal">{{treatmentAuthorsList}}. {{journalYear}}. {{articleTitle}}. <i>{{journalTitle}}</i>, Vol. {{journalVolume}}, Issue {{journalIssue}}, pages {{pages}}</p>
-            <!-- </div> -->
-
-            <ul class="classification">
-                {{#taxonStats}}
-                <li class="kingdom">
-                    <div class="txn">
-                        <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{kingdom.qryObj.kingdom}}">{{kingdom.qryObj.kingdom}}</a> [{{kingdom.num.num}}]
-                    </div>
-                </li>
-                <li class="phylum">
-                    <div class="txn">
-                        <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{phylum.qryObj.kingdom}}&phylum={{phylum.qryObj.phylum}}">{{phylum.qryObj.phylum}}</a> [{{phylum.num.num}}]
-                    </div>
-                </li>
-                <li class="order">
-                    <div class="txn">
-                        <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{order.qryObj.kingdom}}&phylum={{order.qryObj.phylum}}&order={{order.qryObj.order}}">{{order.qryObj.order}}</a> [{{order.num.num}}]
-                    </div>
-                </li>
-                <li class="family">
-                    <div class="txn">
-                        <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{family.qryObj.kingdom}}&phylum={{family.qryObj.phylum}}&order={{family.qryObj.order}}&family={{family.qryObj.family}}">{{family.qryObj.family}}</a> [{{family.num.num}}]
-                    </div>
-                </li>
-                <li class="genus">
-                    <div class="txn">
-                        <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{genus.qryObj.kingdom}}&phylum={{genus.qryObj.phylum}}&order={{genus.qryObj.order}}&family={{genus.qryObj.family}}&genus={{genus.qryObj.genus}}">{{genus.qryObj.genus}}</a> [{{genus.num.num}}]
-                    </div>
-                </li>
-                <li class="species">
-                    <div class="txn">
-                        <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{species.qryObj.kingdom}}&phylum={{species.qryObj.phylum}}&order={{species.qryObj.order}}&family={{species.qryObj.family}}&genus={{species.qryObj.genus}}&species={{species.qryObj.species}}">{{species.qryObj.species}}</a> [{{species.num.num}}]
-                    </div>
-                </li>
-                {{/taxonStats}}
-            </ul>
-
-        </div>
-    </details>
-
-    <details class="map" {{mapState}}>
-        <summary>Map</summary>
-        <div><div id="map"></div></div>
-    </details>
-
-    <details class="figures" {{figureCitationsState}}>
-        <summary>Figures</summary>
-        {{> template-figures}}
-    </details>
-
-    <details class="citation" {{bibRefCitationsState}}>
-        <summary>Citations</summary>
-        <div>
-            <ul class="citations">
-                {{#bibRefCitations}}
-                <li>{{citation}}</li>
-                {{/bibRefCitations}}
-            </ul>
-        </div>
-    </details>
-
-    <details open class="xml">
-        <summary>Treatment Text</summary>
-        <div><p class="xml">{{{xml}}}</p></div>
-    </details>
-</div>
-</script>
-    
+<!-- wholes -->
 <script id="template-images" type="x-tmpl-mustache">
-{{#successful}}
-    {{> template-records-found}}
-{{/successful}}
+{{> template-records-found}}
+
+<!-- <div id="toggleSearch">
+    <a href="#layout=spaced">spaced grid layout</a>
+</div> -->
+
     
 {{> template-charts}}
 
 {{#successful}}
-    <div id="masonry" class="masonry">
+    <div id="masonry" class="masonry masonry-250">
         {{#figures}}
         <figure class="item">
             {{#img}}
@@ -357,21 +256,22 @@
     <figcaption>record ID {{recId}}: {{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></figcaption>
 </figure>
 {{/figures}}
-</script> 
+</script>
+<!-- end wholes -->
 
-<!-- <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" 
-   integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
-   crossorigin=""></script> -->
-   
-<script src="js/config.js"></script>
+<script src="../node_modules/picolog/dist/picolog.min.js"></script>
+
+<!-- config.js sets the value for zenodeo API server and log level -->
+<script src="../js/config.js"></script>
+
 <script src="js/ocellus-bundle.min.js"></script>
 
-<script>
-window.onload = function(e){ 
-    BLR.base.init();
-}
+<script type="text/javascript">
+window.onload = function() {
+    O.base.init();
+};
 </script>
 
-<script src="//instant.page/2.0.1" type="module" defer integrity="sha384-4Duao6N1ACKAViTLji8I/8e8H5Po/i/04h4rS5f9fQD6bXBBZhqv5am3/Bf/xalr"></script>
+<script src="//instant.page/3.0.0" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script>
 </body>
 </html>

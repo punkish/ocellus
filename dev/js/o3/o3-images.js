@@ -76,39 +76,33 @@ BLR.images.getImages = function(uri) {
             if (res.value) {
                 BLR.base.model.images = res.value;
             }
-            else if (res['num-of-records']) {
+            else {
                 BLR.base.model.images = res;
             }
-            
 
-            if (BLR.base.model.images['num-of-records']) {
+            if ('num-of-records' in BLR.base.model.images) {
 
                 BLR.base.model.images.resource = 'images';
 
                 if (BLR.base.model.images['num-of-records'] > 0) {
-                    if (BLR.base.model.images['num-of-records']) {
-                        BLR.base.model.images.successful = true;
-                        BLR.base.model.images['num-of-records'] = BLR.utils.niceNumbers(BLR.base.model.images['num-of-records']);
-                        BLR.base.model.images.from = BLR.utils.niceNumbers(BLR.base.model.images.from);
-
-                        if (BLR.base.model.images.to < 10) {
-                            BLR.base.model.images.to = BLR.utils.niceNumbers(BLR.base.model.images.to).toLowerCase();
-                        }
-
-                        BLR.base.model.images.figures = BLR.images.makeLayout(BLR.base.model.images.records)
-                        
-                        BLR.base.model.images['search-criteria-text'] = BLR.utils.formatSearchCriteria(
-                            BLR.base.model.images['search-criteria'],
-                            BLR.base.model.images['num-of-records'],
-                            'images'
-                        );
-                        
-                        BLR.utils.makePager(BLR.base.model.images);
-                    }
-                    else {
-                        BLR.base.model.images.successful = false;
-                    }
                     
+                    BLR.base.model.images.successful = true;
+                    BLR.base.model.images['num-of-records'] = BLR.utils.niceNumbers(BLR.base.model.images['num-of-records']);
+                    BLR.base.model.images.from = BLR.utils.niceNumbers(BLR.base.model.images.from);
+
+                    if (BLR.base.model.images.to < 10) {
+                        BLR.base.model.images.to = BLR.utils.niceNumbers(BLR.base.model.images.to).toLowerCase();
+                    }
+
+                    BLR.base.model.images.figures = BLR.images.makeLayout(BLR.base.model.images.records)
+                    
+                    BLR.base.model.images['search-criteria-text'] = BLR.utils.formatSearchCriteria(
+                        BLR.base.model.images['search-criteria'],
+                        BLR.base.model.images['num-of-records'],
+                        'images'
+                    );
+                    
+                    BLR.utils.makePager(BLR.base.model.images);
                     
                     BLR.base.dom.images.results.innerHTML = Mustache.render(
                         BLR.base.templates.wholes.images, 
@@ -142,6 +136,15 @@ BLR.images.getImages = function(uri) {
                     BLR.base.model.images.successful = false;
                     BLR.base.model.images['num-of-records'] = 'No';
 
+                    // console.log("nothing found");
+                    // console.log(BLR.base.model.images);
+
+                    BLR.base.model.images['search-criteria-text'] = BLR.utils.formatSearchCriteria(
+                        BLR.base.model.images['search-criteria'],
+                        BLR.base.model.images['num-of-records'],
+                        'images'
+                    );
+                    
                     BLR.base.dom.images.results.innerHTML = Mustache.render(
                         BLR.base.templates.wholes.images, 
                         BLR.base.model.images,

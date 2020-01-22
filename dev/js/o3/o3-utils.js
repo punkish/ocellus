@@ -249,19 +249,32 @@ BLR.utils.setPlaceHolder = function(resource) {
 /* link load **********************/
 BLR.utils.linkLoad = function() {
     let loc = location.pathname.substr(1).split('.')[0];
-    if (loc === '/' || loc === '') loc = 'index';
+
+    // remove 'dev/' if any
+    loc = loc.replace('dev/', '');
+
+    if (loc === '' || loc === '/') {
+        loc = 'index';
+    }
+
+    console.log("loc: " + loc)
 
     // load modal page if modal
     if (BLR.base.modals.includes(loc)) {
+        console.log("loading modal");
         BLR.utils.loadModal(loc);
     }
 
     else if (BLR.base.resources.includes(loc)) {
-
+        
         // construct Zenodeo URI
-        const zenodeoUri = BLR.utils.makeZenodeoUriFromLoc();
+        const zenodeoUri = BLR.utils.makeZenodeoUri('loc');
+        console.log("loading " + zenodeoUri);
         BLR.utils.loadResource(zenodeoUri);
     }
+    // else {
+    //     console.log("phhhht")
+    // }
 };
 
 BLR.utils.formHasNoValidInput = function() {
@@ -297,51 +310,97 @@ BLR.utils.makeBrowserUri = function() {
     return resource + '.html?' + browserUriParts.join('&');
 };
 
-BLR.utils.makeZenodeoUriFromInputs = function() {
-    const zenodeoUriValid = ['communities', 'q', 'refreshCache', 'page', 'size'];
-    const zenodeoUriParts = []; 
-    const inputs = BLR.base.dom.form.querySelectorAll('input');
+// BLR.utils.makeZenodeoUriFromInputs = function() {
+//     const zenodeoUriValid = ['communities', 'q', 'refreshCache', 'page', 'size'];
+//     const zenodeoUriParts = []; 
+//     const inputs = BLR.base.dom.form.querySelectorAll('input');
 
-    for (let i = 0, j = inputs.length; i < j; i++) {
-        if (zenodeoUriValid.includes(inputs[i].name)) {
+//     for (let i = 0, j = inputs.length; i < j; i++) {
+//         if (zenodeoUriValid.includes(inputs[i].name)) {
             
-            if (inputs[i].type === 'checkbox') {
-                if (inputs[i].checked) {
+//             if (inputs[i].type === 'checkbox') {
+//                 if (inputs[i].checked) {
+//                     zenodeoUriParts.push(inputs[i].name + '=' + inputs[i].value);
+//                 }
+//             }
+//             else if (inputs[i].value) {
+//                 zenodeoUriParts.push(inputs[i].name + '=' + inputs[i].value);
+//             }
+//         }
+        
+//         if (inputs[i].name === 'resource' && inputs[i].checked) {
+//             BLR.base.resource = inputs[i].value;
+//         }
+//     }
+
+//     return `${BLR.base.zenodeo}/v2/${BLR.base.resource}?${zenodeoUriParts.join('&')}`;
+// };
+
+// BLR.utils.makeZenodeoUriFromLoc = function() {
+//     const zenodeoUriValid = ['communities', 'q', 'refreshCache', 'page', 'size', 'treatmentId'];
+//     const zenodeoUriParts = []; 
+    
+//     let s = location.search;
+//     if (s.substr(0, 1) === '?') s = s.substr(1);
+//     const inputs = {};
+//     s.split('&').forEach(p => { r = p.split('='); inputs[r[0]] = r[1] });
+//     if (inputs.q) {
+//         BLR.base.dom.q.value = inputs.q;
+//     }
+
+//     for (let k in inputs) {
+//         if (zenodeoUriValid.includes(k)) {
+//             zenodeoUriParts.push(k + '=' + inputs[k]);
+//         }
+//     }
+
+//     BLR.base.resource = location.pathname.substr(1).split('.')[0];
+//     return `${BLR.base.zenodeo}/v2/${BLR.base.resource}?${zenodeoUriParts.join('&')}`;
+// };
+
+BLR.utils.makeZenodeoUri = function(from) {
+    const zenodeoUriValid = ['communities', 'q', 'refreshCache', 'page', 'size', 'treatmentId'];
+    const zenodeoUriParts = [];
+
+    if (from === 'inputs') {
+        const inputs = BLR.base.dom.form.querySelectorAll('input');
+
+        for (let i = 0, j = inputs.length; i < j; i++) {
+            if (zenodeoUriValid.includes(inputs[i].name)) {
+                
+                if (inputs[i].type === 'checkbox') {
+                    if (inputs[i].checked) {
+                        zenodeoUriParts.push(inputs[i].name + '=' + inputs[i].value);
+                    }
+                }
+                else if (inputs[i].value) {
                     zenodeoUriParts.push(inputs[i].name + '=' + inputs[i].value);
                 }
             }
-            else if (inputs[i].value) {
-                zenodeoUriParts.push(inputs[i].name + '=' + inputs[i].value);
+            
+            if (inputs[i].name === 'resource' && inputs[i].checked) {
+                BLR.base.resource = inputs[i].value;
             }
         }
-        
-        if (inputs[i].name === 'resource' && inputs[i].checked) {
-            BLR.base.resource = inputs[i].value;
-        }
     }
-
-    return `${BLR.base.zenodeo}/v2/${BLR.base.resource}?${zenodeoUriParts.join('&')}`;
-};
-
-BLR.utils.makeZenodeoUriFromLoc = function() {
-    const zenodeoUriValid = ['communities', 'q', 'refreshCache', 'page', 'size', 'treatmentId'];
-    const zenodeoUriParts = []; 
+    else if (from === 'loc') {
+        let s = location.search;
+        if (s.substr(0, 1) === '?') s = s.substr(1);
+        const inputs = {};
+        s.split('&').forEach(p => { r = p.split('='); inputs[r[0]] = r[1] });
+        if (inputs.q) {
+            BLR.base.dom.q.value = inputs.q;
+        }
     
-    let s = location.search;
-    if (s.substr(0, 1) === '?') s = s.substr(1);
-    const inputs = {};
-    s.split('&').forEach(p => { r = p.split('='); inputs[r[0]] = r[1] });
-    if (inputs.q) {
-        BLR.base.dom.q.value = inputs.q;
-    }
-
-    for (let k in inputs) {
-        if (zenodeoUriValid.includes(k)) {
-            zenodeoUriParts.push(k + '=' + inputs[k]);
+        for (let k in inputs) {
+            if (zenodeoUriValid.includes(k)) {
+                zenodeoUriParts.push(k + '=' + inputs[k]);
+            }
         }
+    
+        BLR.base.resource = location.pathname.substr(1).split('.')[0];
     }
-
-    BLR.base.resource = location.pathname.substr(1).split('.')[0];
+    
     return `${BLR.base.zenodeo}/v2/${BLR.base.resource}?${zenodeoUriParts.join('&')}`;
 };
 
@@ -364,6 +423,8 @@ BLR.utils.loadModal = function(mode) {
 };
 
 BLR.utils.loadResource = function(uri) {
+    console.log("resource: " + BLR.base.resource);
+    
     if (BLR.base.resource === 'treatments') {
         BLR.treatments.getTreatments(uri);
     }
