@@ -8,8 +8,6 @@ O.images.makeLayout = function(records) {
 
     for (let i = 0, j = records.length; i < j; i++) {
         const r = records[i];
-
-        //log.info(`${i}: ${JSON.stringify(r)}`);
         
         figures.push({
             title       : r.title,

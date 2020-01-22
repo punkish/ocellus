@@ -155,7 +155,9 @@ O.utils.suggest = function(field) {
 };
 
 O.utils.makePager = function(data) {
-    if (data['num-of-records'] && (data['num-of-records'] >= O.default.search.inputs.size)) {
+    log.info(`num of records: ${data['num-of-records']}`);
+
+    if (data['num-of-records'] && (data['num-of-records'] >= O.default.search.inputs.size.value)) {
         const p = [];
         const n = [];
         for (let k in data['search-criteria']) {
