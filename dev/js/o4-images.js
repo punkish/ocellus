@@ -10,19 +10,19 @@ O.images.makeLayout = function(records) {
         const r = records[i];
         
         figures.push({
-            title       : r.title,
-            creators    : r.creators ? r.creators.map(c => c.name) : [],
+            title       : r.metadata.title,
+            creators    : r.metadata.creators ? r.metadata.creators.map(c => c.name) : [],
             recId       : r.id,
             zenodoRecord: O.default.zenodoUri + r.id,
-            description : r.description,
+            description : r.metadata.description,
             doi         : r.doi,
-            img         : r.thumbs ? true : false,
-            img10       : r.thumbs ? r.thumbs['10']   : '',
-            img50       : r.thumbs ? r.thumbs['50']   : '',
-            img100      : r.thumbs ? r.thumbs['100']  : '',
-            img250      : r.thumbs ? r.thumbs['250']  : '',
-            img750      : r.thumbs ? r.thumbs['750']  : '',
-            img1200     : r.thumbs ? r.thumbs['1200'] : ''
+            img         : r.links.thumbs ? true : false,
+            img10       : r.links.thumbs ? r.links.thumbs['10']   : '',
+            img50       : r.links.thumbs ? r.links.thumbs['50']   : '',
+            img100      : r.links.thumbs ? r.links.thumbs['100']  : '',
+            img250      : r.links.thumbs ? r.links.thumbs['250']  : '',
+            img750      : r.links.thumbs ? r.links.thumbs['750']  : '',
+            img1200     : r.links.thumbs ? r.links.thumbs['1200'] : ''
         })
     }
 

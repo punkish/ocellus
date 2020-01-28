@@ -40,9 +40,7 @@
             <div id="searchWidget">
 
                 <div class="drop-down">
-                    <div class="arrow-down" data-tooltip="choose a community">
-                        •••
-                    </div>
+                    <div class="arrow-down" data-tooltip="choose a community">⋯</div>
                     <div class="communities">
                         <label class="switches">
                             <input name="communities" class="urlFlag" type="checkbox" value="biosyslit" checked=true> 
@@ -172,6 +170,7 @@
     {{#next}}<a href="{{next}}" id="next" class="pager">next</a> ▶{{/next}}
 </div>
 {{/pager}}
+{{^pager}}no pager{{/pager}}
 </script>
 
 <script id="template-records-found" type="x-tmpl-mustache">
