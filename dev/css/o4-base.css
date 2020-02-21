@@ -1,51 +1,74 @@
-/* tinycss https://uglyduck.ca */
-*{box-sizing:border-box;}
-body{
-    font:16px/1.5 "Georgia",serif;margin:0 auto;max-width:66ch;padding:1rem;
-    /* my mods */
+/* my mods */
+body {
     max-width:1200px;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    padding-bottom: 0;
 }
-h1,h2,h3,h4,h5,h6{font-family:"Helvetica Neue","Helvetica","Arial",sans-serif;margin:2.5rem 0 1rem;}
-ul li, ol li{margin-top:0.5rem;}
-/* a,a:visited{color:black;} */
-a:hover{color:dodgerblue;}
-img{height:auto;max-width:100%;}
-pre{border: 1px solid lightgrey;overflow:auto;}
-code{color:orangered;display:inline-block;}
-pre code{padding:1rem;}
-blockquote{border-left:5px solid lightgrey;font-size:120%;font-style:italic;margin:2rem 0;padding:1rem;}
-table{border-collapse:collapse;margin:2rem 0;text-align:left;width:100%;}
-tr{border-bottom:1px solid lightgrey;}
-th,td{padding:0.5rem;}
-hr{background:lightgrey;border:0;height:1px;margin:2rem 0;}
-
-html {
-    --button-width: 40px;
-    --community-selector-width: 42px;
-    --refreshCache-width: 30px;
-    --searchwidget-height: 36px;
+a,a:visited{color:blue;}
+header {
+    text-align: center;
 }
-
-a, a:visited {
-    color: blue;
-}
-a.title {
+header a.title {
+    font-family: serif;
+    font-size: 24px;
     text-decoration: none;
-    font-family: sans-serif;
-    color: black;
+    color: black
 }
-a.sub-title {
-    font-size: small;
+header a.sub-title {
     font-family: sans-serif;
+    margin-left: -10px;
 }
-.hidden {
+sup { vertical-align: top; position: relative; top: -0.5em; }
+/* the main setting keeps the footer glued to the bottom of the screen */
+main {
+    flex: 1;
+    /* position: relative;
+    height: 100%; */
+}
+main section.modal {
+    /* height: 50%;
+    overflow: auto;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 1rem;
+    right: 1rem; */
+}
+main section h1 {
+    text-align: center;
+}
+main section {
+    text-align: left;
+}
+footer  {
+    margin: 0 auto;
+}
+footer img {
+    max-width: 280px;
+}
+.hidden-none {
+    visibility: hidden;
     display: none;
 }
-.visible {
+.hidden-block {
+    visibility: hidden;
     display: block;
+}
+.visible-inline {
+    visibility: visible;
+    display: block;
+}
+.visible-none {
+    visibility: visible;
+    display: block;
+}
+.modal-close {
+    cursor: pointer;
+    text-decoration: underline;
+    color: blue;
 }
 /* search results */
 .crit-key {
@@ -54,4 +77,10 @@ a.sub-title {
 .crit-val {
     font-style: italic;
     font-family: serif;
+}
+.warning {
+    color: red;
+}
+.nudge {
+    color: green;
 }

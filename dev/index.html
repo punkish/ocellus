@@ -6,25 +6,23 @@
     <meta name="version" content="4.0">
     <meta name="author" content="Puneet Kishor">
     <meta name="copyright" content="CC0 Public Domain Dedication">
+    <meta name="date" content="2020-02-04 18:35:00">
 
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
     
-    <title>ocellus^fs</title>
+    <title>ocellus^4</title>
 
     <link rel="icon" type="image/png" href="../img/ocellus.png">
 
-    <!-- build:css -->
-    <link rel="stylesheet" href="css/o4-base.css">
-    <link rel="stylesheet" href="css/o4-header.css">
-    <link rel="stylesheet" href="css/o4-form.css">
-    <link rel="stylesheet" href="css/o4-community-selector.css">
-    <link rel="stylesheet" href="css/o4-main.css">
-    <link rel="stylesheet" href="css/o4-images.css">
-    <link rel="stylesheet" href="css/o4-modals.css">
-    <link rel="stylesheet" href="css/o4-pager.css">
-    <link rel="stylesheet" href="css/o4-footer.css">
-    <link rel="stylesheet" href="css/o4-search.css">
     <link rel="stylesheet" href="../libs/JavaScript-autoComplete/auto-complete.css">
+
+    <!-- build:css -->
+    <link rel="stylesheet" href="css/uglyduck.css">
+    <link rel="stylesheet" href="css/o4-base.css">
+    <link rel="stylesheet" href="css/o4-form.css">
+    <link rel="stylesheet" href="css/o4-images.css">
+    <link rel="stylesheet" href="css/o4-treatments.css">
+    <link rel="stylesheet" href="css/o4-media-queries.css">
     <!-- endbuild -->
 
 </head>
@@ -32,146 +30,118 @@
 <body>
     
 <header>
-    <a href="index.html" class="title logo-intro">Ocellus<small>4</small></a><br>
+    <a href="index.html" class="title">Ocellus</a><sup>4</sup><br>
     <a href="about.html" class="modal-open sub-title">about</a>
-    
-    <form method="GET">
 
-        <nav>
-            <label class="searchFocus">
+    <form id="searcher" class="hidden-none" action="">
+
+        <fieldset id="resourceChooser">
+            <label for="resource-1" class="searchfocus">
+                <input type="radio" id="resource-1" name="resource" value="images" checked>
                 images
-                <input name="resource" class="urlFlag" type="radio" value="images" checked=true>
             </label>
-            <!-- <label>
+            <label for="resource-2">
+                <input type="radio" id="resource-2" name="resource" value="treatments">
                 treatments
-                <input name="resource" class="urlFlag" type="radio" value="treatments">
-            </label> -->
-        </nav>
-
-        <div id="searchInputs">
-            <div id="searchWidget">
-
-                <div class="drop-down">
-                    <div class="arrow-down" data-tooltip="choose a community">⋯</div>
-                    <div class="communities">
-                        <label class="switches">
-                            <input name="communities" class="urlFlag" type="checkbox" value="biosyslit" checked=true> 
-                            BioSysLit
-                        </label>
-                        <br>
-                        <label class="switches">
-                            <input name="communities" class="urlFlag" type="checkbox" value="belgiumherbarium"> 
-                            Belgium Herbarium
-                        </label>
-                    </div>
-                </div>
-
-                <div id="searchContainers">
-
-                    <input name="refreshCache" class="urlFlag" type="checkbox" value="true">
-
-                    <div id="ss-container" class="inputs">
-                        <div id="ss-help" class="fs-help"></div>
-                        <div id="ss-widget" class="fs-widget">
-                            <input type="text" name="q" class="ss" placeholder="search for images"> 
-                            <input type="submit" name="go" class="fs-button-primary" value="go">
-                        </div>
-                    </div>
-                
-                    <div id="fs-container" class="inputs"></div>
-
-                    <div id="toggleSearch">
-                        <!-- <a href="#fancysearch">switch to fancy search</a> -->
-                    </div>
-                </div>
-
-            </div>
-
-            <div id="commonInputs">
-                <input name="size" value="30" type="hidden">
-                <input name="page" value="1" type="hidden">
-            </div>
-        </div>
-
-        <div class="refreshCacheWarning hidden">
-            This will refresh the cache; you probably don’t want this.
-        </div>
+            </label>
+        </fieldset>
         
-    </form>
+        <fieldset>
+            <input type="button" name="communitiesChooser" value="⬇︎">
+            <input type="text" name="q" placeholder="search for something…" class="nudge"> 
+            <input type="reset" value="x">
+            <input type="checkbox" name="refreshCache" value="true"> 
+            <input type="hidden" name="size" value="30">
+            <input type="hidden" name="page" value="1">
+            <input type="submit" id="submit" value="Submit">
+        </fieldset>
+        <div id="throbber" class="nothrob"></div>
 
-    <div id="throbber" class="hidden"></div>
+        <div id="refreshCache" class="hidden-block warning">This will refresh the cache. You probably don‘t want to do that.</div>
+
+        <fieldset id="communitiesChooser" class="hidden-none">
+            <legend>Communities</legend>
+            <label for="checkbox-1">
+                <input type="checkbox" id="checkbox-1" name="communities" value="biosyslit" checked>
+                Biodiversity Literature Repository (BLR)
+            </label>
+            <br>
+            <label for="checkbox-2">
+                <input type="checkbox" id="checkbox-2" name="communities" value="belgiumherbarium">
+                Belgium Herbarium
+            </label>
+        </fieldset>
+
+    </form>
+    
 </header>
 
 <main>
-    <section id="index" class="panel modal hidden"></section>
+    <section id="index" class="hidden-none"></section>
 
-    <section id="closed" class="panel modal hidden">
-        <div>
-            <h1>Closed for Maintenance</h1>
+    <section id="closedForMaintenance" class="modal hidden-none">
+        <h1>Closed for Maintenance</h1>
+
+        <p>We are cleaning house to bring you a faster, better Ocellus. Please check back soon.</p>
+    </section>
     
-            <p>We are closed for maintenance. We'll be back shortly.</p>
-        </div>
+    <section id="about" class="modal hidden-none">
+        <a href="index.html" class="modal-close">close</a>
+
+        <h1>About</h1>
+    
+        <p>Ocellus is a frontend to the Biodiversity Literature Repository (BLR) with <span id="num-of-images" class="numbers"></span> images on <a href="https://zenodo.org" target="_blank">Zenodo</a>, <span id="num-of-treatments" class="numbers"></span> taxonomic treatments in <a href="http://treatmentbank.org" target="_blank">TreatmentBank</a>, and <span id="num-of-citations" class="numbers"></span>  citations on <a href="https://refbank.org" target="_blank">RefBank</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API that queries, analyzes and aggregates results from these various repositories via a single, unified interface. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, and then retrieve the results for you.</p>
+
+        <p>Check out our policies on <a href="privacy.html" class="modal-open">privacy</a> and <a href="ip.html" class="modal-open">intellectual property</a>, or <a href="contact.html" class="modal-open">send us feedback</a>.</p>
     </section>
 
-    <section id="about" class="panel modal hidden">
-        <div>
-            <a href="index.html" class="modal-close">close</a>
+    <section id="privacy" class="modal hidden-none">
+        <a href="index.html" class="modal-close">close</a>
+
+        <h1>Privacy</h1>
     
-            <h1>About</h1>
-    
-            <p>Ocellus is a frontend to the Biodiversity Literature Repository (BLR) with almost 200K images on <a href="https://zenodo.org" target="_blank">Zenodo</a>, more than 300K taxonomic treatments in <a href="http://treatmentbank.org" target="_blank">TreatmentBank</a>, and 800,000 citations on <a href="https://refbank.org" target="_blank">RefBank</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API that queries, analyzes and aggregates results from these various repositories via a single, unified interface. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, and Ocellus will retrieve the results for you.</p>
-    
-            <p>Check out our <a href="/privacy.html#on" class="modal-open">privacy policy</a> or <a href="contact.html#on" class="modal-open">give us feedback</a>.</p>
-        </div>
+        <p>We track nothing. What you do with the data here is not our business. Check out our policy on <a href="ip.html" class="modal-open">intellectual property</a> or <a href="contact.html" class="modal-open">give us feedback</a>.</p>
     </section>
 
-    <section id="privacy" class="panel modal hidden">
-        <div>
-            <a href="index.html" class="modal-close">close</a>
+    <section id="ip" class="modal hidden-none">
+        <a href="index.html" class="modal-close">close</a>
+
+        <h1>Intellectual Property</h1>
     
-            <h1>Privacy</h1>
+        <p>All information we extract or create is dedicated to the public domain under the CC0 Public Domain Dedication. All original content by authors of source article is copyrighted by either the authors or their publishers and is used under its applicable open license. For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country.</p>
+
+        <p>If you use are our, please be nice and give us credit by citing us as follows: <cite>Biodiversity Literature Repository. 2018-. blah, blah. Plazi.</cite></p>
+
+        <p>The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up" target="_blank">Internet Archive</a> and has no known copyright restrictions.</p>
+
+        <p>Check out our <a href="privacy.html" class="modal-open">privacy policy</a> or <a href="contact.html" class="modal-open">give us feedback</a>.</p>
+    </section>
+
+    <section id="contact" class="modal hidden-none">
+        <a href="index.html" class="modal-close">close</a>
+    
+        <h1>Contact</h1>
+
+        <p>Biodiversity Literature Repository (BLR aka BioLitRepo) is a production of Plazi in partnership with Pensoft Publishers, Sofia, Bulgaria and Zenodo/CERN, Geneva, with generous support from Arcadia Foundation, UK.</p>
         
-            <p>We track nothing. What you do with the data here is not our business. Check out our policy on <a href="ip.html#on" class="modal-open">intellectual property</a>.</p>
-        </div>
+        <p>Check out our policies on <a href="privacy.html" class="modal-open">privacy</a> and <a href="ip.html" class="modal-open">intellectual property</a>, or contact <a href="mailto:blr@plazi.org">Plazi</a> for more information.</p>
     </section>
 
-    <section id="ip" class="panel modal hidden">
-        <div>
-            <a href="index.html" class="modal-close">close</a>
-    
-            <h1>Intellectual Property</h1>
-    
-            <p>All information we extract or create is dedicated to the public domain under the CC0 Public Domain Dedication. All original content by authors of source article is copyrighted by either the authors or their publishers and is used under its applicable open license. For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country.</p>
-    
-            <p>If you use are our, please be nice and give us credit by citing us as follows: <cite>Biodiversity Literature Repository. 2018-. blah, blah. Plazi.</cite></p>
-    
-            <p>The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up" target="_blank">Internet Archive</a> and has no known copyright restrictions.</p>
-        </div>
+    <section id="images" class="resource hidden-none">
+        <div class="result"></div>
     </section>
 
-    <section id="contact" class="panel modal hidden">
-        <div>
-            <a href="index.html" class="modal-close">close</a>
-    
-            <h1>Contact</h1>
-    
-            <p>Biodiversity Literature Repository (BLR aka biolitrepo) is a production of Plazi in partnership with Pensoft Publishers, Sofia, Bulgaria and Zenodo/CERN, Geneva, with generous support from Arcadia Foundation, UK. Please contact <a href="mailto:blr@plazi.org">Plazi</a> for more information or to provide feedback.</p>
-        </div>
-    </section>
-    
-    <section id="images" class="panel resource hidden">
-        <div class="searchCriteria"></div>
-        <div class="charts"></div>
-        <div class="results"></div>
+    <section id="treatments" class="resource hidden-none">
+        <div class="result"></div>
     </section>
 
-    <section id="carousel" class="panel resource hidden">
-        <div class="searchCriteria"></div>
-        <div class="results"></div>
-    </section>
+    <section id="citations" class="resource hidden-none">
+        <!-- <h1>Citations</h1> -->
 
+        <div class="result"></div>
+    </section>
 </main>
-
+ 
 <footer><img src="../img/fish.jpg"></footer>
 
 <!-- partials -->
@@ -182,14 +152,13 @@
     {{#next}}<a href="{{next}}" id="next" class="pager">next</a> ▶{{/next}}
 </div>
 {{/pager}}
-{{^pager}}no pager{{/pager}}
 </script>
 
 <script id="template-records-found" type="x-tmpl-mustache">
-<p class="records-found">{{num-of-records}} {{resource}} found where {{{search-criteria-text}}}. {{#successful}}{{from}} to {{to}} shown below.{{/successful}}</p>
+<p id="records-found" class="records-found">{{niceNumbers}} {{resource}} found where {{{search-criteria-text}}}. {{#successful}}{{shown}}.{{/successful}}</p>
 </script>
 
-<script id="template-figures" type="x-tmpl-mustache">
+<script id="template-figures-old" type="x-tmpl-mustache">
 <div id="masonry" class="masonry">
     {{#figureCitations}}
     <figure class='item'>
@@ -219,13 +188,6 @@
 <!-- wholes -->
 <script id="template-images" type="x-tmpl-mustache">
 {{> template-records-found}}
-
-<!-- <div id="toggleSearch">
-    <a href="#layout=spaced">spaced grid layout</a>
-</div> -->
-
-    
-{{> template-charts}}
 
 {{#successful}}
     <div id="masonry" class="masonry masonry-250">
@@ -268,31 +230,147 @@
 </figure>
 {{/figures}}
 </script>
+
+<script id="template-treatments" type="x-tmpl-mustache">
+{{> template-records-found}}
+
+{{#successful}}
+    <div id="masonry" class="masonry masonry-250">
+        {{#figures}}
+        <figure class="item">
+            <div class="tt">{{treatmentTitle}}</div>
+
+            <p>{{{context}}}</p>
+            
+            <figcaption class="transition-050 opacity85 text">
+                <a class="transition-050">rec ID: {{recId}}</a>
+                <div class="transition-050 desc">{{articleTitle}} <a class="treatmentLink" href="/index.html?resource=treatments&treatmentId={{treatmentId}}">more</a></div>
+            </figcaption>
+        </figure>
+        {{/figures}}
+    </div>
+    
+    {{> template-pager}}
+{{/successful}}
+</script>
+
+<script id="template-treatment" type="x-tmpl-mustache">
+<h2 class="treatmentTitle">{{treatmentTitle}}</h2>
+<div>
+    <div id="treatmentInfo">
+        <ul class="pids">
+            <li class="treatmentId">Treatment ID: <a href="{{zenodeo}}/v2/treatments?treatmentId={{treatmentId}}&format=xml" target="_blank">{{treatmentId}}</a> <span class="xml-marker">&lt;xml&gt;</span></li>
+            <li class="doi">DOI: <a href="{{doi}}" target="_blank">{{doi}}</a></li>
+            <li class="zenodoDep">Zenodo deposit: <a href="https://www.zenodo.org/record/{{zenodoDep}}" target="_blank">{{zenodoDep}}</a></li>
+        </ul>
+
+        <p class="journal">{{authorsList}}. {{journalYear}}. {{articleTitle}}. <i>{{journalTitle}}</i>, Vol. {{journalVolume}}, Issue {{journalIssue}}, pages {{pages}}</p>
+    </div>
+
+    <ul class="classification">
+        {{#taxonStats}}
+        <li class="kingdom">
+            <div class="txn">
+                <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{kingdom.qryObj.kingdom}}">{{kingdom.qryObj.kingdom}}</a> [{{kingdom.num.num}}]
+            </div>
+        </li>
+        <li class="phylum">
+            <div class="txn">
+                <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{phylum.qryObj.kingdom}}&phylum={{phylum.qryObj.phylum}}">{{phylum.qryObj.phylum}}</a> [{{phylum.num.num}}]
+            </div>
+        </li>
+        <li class="order">
+            <div class="txn">
+                <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{order.qryObj.kingdom}}&phylum={{order.qryObj.phylum}}&order={{order.qryObj.order}}">{{order.qryObj.order}}</a> [{{order.num.num}}]
+            </div>
+        </li>
+        <li class="family">
+            <div class="txn">
+                <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{family.qryObj.kingdom}}&phylum={{family.qryObj.phylum}}&order={{family.qryObj.order}}&family={{family.qryObj.family}}">{{family.qryObj.family}}</a> [{{family.num.num}}]
+            </div>
+        </li>
+        <li class="genus">
+            <div class="txn">
+                <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{genus.qryObj.kingdom}}&phylum={{genus.qryObj.phylum}}&order={{genus.qryObj.order}}&family={{genus.qryObj.family}}&genus={{genus.qryObj.genus}}">{{genus.qryObj.genus}}</a> [{{genus.num.num}}]
+            </div>
+        </li>
+        <li class="species">
+            <div class="txn">
+                <a class="treatmentLink" href="/index.html?resource=treatments&kingdom={{species.qryObj.kingdom}}&phylum={{species.qryObj.phylum}}&order={{species.qryObj.order}}&family={{species.qryObj.family}}&genus={{species.qryObj.genus}}&species={{species.qryObj.species}}">{{species.qryObj.species}}</a> [{{species.num.num}}]
+            </div>
+        </li>
+        {{/taxonStats}}
+    </ul>
+</div>
+
+<h2 class="map">Map</h2>
+<div id="map"></div>
+
+<h2 class="figures">Figures</h2>
+
+<div>
+    {{#figures}}
+    <figure class='item'>
+        <a href="#carousel" class="carousel"><img src="{{thumbnailUri}}" width="250" data-src="{{httpUri}}" class="lazyload" data-recid="{{figureCitationId}}"></a>
+
+        <figcaption class="transition-050 opacity85 text">
+            <a class="transition-050">rec ID: {{figureCitationId}}</a>
+            <div class="transition-050 desc">{{captionText}}</div>
+        </figcaption>
+    </figure>
+    {{/figures}}
+</div>
+
+<!-- <details class="treatment">
+<h2 class="figures">Figures</h2>
+<div id="masonry" class="masonry">
+    {{#figures}}
+    <figure class='item'>
+        <a href="#carousel" class="carousel"><img src="{{imgBlur}}" width="250" data-src="{{imgA}}" class="lazyload" data-recid="{{recId}}"></a>
+
+        <figcaption class="transition-050 opacity85 text">
+            <a class="transition-050">rec ID: {{recId}}</a>
+            <div class="transition-050 desc">{{title}}. <a href='{{zenodoRecord}}' target='_blank'>more</a></div>
+        </figcaption>
+    </figure>
+    {{/figures}}
+</div>
+</details> -->
+
+
+<h2 class="citations">Citations</h2>
+<div>
+    <ul class="citations">
+        {{#citations}}
+        <li>{{citation}}</li>
+        {{/citations}}
+    </ul>
+</div>
+
+<h2 class="xmltext">Treatment Text</h2>
+<div>
+    <p class="xml">{{{xml}}}</p>
+</div>
+</script>
 <!-- end wholes -->
 
 <script src="../node_modules/picolog/dist/picolog.min.js"></script>
-
-<!-- config.js sets the value for zenodeo API server and log level -->
 <script src="../js/config.js"></script>
-
-<!-- build:js -->
+<script src="../libs/mustache.min.js"></script>
 <script src="../libs/lazysizes.min.js"></script>
 <script src="../libs/JavaScript-autoComplete/auto-complete.min.js"></script>
-<script src="../libs/mustache.min.js"></script>
-<script src="js/o4-default.js"></script>
+
 <script src="js/o4-base.js"></script>
-<script src="js/o4-search.js"></script>
-<script src="js/o4-eventlisteners.js"></script>
 <script src="js/o4-utils.js"></script>
+<script src="js/o4-citations.js"></script>
 <script src="js/o4-images.js"></script>
-<!-- endbuild -->
+<script src="js/o4-treatments.js"></script>
 
-<script type="text/javascript">
-window.onload = function() {
-    O.base.init();
-};
+<script>
+    window.onload = function() {
+        O.closedForMaintenance = false;
+        O.init();
+    }
 </script>
-
-<!-- <script src="//instant.page/3.0.0" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script> -->
 </body>
 </html>

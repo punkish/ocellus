@@ -1,63 +1,111 @@
-/*****************************************/
-/* blr: form simple search               */
-/*****************************************/
-
-
-nav {
-  font-size: small;
-  font-family: sans-serif;
-  margin-left: calc(var(--community-selector-width) + 5px);
-}
-nav label {
-  margin-right: 10px;
-}
-nav label.searchFocus {
-  text-decoration: none;
-  color: white;
-  background-color: grey;
-  padding: 2px 5px;
-  border-radius: 2px;
-}
-nav input[type="radio"] {
-  display: none;
-}
-#searchWidget {
-position: relative;
-overflow: hidden;
-border: 0px solid red;
-min-height: 125px;
-}
-#searchContainers {
-border: 0px solid green;
-float: left;
-width: calc(100% - var(--community-selector-width));
- 
+html {
+    --input-submit-width: 70px;
+    --input-refreshcache-width: 20px;
+    --input-reset-width: 18px;
+    --input-communitiechooser-width: 35px;
+    --input-padding: 10px;
+    --border: 1px solid #444;
+    --input-font: 14px/1.2 sans-serif;
 }
 
-/* simple search field */
-input[name=q] {
-width: calc(100% - 45px);
-padding-left: 10px;
-/* font-style: italic;
-font-family: serif; */
+form {
+    margin-top: 40px;
+    text-align: left;
 }
-
-#toggleSearch {
-  clear: both;
-  font-family: sans-serif;
-  font-size: small;
-  left: 5px;
-  position: relative;
+form fieldset {
+    padding: var(--input-padding);
+    border: var(--border);
 }
-
-input[name=refreshCache] {
-position: absolute;
-top: 24px;
-right: calc(var(--button-width) + 20px);
-z-index: 100;
+form input {
+    display: inline-block;
+    padding: var(--input-padding);
+    border: var(--border);
 }
-
-.refreshCacheWarning {
-  text-align: center;
-  color:red;
+form input[type="text"] {
+    border: none;
+    /* the extra 7px below accounts for the width of the vertical borders of the buttons */
+    --w1: calc(var(--input-submit-width) + var(--input-refreshcache-width) + var(--input-reset-width) + var(--input-communitiechooser-width) + calc(3 * var(--input-padding)) - 7px);
+    width: calc(100% - var(--w1));
+    font: var(--input-font);
+}
+form input[type="checkbox"] {
+    width: var(--input-refreshcache-width);
+}
+form input[type="radio"] {
+    display: none;
+}
+form input[type="submit"] {
+    width: var(--input-submit-width);
+}
+form input[type="submit"]:hover {
+    background-color: green;
+    color: white;
+}
+form input[type="reset"] {
+    width: var(--input-reset-width);
+    padding: 0px 5px 2px;
+}
+form input[type="reset"]:hover {
+    background-color: red;
+    color: white;
+}
+#resourceChooser {
+    display: inline;
+    border: none;
+    /* padding: 0; */
+}
+#resourceChooser label {
+    color: #444;
+    background-color: lightgrey;
+    border: var(--border);
+    padding: 4px 5px;
+    font: var(--input-font);
+}
+#resourceChooser label.searchfocus {
+    color: white;
+    background-color: #444;
+}
+input[name=communitiesChooser] {
+    width: var(--input-communitiechooser-width);
+    cursor: pointer;
+}
+input[name=communitiesChooser]:hover {
+    background-color: darkgray;
+    color: white;
+}
+#communitiesChooser {
+    text-align: left;
+    width: 230px;
+    font: var(--input-font);
+}
+#communitiesChooser input {
+    display: inline-block;
+}
+#refreshCache {
+    margin-top: 5px;
+    font: var(--input-font);
+    text-align: center;
+}
+#throbber {
+    padding: 0;
+    bottom: 0;
+    height: 8px;
+    /* border-top: 1px solid silver; */
+    border-bottom: 1px solid silver;
+    padding: 0;
+    /* transition: opacity 0.3s ease; */
+    background-size: 30px 30px;
+    background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.1) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1) 75%, transparent 75%, transparent);
+    animation: barberpole 0.5s linear infinite;
+}
+.nothrob {
+    opacity: 0;
+}
+@keyframes barberpole {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 60px 30px;
+    }
 }
