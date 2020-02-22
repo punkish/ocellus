@@ -1,0 +1,7 @@
+.masonry figure ul {
+    text-align: left;
+    list-style: none;
+    margin: 0;
+    padding-left: 15px;
+    font-family: sans-serif; 
+}

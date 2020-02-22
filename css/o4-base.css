@@ -1,0 +1,86 @@
+/* my mods */
+body {
+    max-width:1200px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding-bottom: 0;
+}
+a,a:visited{color:blue;}
+header {
+    text-align: center;
+}
+header a.title {
+    font-family: serif;
+    font-size: 24px;
+    text-decoration: none;
+    color: black
+}
+header a.sub-title {
+    font-family: sans-serif;
+    margin-left: -10px;
+}
+sup { vertical-align: top; position: relative; top: -0.5em; }
+/* the main setting keeps the footer glued to the bottom of the screen */
+main {
+    flex: 1;
+    /* position: relative;
+    height: 100%; */
+}
+main section.modal {
+    /* height: 50%;
+    overflow: auto;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 1rem;
+    right: 1rem; */
+}
+main section h1 {
+    text-align: center;
+}
+main section {
+    text-align: left;
+}
+footer  {
+    margin: 0 auto;
+}
+footer img {
+    max-width: 280px;
+}
+.hidden-none {
+    visibility: hidden;
+    display: none;
+}
+.hidden-block {
+    visibility: hidden;
+    display: block;
+}
+.visible-inline {
+    visibility: visible;
+    display: block;
+}
+.visible-none {
+    visibility: visible;
+    display: block;
+}
+.modal-close {
+    cursor: pointer;
+    text-decoration: underline;
+    color: blue;
+}
+/* search results */
+.crit-key {
+    font-weight: bold;
+}
+.crit-val {
+    font-style: italic;
+    font-family: serif;
+}
+.warning {
+    color: red;
+}
+.nudge {
+    color: green;
+}
