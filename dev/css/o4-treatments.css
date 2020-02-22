@@ -3,6 +3,8 @@
   font-size: large;
   font-family: sans-serif;
   padding: 10px;
+  background-color: lightgrey;
+  
 }
 .masonry figure div.at {
     font-style: italic;

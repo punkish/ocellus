@@ -236,7 +236,17 @@ O.formatSearchCriteria = function(s) {
             const v = s[k];
 
             if (k === 'q') {
-                criteria.push(`<span class="crit-val">${v}</span> is in the text`);
+                if (s[k].length === 32) {
+                    if (s.resource === 'treatments') {
+                        criteria.push(`<span class="crit-key">treatmentId</span> is <span class="crit-val">${v}</span>`);
+                    }
+                    else if (s.resource === 'citations') {
+                        criteria.push(`<span class="crit-key">bibRefCitationId</span> is <span class="crit-val">${v}</span>`);
+                    }
+                }
+                else {
+                    criteria.push(`<span class="crit-val">${v}</span> is in the text`);
+                }
             }
             else {
                 criteria.push(`<span class="crit-key">${k}</span> is <span class="crit-val">${v}</span>`);
@@ -442,48 +452,4 @@ O.fillSearchForm = function(search, resource) {
 
     O.hls(resource);
     O.getResource();
-};
-
-O.waitMessage = function(resource, searchcriteria) {
-    const rp = document.querySelector(`#${resource}`);
-    O.show(resource);
-    const rf = rp.querySelector('.result');
-    rf.innerHTML = `<p id="records-found" class="records-found">Looking for ${resource} where ${searchcriteria}</p>`;
-};
-
-O.inputs2uris = function(inputs, resource) {
-    
-    // valid params for zenodeo uri
-    const zuValid = {
-        images: [ 'q', 'size', 'page', 'communities', 'refreshCache' ],
-        treatments: [ 'q', 'size', 'page', 'refreshCache' ]
-    };
-
-    // valid params for browser uri
-    const buValid = {
-        images: [ 'q', 'size', 'page', 'communities' ],
-        treatments: [ 'q', 'size', 'page' ]
-    };
-
-    const zparams = [];
-    const bparams = [];
-
-    for (const key in inputs) {
-
-        if (zuValid[resource].includes(key)) {
-            zparams.push(`${key}=${inputs[key]}`);
-        }
-
-        if (buValid[resource].includes(key)) {
-            bparams.push(`${key}=${inputs[key]}`);
-        }
-        
-    }
-
-    const zs = zparams.length ? `?${zparams.sort().join('&')}` : '';
-    const z = `${O.zenodeoUri}/${resource}${zs}`;
-
-    const bs = bparams.length ? `?${bparams.join('&')}` : '';
-    const b = `${resource}.html${bs}`;
-    return {z: z, b: b};
 };

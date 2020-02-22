@@ -21,7 +21,8 @@
     <link rel="stylesheet" href="css/o4-base.css">
     <link rel="stylesheet" href="css/o4-form.css">
     <link rel="stylesheet" href="css/o4-images.css">
-    <link rel="stylesheet" href="css/o4-treatments.css">
+    <!-- <link rel="stylesheet" href="css/o4-treatments.css"> -->
+    <!-- <link rel="stylesheet" href="css/o4-citations.css"> -->
     <link rel="stylesheet" href="css/o4-media-queries.css">
     <!-- endbuild -->
 
@@ -40,10 +41,16 @@
                 <input type="radio" id="resource-1" name="resource" value="images" checked>
                 images
             </label>
+            <!--
             <label for="resource-2">
                 <input type="radio" id="resource-2" name="resource" value="treatments">
                 treatments
             </label>
+            <label for="resource-3">
+                <input type="radio" id="resource-3" name="resource" value="citations">
+                citations
+            </label>
+            -->
         </fieldset>
         
         <fieldset>
@@ -155,7 +162,7 @@
 </script>
 
 <script id="template-records-found" type="x-tmpl-mustache">
-<p id="records-found" class="records-found">{{niceNumbers}} {{resource}} found where {{{search-criteria-text}}}. {{#successful}}{{shown}}.{{/successful}}</p>
+<p id="records-found" class="records-found">{{niceNumbers}} {{resource}} found where {{{search-criteria-text}}}{{#successful}}… {{shown}}.{{/successful}}</p>
 </script>
 
 <script id="template-figures-old" type="x-tmpl-mustache">
@@ -244,7 +251,7 @@
             
             <figcaption class="transition-050 opacity85 text">
                 <a class="transition-050">rec ID: {{recId}}</a>
-                <div class="transition-050 desc">{{articleTitle}} <a class="treatmentLink" href="/index.html?resource=treatments&treatmentId={{treatmentId}}">more</a></div>
+                <div class="transition-050 desc">{{articleTitle}} <a class="treatmentLink" href="treatments.html?q={{treatmentId}}">more</a></div>
             </figcaption>
         </figure>
         {{/figures}}
@@ -255,6 +262,7 @@
 </script>
 
 <script id="template-treatment" type="x-tmpl-mustache">
+{{#figures}}
 <h2 class="treatmentTitle">{{treatmentTitle}}</h2>
 <div>
     <div id="treatmentInfo">
@@ -350,6 +358,43 @@
 <h2 class="xmltext">Treatment Text</h2>
 <div>
     <p class="xml">{{{xml}}}</p>
+</div>
+{{/figures}}
+</script>
+
+<script id="template-citations" type="x-tmpl-mustache">
+{{> template-records-found}}
+
+{{#successful}}
+    <div id="masonry" class="masonry masonry-250">
+        {{#figures}}
+        <figure class="item">
+            <p>{{{refString}}}</p>
+            
+            <figcaption class="transition-050 opacity85 text">
+                <a class="transition-050">rec ID: {{recId}}</a>
+                <div class="transition-050 desc">related treatment <a class="treatmentLink" href="treatments.html?q={{treatmentId}}">{{treatmentId}}</a></div>
+            </figcaption>
+        </figure>
+        {{/figures}}
+    </div>
+    
+    {{> template-pager}}
+{{/successful}}
+</script>
+
+<script id="template-citation" type="x-tmpl-mustache">
+<h2 class="resourceTitle">{{citattion}}</h2>
+<div>
+    <div id="treatmentInfo">
+        <ul class="pids">
+            <li class="treatmentId">Treatment ID: <a href="{{zenodeo}}/v2/treatments?treatmentId={{treatmentId}}&format=xml" target="_blank">{{treatmentId}}</a> <span class="xml-marker">&lt;xml&gt;</span></li>
+            <li class="doi">DOI: <a href="{{doi}}" target="_blank">{{doi}}</a></li>
+            <li class="zenodoDep">Zenodo deposit: <a href="https://www.zenodo.org/record/{{zenodoDep}}" target="_blank">{{zenodoDep}}</a></li>
+        </ul>
+
+        <p class="journal">{{authorsList}}. {{journalYear}}. {{articleTitle}}. <i>{{journalTitle}}</i>, Vol. {{journalVolume}}, Issue {{journalIssue}}, pages {{pages}}</p>
+    </div>
 </div>
 </script>
 <!-- end wholes -->

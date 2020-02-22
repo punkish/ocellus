@@ -9,10 +9,11 @@ O.niceNumbers = function(n) {
 O.renderResults = function(result) {
 
     const resource = result.resource;
+    const template = result.template;
 
     // the result panel where the results are shown
     const rp = document.querySelector(`#${resource} div.result`);
-    const tl = document.querySelector(`#template-${resource}`).innerHTML;
+    const tl = document.querySelector(`#template-${template}`).innerHTML;
     const tp = {
         'template-pager': document.querySelector('#template-pager').innerHTML,
         'template-records-found': document.querySelector('#template-records-found').innerHTML,
@@ -143,9 +144,11 @@ O.getFoo = function(obj) {
         if (resource === 'treatments') {
             for (let i = 0, j = records.length; i < j; i++) {
                 const r = records[i];
-                figures.push(r)
+                r.recId = r.treatmentId;
+                figures.push(r);
             }
         }
+
         else if (resource === 'images') {
             for (let i = 0, j = records.length; i < j; i++) {
                 const r = records[i];
@@ -167,7 +170,13 @@ O.getFoo = function(obj) {
                 })
             }
         }
+
         else if (resource === 'citations') {
+            for (let i = 0, j = records.length; i < j; i++) {
+                const r = records[i];
+                r.recId = r.bibRefCitationId;
+                figures.push(r);
+            }
         }
 
         return figures;
@@ -178,7 +187,7 @@ O.getFoo = function(obj) {
         .then(O.fetchReceive)
         .then(function(res) {
 
-            const recs = res['num-of-records'];
+            const recs = res['num-of-records'];            
 
             const result = {
                 resource: resource,
@@ -191,26 +200,55 @@ O.getFoo = function(obj) {
 
                 result.successful = true;
                 result['search-criteria-text'] = sct;
-                
-                // make pager and layout ///////////////////////////////////////
-                if (recs) {
 
-                    result.shown = recs == 1 ? 'It is shown below' : `${O.niceNumbers(res.from)} to ${O.niceNumbers(res.to)} are shown below`;                    
-                    result.figures = _makeLayout(resource, res.records);
-                    result.niceNumbers = O.niceNumbers(recs);
-
-                    if (recs >= limit) {
-                        result.prev = b.replace(/page=\d+/, `page=${res.prevpage}`);
-                        result.next = b.replace(/page=\d+/, `page=${res.nextpage}`);
-                        result.pager = true;
+                if (inputs.q.length === 32) {
+                    if (res['search-criteria'].resource === 'treatments') {
+                        result.template = 'treatment';
                     }
-                    
+                    else if (res['search-criteria'].resource === 'citations') {
+                        result.template = 'citation';
+                    }
+
+                    if (recs) {
+                        result.figures = res.records[0];
+                    }
                 }
                 else {
-                    result.pager = false;
-                    result.figures = [];
+                    result.template = result.resource;
+
+                    // make pager and layout ///////////////////////////////////////
+                    if (recs) {
+
+                        if (recs == 1) {
+                            result.shown = 'it is shown below';
+                        }
+                        else if (recs > 1 && recs <= limit) {
+                            result.shown = `${O.niceNumbers(res.from)} to ${O.niceNumbers(recs)} are shown below`;
+                        }
+                        else {
+                            result.shown = `${O.niceNumbers(res.from)} to ${O.niceNumbers(res.to)} are shown below`;
+                        }
+                                           
+                        result.figures = _makeLayout(resource, res.records);
+                        result.niceNumbers = O.niceNumbers(recs);
+
+                        if (recs >= limit) {
+                            result.prev = b.replace(/page=\d+/, `page=${res.prevpage}`);
+                            result.next = b.replace(/page=\d+/, `page=${res.nextpage}`);
+                            result.pager = true;
+                        }
+                        
+                    }
+                    else {
+                        result.pager = false;
+                        result.figures = [];
+                    }
+                    ////////////////////////////////////////////////////////////////
+
                 }
-                ////////////////////////////////////////////////////////////////
+                
+                
+                
 
             }
 
@@ -220,4 +258,65 @@ O.getFoo = function(obj) {
         .then(cb)
         .then(O.noThrob);
     
+};
+
+O.waitMessage = function(resource, searchcriteria) {
+    const rp = document.querySelector(`#${resource}`);
+    O.show(resource);
+    const rf = rp.querySelector('.result');
+    rf.innerHTML = `<p id="records-found" class="records-found">Looking for ${resource} where ${searchcriteria}</p>`;
+};
+
+O.inputs2uris = function(inputs, resource) {
+    
+    // valid params for zenodeo uri
+    const zuValid = {
+        images: [ 'q', 'size', 'page', 'communities', 'refreshCache' ],
+        treatments: [ 'q', 'size', 'page', 'refreshCache' ],
+        citations: [ 'q', 'size', 'page', 'refreshCache' ]
+    };
+
+    // valid params for browser uri
+    const buValid = {
+        images: [ 'q', 'size', 'page', 'communities' ],
+        treatments: [ 'q', 'size', 'page' ],
+        citations: [ 'q', 'size', 'page' ]
+    };
+
+    const zparams = [];
+    const bparams = [];
+
+    for (const key in inputs) {
+
+        if (zuValid[resource].includes(key)) {
+            if (key === 'q') {
+                if (key.length == 32) {
+                    if (resource === 'treaments') {
+                        zparams.push(`treatmentId=${inputs[key]}`);
+                    }
+                    else if (resource === 'citations') {
+                        zparams.push(`bibRefCitationId=${inputs[key]}`);
+                    }
+                }
+                else {
+                    zparams.push(`q=${inputs[key]}`);
+                }
+            }
+            else {
+                zparams.push(`${key}=${inputs[key]}`);
+            }
+        }
+
+        if (buValid[resource].includes(key)) {
+            bparams.push(`${key}=${inputs[key]}`);
+        }
+        
+    }
+
+    const zs = zparams.length ? `?${zparams.sort().join('&')}` : '';
+    const z = `${O.zenodeoUri}/${resource}${zs}`;
+
+    const bs = bparams.length ? `?${bparams.join('&')}` : '';
+    const b = `${resource}.html${bs}`;
+    return {z: z, b: b};
 };
