@@ -185,7 +185,7 @@ O.getFoo = function(obj) {
     // now fetch the records and process the result
     fetch(z)
         .then(O.fetchReceive)
-        .then(function(res) {
+        .then(function(ress) {
 
             const res = ress.value;
             const recs = res['num-of-records'];            
