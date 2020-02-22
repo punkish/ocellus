@@ -187,6 +187,7 @@ O.getFoo = function(obj) {
         .then(O.fetchReceive)
         .then(function(res) {
 
+            const res = ress.value;
             const recs = res['num-of-records'];            
 
             const result = {
