@@ -14,8 +14,6 @@ const finaljs = 'ocellus-bundle.min.js';
 
 function docss() {
     return src([
-            // 'libs/Barebones-3.0.1/css/normalize.css', 
-            // 'libs/Barebones-3.0.1/css/barebones.css',
             'libs/JavaScript-autoComplete/auto-complete.css',
             'dev/css/o4-*.css'
         ])

@@ -21,8 +21,6 @@
     <link rel="stylesheet" href="css/o4-base.css">
     <link rel="stylesheet" href="css/o4-form.css">
     <link rel="stylesheet" href="css/o4-images.css">
-    <!-- <link rel="stylesheet" href="css/o4-treatments.css"> -->
-    <!-- <link rel="stylesheet" href="css/o4-citations.css"> -->
     <link rel="stylesheet" href="css/o4-media-queries.css">
     <!-- endbuild -->
 
@@ -41,16 +39,6 @@
                 <input type="radio" id="resource-1" name="resource" value="images" checked>
                 images
             </label>
-            <!--
-            <label for="resource-2">
-                <input type="radio" id="resource-2" name="resource" value="treatments">
-                treatments
-            </label>
-            <label for="resource-3">
-                <input type="radio" id="resource-3" name="resource" value="citations">
-                citations
-            </label>
-            -->
         </fieldset>
         
         <fieldset>
@@ -143,8 +131,6 @@
     </section>
 
     <section id="citations" class="resource hidden-none">
-        <!-- <h1>Citations</h1> -->
-
         <div class="result"></div>
     </section>
 </main>
@@ -405,8 +391,10 @@
 <script src="../libs/lazysizes.min.js"></script>
 <script src="../libs/JavaScript-autoComplete/auto-complete.min.js"></script>
 
+<!-- build:js -->
 <script src="js/o4-base.js"></script>
 <script src="js/o4-utils.js"></script>
+<!-- endbuild -->
 
 <script>
     window.onload = function() {
