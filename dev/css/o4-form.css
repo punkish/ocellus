@@ -1,10 +1,11 @@
 html {
-    --input-submit-width: 70px;
+    --input-submit-width: 30px;
     --input-refreshcache-width: 20px;
-    --input-reset-width: 18px;
-    --input-communitiechooser-width: 35px;
-    --input-padding: 10px;
-    --border: 1px solid #444;
+    --input-reset-width: 30px;
+    --input-communitieschooser-width: 30px;
+/*     --input-minimum-height: 20px; */
+    --input-padding: 2px;
+    --input-border: 1px solid #444;
     --input-font: 14px/1.2 sans-serif;
 }
 
@@ -14,19 +15,35 @@ form {
 }
 form fieldset {
     padding: var(--input-padding);
-    border: var(--border);
+    border: var(--input-border);
 }
 form input {
     display: inline-block;
     padding: var(--input-padding);
-    border: var(--border);
+    border: var(--input-border);
+    border-radius: 0;
+    /* height: var(--input-minimum-height); */
 }
 form input[type="text"] {
     border: none;
+
     /* the extra 7px below accounts for the width of the vertical borders of the buttons */
-    --w1: calc(var(--input-submit-width) + var(--input-refreshcache-width) + var(--input-reset-width) + var(--input-communitiechooser-width) + calc(3 * var(--input-padding)) - 7px);
-    width: calc(100% - var(--w1));
+    width: calc(
+        100% - 
+        calc(
+            var(--input-submit-width) + 
+            var(--input-refreshcache-width) + 
+            var(--input-reset-width) + 
+            var(--input-communitieschooser-width) + 
+            calc(10 * var(--input-padding))
+        )
+    );
+    
+    height: auto;
+    /* min-height: 40px;; */
     font: var(--input-font);
+    /* background-color: #f5f5f5; */
+    -webkit-appearance: none;
 }
 form input[type="checkbox"] {
     width: var(--input-refreshcache-width);
@@ -36,6 +53,10 @@ form input[type="radio"] {
 }
 form input[type="submit"] {
     width: var(--input-submit-width);
+    height: 30px;
+    border: 1px solid #444;
+    border-radius: 0px;
+    -webkit-appearance: none;
 }
 form input[type="submit"]:hover {
     background-color: green;
@@ -43,7 +64,10 @@ form input[type="submit"]:hover {
 }
 form input[type="reset"] {
     width: var(--input-reset-width);
-    padding: 0px 5px 2px;
+    height: 30px;
+    padding: 0;
+    border-radius: 0;
+    -webkit-appearance: none;
 }
 form input[type="reset"]:hover {
     background-color: red;
@@ -66,8 +90,10 @@ form input[type="reset"]:hover {
     background-color: #444;
 }
 input[name=communitiesChooser] {
-    width: var(--input-communitiechooser-width);
+    width: var(--input-communitieschooser-width);
     cursor: pointer;
+    height: 30px;
+    -webkit-appearance: none;
 }
 input[name=communitiesChooser]:hover {
     background-color: darkgray;
@@ -75,7 +101,7 @@ input[name=communitiesChooser]:hover {
 }
 #communitiesChooser {
     text-align: left;
-    width: 230px;
+    width: 280px;
     font: var(--input-font);
 }
 #communitiesChooser input {
