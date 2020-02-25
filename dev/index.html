@@ -16,14 +16,13 @@
 
     <link rel="stylesheet" href="../libs/JavaScript-autoComplete/auto-complete.css">
 
-    <!-- build:css -->
     <link rel="stylesheet" href="css/uglyduck.css">
     <link rel="stylesheet" href="css/o4-base.css">
     <link rel="stylesheet" href="css/o4-form.css">
     <link rel="stylesheet" href="css/o4-images.css">
+    <link rel="stylesheet" href="css/o4-treatments.css">
+    <link rel="stylesheet" href="css/o4-citations.css">
     <link rel="stylesheet" href="css/o4-media-queries.css">
-    <!-- endbuild -->
-
 </head>
 
 <body>
@@ -39,7 +38,6 @@
                 <input type="radio" id="resource-1" name="resource" value="images" checked>
                 images
             </label>
-             <!--
             <label for="resource-2">
                 <input type="radio" id="resource-2" name="resource" value="treatments">
                 treatments
@@ -48,17 +46,16 @@
                 <input type="radio" id="resource-3" name="resource" value="citations">
                 citations
             </label>
-            -->
         </fieldset>
         
         <fieldset>
             <input type="button" name="communitiesChooser" value="⬇︎">
             <input type="text" name="q" placeholder="search for something…" class="nudge"> 
-            <input type="reset" value="✖︎">
+            <input type="reset" name="reset" value="✖︎">
             <input type="checkbox" name="refreshCache" value="true"> 
             <input type="hidden" name="size" value="30">
             <input type="hidden" name="page" value="1">
-            <input type="submit" id="submit" value="GO">
+            <input type="button" name="submit" value="GO">
         </fieldset>
         <div id="throbber" class="nothrob"></div>
 
@@ -78,7 +75,6 @@
         </fieldset>
 
     </form>
-    
 </header>
 
 <main>
@@ -247,7 +243,7 @@
             
             <figcaption class="transition-050 opacity85 text">
                 <a class="transition-050">rec ID: {{recId}}</a>
-                <div class="transition-050 desc">{{articleTitle}} <a class="treatmentLink" href="treatments.html?q={{treatmentId}}">more</a></div>
+                <div class="transition-050 desc">{{articleTitle}} <!-- <a class="treatmentLink" href="treatments.html?q={{treatmentId}}">more</a> --></div>
             </figcaption>
         </figure>
         {{/figures}}
@@ -369,7 +365,7 @@
             
             <figcaption class="transition-050 opacity85 text">
                 <a class="transition-050">rec ID: {{recId}}</a>
-                <div class="transition-050 desc">related treatment <a class="treatmentLink" href="treatments.html?q={{treatmentId}}">{{treatmentId}}</a></div>
+                <div class="transition-050 desc">related treatment <!-- <a class="treatmentLink" href="treatments.html?q={{treatmentId}}">{{treatmentId}}</a> --></div>
             </figcaption>
         </figure>
         {{/figures}}

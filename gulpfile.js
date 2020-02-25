@@ -43,4 +43,5 @@ function dojs(){
         .pipe(dest(jsdest));
 }
 
-exports.default = parallel(docss, dohtml, dojs);
+// exports.default = parallel(docss, dohtml, dojs);
+exports.default = parallel(dohtml, dojs);

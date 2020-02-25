@@ -61,7 +61,7 @@ O.init = function() {
                 handler: { name: 'getResource()', fn: O.getResource } 
             },
             { 
-                selectors: [ document.querySelector('#submit') ], 
+                selectors: [ document.querySelector('input[name=submit]') ], 
                 action: 'click', 
                 handler: { name: 'getResource()', fn: O.getResource } 
             },
@@ -227,7 +227,9 @@ O.formatSearchCriteria = function(s) {
         'communitiesChooser',
         'refreshCache', 
         'size', 
-        'page'
+        'page',
+        'reset',
+        'submit'
     ];
 
     const criteria = [];
@@ -379,7 +381,7 @@ O.setPlaceHolder = function(result) {
     }
 
     const ph = `search ${result['num-of-records']} ${result.resource}`;
-    log.info(`placeholder: ${ph}`);
+    log.info(`placeholder: "${ph}"`);
 
     // set focus in the search field and get ready
     const q = document.querySelector('input[name=q]');

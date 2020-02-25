@@ -182,82 +182,86 @@ O.getFoo = function(obj) {
         return figures;
     };
 
-    // now fetch the records and process the result
-    fetch(z)
-        .then(O.fetchReceive)
-        .then(function(ress) {
+    try {
 
-            const res = ress.value;
-            const recs = res['num-of-records'];            
+        // now fetch the records and process the result
+        fetch(z)
+            .then(O.fetchReceive)
+            .then(function(ress) {
 
-            const result = {
-                resource: resource,
-                'num-of-records': recs
-            };
+                log.info(ress);
+                const res = ress.value;
+                const recs = res['num-of-records'];            
 
-            if (inputs) {
-                
-                const limit = 30;
+                const result = {
+                    resource: resource,
+                    'num-of-records': recs
+                };
 
-                result.successful = true;
-                result['search-criteria-text'] = sct;
+                if (inputs) {
+                    
+                    const limit = 30;
 
-                if (inputs.q.length === 32) {
-                    if (res['search-criteria'].resource === 'treatments') {
-                        result.template = 'treatment';
-                    }
-                    else if (res['search-criteria'].resource === 'citations') {
-                        result.template = 'citation';
-                    }
+                    result.successful = true;
+                    result['search-criteria-text'] = sct;
 
-                    if (recs) {
-                        result.figures = res.records[0];
-                    }
-                }
-                else {
-                    result.template = result.resource;
-
-                    // make pager and layout ///////////////////////////////////////
-                    if (recs) {
-
-                        if (recs == 1) {
-                            result.shown = 'it is shown below';
+                    if (inputs.q.length === 32) {
+                        if (res['search-criteria'].resource === 'treatments') {
+                            result.template = 'treatment';
                         }
-                        else if (recs > 1 && recs <= limit) {
-                            result.shown = `${O.niceNumbers(res.from)} to ${O.niceNumbers(recs)} are shown below`;
+                        else if (res['search-criteria'].resource === 'citations') {
+                            result.template = 'citation';
                         }
-                        else {
-                            result.shown = `${O.niceNumbers(res.from)} to ${O.niceNumbers(res.to)} are shown below`;
-                        }
-                                           
-                        result.figures = _makeLayout(resource, res.records);
-                        result.niceNumbers = O.niceNumbers(recs);
 
-                        if (recs >= limit) {
-                            result.prev = b.replace(/page=\d+/, `page=${res.prevpage}`);
-                            result.next = b.replace(/page=\d+/, `page=${res.nextpage}`);
-                            result.pager = true;
+                        if (recs) {
+                            result.figures = res.records[0];
                         }
-                        
                     }
                     else {
-                        result.pager = false;
-                        result.figures = [];
+                        result.template = result.resource;
+
+                        // make pager and layout ///////////////////////////////////////
+                        if (recs) {
+
+                            if (recs == 1) {
+                                result.shown = 'it is shown below';
+                            }
+                            else if (recs > 1 && recs <= limit) {
+                                result.shown = `${O.niceNumbers(res.from)} to ${O.niceNumbers(recs)} are shown below`;
+                            }
+                            else {
+                                result.shown = `${O.niceNumbers(res.from)} to ${O.niceNumbers(res.to)} are shown below`;
+                            }
+                                            
+                            result.figures = _makeLayout(resource, res.records);
+                            result.niceNumbers = O.niceNumbers(recs);
+
+                            if (recs >= limit) {
+                                result.prev = b.replace(/page=\d+/, `page=${res.prevpage}`);
+                                result.next = b.replace(/page=\d+/, `page=${res.nextpage}`);
+                                result.pager = true;
+                            }
+                            
+                        }
+                        else {
+                            result.pager = false;
+                            result.figures = [];
+                        }
+                        ////////////////////////////////////////////////////////////////
+
                     }
-                    ////////////////////////////////////////////////////////////////
-
+                    
                 }
-                
-                
-                
 
-            }
+                return result;
 
-            return result;
-
-        })
-        .then(cb)
-        .then(O.noThrob);
+            })
+            .then(cb)
+            .then(O.noThrob);
+    }
+    catch (error) {
+        log.error(error);
+    }
     
 };
 

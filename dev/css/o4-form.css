@@ -1,9 +1,5 @@
 html {
-    --input-submit-width: 30px;
-    --input-refreshcache-width: 20px;
-    --input-reset-width: 30px;
-    --input-communitieschooser-width: 30px;
-/*     --input-minimum-height: 20px; */
+    --input-button-dim: 30px;
     --input-padding: 2px;
     --input-border: 1px solid #444;
     --input-font: 14px/1.2 sans-serif;
@@ -13,100 +9,117 @@ form {
     margin-top: 40px;
     text-align: left;
 }
-form fieldset {
+fieldset {
     padding: var(--input-padding);
     border: var(--input-border);
 }
-form input {
+input {
     display: inline-block;
     padding: var(--input-padding);
     border: var(--input-border);
-    border-radius: 0;
-    /* height: var(--input-minimum-height); */
+    width: var(--input-button-dim);
+    height: var(--input-button-dim);
+    font: var(--input-font);
+    vertical-align: middle;
 }
-form input[type="text"] {
+input[type="text"],
+input[type="reset"],
+input[type="button"] {
+    -webkit-appearance: none;
+}
+/* now, styles or specific fields */
+input[name="q"] {
     border: none;
 
-    /* the extra 7px below accounts for the width of the vertical borders of the buttons */
+    /* the extra 3px below accounts for the width of the vertical borders of the buttons */
     width: calc(
         100% - 
         calc(
-            var(--input-submit-width) + 
-            var(--input-refreshcache-width) + 
-            var(--input-reset-width) + 
-            var(--input-communitieschooser-width) + 
-            calc(10 * var(--input-padding))
+            calc(4 * var(--input-button-dim)) + 
+            calc(12 * var(--input-padding))
         )
     );
-    
-    height: auto;
-    /* min-height: 40px;; */
-    font: var(--input-font);
-    /* background-color: #f5f5f5; */
-    -webkit-appearance: none;
 }
-form input[type="checkbox"] {
-    width: var(--input-refreshcache-width);
-}
-form input[type="radio"] {
+input[name="resource"] {
     display: none;
 }
-form input[type="submit"] {
-    width: var(--input-submit-width);
-    height: 30px;
-    border: 1px solid #444;
-    border-radius: 0px;
-    -webkit-appearance: none;
+/* see http://jsfiddle.net/8n8hM/ */
+/* https://stackoverflow.com/questions/20057581/css-webkit-appearance-none-is-causing-checkbox-to-not-be-checked */
+input[type=checkbox] {
+    width: var(--input-button-dim);
+    height: var(--input-button-dim);
+	border:var(--input-border);
+	-webkit-appearance: none;
+	-webkit-font-smoothing: antialiased;
+	-webkit-border-radius: 0px;
+	   -moz-border-radius: 0px;
+	        border-radius: 0px;
+	-webkit-transition: all 0.15s;
+	   -moz-transition: all 0.15s;
+		-ms-transition: all 0.15s;
+		 -o-transition: all 0.15s;
+		  	transition: all 0.15s;
 }
-form input[type="submit"]:hover {
+input[type=checkbox]:focus {
+	border-color: #ACACB8;
+	color: #2E3236;
+}
+input[type='checkbox']:checked {
+    position:relative;
+}
+input[type='checkbox']:checked:before {
+    content:'';
+    display:block;
+    width: var(--input-button-dim);
+    height: var(--input-button-dim);
+    position:absolute;
+    top:0px;
+    left:0px;
+    opacity:0.5;
+}
+input[name='communities']:checked:before {
+    background:none #ACACB8;
+}
+input[name='refreshCache']:checked:before {
+    background:none red;
+}
+input[name="submit"]:hover {
     background-color: green;
     color: white;
 }
-form input[type="reset"] {
-    width: var(--input-reset-width);
-    height: 30px;
-    padding: 0;
-    border-radius: 0;
-    -webkit-appearance: none;
-}
-form input[type="reset"]:hover {
+input[name="reset"]:hover {
     background-color: red;
     color: white;
 }
+input[name=communitiesChooser]:hover {
+    background-color: darkgray;
+    color: white;
+}
+
 #resourceChooser {
     display: inline;
     border: none;
-    /* padding: 0; */
+    padding: 0 0 5px 5px;
 }
 #resourceChooser label {
     color: #444;
     background-color: lightgrey;
-    border: var(--border);
-    padding: 4px 5px;
+    border: 1px solid white;
+    padding: 5px;
     font: var(--input-font);
 }
 #resourceChooser label.searchfocus {
     color: white;
     background-color: #444;
 }
-input[name=communitiesChooser] {
-    width: var(--input-communitieschooser-width);
-    cursor: pointer;
-    height: 30px;
-    -webkit-appearance: none;
-}
-input[name=communitiesChooser]:hover {
-    background-color: darkgray;
-    color: white;
-}
 #communitiesChooser {
     text-align: left;
-    width: 280px;
+    width: 300px;
     font: var(--input-font);
 }
-#communitiesChooser input {
+/* #communitiesChooser input {
     display: inline-block;
-}
+} */
 #refreshCache {
     margin-top: 5px;
     font: var(--input-font);
