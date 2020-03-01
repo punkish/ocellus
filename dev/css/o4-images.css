@@ -1,9 +1,14 @@
+main section#images {
+    text-align: center;
+}
+main section#images div.result {
+    text-align: center;
+}
 .masonry {
     -moz-column-gap: 1em;
     -webkit-column-gap: 1em;
     column-gap: 1em;
     font-size: .85em;
-    
     width: 99%;
 }
 .masonry-100 {
@@ -25,7 +30,7 @@
     position: relative;
     overflow: hidden;
     border: 4px double #000;
-    min-height: 200px;
+/*     min-height: 200px; */
     height: auto;
     margin: 0 0 1em 0 !important;
 
@@ -60,6 +65,7 @@
     opacity: 1 !important;
     border-top: 1px solid grey;
     cursor: pointer;
+    display: block;
 }
 .masonry figcaption a {
     cursor: pointer;

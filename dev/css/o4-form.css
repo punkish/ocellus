@@ -6,8 +6,9 @@ html {
 }
 
 form {
-    margin-top: 40px;
+    margin: 40px auto;
     text-align: left;
+    max-width: 66ch;
 }
 fieldset {
     padding: var(--input-padding);

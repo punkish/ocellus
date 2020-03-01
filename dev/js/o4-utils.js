@@ -157,7 +157,7 @@ O.getFoo = function(obj) {
                     title       : r.metadata.title,
                     creators    : r.metadata.creators ? r.metadata.creators.map(c => c.name) : [],
                     recId       : r.id,
-                    zenodoRecord: O.zenodoUri + r.id,
+                    zenodoRecord: `${O.zenodoUri}/${r.id}`,
                     description : r.metadata.description,
                     doi         : r.doi,
                     img         : r.links.thumbs ? true : false,
@@ -190,7 +190,7 @@ O.getFoo = function(obj) {
             .then(function(ress) {
 
                 log.info(ress);
-                const res = ress.value;
+                const res = 'value' in ress ? ress.value : ress;                
                 const recs = res['num-of-records'];            
 
                 const result = {
