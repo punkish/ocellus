@@ -201,8 +201,6 @@ O.getFoo = function(obj) {
                 if (inputs) {
                     
                     const limit = 30;
-
-                    result.successful = true;
                     result['search-criteria-text'] = sct;
 
                     if (inputs.q.length === 32) {
@@ -221,7 +219,10 @@ O.getFoo = function(obj) {
                         result.template = result.resource;
 
                         // make pager and layout ///////////////////////////////////////
+                        result.niceNumbers = O.niceNumbers(recs);
+
                         if (recs) {
+                            result.successful = true;
 
                             if (recs == 1) {
                                 result.shown = 'it is shown below';
@@ -234,7 +235,7 @@ O.getFoo = function(obj) {
                             }
                                             
                             result.figures = _makeLayout(resource, res.records);
-                            result.niceNumbers = O.niceNumbers(recs);
+                            
 
                             if (recs >= limit) {
                                 result.prev = b.replace(/page=\d+/, `page=${res.prevpage}`);
@@ -244,6 +245,8 @@ O.getFoo = function(obj) {
                             
                         }
                         else {
+                            result.successful = false;
+                            result.shown = '';
                             result.pager = false;
                             result.figures = [];
                         }
