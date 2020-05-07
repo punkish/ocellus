@@ -11,10 +11,19 @@ header {
     text-align: center;
 }
 header a.title {
+    text-transform: lowercase;
+    font-stretch: expanded;
     font-family: serif;
     font-size: 24px;
     text-decoration: none;
-    color: black
+    color: black;
+    
+}
+header h2.small {
+    text-transform: uppercase;
+    font-weight: 400;
+    font-size: xx-small;
+    margin-top:-10px;
 }
 header a.sub-title {
     font-family: sans-serif;
