@@ -26,20 +26,30 @@ a,a:visited{color:blue;}
 header {
     text-align: center;
 }
+header h1 {
+    margin: 0.67em 0;
+    line-height: 0;
+    letter-spacing: -.1rem;
+    font-weight: 300;
+}
+header h1 sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+    top: -0.5em;
+}
 header a.title {
-    text-transform: lowercase;
-    font-stretch: expanded;
-    font-family: serif;
-    font-size: 24px;
     text-decoration: none;
     color: black;
-    
 }
 header h2.small {
     text-transform: uppercase;
     font-weight: 400;
     font-size: xx-small;
-    margin-top:-10px;
+	letter-spacing: 0;
+    margin-top: 0;
+    margin-bottom: 2rem;
 }
 header a.sub-title {
     font-family: sans-serif;
@@ -51,16 +61,6 @@ main {
     flex: 1;
     /* position: relative;
     height: 100%; */
-}
-main section.modal {
-    /* height: 50%;
-    overflow: auto;
-    margin: auto;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 1rem;
-    right: 1rem; */
 }
 main section h1 {
     text-align: center;
