@@ -1,0 +1,41 @@
+/*****************************************/
+/* blr: header                           */
+/*****************************************/
+
+header > div > div {
+    margin: auto;
+    width: 110px;
+}
+.titleContainer {
+    /* background-image: url(/img/bug.gif);
+    background-repeat: no-repeat;
+    background-size: 100%; */
+    display: block;
+    width: 100px;
+    height: 100px;
+}
+.titleContainer .title {
+    text-decoration: none;
+    color: black;
+}
+
+/* Larger than mobile (default point when grid becomes active) */
+@media (min-width: 600px) {
+    header > div {
+        width: 500px;
+    }
+}
+    
+/* Larger than phablet */
+@media (min-width: 900px) {
+    header > div {
+        width: 600px;
+    }
+}
+
+/* Larger than tablet */
+@media (min-width: 1200px) {
+    header > div {
+        width: 900px;
+    }
+}
