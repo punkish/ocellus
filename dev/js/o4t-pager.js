@@ -177,7 +177,7 @@ const pager = ({ total, subtotal, queryString, page, size, fp, fs, resource, sub
 }
 
 const outputPager_div = ({page_list, queryString, page, size, fp, fs, htmlElement, resource}) => {
-    const url = `${zenodeoUri}?${queryString}`
+    const url = `${ocellus4tUri}?${queryString}`
 
     const pager = page_list.map(e => {
 
@@ -202,7 +202,7 @@ const outputPager_div = ({page_list, queryString, page, size, fp, fs, htmlElemen
 }
 
 const outputPager = ({ resource, page_list, queryString, page, size, fp, fs, htmlElement }) => {
-    const url = `${zenodeoUri}?${queryString}`
+    const url = `${ocellus4tUri}?${queryString}`
 
     const pager = page_list.map(e => {
 
