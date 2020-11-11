@@ -164,14 +164,14 @@ const fillForm = function(queryObj) {
 
     if (queryObj.has('q')) {
         if (Array.from(queryObj.entries()).length > 1) {
-            sel_q.value = queryObj.toString()
+            sel_q.value = decodeURIComponent(queryObj.toString())
         }
         else {
             sel_q.value = queryObj.get('q')
         }
     }
     else {
-        sel_q.value = queryObj.toString()
+        sel_q.value = decodeURIComponent(queryObj.toString())
     }
 
     // restore `page` and `size`

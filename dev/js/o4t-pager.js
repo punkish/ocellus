@@ -202,8 +202,10 @@ const outputPager_div = ({page_list, queryString, page, size, fp, fs, htmlElemen
 }
 
 const outputPager = ({ resource, page_list, queryString, page, size, fp, fs, htmlElement }) => {
-    const url = `${ocellus4tUri}?${queryString}`
-
+    
+    const url = ocellus4tUri
+    const queryObj = new URLSearchParams(queryString)
+    
     const pager = page_list.map(e => {
 
         let disp
@@ -216,7 +218,13 @@ const outputPager = ({ resource, page_list, queryString, page, size, fp, fs, htm
                 disp = `<td class="sep"><span>${SEP}</span></td>`
             }
             else {
-                disp = `<td class="p"><a href="${url}&$page=${e.page_link}&$size=${size}#fp=${e.fp}&fs=${e.fs}"><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></a></td>`
+                queryObj.set('$page', e.page_link)
+                queryObj.set('$size', size)
+                queryObj.sort()
+                const qry = decodeURIComponent(queryObj.toString())
+
+                // disp = `<td class="p"><a href="${url}&$page=${e.page_link}&$size=${size}#fp=${e.fp}&fs=${e.fs}"><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></a></td>`
+                disp = `<td class="p"><a href="${url}?${qry}#fp=${e.fp}&fs=${e.fs}"><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></a></td>`
             }
         }
 
