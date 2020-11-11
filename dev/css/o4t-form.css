@@ -1,0 +1,125 @@
+/* position form in the center of div */
+/* https://stackoverflow.com/a/31386275 */
+form {
+    position: relative;
+}
+
+/* Clearable text inputs */
+.wrapper {
+    width: 100%;
+}
+
+.input-wrapper { 
+    border-radius: 5px 0 0 5px;
+    border: 1px solid silver;
+    float: left;
+    position: relative;
+    width: calc(100% - 50px);
+    height: 43px;
+}
+
+#clearQ {
+    position: absolute;
+    right: 2px;
+    top: 2px;
+    bottom: 2px;
+    line-height: 31px;
+    width: 37px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid lightgray;
+}
+
+#clearQ:hover {
+    background-color: red;
+    color: white;
+}
+
+#refreshCacheWrapper {
+    position: absolute;
+    right: 41px;
+    top: 2px;
+    bottom: 2px;
+    line-height: 31px;
+    width: 37px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid lightgray;
+}
+
+#refreshCacheWrapper:hover {
+    background-color: red;
+}
+
+#refreshCache {
+    position: relative;
+}
+
+#q { 
+    border: none;
+    border-radius: 5px 0 0 5px;
+    width: calc(100% - 80px);
+    height: 40px;
+    position: absolute;
+    left: 0;
+    text-indent: 10px;
+}
+
+#q, 
+#go {
+    font-family: sans-serif;
+    padding: 8px;
+    font-size: 12px;
+}
+
+#go {
+    cursor: pointer;
+    text-transform: uppercase;
+    border: 1px solid silver;
+    border-radius: 0 5px 5px 0;
+    width: 45px;
+    height: 43px;
+}
+
+#go:hover {
+    background-color: green;
+    color: white;
+}
+/* end Clearable */
+
+#refreshCache-target {
+    color: red;
+    font-family: sans-serif;
+    font-size: 10px;
+    display:block;
+    visibility: hidden;
+}
+
+#refreshCache-target.show {
+
+    /* P.S: Use `!important` if missing `#content` (selector specificity). */
+    visibility: visible
+}
+
+.red-placeholder {
+    color: red;
+}
+
+/* https://stackoverflow.com/a/30117998/183692 */
+/* Chrome, Firefox, Opera, Safari 10.1+ */
+.red-placeholder::placeholder { 
+    color: red;
+
+    /* Firefox */
+    opacity: 1; 
+}
+
+/* Internet Explorer 10-11 */
+.red-placeholder:-ms-input-placeholder {
+    color: red;
+}
+
+/* Microsoft Edge */
+.red-placeholder::-ms-input-placeholder {
+    color: red;
+}

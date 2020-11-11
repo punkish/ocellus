@@ -6,7 +6,7 @@
     <meta name="version" content="4.0">
     <meta name="author" content="Puneet Kishor">
     <meta name="copyright" content="CC0 Public Domain Dedication">
-    <meta name="date" content="Fri May 08 2020 14:35:22 GMT+0200 (Central European Summer Time)">
+    <meta name="date" content="Wed Nov 11 2020 16:05:07 GMT+0530 (India Standard Time)">
 
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
     
@@ -15,7 +15,9 @@
     <link rel="icon" type="image/png" href="../img/ocellus.png">
 
     <link rel="stylesheet" href="../libs/JavaScript-autoComplete/auto-complete.css">
+
     <link rel="stylesheet" href="css/ocellus.css">
+    
 </head>
 
 <body>
@@ -32,14 +34,6 @@
                 <input type="radio" id="resource-1" name="resource" value="images" checked>
                 images
             </label>
-            <!-- <label for="resource-2">
-                <input type="radio" id="resource-2" name="resource" value="treatments">
-                treatments
-            </label>
-            <label for="resource-3">
-                <input type="radio" id="resource-3" name="resource" value="citations">
-                citations
-            </label> -->
         </fieldset>
         
         <fieldset>
@@ -85,7 +79,7 @@
 
         <h1>About</h1>
     
-        <p>Ocellus is a frontend to the Biodiversity Literature Repository (BLR) with <span id="num-of-images" class="numbers"></span> images on <a href="https://zenodo.org" target="_blank">Zenodo</a>, <span id="num-of-treatments" class="numbers"></span> taxonomic treatments in <a href="http://treatmentbank.org" target="_blank">TreatmentBank</a>, and <span id="num-of-citations" class="numbers"></span>  citations on <a href="https://refbank.org" target="_blank">RefBank</a>. Ocellus depends on <a href="http://zenodeo.punkish.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API that queries, analyzes and aggregates results from these various repositories via a single, unified interface. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, and then retrieve the results for you.</p>
+        <p>Ocellus is a frontend to the Biodiversity Literature Repository (BLR) with <span id="num-of-images" class="numbers"></span> images on <a href="https://zenodo.org" target="_blank">Zenodo</a>, <span id="num-of-treatments" class="numbers"></span> taxonomic treatments in <a href="http://treatmentbank.org" target="_blank">TreatmentBank</a>, and <span id="num-of-citations" class="numbers"></span>  citations on <a href="https://refbank.org" target="_blank">RefBank</a>. Ocellus depends on <a href="http://zenodeo.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API that queries, analyzes and aggregates results from these various repositories via a single, unified interface. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, and then retrieve the results for you.</p>
 
         <p>Check out our policies on <a href="privacy.html" class="modal-open">privacy</a> and <a href="ip.html" class="modal-open">intellectual property</a>, or <a href="contact.html" class="modal-open">send us feedback</a>.</p>
     </section>
@@ -385,7 +379,8 @@
 </script>
 <!-- end wholes -->
 
-<script src="../node_modules/picolog/dist/picolog.min.js"></script>
+<!-- <script src="../node_modules/picolog/dist/picolog.min.js"></script> -->
+<script src="/node_modules/picolog/dist/picolog.min.js"></script>
 <script src="../js/config.js"></script>
 <script src="../libs/mustache.min.js"></script>
 <script src="../libs/lazysizes.min.js"></script>
@@ -396,7 +391,7 @@
 <script>
     window.onload = function() {
         O.closedForMaintenance = false;
-        O.init();
+        O.base.init();
     }
 </script>
 </body>

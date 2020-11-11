@@ -14,8 +14,17 @@ const useref = require('gulp-useref');
 // const finalcss = 'ocellus-bundle.css';
 // const finaljs = 'ocellus-bundle.min.js';
 
-function foo() {
-    return src('dev/index.html')
+// for index.html
+async function i() {
+    return await src('dev/index.html')
+        .pipe(inject.replace('%date%', Date()))
+        .pipe(useref())
+        .pipe(dest('.'));
+}
+
+// for 4t.html
+async function t() {
+    return await src('dev/4t.html')
         .pipe(inject.replace('%date%', Date()))
         .pipe(useref())
         .pipe(dest('.'));
@@ -61,4 +70,4 @@ function foo() {
 // }
 
 //exports.default = parallel(docss, dohtml, dojs);
-exports.default = parallel(foo);
+exports.default = parallel(i, t);

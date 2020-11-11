@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@sn8z/pop-pop.css": "^1.0.2",
     "chart.js": "^2.8.0",
     "chartist": "^0.11.3",
     "chartist-plugin-pointlabels": "^0.0.6",
@@ -13,6 +14,8 @@
     "gulp-inject-string": "^1.1.2",
     "gulp-terser": "^1.2.0",
     "gulp-useref": "^4.0.1",
+    "isotope-layout": "^3.0.6",
+    "isotope-masonry-horizontal": "^2.0.1",
     "picolog": "^1.0.4"
   }
 }

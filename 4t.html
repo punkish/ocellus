@@ -1,0 +1,136 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Ocellus, a Biodiversity Literature Repository (BLR) Explorer">
+    <meta name="version" content="4.0T">
+    <meta name="author" content="Puneet Kishor">
+    <meta name="copyright" content="CC0 Public Domain Dedication">
+    <meta name="date" content="Wed Nov 11 2020 16:05:07 GMT+0530 (India Standard Time)">
+
+    <meta http-equiv="Cache-Control" content="max-age=604800, public">
+
+    <title>ocellus^4T</title>
+
+    <link rel="icon" type="image/png" href="../img/ocellus.png">
+
+    <link rel="stylesheet" href="/node_modules/@sn8z/pop-pop.css/dist/pop-pop.min.css">
+    
+    <link rel="stylesheet" href="css/o4t.css">
+
+</head>
+
+<body>
+<header>
+    <div id="brand">4TREATMENTS</div>
+    <div class="title">
+        <h1>ocellus</h1>
+        <small>A Plazi Project</small><br>
+        <a href="about.html" class="modal-open">about</a>
+    </div>
+    
+    <form>
+        <div class="wrapper">
+            <div class="input-wrapper">
+                <input id="q" type="text" placeholder="search for something" class="clearable">
+
+                <span id="refreshCacheWrapper" aria-label="refresh cache" data-pop="top" data-pop-no-shadow data-pop-arrow><input name="refreshCache" id="refreshCache" type="checkbox" value="true"></span>
+
+                <span id="clearQ" class="removeClick" aria-label="clear input" data-pop="top" data-pop-no-shadow data-pop-arrow>&times;</span>
+            </div>
+            <button id="go">go</button>
+        </div>
+        <div id="refreshCache-target">This will refresh the cache. You probably don’t want to do this.</div>
+    </form>
+</header>
+<div id="throbber" class="nothrob"></div>
+
+<main>
+    <div id="puff"></div>
+    
+    <div id="palette"></div>
+    <div id="container">
+
+        <div id="grid-target" class="hide">
+            
+            <div id="results">
+                <table>
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td id="search-results" colspan="9"></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="treatments-pager" class="pager"></tr>
+                        <tr id="figures-pager" class="pager"></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- this is where the figures go -->
+            <div id="grid" class="columns"></div>
+        </div>
+
+        <div id="index-target" class="modal hide"></div>
+
+        <div id="about-target" class="modal hide">
+            <a href="index.html" class="modal-close">close</a>
+
+            <h1>About Ocellus</h1>
+            
+            <p>Ocellus is a frontend to the Biodiversity Literature Repository (BLR) with <span id="num-of-images" class="numbers"></span> images on <a href="https://zenodo.org" target="_blank">Zenodo</a>, <span id="num-of-treatments" class="numbers"></span> taxonomic treatments in <a href="http://treatmentbank.org" target="_blank">TreatmentBank</a>, and <span id="num-of-citations" class="numbers"></span>  citations on <a href="https://refbank.org" target="_blank">RefBank</a>. Ocellus depends on <a href="http://zenodeo.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API that queries, analyzes and aggregates results from these various repositories via a single, unified interface.</p>
+        
+            <p>Check out our policies on <a href="privacy.html" class="modal-open">privacy</a> and <a href="ip.html" class="modal-open">intellectual property</a>, or <a href="contact.html" class="modal-open">send us feedback</a>.</p>
+        </div>
+
+        <div id="privacy-target" class="modal hide">
+            <a href="index.html" class="modal-close">close</a>
+
+            <h1>Privacy</h1>
+    
+            <p>We track nothing. What you do with the data here is not our business. Check out our policy on <a href="ip.html" class="modal-open">intellectual property</a> or <a href="contact.html" class="modal-open">give us feedback</a>.</p>
+        </div>
+
+        <div id="ip-target" class="modal hide">
+            <a href="index.html" class="modal-close">close</a>
+    
+            <h1>Intellectual Property</h1>
+        
+            <p>All information we extract or create is dedicated to the public domain under the CC0 Public Domain Dedication. All original content by authors of source article is copyrighted by either the authors or their publishers and is used under its applicable open license. For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country.</p>
+    
+            <p>If you use are our, please be nice and give us credit by citing us as follows: <cite>Biodiversity Literature Repository. 2018-. blah, blah. Plazi.</cite></p>
+    
+            <p>The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up" target="_blank">Internet Archive</a> and has no known copyright restrictions.</p>
+    
+            <p>Check out our <a href="privacy.html" class="modal-open">privacy policy</a> or <a href="contact.html" class="modal-open">give us feedback</a>.</p>
+        </div>
+
+        <div id="contact-target" class="modal hide">
+            <a href="index.html" class="modal-close">close</a>
+        
+            <h1>Contact</h1>
+    
+            <p>Biodiversity Literature Repository (BLR aka BioLitRepo) is a production of Plazi in partnership with Pensoft Publishers, Sofia, Bulgaria and Zenodo/CERN, Geneva, with generous support from Arcadia Foundation, UK.</p>
+            
+            <p>Check out our policies on <a href="privacy.html" class="modal-open">privacy</a> and <a href="ip.html" class="modal-open">intellectual property</a>, or contact <a href="mailto:blr@plazi.org">Plazi</a> for more information.</p>
+        </div>
+    </div>
+</main>
+
+<footer><img src="../img/fish.jpg"></footer>
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script> -->
+<script src="/node_modules/picolog/dist/picolog.min.js"></script>
+<script src="/js/config.js"></script>
+<script src="../libs/lazysizes.min.js"></script>
+
+<script src="js/o4t.min.js"></script>
+
+<script>
+window.onload = function() {
+    init()
+}
+</script>
+</body>
+</html>

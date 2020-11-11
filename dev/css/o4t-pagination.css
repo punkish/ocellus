@@ -1,0 +1,157 @@
+.container {
+    margin: auto;
+    text-align: center;
+}
+
+input {
+    font-size: 24px;
+    width: 80%;
+    margin-bottom: 2rem;
+    border: 1px solid;
+    padding: 5px;
+}
+
+/* #results-treatments {
+    margin-bottom: 1rem;
+}
+
+.search-results {
+    margin-bottom: 1rem;
+}
+
+.pager {
+    display: inline-block;
+}
+
+.pager div {
+    min-width: 25px;
+    float: left;
+    padding: 5px 2px;
+    font-family: sans-serif;
+    font-size: 12px;
+}
+
+.pager div a {
+    text-decoration: none;
+}
+
+.pager div:hover {
+    background-color: lightsteelblue;
+}
+
+div.cp { 
+    background-color: steelblue; 
+    color: white; 
+    border: 1px solid steelblue;
+} */
+
+#search-results {
+    padding-bottom: 1rem;
+}
+
+td {
+    padding: unset;
+}
+
+ th {
+    font-size: 10px;
+    text-align: right;
+    padding: 0 0.5rem;
+    border: unset;
+ } 
+ 
+ tr.pager td { 
+     text-align: center;
+     /* min-width: 25px; */
+     padding: 5px 2px;
+     font-family: sans-serif;
+     font-size: 10px;
+ }
+ 
+ td a {
+     text-decoration: none;
+ }
+ 
+ tr.pager td:hover {
+     background-color: lightsteelblue;
+ }
+ 
+ tr.pager td.e:hover {
+    background-color: unset;
+}
+
+#treatments-pager td.cp,
+#figures-pager td.cp { 
+     background-color: steelblue; 
+     color: white; 
+ }
+
+ #figures-pager td { 
+    border-top: 4px solid steelblue;
+}
+
+ /* table done */
+
+.range {
+    display: none;
+}
+
+.range:before {
+    content: ': '
+}
+
+/* 
+.sep {
+    border: none;
+}
+ */
+ 
+/* Mobile first queries */
+
+/* Larger than mobile */
+@media (min-width: 400px) {}
+
+/* Larger than phablet */
+@media (min-width: 550px) {
+    .range {
+        display: inline-block;
+    }
+
+    .pager div {
+        padding: 5px 7px;
+        border: 1px solid;
+        border-right: none;
+    }
+    
+    .pager div:last-of-type {
+        border: 1px solid;
+    }
+}
+
+/* Larger than tablet */
+@media (min-width: 800px) {
+    
+}
+
+/* Larger than desktop */
+@media (min-width: 1100px) {
+
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 1400px) {
+
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 1920px) {
+
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 2300px) {
+
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 2500px) {}

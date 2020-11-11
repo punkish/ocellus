@@ -1,0 +1,66 @@
+/* Mobile first queries */
+
+/* Larger than mobile */
+@media (min-width: 400px) {}
+
+/* Larger than phablet */
+@media (min-width: 550px) {
+    :root {
+        --column-count: 2 !important;
+    }
+}
+
+/* Larger than tablet */
+@media (min-width: 800px) {
+    :root {
+        --column-count: 3 !important;
+    }
+
+    form {
+        width: 400px;
+        display: inline-block
+    }
+
+    .modal {
+        width: 50%;
+    }
+}
+
+/* Larger than desktop */
+@media (min-width: 1100px) {
+    :root {
+        --column-count: 4 !important;
+    }
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 1400px) {
+    :root {
+        --column-count: 5 !important;
+    }
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 1920px) {
+    :root {
+        --column-count: 7 !important;
+    }
+
+    .modal {
+        width: 30%;
+    }
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 2300px) {
+    :root {
+        --column-count: 9 !important;
+    }
+
+    .modal {
+        width: 25%;
+    }
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 2500px) {}
