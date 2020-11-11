@@ -27,7 +27,7 @@ const sel_searchResults = document.getElementById('search-results')
 const sel_treatmentsPager = document.getElementById('treatments-pager')
 const sel_figuresPager = document.getElementById('figures-pager')
 
-const zenodeoUri = 'http://localhost:8080/dev/4t.html'
+//const zenodeoUri = 'http://localhost:8080/dev/4t.html'
 
 // // globals and constants
 const RESULTS = {
