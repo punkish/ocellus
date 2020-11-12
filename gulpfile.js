@@ -2,17 +2,26 @@ const { parallel, src, dest } = require('gulp');
 
 const htmlreplace = require('gulp-html-replace');
 const inject = require('gulp-inject-string');
-// const cssmin = require('gulp-cssmin');
-// const concat = require('gulp-concat');
-// const terser = require('gulp-terser');
+const cssmin = require('gulp-cssmin');
+const concat = require('gulp-concat');
+const terser = require('gulp-terser');
 const useref = require('gulp-useref');
 
-// const htmldest = '.';
-// const cssdest = htmldest + '/css';
-// const jsdest = htmldest + '/js';
-
-// const finalcss = 'ocellus-bundle.css';
-// const finaljs = 'ocellus-bundle.min.js';
+const root = '.'
+const foo = {
+    fourt: {
+        dest: {
+            html: root,
+            css: `${root}/css`,
+            js: `${root}/js`
+        },
+        files: {
+            css: 'o4t.min.css',
+            js: 'o4t.min.js',
+            html: '4t.html'
+        }
+    }
+}
 
 // for index.html
 async function i() {
@@ -28,6 +37,46 @@ async function t() {
         .pipe(inject.replace('%date%', Date()))
         .pipe(useref())
         .pipe(dest('.'));
+}
+
+async function fourt() {
+
+}
+
+function css() {
+    return src([
+            'dev/css/uglyduck.css',
+            'dev/css/o4t-base.css',
+            'dev/css/o4t-header.css',
+            'dev/css/o4t-form.css',
+            'dev/css/o4t-throbber.css',
+            'dev/css/o4t-grid.css',
+            'dev/css/o4t-pagination.css',
+            'dev/css/o4t-media-queries.css'
+        ])
+        .pipe(cssmin())
+        .pipe(concat(foo.fourt.files.css))
+        .pipe(dest(foo.fourt.dest.css));
+}
+
+function js(){
+    return src([
+            'dev/js/o4t-ng.js',
+            'dev/js/o4t-pager.js'
+        ])
+        .pipe(terser())
+        .pipe(concat(foo.fourt.files.js))
+        .pipe(dest(foo.fourt.dest.js));
+}
+
+function html() {
+    return src('dev/4t.html')
+        .pipe(inject.replace('%date%', Date()))
+        .pipe(htmlreplace({
+            'css': `css/${foo.fourt.files.css}`,
+            'js': `js/${foo.fourt.files.js}`
+        }))
+        .pipe(dest(foo.fourt.dest.html));
 }
 
 // function docss() {
@@ -69,5 +118,5 @@ async function t() {
 //         .pipe(dest(jsdest));
 // }
 
-//exports.default = parallel(docss, dohtml, dojs);
-exports.default = parallel(i, t);
+exports.default = parallel(css, html, js);
+//exports.default = parallel(i, t);

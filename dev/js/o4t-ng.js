@@ -19,10 +19,6 @@ const sel_modalClose = document.querySelectorAll('.modal-close')
 const sel_palette = document.getElementById('palette')
 const sel_count = document.getElementById('count')
 const sel_pager = document.getElementById('pager')
-// const sel_results = document.getElementById('results')
-// const sel_resultsTreatments = document.getElementById('results-treatments')
-// const sel_resultsFigures = document.getElementById('results-figures')
-
 const sel_searchResults = document.getElementById('search-results')
 const sel_treatmentsPager = document.getElementById('treatments-pager')
 const sel_figuresPager = document.getElementById('figures-pager')
@@ -503,13 +499,6 @@ const toggle = function (e) {
     
     const t = e.target
     const source = t.href ? t.href.split('/').pop().split('.')[0] : t.id
-    
-    // if (e.target.href) {
-    //     element = e.target.href.split('/').pop().split('.')[0]
-    // }
-    // else if (e.target.id) {
-    //     element = e.target.id
-    // }
 
     let target = document.getElementById(`${source}-target`)
     if (source === 'index' && gridIsVisible) {

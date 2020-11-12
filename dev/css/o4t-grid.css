@@ -28,6 +28,7 @@
 }
 
 figure {
+    position: relative;
     height: auto;
     border: 1px solid;
     padding: 0;
