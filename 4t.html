@@ -6,7 +6,7 @@
     <meta name="version" content="4.0T">
     <meta name="author" content="Puneet Kishor">
     <meta name="copyright" content="CC0 Public Domain Dedication">
-    <meta name="date" content="Wed Nov 11 2020 16:41:20 GMT+0530 (India Standard Time)">
+    <meta name="date" content="Thu Nov 12 2020 09:22:39 GMT+0530 (India Standard Time)">
 
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
@@ -34,13 +34,16 @@
             <div class="input-wrapper">
                 <input id="q" type="text" placeholder="search for something" class="clearable">
 
-                <span id="refreshCacheWrapper" aria-label="refresh cache" data-pop="top" data-pop-no-shadow data-pop-arrow><input name="refreshCache" id="refreshCache" type="checkbox" value="true"></span>
+                <span id="refreshCacheWrapper" aria-label="refresh cache" data-pop="top" data-pop-no-shadow data-pop-arrow>
+                    <input name="refreshCache" id="refreshCache" type="checkbox" value="true" class="unchecked">
+                </span>
+                <!-- <input name="refreshCache" id="refreshCache" type="checkbox" value="true" class="unchecked" aria-label="refresh cache" data-pop="top" data-pop-no-shadow data-pop-arrow> -->
 
                 <span id="clearQ" class="removeClick" aria-label="clear input" data-pop="top" data-pop-no-shadow data-pop-arrow>&times;</span>
             </div>
             <button id="go">go</button>
         </div>
-        <div id="refreshCache-target">This will refresh the cache. You probably don’t want to do this.</div>
+        <div id="refreshCache-target" class="hide">This will refresh the cache. You probably don’t want to do this.</div>
     </form>
 </header>
 <div id="throbber" class="nothrob"></div>
@@ -50,9 +53,7 @@
     
     <div id="palette"></div>
     <div id="container">
-
         <div id="grid-target" class="hide">
-            
             <div id="results">
                 <table>
                     <thead>

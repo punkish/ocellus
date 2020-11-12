@@ -96,6 +96,13 @@ header small {
     font-size: 10px;
     font-family: sans-serif;
 }
+html {
+    --input-button-dim: 30px;
+    --input-padding: 2px;
+    --input-border: 0px solid #444;
+    --input-font: 14px/1.2 sans-serif;
+}
+
 /* position form in the center of div */
 /* https://stackoverflow.com/a/31386275 */
 form {
@@ -146,12 +153,61 @@ form {
 }
 
 #refreshCacheWrapper:hover {
+    background-color: lightsalmon;
+}
+
+input[type=checkbox] {
+    position: absolute;
+    right: 2px;
+    top: -4px;
+    bottom: 3px;
+    left: -4px;
+    /* line-height: 31px; */
+    width: 37px;
+    height: 37px;
+    /* text-align: center; */
+    cursor: pointer;
+    /* border: 1px solid lightgray; */
+    -webkit-appearance: none;
+    -webkit-font-smoothing: antialiased;
+    -webkit-transition: all 0.15s;
+    -moz-transition: all 0.15s;
+    -ms-transition: all 0.15s;
+    -o-transition: all 0.15s;
+    transition: all 0.15s;
+}
+
+/* input[type=checkbox]:hover {
+    background-color: lightsalmon;
+} */
+
+/* input[type=checkbox]:focus {
+	border-color: #ACACB8;
+	color: #2E3236;
+} */
+
+#refreshCache.unchecked {
+    background-color: none;
+}
+
+#refreshCache.checked {
     background-color: red;
 }
 
-#refreshCache {
-    position: relative;
+/* input[type=checkbox]:checked {
+    position:relative;
 }
+
+input[type=checkbox]:checked:before {
+    content: '';
+    display:block;
+    background-color: red;
+    width: 37px;
+    height: 37px;
+    position:absolute;
+    top: 0;
+    opacity:0.5;
+} */
 
 #q { 
     border: none;
@@ -186,6 +242,7 @@ form {
 /* end Clearable */
 
 #refreshCache-target {
+    margin-top: 5px;
     color: red;
     font-family: sans-serif;
     font-size: 10px;
@@ -374,18 +431,18 @@ div.close:hover {
 div.close:hover:before {
     content: 'x';
 }
-.container {
+/* .container {
     margin: auto;
     text-align: center;
-}
+} */
 
-input {
+/* input {
     font-size: 24px;
     width: 80%;
     margin-bottom: 2rem;
     border: 1px solid;
     padding: 5px;
-}
+} */
 
 /* #results-treatments {
     margin-bottom: 1rem;
