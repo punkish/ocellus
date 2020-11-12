@@ -489,27 +489,89 @@ const flashBrand = function () {
     setTimeout(function() { sel_brand.innerHTML = '4T' }, 2000)
 }
 
+const show = (element) => {
+    element.classList.remove("hide")
+    element.classList.add("show")
+}
+
+const hide = (element) => {
+    element.classList.remove("show")
+    element.classList.add("hide")
+}
+
 const toggle = function (e) {
-    const href = e.target.href.split('/').pop().split('.')[0]
-
-    let target = document.getElementById(`${href}-target`)
-    if (href === 'index' && gridIsVisible) {
-        target = sel_grid
-    }
-
-    if (sel_grid.classList.contains("show")) {
-        gridIsVisible = true
-        sel_grid.classList.remove("show")
-        sel_grid.classList.add("hide")
-    }
     
-    sel_modals.forEach(m => {
-        m.classList.remove("show")
-        m.classList.add("hide")
-    })
+    const t = e.target
+    const source = t.href ? t.href.split('/').pop().split('.')[0] : t.id
+    
+    // if (e.target.href) {
+    //     element = e.target.href.split('/').pop().split('.')[0]
+    // }
+    // else if (e.target.id) {
+    //     element = e.target.id
+    // }
 
-    target.classList.remove("hide")
-    target.classList.add("show")
+    let target = document.getElementById(`${source}-target`)
+    if (source === 'index' && gridIsVisible) {
+        target = sel_gridTarget
+    }
+
+    if (target.classList.contains("modal")) {
+
+        // hide all the modals
+        sel_modals.forEach(m => hide(m))
+
+        // toggle the target
+        if (target.classList.contains("hide")) {
+
+            // if grid is visible, hide it
+            if (sel_gridTarget.classList.contains("show")) {
+                gridIsVisible = true
+                hide(sel_gridTarget)
+            }
+
+            // show the target
+            show(target)
+
+        }
+        else if (target.classList.contains("show")) {
+
+            // hide the target
+            hide(target)
+
+            // if grid is hidden, show it
+            if (gridIsVisible = true) {
+                if (sel_gridTarget.classList.contains("hide")) {
+                    gridIsVisible = false
+                    show(sel_gridTarget)
+                }
+            }
+
+        }
+    }
+
+    // target is refreshCacheMsg, not a modal
+    else {
+
+        const element = document.getElementById(source)
+        //console.log(target.classList)
+
+        // toggle the target
+        if (element.classList.contains("unchecked")) {
+            element.classList.remove("unchecked")
+            element.classList.add("checked")
+            //console.log('checking')
+            sel_refreshCache.checked = true
+            show(target)
+        }
+        else {
+            element.classList.remove("checked")
+            element.classList.add("unchecked")
+            //console.log('unchecking')
+            sel_refreshCache.checked = false
+            hide(target)
+        }
+    }
 
     e.stopPropagation()
     e.preventDefault()
