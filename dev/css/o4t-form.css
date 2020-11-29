@@ -1,10 +1,3 @@
-html {
-    --input-button-dim: 30px;
-    --input-padding: 2px;
-    --input-border: 0px solid #444;
-    --input-font: 14px/1.2 sans-serif;
-}
-
 /* position form in the center of div */
 /* https://stackoverflow.com/a/31386275 */
 form {
@@ -26,11 +19,14 @@ form {
 }
 
 #clearQ {
+    font-size: 8px;
+    font-family: sans-serif;
     position: absolute;
     right: 2px;
     top: 2px;
     bottom: 2px;
-    line-height: 31px;
+    line-height: 8px;
+    padding-top: 8px;
     width: 37px;
     text-align: center;
     cursor: pointer;
@@ -64,12 +60,9 @@ input[type=checkbox] {
     top: -4px;
     bottom: 3px;
     left: -4px;
-    /* line-height: 31px; */
     width: 37px;
     height: 37px;
-    /* text-align: center; */
     cursor: pointer;
-    /* border: 1px solid lightgray; */
     -webkit-appearance: none;
     -webkit-font-smoothing: antialiased;
     -webkit-transition: all 0.15s;
@@ -79,15 +72,6 @@ input[type=checkbox] {
     transition: all 0.15s;
 }
 
-/* input[type=checkbox]:hover {
-    background-color: lightsalmon;
-} */
-
-/* input[type=checkbox]:focus {
-	border-color: #ACACB8;
-	color: #2E3236;
-} */
-
 #refreshCache.unchecked {
     background-color: none;
 }
@@ -95,21 +79,6 @@ input[type=checkbox] {
 #refreshCache.checked {
     background-color: red;
 }
-
-/* input[type=checkbox]:checked {
-    position:relative;
-}
-
-input[type=checkbox]:checked:before {
-    content: '';
-    display:block;
-    background-color: red;
-    width: 37px;
-    height: 37px;
-    position:absolute;
-    top: 0;
-    opacity:0.5;
-} */
 
 #q { 
     border: none;

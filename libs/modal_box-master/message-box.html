@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, shrink-to-fit=no">
+<title>Modal Box by Patrick LEFEVRE</title>
+
+<!-- Remove Tap Highlight on Windows Phone IE -->
+<meta name="msapplication-tap-highlight" content="no">
+
+<link rel="stylesheet" href="css/modal-box.min.css" media="screen">
+<link rel="stylesheet" href="css/custom.min.css" media="screen">	
+<link rel="stylesheet" href="css/message-box.css" media="screen">
+
+<style>
+
+/*! ============================
+    CSS rules for this page demo
+*/
+
+
+/**
+ * Waiting for Google font loader: hide the entire page
+ */
+.wf-loading {
+	opacity: 0;
+	visibility: hidden;
+	height: 100%;
+	overflow: hidden
+}
+
+/**
+ * All is fine: display the document
+ */
+.wf-active {
+	opacity: 1;
+	visibility: visible
+}
+
+.wrapper {
+    width: 100%;
+    padding: 0 0 3em;
+	font-family: sans-serif
+}
+
+.wrapper p {
+    padding: 0 2% 10px;
+    font-size: 20px;
+    line-height: 1.5
+}
+
+p.first-line {
+    float: left;
+    clear: both;
+    width: 96%
+}
+
+/* Custom fonts */
+@media only screen and (min-width: 720px) {
+
+    .header-modal,
+		.modal-dialog .inner-dialog h2 {
+			font-weight: 300
+	}
+
+    .modal-dialog .header-modal,
+	.modal-dialog .inner-dialog p,
+	.footer-modal {font-family: 'Open Sans', sans-serif}
+
+}
+
+/**
+ * The buttons
+*/
+.button {
+	float: left;
+	margin: 0 .5em 1em 0;
+	padding: .8em .5em 1em;
+	border: 2px solid #0b7cd7;
+
+	text-decoration: none;
+    font-size: smaller;
+    line-height: 1
+}
+
+.button:hover {
+	background: #0b7cd7;
+	text-decoration: underline;
+	color: #fff
+}
+	
+.bubble {
+	display: block;
+	position: absolute;
+	position: fixed;
+	z-index: 100;
+	bottom: 12%;
+	bottom: 2.5rem;
+	right: 3em;
+	right: 2rem;
+	width: 50px;
+	height: 50px;
+	text-decoration: none
+}
+
+.bubble:focus {outline: none}
+
+.bubble svg {
+	width: 50px;
+	height: 50px;
+	color: #00ad9f;
+	font-size: 100px;
+	font-weight: bolder
+}
+
+.bubble path {fill: #00ad9f}
+	
+/**
+ * For JS fallback if used
+ */
+html .visible {
+	display: block;
+	opacity: 1;
+	visibility: visible
+}
+
+</style>
+
+<!--
+<script src="https://cdnjs.cloudflare.com/ajax/libs/less.js/2.7.2/less.min.js"></script>
+-->
+
+<script asyn src="https://ajax.googleapis.com/ajax/libs/webfont/1.6/webfont.js"></script>
+<script>
+/*! Webfontloader */
+WebFont.load({
+    google: {
+      families: [ 'Open+Sans', 'Roboto' ]
+	}
+});
+(function() {
+	var wf = document.createElement('script');
+	wf.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://ajax.googleapis.com/ajax/libs/webfont/1.6/webfont.js';
+	wf.type = 'text/javascript';
+	wf.async = 'true';
+	var s = document.getElementsByTagName('script')[0];
+	s.parentNode.insertBefore(wf, s);
+});
+</script>
+
+<noscript>
+	<link rel="prefetch" href="https://fonts.googleapis.com/css?family=Open+Sans|Noto+Sans" media="screen">
+</noscript>
+
+</head>
+<body>
+
+<div role="dialog" aria-modal="true" aria-haspopup="true" tabindex="-1" aria-live="assertive" aria-describedby="dialog-description" class="modal-dialog dialog plain" id="openModal">
+
+	<div role="document" class="modal tiny push__right">
+		
+		<a href="#close" title="Close" class="close no__select" id="close-modal" onclick="document.getElementById('openModal').style.display='none';return true;">×</a>
+		
+
+		<div class="header-modal no__select" id="dialog-description">
+			<span>Hi</span>
+			<div class="profile-outer">
+			<figure class="txt-center">
+				<span></span>
+				<img src="http://randomuser.me/api/portraits/women/49.jpg" alt="" class="modal-profile" />
+				<figcaption>Amelia</figcaption>
+			</figure>
+			<figure class="txt-center">
+				<span></span>
+				<img src="http://randomuser.me/api/portraits/men/41.jpg" alt="" class="modal-profile" />
+				<figcaption>John</figcaption>
+			</figure>
+			<figure class="txt-center">
+				<span></span>
+				<img src="http://randomuser.me/api/portraits/women/12.jpg" alt="" class="modal-profile" />
+				<figcaption>Cathy</figcaption>
+			</figure>
+			</div>
+			<p>Welcome to there! We're happy to help; let us know if you have any questions and we'll get back to you as soon as we can.</p>
+		</div>
+
+		<div class="inner-dialog">
+
+
+			<h2>Modal Box</h2>
+
+			<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+
+
+		</div> <!-- /inner-dialog -->
+
+		<div class="footer-modal no__select">
+			<form action="#openModal" method="get" class="message-box">
+				<label for="message"><input type="text" value="" tabindex="1" required placeholder="Send a message&hellip;" id="message" /><span>Send a message</span></label>
+			<input type="submit" value="Ok" tabindex="-1" class="hidden" />
+			</form>
+		</div>
+	</div> <!-- /modal -->
+ 
+</div> <!-- /modal-dialog -->
+
+
+<div class="wrapper">
+
+	<p class="first-line">
+		<a href="#open" class="button">A simple link</a>
+		<a href="?#openModal" class="button" onclick="document.getElementById('openModal').style.display='block';return true;">Open Modal Box</a>
+	</p>
+
+	<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+	<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+	<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+	<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+	<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+	<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+	<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+	<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+
+	<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+	<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+	<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+	<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+	<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+	<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+	<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+	<p>This is a sample modal box that can be created using the powers of CSS3.</p>
+
+	<a href="?#openModal" class="bubble" onclick="document.getElementById('openModal').style.display='block';return true;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="50" height="50">⚉<path d="M25 4.1C12.4 4.1 2.1 12.9 2.1 24 2.1 30.4 5.6 36.1 11 39.7 11 39.9 11 40.3 10.7 41.3 10.4 42.6 9.7 44.4 8.3 46.5L7.2 47.9 9 47.9C15.2 48 18.8 43.9 19.3 43.3 21.1 43.7 23 43.9 25 43.9 37.6 43.9 47.9 35.1 47.9 24 47.9 12.9 37.6 4.1 25 4.1ZM25 5.9C36.7 5.9 46.1 14.1 46.1 24 46.1 33.9 36.7 42.1 25 42.1 23 42.1 21.1 41.8 19.2 41.4L18.7 41.3 18.3 41.7C18.3 41.7 15.4 45 10.8 45.8 11.6 44.3 12.2 42.9 12.5 41.8 12.9 40.3 12.9 39.3 12.9 39.3L12.9 38.8 12.5 38.5C7.3 35.2 3.9 29.9 3.9 24 3.9 14.1 13.3 5.9 25 5.9Z"/></svg></a>
+
+
+</div> <!-- /wrapper -->
+
+
+</body></html>

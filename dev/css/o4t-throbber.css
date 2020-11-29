@@ -2,7 +2,7 @@
     padding: 0;
     bottom: 0;
     height: 8px;
-    margin-bottom: 2rem;
+    /* margin-bottom: 2rem; */
     border-bottom: 1px solid silver;
     padding: 0;
     transition: opacity 0.3s ease;

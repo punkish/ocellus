@@ -1,0 +1,157 @@
+/*!
+ * A sample of customization for CSS Modal Box
+ * See: https://github.com/cara-tm/modal_box/
+ */
+
+/**
+ * Waiting for Google @font-face loader: hide the entire page
+ */
+.wf-loading {
+	opacity: 0;
+	visibility: hidden;
+	height: 100%;
+	overflow: hidden
+}
+
+/**
+ * All is fine: display the document
+ */
+.wf-active {
+	opacity: 1;
+	visibility: visible
+}
+
+/**
+ * Color of the entire box border
+ */
+.modal-dialog .modal {border-color: #e91e63}
+
+/**
+ * Color of the entire message border
+ */
+.modal-dialog .modal-message {border-color: #eee}
+
+/**
+ * Adds a colored border at the top of message boxes
+ */
+.modal-dialog .modal-message .inner-dialog {border-top: 5px solid #e6005c}
+
+/**
+ * Changes the top position for the close button
+ */
+.modal-dialog .modal-message .close {top: .4em}
+
+/**
+ * Color for the main text content
+ */
+.modal-dialog .inner-modal {color: #212121}
+
+/**
+ * The close button
+ */
+.modal-dialog .inner-modal .close { background: #eee}
+
+.modal-dialog .inner-modal .close:hover,
+	.modal-dialog .inner-modal .close:active {
+        background: #e6005c;
+        /* Shadow on hover state */
+       -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+       -moz-box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+       -o-box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+       -khtml-box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+       -ms-box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+	   box-shadow: 0 0 10px rgba(0, 0, 0, .3)
+}
+
+/**
+ * The entire modal box header
+ */
+.header-modal {
+	background: #e91e63;
+    border: 0;
+	border-bottom: 14px solid #c2185b
+}
+
+/**
+ * Heading (level 1) for the modal box header
+ */
+.header-modal span,
+	.header-modal strong,
+		.header-modal svg {color: #fff}
+
+/**
+ * The states of the links into the modal box header
+ */
+.header-modal a:hover,
+	.header-modal a:active {
+		background: #e040fb;
+		color: #fff;
+		-webkit-box-shadow:0 0 2px #e040fb;
+		-moz-box-shadow:0 0 2px #e040fb;
+		-khtml-box-shadow:0 0 2px #e040fb;
+		box-shadow:0 0 2px #e040fb
+}
+
+/**
+ * SVG icon color within the modal box header
+ */
+html .header-modal a:hover svg,
+	html .header-modal a:active svg {color: #fff}
+
+.header-modal svg path {fill: #fff}
+
+.header-modal a:hover svg path,
+	.header-modal a:active svg path {fill: #fff}
+
+/**
+ * The 'Close' button
+ */
+.modal-dialog .close {background: #e040fb}
+
+/**
+ * The 'Close' state
+ */
+.modal-dialog .close:hover,
+	.modal-dialog .close:active {
+        background: #e6005c;
+        color: #fff
+}
+
+/**
+ * The main content of the modal box
+ */
+.modal-dialog .inner-dialog {
+	background: #fff;
+	color: #757575
+}
+
+/**
+ * Creates rounding icons for Message Boxes instead of square ones
+ */
+strong[class$="-sign"] { border-radius: 50%}
+
+/**
+ * The entire modal box outer footer
+ */
+.footer-modal {
+	background: #c2185b;
+	border-color: #c2185b;
+	border-bottom: 1px solid #c2185b
+}
+
+/**
+ * The modal box footer's links
+ */
+.footer-modal a{
+	color: #fff;
+	-webkit-tap-highlight-color: #e91e63
+}
+
+/**
+ * The footer's links states
+ */
+.footer-modal a:hover,
+	.footer-modal a:active {
+	background: #e91e63;
+	-webkit-tap-highlight-color: #e91e63
+}

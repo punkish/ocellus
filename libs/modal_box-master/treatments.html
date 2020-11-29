@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, shrink-to-fit=no">
+<title>Treatment Title</title>
+
+<!-- Remove Tap Highlight on Windows Phone IE -->
+<meta name="msapplication-tap-highlight" content="no">
+
+
+<link rel="stylesheet" href="css/modal-box.min.css" media="screen">
+<link rel="stylesheet" href="css/custom.css" media="screen">
+<link rel="stylesheet" href="css/flaterial.css" media="screen">	
+
+
+<style>
+.modal {
+    padding: 12px 24px;
+}
+.close {
+    top: 24px;
+}
+
+figure {
+    position: relative;
+    height: auto;
+    border: 1px solid;
+    padding: 0;
+    margin: 0 0 20px 0;
+    opacity: 1;
+
+    /* avoid figures splitting across columns */
+    /* see https://stackoverflow.com/a/17415553/183692 */
+    overflow: hidden; /* fix for Firefox */
+    break-inside: avoid-column;
+    -webkit-column-break-inside: avoid;
+}
+
+figure img {
+    width: 100%;
+    /* cursor: pointer; */
+}
+  
+figure.figure-250 { width: 250px; }
+</style>
+
+</head>
+<body>
+
+<div role="dialog" aria-modal="true" aria-haspopup="true" tabindex="-1" aria-live="assertive" aria-describedby="dialog-description" class="modal-dialog dialog" id="openModal">
+
+	<div role="document" class="modal">
+		
+		
+		
+        <h2>
+            <span>Caraval and Gross, 1987</span>
+            <span><a href="#close" title="Close" class="close no__select" id="close-modal" onclick="document.getElementById('openModal').style.display='none';return true;">×</a></span>
+        </h2>
+
+		<div class="inner-dialog">
+
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+		</div> <!-- /inner-dialog -->
+
+		<div class="footer-modal no__select">
+			<a href="#close" class="ripple" id="footer-close" onclick="document.getElementById('openModal').style.display='none';return true;">Close</a><a href="https://www.cara-tm.com" target="_blank" class="ripple">Help</a>
+		</div>
+	</div> <!-- /modal -->
+ 
+</div> <!-- /modal-dialog -->
+
+<div class="wrapper">
+
+    <figure class="figure-250">
+        <div class="switches">
+            <div class="close"></div>
+        </div>
+        <picture>
+            <div style="width: 250px; height:72px; background-color:coral;">250px x 72px</div>
+        </picture>
+        <figcaption>
+            <a class="transition-050">rec ID: 3850863</a>
+            <div class="desc hide">Fig. 4. SEM images of C. parvum sp. nov. A. Head, anterior view, ♀. B. Head and pronotum, dorsal view, Ƌ. C. Head and pronotum, lateral view, Ƌ. D. Pleura, ♀. E. Scutellum and hemelytra, Ƌ. F. Scutellum and hemelytra, ♀. G. Fore- and middle femora, ♀. H. Labium, Ƌ. I. Hind tarsus, ♀. J. Hind femur, ♀. K. Genital segment, lateral view, Ƌ. L. Antenna, ♀. M. Pretarsus, Ƌ.. <a class="showTreatment"  onclick="document.getElementById('openModal').style.display='block';return true;" href="#openModal">more</a></div>
+            <!-- href="http://127.0.0.1:3010/v3/treatments?treatmentId=000087F6E320FF95FF7EFDC1FAE4FA7B" -->
+        </figcaption>
+    </figure>
+
+</div> <!-- /wrapper -->
+
+</body></html>

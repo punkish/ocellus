@@ -1,13 +1,19 @@
-:root {
-    --column-count: 1;
-    --column-gap: 20px;
-    --image-250: 250px;
-}
-
 #container {
     width: 100%;
     position: relative;
     text-align: center;
+}
+
+/* #hide-unhide {
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid lightgray;
+    float: left;
+    margin-bottom: 1rem;
+} */
+
+table {
+    margin: unset;
 }
 
 #grid {
@@ -25,6 +31,13 @@
     -moz-column-gap: var(--column-gap);
     -webkit-column-gap: var(--column-gap);
     column-gap: var(--column-gap);
+}
+
+/* the following prevents the first figure in the 
+ * column to have a margin at the top, a left-over
+ * of the last figure in the previous column */
+.columns figure:last-child {
+    margin: 0;
 }
 
 figure {

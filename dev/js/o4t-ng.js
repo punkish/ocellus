@@ -22,6 +22,19 @@ const sel_pager = document.getElementById('pager')
 const sel_searchResults = document.getElementById('search-results')
 const sel_treatmentsPager = document.getElementById('treatments-pager')
 const sel_figuresPager = document.getElementById('figures-pager')
+// const sel_hideUnhide = document.getElementById('hide-unhide')
+const sel_treatmentDetails = document.getElementById('treatmentDetails')
+const sel_hiddenFigures = document.getElementById('hidden-figures')
+
+const unhide = () => {
+    hidden.forEach(f => {
+        f.style.opacity = 1
+        f.style.display = 'block'
+    })
+
+    hidden.splice(0)
+    sel_hiddenFigures.innerHTML = ''
+}
 
 //const zenodeoUri = 'http://localhost:8080/dev/4t.html'
 
@@ -89,14 +102,18 @@ const showPage = function({ queryString, page, size, fp, fs }) {
     }
 
     const sel_closers = document.querySelectorAll('div.close')
-    const sel_figcaptionTogglers = document.querySelectorAll('figcaption > a')
-
     sel_closers.forEach(c => { 
         c.addEventListener('click', smoke) 
     })
 
+    const sel_figcaptionTogglers = document.querySelectorAll('figcaption > a')
     sel_figcaptionTogglers.forEach(f => { 
         f.addEventListener('click', toggleFigcaption) 
+    })
+
+    const sel_showTreatment = document.querySelectorAll('.showTreatment')
+    sel_showTreatment.forEach(t => { 
+        t.addEventListener('click', showTreatment) 
     })
     
     sel_throbber.classList.add('nothrob')
@@ -122,6 +139,10 @@ const onlyUnique = function(value, index, self) {
     return self.indexOf(value) === index
 }
 
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+}
+
 const grid = function(size, r) {
 // <source srcset="../img/bug.gif" data-src="/img/i250.jpg" class="lazyload" data-recid="${r.id}" media="(min-width: 1400px)"/>
 // <source srcset="https://placehold.it/1200x1200" media="(min-width: 1200px)"/>
@@ -130,19 +151,64 @@ const grid = function(size, r) {
 
     const i = `${zenodoUri}/${r.id}/thumb${size}`
 
+    const height = getRandomInt(300)
+
     return `<figure class="figure-${size}">
     <div class="switches">
         <div class="close"></div>
     </div>
     <picture>
         <img src="../img/bug.gif" data-src="${i}" class="lazyload" data-recid="${r.id}">
-        <!-- <img src="../img/bug.gif" data-src="../img/i250.jpg" class="lazyload" data-recid="${r.id}"> -->
+    <!-- <img src="../img/bug.gif" data-src="../img/i250.jpg" class="lazyload" data-recid="${r.id}"> -->
+    <!-- <div style="width: 250px; height:${height}px;">250px x ${height}px</div> -->
     </picture>
     <figcaption>
         <a class="transition-050">rec ID: ${r.id}</a>
-        <div class="desc hide">${r.captionText}. <a href='${zenodeo3Uri}/treatments?' target='_blank'>more</a></div>
+        <div class="desc hide">
+            ${r.captionText}. 
+            <a class='showTreatment' href='${zenodeo3Uri}/treatments?treatmentId=${r.treatmentId}'>more</a>
+        </div>
     </figcaption>
 </figure>`
+}
+
+const foo = async function(url, x, y) {
+    const response = await fetch(url)
+    
+    // if HTTP-status is 200-299
+    if (response.ok) {
+        const json = await response.json()
+        const record = json.item.records[0]
+
+        const tn = record.httpUri.split('/')[4]
+        
+        sel_treatmentDetails.querySelector('h2').innerHTML = record.treatmentTitle
+        sel_treatmentDetails.querySelector('div.tn').innerHTML = `<figure class="figure-50">
+        <picture>
+            <img src="../img/bug.gif" data-src="${tn}" class="lazyload" width="50" align="left">
+        </picture>
+    </figure>`
+        sel_treatmentDetails.querySelector('div.text').innerHTML = record.articleTitle
+
+        sel_treatmentDetails.style.display='block'
+        sel_treatmentDetails.style.opacity=1.0
+    }
+
+    // throw an error
+    else {
+        alert("HTTP-Error: " + response.status)
+    }
+}
+
+const showTreatment = async function(e) {
+    const url = e.target.href
+    const mouseX = e.pageX
+    const mouseY = e.pageY
+
+    foo(url, mouseX, mouseY)
+
+    e.stopPropagation()
+    e.preventDefault()
 }
 
 const fillForm = function(queryObj) {
@@ -230,14 +296,14 @@ const go = function (e) {
 // then `page` defaults to 1 and `size` to 30. On the other hand, 
 /// if res() runs because a bookmark was loaded then that bookmark 
 // contains the `page` and `size` parameters
-const res = async function ({resource, queryString, page, size, fp, fs}) {
+const res = async function({resource, queryString, page, size, fp, fs}) {
 
     let url = `${zenodeo3Uri}/${resource.toLowerCase()}`
     if (queryString) {
         url += `?${queryString}`
     }
     
-    const response = await fetch(url);
+    const response = await fetch(url)
     
     // if HTTP-status is 200-299
     if (response.ok) {
@@ -348,7 +414,8 @@ const then_f = function(records) {
                 uniq_records.push(grid(250, {
                     id: r.httpUri.split('/')[4],
                     httpUri: r.httpUri,
-                    captionText: r.captionText
+                    captionText: r.captionText,
+                    treatmentId: r.treatmentId
                 }))
             }
 
@@ -410,6 +477,8 @@ const smokeWorks = function (e) {
     intervalId = setInterval(hide, 50)
 }
 
+const hidden = []
+
 const smoke = function (e) {
 
     // http://jsfiddle.net/Y7Ek4/22/
@@ -445,7 +514,11 @@ const smoke = function (e) {
         else { 
             clearInterval(intervalId)
             t.style.display = 'none'
-        } 
+        }
+
+        // if (sel_hideUnhide.classList.contains("hide")) {
+        //     show(sel_hideUnhide)
+        // }
     }
 
     const xOffset = 24
@@ -463,8 +536,11 @@ const smoke = function (e) {
 
     // hide the figure /////////////////////
     // https://stackoverflow.com/a/29168819
-    const t = e.currentTarget.parentNode.parentNode;
-    t.style.opacity = 1;
+    const t = e.currentTarget.parentNode.parentNode
+    hidden.push(t)
+    sel_hiddenFigures.innerHTML = ` (${hidden.length} hidden) <a id="hide-unhide" href="#unhide">unhide</a>`
+    document.getElementById('hide-unhide').addEventListener('click', unhide)
+    t.style.opacity = 1
 
     intervalId = setInterval(hide, 50)
 }
@@ -495,7 +571,7 @@ const hide = (element) => {
     element.classList.add("hide")
 }
 
-const toggle = function (e) {
+const toggle = function(e) {
     
     const t = e.target
     const source = t.href ? t.href.split('/').pop().split('.')[0] : t.id
@@ -590,6 +666,8 @@ const listen = function () {
     })
 
     sel_brand.addEventListener('click', revealBrand)
+
+    // sel_hideUnhide.addEventListener('click', unhide)
 }
 
 const extractParamsAndHash = (url) => {

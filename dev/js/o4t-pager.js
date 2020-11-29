@@ -265,10 +265,10 @@ const outputResult = ({ total, subtotal, page, size, fp, fs, htmlElement, resour
             if (toTreatments > total) n = total - fromTreatments + 1
 
             if (toTreatments > total) {
-                html += `. Showing the figures from the last ${niceNumbers(n)} treatments.`
+                html += `, showing the figures from the last ${niceNumbers(n)} treatments.`
             }
             else {
-                html += `. Showing the figures from the ${nth(page)} batch of ${niceNumbers(n)} treatments.`
+                html += `, showing the figures from the ${nth(page)} batch of ${niceNumbers(n)} treatments.`
             }
         }
     }
