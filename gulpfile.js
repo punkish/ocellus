@@ -52,6 +52,7 @@ function css() {
             'dev/css/o4t-throbber.css',
             'dev/css/o4t-grid.css',
             'dev/css/o4t-pager.css',
+            'dev/css/o4t-treatmentDetails.css',
             'dev/css/o4t-media-queries.css'
         ])
         .pipe(cssmin())
