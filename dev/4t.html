@@ -24,25 +24,10 @@
     <link rel="stylesheet" href="css/o4t-throbber.css">
     <link rel="stylesheet" href="css/o4t-grid.css">
     <link rel="stylesheet" href="css/o4t-pager.css">
+    <link rel="stylesheet" href="css/o4t-treatmentDetails.css">
     <link rel="stylesheet" href="css/o4t-media-queries.css">
-
-    <!-- <link rel="stylesheet" href="/libs/modal_box-master/css/modal-box.css" media="screen"> -->
-    <!-- <link rel="stylesheet" href="/libs/modal_box-master/css/custom.css" media="screen">
-    <link rel="stylesheet" href="/libs/modal_box-master/css/flaterial.css" media="screen">	 -->
     <!-- endbuild -->
-    <style>
-#treatmentDetails {
-    display: none;
-    opacity: 0;
-    width: 100%;
-    margin: 0 auto;
-    border: 1px solid;
-    height: auto;
-    position: absolute;
-    background-color: white;
-    z-index: 9999;
-}
-    </style>
+
 </head>
 
 <body>
@@ -77,23 +62,10 @@
     <div id="container">
         <div id="grid-target" class="hide">
             <div id="puff"></div>
-            <!-- <div id="treatmentDetails"></div> -->
 
-            <div id="treatmentDetails" class="modal">
-                <a href="#close" title="Close" class="close" id="close-modal" onclick="document.getElementById('treatmentDetails').style.display='none';return true;">×</a>
-    
-                <!-- treatment title goes here -->
-                <h2></h2>
-        
-                <!-- treatment thumbnail goes here -->
-                <div class="tn"></div>
-                
-                <!-- treatment text goes here -->
+            <div id="treatmentDetails" class="lightbox hidden">
+                <div onClick="closeLightbox()" class="closeBtn">close</div>
                 <div class="text"></div>
-        
-                <div class="footer-modal">
-                    <a href="#close" class="ripple" id="footer-close" onclick="document.getElementById('treatmentDetails').style.display='none';return true;">Close</a>
-                </div>
             </div>
             
             <div id="palette"></div>
@@ -106,7 +78,6 @@
                                 <span id="search-results"></span>
                                 <span id="hidden-figures"></span>
                             </td>
-                            <!-- <td><button id="hide-unhide" class="hide">unhide</button></td> -->
                         </tr>
                     </thead>
                     <tbody>

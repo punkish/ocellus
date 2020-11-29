@@ -1,0 +1,43 @@
+#treatmentDetails {
+    position: fixed;
+    z-index: 1;
+    left: 5%;
+    top: 5%;
+    margin: 0 auto;
+    width: 90%;
+    background-color: rgba(255, 255, 255, 0.95);
+    overflow: auto;
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.3s ease;
+    text-align: left;
+    border: 1px solid;
+}
+
+#treatmentDetails.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+#treatmentDetails .closeBtn {
+    position: absolute;
+    right: 7%;
+    top: 20px;
+    cursor: pointer;
+}
+
+#treatmentDetails .closeBtn:hover {
+    color: red;
+}
+
+#treatmentDetails .text {
+    margin: 5%;
+}
+    
+#treatmentDetails .rank {
+    font-weight: bold;
+} 
+
+#treatmentDetails .figs img {
+    border: 1px solid black;
+}

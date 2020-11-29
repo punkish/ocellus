@@ -172,26 +172,49 @@ const grid = function(size, r) {
 </figure>`
 }
 
-const foo = async function(url, x, y) {
+const closeLightbox = () => sel_treatmentDetails.classList.add("hidden")
+
+const foo = async function(url) {
     const response = await fetch(url)
     
     // if HTTP-status is 200-299
     if (response.ok) {
         const json = await response.json()
-        const record = json.item.records[0]
+        const r = json.item.records[0]
 
-        const tn = record.httpUri.split('/')[4]
+        const figs = json.item["related-records"].figureCitations.records.map(r => {
+            return `<img src ="${zenodoUri}/${r.httpUri.split('/')[4]}/thumb${50}">`
+        })
         
-        sel_treatmentDetails.querySelector('h2').innerHTML = record.treatmentTitle
-        sel_treatmentDetails.querySelector('div.tn').innerHTML = `<figure class="figure-50">
-        <picture>
-            <img src="../img/bug.gif" data-src="${tn}" class="lazyload" width="50" align="left">
-        </picture>
-    </figure>`
-        sel_treatmentDetails.querySelector('div.text').innerHTML = record.articleTitle
 
-        sel_treatmentDetails.style.display='block'
-        sel_treatmentDetails.style.opacity=1.0
+        let str = `<h2>${r.treatmentTitle}</h2>`
+
+        str += `<div class="figs">${figs.join(' ')}</div>`
+
+        str += '<div class="cite">'
+        if (r.authorityName) str += `${r.authorityName}. `
+        if (r.authorityYear) str += `${r.authorityYear}. `
+        if (r.articleTitle) str += `${r.articleTitle}. `
+        if (r.journalTitle) str += `${r.journalTitle}`
+        if (r.journalYear) str += `${r.journalYear}, `
+        if (r.journalVolume) str += `vol. ${r.journalVolume}, `
+        if (r.journalIssue) str += `${r.journalIssue}, `
+        if (r.pages) str += `pp. ${r.pages}`
+        str += '</div>'
+
+        if (r.status) str += `<div class="status"><b>status:</b> ${r.status}</div>`
+
+        str += '<ul class="classification">'
+        if (r.kingdom) str += `<li class="${r.rank === 'kingdom' ? 'rank' : ''}">${r.kingdom}</li>`
+        if (r.phylum)  str += `<li class="${r.rank === 'phylum'  ? 'rank' : ''}">${r.phylum}</li>`
+        if (r.order)   str += `<li class="${r.rank === 'order'   ? 'rank' : ''}">${r.order}</li>`
+        if (r.family)  str += `<li class="${r.rank === 'family'  ? 'rank' : ''}">${r.family}</li>`
+        if (r.genus)   str += `<li class="${r.rank === 'genus'   ? 'rank' : ''}">${r.genus}</li>`
+        if (r.species) str += `<li class="${r.rank === 'species' ? 'rank' : ''}">${r.species}</li>`
+        str += '</ul>'
+
+        sel_treatmentDetails.querySelector('div.text').innerHTML = str
+        sel_treatmentDetails.classList.remove("hidden")
     }
 
     // throw an error
@@ -202,10 +225,10 @@ const foo = async function(url, x, y) {
 
 const showTreatment = async function(e) {
     const url = e.target.href
-    const mouseX = e.pageX
-    const mouseY = e.pageY
+    // const mouseX = e.pageX
+    // const mouseY = e.pageY
 
-    foo(url, mouseX, mouseY)
+    foo(url)
 
     e.stopPropagation()
     e.preventDefault()
