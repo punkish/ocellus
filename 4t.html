@@ -6,7 +6,7 @@
     <meta name="version" content="4.0T">
     <meta name="author" content="Puneet Kishor">
     <meta name="copyright" content="CC0 Public Domain Dedication">
-    <meta name="date" content="Thu Nov 12 2020 15:10:18 GMT+0530 (India Standard Time)">
+    <meta name="date" content="Sun Nov 29 2020 12:54:23 GMT+0530 (India Standard Time)">
 
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
@@ -17,7 +17,19 @@
     <link rel="stylesheet" href="/node_modules/@sn8z/pop-pop.css/dist/pop-pop.min.css">
     
     <link rel="stylesheet" href="css/o4t.min.css">
-
+    <style>
+#treatmentDetails {
+    display: none;
+    opacity: 0;
+    width: 100%;
+    margin: 0 auto;
+    border: 1px solid;
+    height: auto;
+    position: absolute;
+    background-color: white;
+    z-index: 9999;
+}
+    </style>
 </head>
 
 <body>
@@ -30,16 +42,16 @@
     </div>
     
     <form>
-        <div class="wrapper">
+        <div class="form-wrapper">
             <div class="input-wrapper">
                 <input id="q" type="text" placeholder="search for something" class="clearable">
 
                 <span id="refreshCacheWrapper" aria-label="refresh cache" data-pop="top" data-pop-no-shadow data-pop-arrow>
                     <input name="refreshCache" id="refreshCache" type="checkbox" value="true" class="unchecked">
                 </span>
-                <!-- <input name="refreshCache" id="refreshCache" type="checkbox" value="true" class="unchecked" aria-label="refresh cache" data-pop="top" data-pop-no-shadow data-pop-arrow> -->
 
-                <span id="clearQ" class="removeClick" aria-label="clear input" data-pop="top" data-pop-no-shadow data-pop-arrow>&times;</span>
+                <!-- <span id="clearQ" class="removeClick" aria-label="clear input" data-pop="top" data-pop-no-shadow data-pop-arrow>&times;</span> -->
+                <span id="clearQ" class="removeClick" aria-label="clear input" data-pop="top" data-pop-no-shadow data-pop-arrow>clear<br>input</span>
             </div>
             <button id="go">go</button>
         </div>
@@ -49,17 +61,39 @@
 <div id="throbber" class="nothrob"></div>
 
 <main>
-    <div id="puff"></div>
-    
-    <div id="palette"></div>
     <div id="container">
         <div id="grid-target" class="hide">
+            <div id="puff"></div>
+            <!-- <div id="treatmentDetails"></div> -->
+
+            <div id="treatmentDetails" class="modal">
+                <a href="#close" title="Close" class="close" id="close-modal" onclick="document.getElementById('treatmentDetails').style.display='none';return true;">×</a>
+    
+                <!-- treatment title goes here -->
+                <h2></h2>
+        
+                <!-- treatment thumbnail goes here -->
+                <div class="tn"></div>
+                
+                <!-- treatment text goes here -->
+                <div class="text"></div>
+        
+                <div class="footer-modal">
+                    <a href="#close" class="ripple" id="footer-close" onclick="document.getElementById('treatmentDetails').style.display='none';return true;">Close</a>
+                </div>
+            </div>
+            
+            <div id="palette"></div>
+            
             <div id="results">
                 <table>
                     <thead>
                         <tr>
-                            <td></td>
-                            <td id="search-results" colspan="9"></td>
+                            <td colspan="10" style="text-align: center; padding-bottom: 1rem;">
+                                <span id="search-results"></span>
+                                <span id="hidden-figures"></span>
+                            </td>
+                            <!-- <td><button id="hide-unhide" class="hide">unhide</button></td> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -76,7 +110,7 @@
         <div id="index-target" class="modal hide"></div>
 
         <div id="about-target" class="modal hide">
-            <a href="index.html" class="modal-close">close</a>
+            <a href="4t.html" class="modal-close">close</a>
 
             <h1>About Ocellus</h1>
             
@@ -86,7 +120,7 @@
         </div>
 
         <div id="privacy-target" class="modal hide">
-            <a href="index.html" class="modal-close">close</a>
+            <a href="4t.html" class="modal-close">close</a>
 
             <h1>Privacy</h1>
     
@@ -94,7 +128,7 @@
         </div>
 
         <div id="ip-target" class="modal hide">
-            <a href="index.html" class="modal-close">close</a>
+            <a href="4t.html" class="modal-close">close</a>
     
             <h1>Intellectual Property</h1>
         
@@ -108,7 +142,7 @@
         </div>
 
         <div id="contact-target" class="modal hide">
-            <a href="index.html" class="modal-close">close</a>
+            <a href="4t.html" class="modal-close">close</a>
         
             <h1>Contact</h1>
     
@@ -121,7 +155,6 @@
 
 <footer><img src="../img/fish.jpg"></footer>
 
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script> -->
 <script src="/node_modules/picolog/dist/picolog.min.js"></script>
 <script src="/js/config.js"></script>
 <script src="../libs/lazysizes.min.js"></script>
