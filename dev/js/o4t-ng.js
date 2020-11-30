@@ -434,8 +434,9 @@ const then_f = function(records) {
 
                 // set any value to Map
                 map.set(r.httpUri, true)
+                const id = r.httpUri.split('/')[4]
                 uniq_records.push(grid(250, {
-                    id: r.httpUri.split('/')[4],
+                    id: id,
                     httpUri: r.httpUri,
                     captionText: r.captionText,
                     treatmentId: r.treatmentId
