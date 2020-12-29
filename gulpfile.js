@@ -8,8 +8,8 @@ const terser = require('gulp-terser');
 const useref = require('gulp-useref');
 
 const root = '.'
-const foo = {
-    fourt: {
+const ns = {
+    t: {
         dest: {
             html: root,
             css: `${root}/css`,
@@ -20,7 +20,20 @@ const foo = {
             js: 'o4t.min.js',
             html: '4t.html'
         }
-    }
+    },
+
+    i: {
+        dest: {
+            html: root,
+            css: `${root}/css`,
+            js: `${root}/js`
+        },
+        files: {
+            css: 'o4.min.css',
+            js: 'o4.min.js',
+            html: 'index.html'
+        }
+    },
 }
 
 // for index.html
@@ -32,18 +45,7 @@ async function i() {
 }
 
 // for 4t.html
-async function t() {
-    return await src('dev/4t.html')
-        .pipe(inject.replace('%date%', Date()))
-        .pipe(useref())
-        .pipe(dest('.'));
-}
-
-async function fourt() {
-
-}
-
-function css() {
+function t_css() {
     return src([
             'dev/css/uglyduck.css',
             'dev/css/o4t-base.css',
@@ -56,68 +58,69 @@ function css() {
             'dev/css/o4t-media-queries.css'
         ])
         .pipe(cssmin())
-        .pipe(concat(foo.fourt.files.css))
-        .pipe(dest(foo.fourt.dest.css));
+        .pipe(concat(ns.t.files.css))
+        .pipe(dest(ns.t.dest.css))
 }
 
-function js(){
+function t_js() {
     return src([
             'dev/js/o4t-ng.js',
             'dev/js/o4t-pager.js'
         ])
         .pipe(terser())
-        .pipe(concat(foo.fourt.files.js))
-        .pipe(dest(foo.fourt.dest.js));
+        .pipe(concat(ns.t.files.js))
+        .pipe(dest(ns.t.dest.js))
 }
 
-function html() {
+function t_html() {
     return src('dev/4t.html')
         .pipe(inject.replace('%date%', Date()))
         .pipe(htmlreplace({
-            'css': `css/${foo.fourt.files.css}`,
-            'js': `js/${foo.fourt.files.js}`
+            'css': `css/${ns.t.files.css}`,
+            'js': `js/${ns.t.files.js}`
         }))
-        .pipe(dest(foo.fourt.dest.html));
+        .pipe(dest(ns.t.dest.html))
 }
 
-// function docss() {
-//     return src([
-//             'libs/JavaScript-autoComplete/auto-complete.css',
-//             'dev/css/uglyduck.css',
-//             'dev/css/o4-base.css',
-//             'dev/css/o4-form.css',
-//             'dev/css/o4-images.css',
-//             'dev/css/o4-treatments.css',
-//             'dev/css/o4-citations.css',
-//             'dev/css/o4-media-queries.css'
-//         ])
-//         // .pipe(cssmin())
-//         .pipe(concat(finalcss))
-//         .pipe(dest(cssdest));
-// }
 
-// function dohtml() {
-//     return src('dev/index.html')
-//         .pipe(inject.replace('%date%', Date()))
-//         .pipe(htmlreplace({
-//             'css': `css/${finalcss}`,
-//             'js': `js/${finaljs}`
-//         }))
-//         .pipe(dest(htmldest));
-// }
 
-// function dojs(){
-//     return src([
-//             'libs/lazysizes.min.js', 
-//             'libs/mustache.min.js', 
-//             'libs/JavaScript-autoComplete/auto-complete.min.js',
-//             'dev/js/o4-base.js',
-//             'dev/js/o4-utils.js'
-//         ])
-//         .pipe(terser())
-//         .pipe(concat(finaljs))
-//         .pipe(dest(jsdest));
-// }
+function i_css() {
+    return src([
+            'libs/JavaScript-autoComplete/auto-complete.css',
+            'dev/css/uglyduck.css',
+            'dev/css/o4-base.css',
+            'dev/css/o4-form.css',
+            'dev/css/o4-images.css',
+            'dev/css/o4-treatments.css',
+            'dev/css/o4-citations.css',
+            'dev/css/o4-media-queries.css'
+        ])
+        .pipe(cssmin())
+        .pipe(concat(ns.i.files.css))
+        .pipe(dest(ns.i.dest.css))
+}
 
-exports.default = parallel(css, html, js);
-//exports.default = parallel(i, t);
+function i_js(){
+    return src([
+            'libs/lazysizes.min.js', 
+            'libs/mustache.min.js', 
+            'libs/JavaScript-autoComplete/auto-complete.min.js',
+            'dev/js/o4-base.js',
+            'dev/js/o4-utils.js'
+        ])
+        .pipe(terser())
+        .pipe(concat(ns.i.files.js))
+        .pipe(dest(ns.i.dest.js))
+}
+
+function i_html() {
+    return src('dev/index.html')
+        .pipe(inject.replace('%date%', Date()))
+        .pipe(htmlreplace({
+            'css': `css/${ns.i.files.css}`,
+            'js': `js/${ns.i.files.js}`
+        }))
+        .pipe(dest(ns.i.dest.html))
+}
+
+exports.default = parallel(t_css, t_html, t_js, i_css, i_html, i_js)

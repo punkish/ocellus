@@ -26,7 +26,7 @@ O.utils = {
 
         const fc = document.querySelectorAll('figcaption > a');
         for (let i = 0, j = fc.length; i < j; i++) {
-            fc[i].addEventListener('click', O.toggleFigcaption);
+            fc[i].addEventListener('click', O.base.toggleFigcaption);
         }
 
         return result.resource;
