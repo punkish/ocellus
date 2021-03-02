@@ -235,18 +235,23 @@ const showTreatment = async function(e) {
 }
 
 const fillForm = function(queryObj) {
-    let page
-    if (queryObj.has('$page')) {
-        page = queryObj.get('$page')
-        queryObj.delete('$page')
-    }
+    // let page
+    // if (queryObj.has('$page')) {
+    //     page = queryObj.get('$page')
+    //     queryObj.delete('$page')
+    // }
 
-    let size
-    if (queryObj.has('$size')) {
-        size = queryObj.get('$size')
-        queryObj.delete('$size')
-    }
+    // const page = queryObj.has('$page') ? queryObj.get('$page') && queryObj.delete('$page') : ''
 
+    
+    // let size
+    // if (queryObj.has('$size')) {
+    //     size = queryObj.get('$size')
+    //     queryObj.delete('$size')
+    // }
+
+    // const size = queryObj.has('$size') ? queryObj.get('$size') && queryObj.delete('$size') : ''
+    // log.info(page, size)
     if (queryObj.has('q')) {
         if (Array.from(queryObj.entries()).length > 1) {
             sel_q.value = decodeURIComponent(queryObj.toString())
@@ -260,8 +265,8 @@ const fillForm = function(queryObj) {
     }
 
     // restore `page` and `size`
-    queryObj.set('$size', page)
-    queryObj.set('$page', size)  
+    // queryObj.set('$size', page)
+    // queryObj.set('$page', size)  
 }
 
 // case 3: the user clicked on a link in the paginator
@@ -321,10 +326,13 @@ const go = function (e) {
 // contains the `page` and `size` parameters
 const res = async function({resource, queryString, page, size, fp, fs}) {
 
+    log.info(resource, queryString, page, size, fp, fs)
     let url = `${zenodeo3Uri}/${resource.toLowerCase()}`
     if (queryString) {
         url += `?${queryString}`
     }
+
+    log.info(`url: ${url}`)
     
     const response = await fetch(url)
     
@@ -361,6 +369,9 @@ const res = async function({resource, queryString, page, size, fp, fs}) {
 /// then_t is run to fetch the figures
 //const then_t = function(records, queryStr, page, size, figpage, figsize) {
 const then_t = function({ records, queryString, page, size, fp, fs }) {
+
+    const tids = records.map(t => t.treatmentId)
+    console.log(tids)
 
     // Create a promise for all the figure queries 
     // for all the treatments returned from `t()`
@@ -695,11 +706,13 @@ const listen = function () {
 }
 
 const extractParamsAndHash = (url) => {
+    //const foo = url)
+    //log.info(`foo: ${foo}`)
     const queryObj = url.searchParams
-
+    log.info(queryObj.toString())
     // if the query has $page and $size, save them
-    const page = queryObj.has('$page') ? queryObj.get('$page') : PAGE
-    const size = queryObj.has('$size') ? queryObj.get('$size') : SIZE
+    const page = queryObj.has(encodeURIComponent('$page')) ? queryObj.get(encodeURIComponent('$page')) : PAGE
+    const size = queryObj.has(encodeURIComponent('$size')) ? queryObj.get(encodeURIComponent('$size')) : SIZE
 
     queryObj.delete('$page')
     queryObj.delete('$size')
@@ -729,6 +742,8 @@ const loadPage = function () {
 
     // fill form and set default page and size if not already set
     const { queryObj, queryString, page, size, fp, fs } = extractParamsAndHash(url)
+    log.info(`- queryObj: ${JSON.stringify(queryObj)}\n- queryString: '${queryString}'\n- page: ${page}\n- size: ${size}\n- fp: ${fp}\n- fs: ${fs}`)
+
     fillForm(queryObj)
     
     // document.getElementById('q').value = decodeURIComponent(q)
