@@ -24,7 +24,8 @@ O.base = {
     },
 
     init: function() {
-        log.level = G.loglevel;
+        log.level = log[G.loglevel];
+        log.info(`the log level is ${G.loglevel}`);
 
         // add click events to modal togglers and modal close links
         O.base.addEventHandlers([
