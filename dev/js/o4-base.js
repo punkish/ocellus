@@ -4,10 +4,12 @@ if (typeof(O) === 'undefined' || typeof(O) !== 'object') O = {};
 
 O.base = {
 
-    // a place to cache the total number of images, treatments, 
-    // and citations, usually on page load. This way the db 
-    // doesn't have to be queried everytime the user changes 
-    // the resource being searched
+    /*
+     * A place to cache the total number of images, treatments, 
+     * and citations, usually on page load. This way the db 
+     * doesn't have to be queried everytime the user changes 
+     * the resource being searched
+    */
     'num-of-records': {
         images: 0,
         treatments: 0,
@@ -22,12 +24,7 @@ O.base = {
     },
 
     init: function() {
-
-        // resource are what are fetched from remote and displayed
-        // pseudoresources are modals that are already embeddeded 
-        // in index.html and are shown or hidden on demand
-        const resources = ['treatments', 'citations', 'images'];
-        const pseudoResources = ['about', 'ip', 'contact', 'privacy'];
+        log.level = G.loglevel;
 
         // add click events to modal togglers and modal close links
         O.base.addEventHandlers([
@@ -48,15 +45,12 @@ O.base = {
         const {hash, resource, search} = O.base.resourceFromUrl(location);
 
         if (O.closedForMaintenance) {
-
-            const r = resource === 'index' || resources.includes(resource);
-
-            if (r) {
+            if (G.pseudoResources.includes(resource)) {
+                O.base.show(resource);
+            }
+            else {
                 O.base.show('closedForMaintenance');
             }
-            else if (pseudoResources.includes(resource)) {
-                O.base.show(resource); 
-            }     
         }
         else {
 
@@ -64,12 +58,12 @@ O.base = {
                 { 
                     selectors: [ document.querySelector('#searcher') ], 
                     action: 'submit', 
-                    handler: { name: 'getResource()', fn: O.utils.getResource } 
+                    handler: { name: 'prepareQuery()', fn: O.utils.prepareQuery } 
                 },
                 { 
                     selectors: [ document.querySelector('input[name=submit]') ], 
                     action: 'click', 
-                    handler: { name: 'getResource()', fn: O.utils.getResource } 
+                    handler: { name: 'prepareQuery()', fn: O.utils.prepareQuery } 
                 },
                 {
                     selectors: document.querySelectorAll('input[name=resource]'), 
@@ -78,7 +72,7 @@ O.base = {
                 },
                 { 
                     selectors: [
-                        document.querySelector('input[name=refreshCache]'), 
+                        document.querySelector('input[name="$refreshCache"]'), 
                         document.querySelector('input[name=communitiesChooser]')
                     ],
                     action: 'click', 
@@ -86,7 +80,7 @@ O.base = {
                 }
             ]);
 
-            if (pseudoResources.includes(resource)) {
+            if (G.pseudoResources.includes(resource)) {
                 O.base.show(resource);
             }
             else {
@@ -96,21 +90,33 @@ O.base = {
                 new autoComplete({
                     selector: document.querySelector('input[name=q]'),
                     minChars: 3,
-                    source: function(term, response) {
+                    source: async function(term, suggest) {
                         try { fetch.abort() } catch(e) {}
-                        fetch(`${zenodeoUri}/families?q=${term}`)
-                            .then(O.fetchReceive)
-                            .then(response);
+
+                        let response = await fetch(`${G.zenodeoUri}/families?q=${term}`);
+
+                        // if HTTP-status is 200-299
+                        // get the response body (the method explained below)
+                        if (response.ok) { 
+                            const data = await response.json();
+                            if (data.item.result.count) {
+                                const families = data.item.result.records.map(r => r.family);
+                                suggest(families);
+                            }
+                        } 
+                        else {
+                            alert("HTTP-Error: " + response.status);
+                        }
                     }
                 });
 
                 log.info(`- getting ${resource}`);
                 if (resource === 'index') {
                     log.info(`- getting selected resource`);
-                    O.base.setP(document.querySelector('input[name=resource]:checked').value);
+                    O.base.updatePlaceholder(document.querySelector('input[name=resource]:checked').value);
                     O.base.show('index');                
                 }
-                else if (resources.includes(resource)) {
+                else if (G.resources.includes(resource)) {
                     
                     if (search) {
                         log.info(`- getting search`);
@@ -119,12 +125,11 @@ O.base = {
                     else {
                         log.info(`- getting ${resource}`);
                         O.base._selectResource(resource);
-                        O.base.setP(resource);
+                        O.base.updatePlaceholder(resource);
                         O.base.show(resource);
                     }
                 }
             }
-        
         }
     },
 
@@ -151,7 +156,7 @@ O.base = {
 
     toggler: function(event) {
         const target_id = event.target.name;
-        const t = document.querySelector(`#${target_id}`);
+        const t = document.getElementById(`${target_id}`);
 
         if (t.classList.contains('hidden-none')) {
             t.classList.add('visible-block');
@@ -230,23 +235,9 @@ O.base = {
 
     // format the text for the search criteria using the input values
     formatSearchCriteria: function(s) {
-        
-        // the following input params are ignored while creating the 
-        // textual version of the search criteria
-        const remove = [
-            'resource', 
-            'communities', 
-            'communitiesChooser',
-            'refreshCache', 
-            'size', 
-            'page',
-            'reset',
-            'submit'
-        ];
-
         const criteria = [];
         for (let k in s) {
-            if (!remove.includes(k)) {
+            if (!G.notInSearchCriteria.includes(k)) {
                 const v = s[k];
 
                 if (k === 'q') {
@@ -286,15 +277,11 @@ O.base = {
     },
 
     toggleFigcaption: function(event) {
-
         const figcaptions = document.querySelectorAll('figcaption');
         
-        // closed figcaption height
-        const cfh = '30px';
-
         // first, close all figcaptions 
         for (let i = 0, j = figcaptions.length; i < j; i++) {
-            figcaptions[i].style.maxHeight = cfh;
+            figcaptions[i].style.maxHeight = G.closedFigcaptionHeight;
             figcaptions[i].style.overflow = 'hidden';
         }
 
@@ -362,19 +349,17 @@ O.base = {
     },
 
     selectResource: function(event) {
-
         const r = event.target;
         const resource = r.value;
         log.info(`selected resource ${resource}`);
 
 
         O.base._selectResource(resource);
-        O.base.setP(resource);
+        O.base.updatePlaceholder(resource);
     },
 
-    setP: function(resource) {
-
-        O.base.logger('setP()', 'setting placeholder');
+    updatePlaceholder: function(resource) {
+        O.base.logger('updatePlaceholder()', 'updating placeholder');
         if (O.base['num-of-records'][resource]) {
             O.base.setPlaceHolder({
                 'num-of-records': O.base['num-of-records'][resource],
@@ -382,7 +367,7 @@ O.base = {
             })
         }
         else {
-            O.utils.getBar({
+            O.utils.getResource({
                 resource: resource,
                 inputs: null,
                 cb: O.base.setPlaceHolder
@@ -391,7 +376,6 @@ O.base = {
     },
 
     setPlaceHolder: function(result) {
-        
         if (O.base['num-of-records'][result.resource] == 0) {
             O.base['num-of-records'][result.resource] = result['num-of-records']
         }
@@ -436,21 +420,17 @@ O.base = {
     },
 
     fillSearchForm: function(search, resource) {
-
         O.base.logger('fillSearchForm()', 'filling search form');
         log.info(`- search: ${search}`);
         log.info(`- resource: ${resource}`);
 
-        // the following are the valid query params
-        const valid = ['communities', 'page', 'size', 'q', 'doi', 'author', 'text'];
         const f = document.querySelector('#searcher');
 
         // use search to fiil the form
         const s = new URLSearchParams(search);
         for (const [key, value] of s) {
-            if (valid.includes(key)) {
-
-                const inputs = f.querySelectorAll(`input[name=${key}]`);
+            if (G.validQueryParams.includes(key)) {
+                const inputs = f.querySelectorAll(`input[name="${key}"]`);
                 for (let i = 0, j = inputs.length; i < j; i++) {
                     const input = inputs[i];
 
@@ -463,13 +443,11 @@ O.base = {
                     else {
                         input.value = value;
                     }
-
                 }
             }
         }
 
         O.base.hls(resource);
-        O.utils.getResource();
+        O.utils.prepareQuery();
     }
-
 }

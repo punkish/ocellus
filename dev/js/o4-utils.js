@@ -9,7 +9,6 @@ O.utils = {
     },
 
     renderResults: function(result) {
-
         const resource = result.resource;
         const template = result.template;
 
@@ -32,8 +31,7 @@ O.utils = {
         return result.resource;
     },
 
-    getResource: function(event) {
-
+    prepareQuery: function(event) {
         if (event) {
             event.stopPropagation();
             event.preventDefault();
@@ -87,7 +85,7 @@ O.utils = {
             }
         }
             
-        O.utils.getFoo({
+        O.utils.getResource({
             resource: document.querySelector('input[name=resource]:checked').value,
             inputs: inputs,
             cb: O.utils.renderResults
@@ -110,12 +108,12 @@ O.utils = {
         t.classList.add('nothrob');
     },
 
-    getBar: function(obj) {
+    getResource: function(obj) {
 
         const {resource, inputs, cb} = obj;
         const {z, b} = O.utils.inputs2uris(inputs, resource);
 
-        O.base.logger('getBar()', `getting ${resource}`);
+        O.base.logger('getResource()', `getting ${resource}`);
         log.info(`zenodeoUri: ${z}`);
         log.info(`browserUri: ${b}`);
 
@@ -123,15 +121,15 @@ O.utils = {
         const t = document.querySelector('#throbber');
         t.classList.remove('nothrob');
 
-        // inputs will exist if getFoo() has been called from getResource(),
+        // inputs will exist if getResource() has been called from prepareQuery(),
         // that is, a resource is being queried for either via the form
         // or by loading a URL with search params
-        let sct;
+        let searchCriteria;
         if (inputs) {
 
             // add the search criteria text to the resource page
-            sct = inputs ? O.base.formatSearchCriteria(inputs) : '';
-            O.utils.waitMessage(resource, sct);
+            searchCriteria = inputs ? O.base.formatSearchCriteria(inputs) : '';
+            O.utils.waitMessage(resource, searchCriteria);
 
             // set the browser URL and show the resource page with the 
             // "Looking for…" message
@@ -140,7 +138,7 @@ O.utils = {
         }
 
         const _makeLayout = function(resource, records) {
-            
+
             let figures = [];
         
             if (resource === 'treatments') {
@@ -159,7 +157,7 @@ O.utils = {
                         title       : r.metadata.title,
                         creators    : r.metadata.creators ? r.metadata.creators.map(c => c.name) : [],
                         recId       : r.id,
-                        zenodoRecord: `${zenodoUri}/${r.id}`,
+                        zenodoRecord: `${G.zenodoUri}/${r.id}`,
                         description : r.metadata.description,
                         doi         : r.doi,
                         img         : r.links.thumbs ? true : false,
@@ -189,21 +187,17 @@ O.utils = {
             // now fetch the records and process the result
             fetch(z)
                 .then(O.base.fetchReceive)
-                .then(function(ress) {
-
-                    const res = 'value' in ress ? ress.value : ress;               
-                    const recs = res['num-of-records'];            
+                .then(function(data) {
+                    const res = data.item.result;
 
                     const result = {
-                        resource: resource,
-                        'num-of-records': recs
+                        resource,
+                        'num-of-records': res.count
                     };
 
                     
                     if (inputs) {
-                        
-                        const limit = 30;
-                        result['search-criteria-text'] = sct;
+                        result['search-criteria-text'] = searchCriteria;
 
                         if (inputs.q.length === 32) {
                             if (res['search-criteria'].resource === 'treatments') {
@@ -213,38 +207,40 @@ O.utils = {
                                 result.template = 'citation';
                             }
 
-                            if (recs) {
+                            if (res.count) {
                                 result.figures = res.records[0];
                             }
                         }
                         else {
                             result.template = result.resource;
+                            
+                            result.niceNumbers = O.utils.niceNumbers(res.count);
 
-                            // make pager and layout ///////////////////////////////////////
-                            result.niceNumbers = O.utils.niceNumbers(recs);
-
-                            if (recs) {
+                            if (res.count) {
                                 result.successful = true;
 
-                                if (recs == 1) {
+                                if (res.count == 1) {
                                     result.shown = 'it is shown below';
                                 }
-                                else if (recs > 1 && recs <= limit) {
-                                    result.shown = `${O.utils.niceNumbers(res.from)} to ${O.utils.niceNumbers(recs)} are shown below`;
+                                else if (res.count > 1 && res.count <= G.pageSize) {
+                                    result.shown = `one to ${result.niceNumbers} are shown below`;
                                 }
                                 else {
-                                    result.shown = `${O.utils.niceNumbers(res.from)} to ${O.utils.niceNumbers(res.to)} are shown below`;
+                                    const from = O.utils.niceNumbers(((inputs['$page'] - 1) * G.pageSize) + 1);
+                                    const to = O.utils.niceNumbers(inputs['$page'] * G.pageSize);
+                                    result.shown = `${from} to ${to} are shown below`;
                                 }
                                                 
                                 result.figures = _makeLayout(resource, res.records);
-                                
 
-                                if (recs >= limit) {
-                                    result.prev = b.replace(/page=\d+/, `page=${res.prevpage}`);
-                                    result.next = b.replace(/page=\d+/, `page=${res.nextpage}`);
+                                if (res.count >= G.pageSize) {
+                                    const _prev = new URL(data.item._links._prev);
+                                    const _next = new URL(data.item._links._next);
+
+                                    result.prev = _prev.search;
+                                    result.next = _next.search;
                                     result.pager = true;
                                 }
-                                
                             }
                             else {
                                 result.successful = false;
@@ -252,173 +248,10 @@ O.utils = {
                                 result.pager = false;
                                 result.figures = [];
                             }
-                            ////////////////////////////////////////////////////////////////
-
                         }
-                        
                     }
 
                     return result;
-
-                })
-                .then(cb)
-                .then(O.utils.noThrob);
-        }
-        catch (error) {
-            log.error(error);
-        }
-        
-    },
-
-    getFoo: function(obj) {
-
-        const {resource, inputs, cb} = obj;
-        const {z, b} = O.utils.inputs2uris(inputs, resource);
-
-        O.base.logger('getFoo()', `getting ${resource}`);
-        log.info(`zenodeoUri: ${z}`);
-        log.info(`browserUri: ${b}`);
-
-        // activate the throbber
-        const t = document.querySelector('#throbber');
-        t.classList.remove('nothrob');
-
-        // inputs will exist if getFoo() has been called from getResource(),
-        // that is, a resource is being queried for either via the form
-        // or by loading a URL with search params
-        let sct;
-        if (inputs) {
-
-            // add the search criteria text to the resource page
-            sct = inputs ? O.base.formatSearchCriteria(inputs) : '';
-            O.utils.waitMessage(resource, sct);
-
-            // set the browser URL and show the resource page with the 
-            // "Looking for…" message
-            history.pushState(null, null, b);
-            O.base.show(resource);
-        }
-
-        const _makeLayout = function(resource, records) {
-
-            let figures = [];
-        
-            if (resource === 'treatments') {
-                for (let i = 0, j = records.length; i < j; i++) {
-                    const r = records[i];
-                    r.recId = r.treatmentId;
-                    figures.push(r);
-                }
-            }
-
-            else if (resource === 'images') {
-                for (let i = 0, j = records.length; i < j; i++) {
-                    const r = records[i];
-                    
-                    figures.push({
-                        title       : r.metadata.title,
-                        creators    : r.metadata.creators ? r.metadata.creators.map(c => c.name) : [],
-                        recId       : r.id,
-                        zenodoRecord: `${zenodoUri}/${r.id}`,
-                        description : r.metadata.description,
-                        doi         : r.doi,
-                        img         : r.links.thumbs ? true : false,
-                        img10       : r.links.thumbs ? r.links.thumbs['10']   : '',
-                        img50       : r.links.thumbs ? r.links.thumbs['50']   : '',
-                        img100      : r.links.thumbs ? r.links.thumbs['100']  : '',
-                        img250      : r.links.thumbs ? r.links.thumbs['250']  : '',
-                        img750      : r.links.thumbs ? r.links.thumbs['750']  : '',
-                        img1200     : r.links.thumbs ? r.links.thumbs['1200'] : ''
-                    })
-                }
-            }
-
-            else if (resource === 'citations') {
-                for (let i = 0, j = records.length; i < j; i++) {
-                    const r = records[i];
-                    r.recId = r.bibRefCitationId;
-                    figures.push(r);
-                }
-            }
-
-            return figures;
-        };
-
-        try {
-
-            // now fetch the records and process the result
-            fetch(z)
-                .then(O.base.fetchReceive)
-                .then(function(ress) {
-
-                    const res = 'value' in ress ? ress.value : ress;                
-                    const recs = res['num-of-records'];            
-
-                    const result = {
-                        resource: resource,
-                        'num-of-records': recs
-                    };
-
-                    if (inputs) {
-                        
-                        const limit = 30;
-                        result['search-criteria-text'] = sct;
-
-                        if (inputs.q.length === 32) {
-                            if (res['search-criteria'].resource === 'treatments') {
-                                result.template = 'treatment';
-                            }
-                            else if (res['search-criteria'].resource === 'citations') {
-                                result.template = 'citation';
-                            }
-
-                            if (recs) {
-                                result.figures = res.records[0];
-                            }
-                        }
-                        else {
-                            result.template = result.resource;
-
-                            // make pager and layout ///////////////////////////////////////
-                            result.niceNumbers = O.utils.niceNumbers(recs);
-
-                            if (recs) {
-                                result.successful = true;
-
-                                if (recs == 1) {
-                                    result.shown = 'it is shown below';
-                                }
-                                else if (recs > 1 && recs <= limit) {
-                                    result.shown = `${O.utils.niceNumbers(res.from)} to ${O.utils.niceNumbers(recs)} are shown below`;
-                                }
-                                else {
-                                    result.shown = `${O.utils.niceNumbers(res.from)} to ${O.utils.niceNumbers(res.to)} are shown below`;
-                                }
-                                                
-                                result.figures = _makeLayout(resource, res.records);
-                                
-
-                                if (recs >= limit) {
-                                    result.prev = b.replace(/page=\d+/, `page=${res.prevpage}`);
-                                    result.next = b.replace(/page=\d+/, `page=${res.nextpage}`);
-                                    result.pager = true;
-                                }
-                                
-                            }
-                            else {
-                                result.successful = false;
-                                result.shown = '';
-                                result.pager = false;
-                                result.figures = [];
-                            }
-                            ////////////////////////////////////////////////////////////////
-
-                        }
-                        
-                    }
-
-                    return result;
-
                 })
                 .then(cb)
                 .then(O.utils.noThrob);
@@ -437,27 +270,12 @@ O.utils = {
     },
 
     inputs2uris: function(inputs, resource) {
-        
-        // valid params for zenodeo uri
-        const zuValid = {
-            images: [ 'q', 'size', 'page', 'communities', 'refreshCache' ],
-            treatments: [ 'q', 'size', 'page', 'refreshCache' ],
-            citations: [ 'q', 'size', 'page', 'refreshCache' ]
-        };
-
-        // valid params for browser uri
-        const buValid = {
-            images: [ 'q', 'size', 'page', 'communities' ],
-            treatments: [ 'q', 'size', 'page' ],
-            citations: [ 'q', 'size', 'page' ]
-        };
-
         const zparams = [];
         const bparams = [];
 
         for (const key in inputs) {
 
-            if (zuValid[resource].includes(key)) {
+            if (G.zenodeoUriParams[resource].includes(key)) {
                 if (key === 'q') {
                     if (key.length == 32) {
                         if (resource === 'treaments') {
@@ -476,17 +294,17 @@ O.utils = {
                 }
             }
 
-            if (buValid[resource].includes(key)) {
+            if (G.browserUriParams[resource].includes(key)) {
                 bparams.push(`${key}=${inputs[key]}`);
             }
             
         }
 
         const zs = zparams.length ? `?${zparams.sort().join('&')}` : '';
-        const z = `${zenodeoUri}/${resource}${zs}`;
+        const z = `${G.zenodeoUri}/${resource}${zs}`;
 
         const bs = bparams.length ? `?${bparams.join('&')}` : '';
         const b = `${resource}.html${bs}`;
-        return {z: z, b: b};
+        return {z, b};
     }
 }
