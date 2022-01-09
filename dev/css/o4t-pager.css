@@ -50,10 +50,17 @@ td {
 
  /* table done */
 
-.range {
-    display: none;
+ /* .range:before {
+        content: ': '
+} */
+
+#treatments-pager,
+#figures-pager { 
+        clear: both;
 }
 
-.range:before {
-    content: ': '
+div.pager-cell {
+    float: left;
+    font-family: sans-serif;
+    font-size: 10px;
 }

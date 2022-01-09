@@ -73,7 +73,7 @@ O.base = {
                 },
                 { 
                     selectors: [
-                        document.querySelector('input[name="$refreshCache"]'), 
+                        document.querySelector('input[name="refreshCache"]'), 
                         document.querySelector('input[name=communitiesChooser]')
                     ],
                     action: 'click', 

@@ -226,8 +226,8 @@ O.utils = {
                                     result.shown = `one to ${result.niceNumbers} are shown below`;
                                 }
                                 else {
-                                    const from = O.utils.niceNumbers(((inputs['$page'] - 1) * G.pageSize) + 1);
-                                    const to = O.utils.niceNumbers(inputs['$page'] * G.pageSize);
+                                    const from = O.utils.niceNumbers(((inputs.page - 1) * G.pageSize) + 1);
+                                    const to = O.utils.niceNumbers(inputs.page * G.pageSize);
                                     result.shown = `${from} to ${to} are shown below`;
                                 }
                                                 

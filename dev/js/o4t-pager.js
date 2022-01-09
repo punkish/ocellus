@@ -1,26 +1,16 @@
-'use strict'
+'use strict';
 
-//const chalk = require('chalk')
-
-const PAGER_LENGTH = 9
-const SEP = '•••'
-const SEPPOS1 = 2
-const SEPPOS2 = 6
-
-// const red = (str) => {
-//     return chalk.red(str)
-// }
-
-// const green = (str) => {
-//     return chalk.green(str)
-// }
+const PAGER_LENGTH = 9;
+const SEP = '•••';
+const SEPPOS1 = 2;
+const SEPPOS2 = 6;
 
 const range = (i, size, total) => {
-    const from = (i * size) + 1
-    let to = (from + size - 1)
-    if (to >= total) to = total
+    const from = (i * size) + 1;
+    let to = from + size - 1;
+    if (to >= total) to = total;
 
-    return [ from, to ]
+    return [ from, to ];
 }
 
 const _pager = ({total, subtotal, queryString, page, size, fp, fs, resource, subresource, htmlElement}) => {
@@ -55,11 +45,11 @@ const _pager = ({total, subtotal, queryString, page, size, fp, fs, resource, sub
                 cp: isCp,
                 page: cp,
                 page_link: resource === 'treatments' ? cp : page,
-                size: size,
+                size,
                 fp: resource === 'treatments' ? fp : cp,
-                fs: fs,
-                from: from,
-                to: to,
+                fs,
+                from,
+                to,
                 sep1: false,
                 sep2: false
             })
@@ -104,11 +94,11 @@ const _pager = ({total, subtotal, queryString, page, size, fp, fs, resource, sub
                 cp: isCp,
                 page: cp,
                 page_link: resource === 'treatments' ? cp : page,
-                size: size,
+                size,
                 fp: resource === 'treatments' ? fp : cp,
-                fs: fs,
-                from: from,
-                to: to,
+                fs,
+                from,
+                to,
                 sep1: false,
                 sep2: false
             })
@@ -142,32 +132,20 @@ const _pager = ({total, subtotal, queryString, page, size, fp, fs, resource, sub
         }
     }
     
-    outputPager({
-        resource, page_list, queryString, page, size, fp, fs, htmlElement
-    })
+    outputPager({resource, page_list, queryString, page, size, fp, fs, htmlElement})
 }
 
-const pager = ({ total, subtotal, queryString, page, size, fp, fs, resource, subresource, htmlElement }) => {
+const pager = ({total, subtotal, queryString, page, size, fp, fs, resource, subresource, htmlElement}) => {
 
     if (resource === 'treatments') {
-        outputResult({
-            total: total,
-            subtotal: subtotal,
-            page: page,
-            size: size,
-            fp: fp,
-            fs: fs,
-            htmlElement: htmlElement,
-            resource: resource,
-            subresource: subresource
-        })
+        outputResult({total, subtotal, page, size, fp, fs, resource, subresource, htmlElement})
 
         if (total > 0 && subtotal > 0) {
-            _pager({total, subtotal, queryString, page, size, fp, fs, resource, subresource, htmlElement})
+            _pager({total, subtotal, queryString, page, size, fp, fs, resource, subresource, htmlElement});
         }
     }
     else if (resource === 'figures' && (total > 0)) {
-        _pager({total, subtotal, queryString, page, size, fp, fs, resource, subresource, htmlElement})
+        _pager({total, subtotal, queryString, page, size, fp, fs, resource, subresource, htmlElement});
 
         const sel_pageLinks = htmlElement.querySelectorAll('.pager a')
         sel_pageLinks.forEach(p => {
@@ -176,34 +154,34 @@ const pager = ({ total, subtotal, queryString, page, size, fp, fs, resource, sub
     }
 }
 
-const outputPager_div = ({page_list, queryString, page, size, fp, fs, htmlElement, resource}) => {
-    const url = `${ocellus4tUri}?${queryString}`
+// const outputPager_div = ({page_list, queryString, page, size, fp, fs, htmlElement, resource}) => {
+//     const url = `${G.ocellus4tUri}?${queryString}`
 
-    const pager = page_list.map(e => {
+//     const pager = page_list.map(e => {
 
-        let disp
+//         let disp
 
-        if (e.cp) {
-            disp = `<div class="cp"><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></div>`
-        }
-        else {
-            if (e.sep1 || e.sep2) {
-                disp = `<div class="sep"><span>${SEP}</span></div>`
-            }
-            else {
-                disp = `<div><a href="${url}&$page=${e.page_link}&$size=${size}#fp=${e.fp}&fs=${e.fs}"><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></a></div>`
-            }
-        }
+//         if (e.cp) {
+//             disp = `<div class="cp"><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></div>`
+//         }
+//         else {
+//             if (e.sep1 || e.sep2) {
+//                 disp = `<div class="sep"><span>${SEP}</span></div>`
+//             }
+//             else {
+//                 disp = `<div><a href="${url}&page=${e.page_link}&size=${size}#fp=${e.fp}&fs=${e.fs}"><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></a></div>`
+//             }
+//         }
 
-        return disp
-    }).join('')
+//         return disp
+//     }).join('')
 
-    htmlElement.querySelector('.pager').innerHTML = pager
-}
+//     htmlElement.querySelector('.pager').innerHTML = pager
+// }
 
 const outputPager = ({ resource, page_list, queryString, page, size, fp, fs, htmlElement }) => {
     
-    const url = ocellus4tUri
+    const url = G.ocellus4tUri
     const queryObj = new URLSearchParams(queryString)
     
     const pager = page_list.map(e => {
@@ -211,20 +189,25 @@ const outputPager = ({ resource, page_list, queryString, page, size, fp, fs, htm
         let disp
 
         if (e.cp) {
-            disp = `<td class="cp"><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></td>`
+            //disp = `<td class="cp"><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></td>`
+            // disp = `<div class="cp pager-cell"><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></div>`;
+            disp = `<div class="cp pager-cell"><span class="range">${e.from}–${e.to}</span></div>`;
         }
         else {
             if (e.sep1 || e.sep2) {
-                disp = `<td class="sep"><span>${SEP}</span></td>`
+                //disp = `<td class="sep"><span>${SEP}</span></td>`
+                disp = `<div class="sep pager-cell"><span>${SEP}</span></div>`;
             }
             else {
-                queryObj.set('$page', e.page_link)
-                queryObj.set('$size', size)
+                queryObj.set('page', e.page_link)
+                queryObj.set('size', size)
                 queryObj.sort()
                 const qry = decodeURIComponent(queryObj.toString())
 
                 // disp = `<td class="p"><a href="${url}&$page=${e.page_link}&$size=${size}#fp=${e.fp}&fs=${e.fs}"><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></a></td>`
-                disp = `<td class="p"><a href="${url}?${qry}#fp=${e.fp}&fs=${e.fs}"><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></a></td>`
+                //disp = `<td class="p"><a href="?${qry}#fp=${e.fp}&fs=${e.fs}"><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></a></td>`
+                // disp = `<div class="p pager-cell"><a href="?${qry}#fp=${e.fp}&fs=${e.fs}"><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></a></div>`;
+                disp = `<div class="p pager-cell"><a href="?${qry}#fp=${e.fp}&fs=${e.fs}"><span class="range">${e.from}–${e.to}</span></a></div>`;
             }
         }
 
@@ -233,13 +216,13 @@ const outputPager = ({ resource, page_list, queryString, page, size, fp, fs, htm
 
     if (pager.length < PAGER_LENGTH) {
         for (let i = 0, j = (PAGER_LENGTH - pager.length); i < j; i++) {
-            pager.push('<td class="e"></td>')
+            pager.push('<div class="e pager-cell"></div>')
         }
     }
 
-    pager.unshift(`<th>${resource}</th>`)
+    pager.unshift(`<div class="header pager-cell">${resource}</div>`)
 
-    htmlElement.innerHTML = pager.join('')
+    htmlElement.innerHTML = pager.join('');
 }
 
 const outputResult = ({ total, subtotal, page, size, fp, fs, htmlElement, resource, subresource }) => {
@@ -276,56 +259,53 @@ const outputResult = ({ total, subtotal, page, size, fp, fs, htmlElement, resour
     sel_searchResults.innerHTML = html
 }
 
-const outputResult_old = ({ total, subtotal, page, size, fp, fs, htmlElement, resource, subresource, showResults }) => {
+// const outputResult_old = ({ total, subtotal, page, size, fp, fs, htmlElement, resource, subresource, showResults }) => {
 
-    let html
+//     let html
 
-    if (total == 0) {
-        html = `No ${resource} found.`
-    }
-    else {
-        if (total > 1 && total < size) {
-            html = `Found ${niceNumbers(total)} ${resource}`
-        }
-        else {
-            html = `Found ${niceNumbers(total)} ${resource}`
-        }
+//     if (total == 0) {
+//         html = `No ${resource} found.`
+//     }
+//     else {
+//         if (total > 1 && total < size) {
+//             html = `Found ${niceNumbers(total)} ${resource}`
+//         }
+//         else {
+//             html = `Found ${niceNumbers(total)} ${resource}`
+//         }
 
-        if (resource === 'treatments' & subtotal == 0) {
-            html += `, but no related ${subresource} found. Please search again.`
-        }
-        else {
-            const p = resource === 'treatments' ? page : fp
-            html += `. Showing results from the ${nth(p)} ${niceNumbers(size)} ${resource} below.`
-        }
-    }
+//         if (resource === 'treatments' & subtotal == 0) {
+//             html += `, but no related ${subresource} found. Please search again.`
+//         }
+//         else {
+//             const p = resource === 'treatments' ? page : fp
+//             html += `. Showing results from the ${nth(p)} ${niceNumbers(size)} ${resource} below.`
+//         }
+//     }
     
-    htmlElement.querySelector('.search-results').innerHTML = html
-}
+//     htmlElement.querySelector('.search-results').innerHTML = html
+// }
 
 // Javascript: Ordinal suffix for numbers
 // https://stackoverflow.com/a/15810761
 const nth = function(n) {
-    if ( isNaN(n) || n % 1 ) return n 
+    if ( isNaN(n) || n % 1 ) return n;
 
-    const s = n % 100
+    const s = n % 100;
 
-    if ( s > 3 && s < 21 ) return n + 'th'
+    if ( s > 3 && s < 21 ) return n + 'th';
 
     switch( s % 10 ) {
-        case 1:  return n + 'st'
-        case 2:  return n + 'nd'
-        case 3:  return n + 'rd'
-        default: return n + 'th'
+        case 1:  return n + 'st';
+        case 2:  return n + 'nd';
+        case 3:  return n + 'rd';
+        default: return n + 'th';
     }
 }
 
 const niceNumbers = (n) => {
     const nice = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine']
-
-    return n < 10 ? 
-        nice[n - 1].toLowerCase() : 
-        n
+    return n < 10 ? nice[n - 1].toLowerCase() : n
 }
 
 // const output = (page_list, dest) => {

@@ -41,16 +41,16 @@ const unhide = () => {
 // // globals and constants
 const RESULTS = {
     countOfTreatments: 0,
-    currentBatch: 0,
-    pagesOfTreatments: 0,
-    _links: {
-        self: '',
-        prev: '',
-        next: ''
-    },
+    // currentBatch: 0,
+    // pagesOfTreatments: 0,
+    // _links: {
+    //     self: '',
+    //     prev: '',
+    //     next: ''
+    // },
     countOfFigures: 0,
     figures: [],
-    pagesOfFigures: 0
+    //pagesOfFigures: 0
 }
 
 // treatments related defaults
@@ -67,8 +67,8 @@ let gridIsVisible = false
 const updateUrl = ({ queryString, page, size, fp, fs }) => {
     const queryObj = new URLSearchParams(queryString)
         
-    queryObj.set('$page', page)
-    queryObj.set('$size', size)
+    queryObj.set('page', page)
+    queryObj.set('size', size)
     queryObj.sort()
 
     const qs = queryObj.toString()
@@ -77,7 +77,7 @@ const updateUrl = ({ queryString, page, size, fp, fs }) => {
 
 // Grab the appropriate slice (page, size) from the RESULTS
 const showPage = function({ queryString, page, size, fp, fs }) {
-    
+    console.log(`page: ${page}, size: ${size}`)
     // slice the figures out of the RESULTS array
     // if page = 1 and size = 30, the slice will be from 0, 29
     // page/fp = 1 -> slice(0, 29)
@@ -85,8 +85,8 @@ const showPage = function({ queryString, page, size, fp, fs }) {
     // page/fp = 3 -> slice(60, 61)
     size = parseInt(size)
 
-    const from = (fp - 1) * size
-    let to = from + size
+    const from = (fp - 1) * fs
+    let to = from + fs
     if (to >= RESULTS.countOfFigures) to = RESULTS.countOfFigures
 
     const figures = RESULTS.figures.slice(from, to)
@@ -94,7 +94,7 @@ const showPage = function({ queryString, page, size, fp, fs }) {
 
     updateUrl({ queryString, page, size, fp, fs })
 
-    sel_grid.innerHTML = str
+    sel_grid.innerHTML = str;
     
     if (sel_gridTarget.classList.contains("hide")) {
         sel_gridTarget.classList.remove("hide")
@@ -149,7 +149,11 @@ const grid = function(size, r) {
 // <source srcset="https://placehold.it/800x800" media="(min-width: 800px)"/>
 // <source srcset="https://placehold.it/600x600" media="(min-width: 600px)"/>
 
-    const i = `${zenodoUri}/${r.id}/thumb${size}`
+    /*
+     * Most figures are on Zenodo, but some are on Pensoft,
+     * so the url has to be adjusted accordingly
+     */
+    const i = r.httpUri.indexOf('zenodo') > -1 ? `${G.zenodoUri}/${r.id}/thumb${size}` : r.httpUri;
 
     const height = getRandomInt(300)
 
@@ -158,7 +162,7 @@ const grid = function(size, r) {
         <div class="close"></div>
     </div>
     <picture>
-        <img src="../img/bug.gif" data-src="${i}" class="lazyload" data-recid="${r.id}">
+        <img src="../img/bug.gif" width="${size}" data-src="${i}" class="lazyload" data-recid="${r.id}">
     <!-- <img src="../img/bug.gif" data-src="../img/i250.jpg" class="lazyload" data-recid="${r.id}"> -->
     <!-- <div style="width: 250px; height:${height}px;">250px x ${height}px</div> -->
     </picture>
@@ -166,7 +170,7 @@ const grid = function(size, r) {
         <a class="transition-050">rec ID: ${r.id}</a>
         <div class="desc hide">
             ${r.captionText}. 
-            <a class='showTreatment' href='${zenodeo3Uri}/treatments?treatmentId=${r.treatmentId}'>more</a>
+            <a class='showTreatment' href='${G.zenodeo3Uri}/treatments?treatmentId=${r.treatmentId}'>more</a>
         </div>
     </figcaption>
 </figure>`
@@ -174,16 +178,29 @@ const grid = function(size, r) {
 
 const closeLightbox = () => sel_treatmentDetails.classList.add("hidden")
 
-const foo = async function(url) {
-    const response = await fetch(url)
+const getTreatment = async function(url) {
+    const response = await fetch(url);
     
     // if HTTP-status is 200-299
     if (response.ok) {
-        const json = await response.json()
-        const r = json.item.records[0]
+        const json = await response.json();
+        const r = json.item.result.records[0];
 
-        const figs = json.item["related-records"].figureCitations.records.map(r => {
-            return `<img src ="${zenodoUri}/${r.httpUri.split('/')[4]}/thumb${50}">`
+        const figs = json.item.result["related-records"].figureCitations.map(r => {
+
+            /*
+            * Most figures are on Zenodo, but some are on Pensoft,
+            * so the url has to be adjusted accordingly
+            */
+            let i;
+            if (r.httpUri.indexOf('zenodo') > -1) {
+                i = `${G.zenodoUri}/${r.httpUri.split('/')[4]}/thumb50`;
+            }
+            else {
+                i = r.httpUri;
+            }
+            
+            return `<img src ="${i}">`
         })
         
 
@@ -228,7 +245,7 @@ const showTreatment = async function(e) {
     // const mouseX = e.pageX
     // const mouseY = e.pageY
 
-    foo(url)
+    getTreatment(url)
 
     e.stopPropagation()
     e.preventDefault()
@@ -254,14 +271,14 @@ const fillForm = function(queryObj) {
     // log.info(page, size)
     if (queryObj.has('q')) {
         if (Array.from(queryObj.entries()).length > 1) {
-            sel_q.value = decodeURIComponent(queryObj.toString())
+            sel_q.value = decodeURIComponent(queryObj.toString());
         }
         else {
-            sel_q.value = queryObj.get('q')
+            sel_q.value = queryObj.get('q');
         }
     }
     else {
-        sel_q.value = decodeURIComponent(queryObj.toString())
+        sel_q.value = decodeURIComponent(queryObj.toString());
     }
 
     // restore `page` and `size`
@@ -275,18 +292,17 @@ const figPageClick = function(e) {
 
     const { queryObj, queryString, page, size, fp, fs } = extractParamsAndHash(url)
 
-    if ((RESULTS.countOfTreatments > 0) && (RESULTS.countOfFigures > 0)) {
+    if (RESULTS.countOfFigures > 0) {
         pager({
             total: RESULTS.countOfFigures, 
             subtotal: '',
-            queryString: queryString,
-            page: page,
-            size: size,
-            fp: fp,
-            fs: fs,
+            queryString,
+            page,
+            size,
+            fp,
+            fs,
             resource: 'figures',
             subresource: '',
-            //htmlElement: sel_resultsFigures
             htmlElement: sel_figuresPager
         })
     }
@@ -313,49 +329,49 @@ const go = function (e) {
 
         const qarr = [ q.indexOf('=') > -1 ? q : `q=${q}` ]
 
-        res({ resource: 'treatments', queryString: qarr.join('&'), page: PAGE, size: SIZE, fp: FIGPAGE, fs: FIGSIZE })
+        getResource({ resource: 'treatments', queryString: qarr.join('&'), page: PAGE, size: SIZE, fp: FIGPAGE, fs: FIGSIZE })
     }
     
     e.stopPropagation()
     e.preventDefault()
 }
 
-// if res() is run for the first time (by submitting the form)
-// then `page` defaults to 1 and `size` to 30. On the other hand, 
-/// if res() runs because a bookmark was loaded then that bookmark 
-// contains the `page` and `size` parameters
-const res = async function({resource, queryString, page, size, fp, fs}) {
+/*
+ * if getResource() is run for the first time (by submitting the form)
+ * then `page` defaults to 1 and `size` to 30. On the other hand, 
+ * if getResource() runs because a bookmark was loaded then that bookmark 
+ * contains the `page` and `size` parameters
+ */
+const getResource = async function({resource, queryString, page, size, fp, fs}) {
 
-    log.info(resource, queryString, page, size, fp, fs)
-    let url = `${zenodeo3Uri}/${resource.toLowerCase()}`
+    //log.info(resource, queryString, page, size, fp, fs)
+    let url = `${G.zenodeo3Uri}/${resource.toLowerCase()}`;
     if (queryString) {
-        url += `?${queryString}`
+        url += `?${queryString}`;
     }
 
-    log.info(`url: ${url}`)
+    //log.info(`url: ${url}`);
     
-    const response = await fetch(url)
+    const response = await fetch(url);
     
     // if HTTP-status is 200-299
     if (response.ok) {
-        const json = await response.json()
-        const records = json.item.records
+        const json = await response.json();
+        const records = json.item.result.records;
 
-        if (resource === 'treatments') {
-
-            RESULTS.countOfTreatments = json.item.count
-            
-            RESULTS._links.self = json.item._links.self.href
-            RESULTS._links.prev = json.item._links.prev.href
-            RESULTS._links.next = json.item._links.next.href
-
-            const obj = { records, queryString, page, size, fp, fs }
-            then_t(obj)
-        }
-        else if (resource === 'figureCitations') {
-            
-            //{ records, resource, queryString, page, size, fp, fs }
-            return then_f(records)
+        if (records) {
+            if (resource === 'treatments') {
+                RESULTS.countOfTreatments = json.item.result.count;
+                RESULTS._links = json.item._links;
+                // RESULTS._links.self = json.item._links._self;
+                // RESULTS._links.prev = json.item._links._prev;
+                // RESULTS._links.next = json.item._links._next;
+                getFigureCitations({ records, queryString, page, size, fp, fs })
+            }
+            else if (resource === 'figureCitations') {
+                const figures = packageFigureCitations(records);
+                return figures;
+            }
         }
     }
 
@@ -365,112 +381,112 @@ const res = async function({resource, queryString, page, size, fp, fs}) {
     }
 }
 
-// if the response from querying treatments is successful,
-/// then_t is run to fetch the figures
-//const then_t = function(records, queryStr, page, size, figpage, figsize) {
-const then_t = function({ records, queryString, page, size, fp, fs }) {
+/*
+ * If the response from querying treatments is successful,
+ * `getFigureCitations` fetches the figures
+ */
+const getFigureCitations = function({ records, queryString, page, size, fp, fs }) {
 
-    const tids = records.map(t => t.treatmentId)
-    console.log(tids)
+    const tids = records.map(t => t.treatmentId);
+    //console.log(tids)
 
-    // Create a promise for all the figure queries 
-    // for all the treatments returned from `t()`
-    Promise.all(records.map(r => res({
+    /*
+     * Create a promise for quering 'page' and 'size' of figures
+     * for the treatments returned from `getResource()`
+     */
+    Promise.all(records.map(r => getResource({
         resource: 'figureCitations', 
         queryString: `treatmentId=${r.treatmentId}`, 
-        page: page, 
-        size: size, 
-        fp: fp, 
-        fs: fs 
+        page, 
+        size, 
+        fp, 
+        fs 
     })))
         .then(images => {
 
             images.forEach(i => {
-                if (typeof i !== 'undefined') {
-                    if (i.length) {
-                        RESULTS.figures.push(...i)
-                    }
+                if ((typeof i !== 'undefined') && i.length) {
+                    RESULTS.figures.push(...i);
                 }
             })
 
-            RESULTS.countOfFigures = RESULTS.figures.length
+            RESULTS.countOfFigures = RESULTS.figures.length;
 
             pager({
                 total: RESULTS.countOfTreatments, 
                 subtotal: RESULTS.countOfFigures,
-                queryString: queryString,
-                page: page,
-                size: size,
-                fp: fp,
-                fs: fs,
+                queryString,
+                page,
+                size,
+                fp,
+                fs,
                 resource: 'treatments',
                 subresource: 'figures',
-                // htmlElement: sel_resultsTreatments
                 htmlElement: sel_treatmentsPager
-            })
+            });
         
-            if ((RESULTS.countOfTreatments > 0) && (RESULTS.countOfFigures > 0)) {
+            //if ((RESULTS.countOfTreatments > 0) && (RESULTS.countOfFigures > 0)) {
+            if (RESULTS.countOfFigures > 0) {
                 pager({
                     total: RESULTS.countOfFigures, 
                     subtotal: '',
-                    queryString: queryString,
-                    page: page,
-                    size: size,
-                    fp: fp,
-                    fs: fs,
+                    queryString,
+                    page,
+                    size,
+                    fp,
+                    fs,
                     resource: 'figures',
                     subresource: '',
-                    //htmlElement: sel_resultsFigures
                     htmlElement: sel_figuresPager
-                })
+                });
             }
 
-            showPage({ queryString, page, size, fp, fs })
+            showPage({ queryString, page, size, fp, fs });
         })
 }
 
 // if a query for a figure is successful,
-// then_f runs
-const then_f = function(records) {
+// packageFigureCitations runs
+const packageFigureCitations = function(records) {
     if (records.length) {
-        records = records.filter(r => r.httpUri !== '')
+        records = records.filter(r => r.httpUri !== '');
 
         // https://codeburst.io/javascript-array-distinct-5edc93501dc4
-        const uniq_records = []
-        const map = new Map()
+        const uniq = [];
+        const map = new Map();
 
         for (const r of records) {
-
             if(!map.has(r.httpUri)) {
 
                 // set any value to Map
-                map.set(r.httpUri, true)
-                const id = r.httpUri.split('/')[4]
-                uniq_records.push(grid(250, {
-                    id: id,
+                map.set(r.httpUri, true);
+                const id = r.httpUri.split('/')[4];
+                uniq.push(grid(250, {
+                    id,
                     httpUri: r.httpUri,
                     captionText: r.captionText,
                     treatmentId: r.treatmentId
-                }))
+                }));
             }
-
         }
 
-        return uniq_records
+        return uniq;
     }
 }
 
 const init = function () {
+    log.level = log[G.loglevel];
+    log.info(`log level is ${G.loglevel}`)
 
     // add all the event listeners to various DOM elements
-    listen()
+    listen();
 
     // flash the brand
-    flashBrand()
+    flashBrand();
 
     // check the browser bar if it has a query, and
     // act appropriately
-    loadPage()
+    loadPage();
 }
 
 const smokeWorks = function (e) {
@@ -706,21 +722,19 @@ const listen = function () {
 }
 
 const extractParamsAndHash = (url) => {
-    //const foo = url)
-    //log.info(`foo: ${foo}`)
-    const queryObj = url.searchParams
-    log.info(queryObj.toString())
-    // if the query has $page and $size, save them
-    const page = queryObj.has(encodeURIComponent('$page')) ? queryObj.get(encodeURIComponent('$page')) : PAGE
-    const size = queryObj.has(encodeURIComponent('$size')) ? queryObj.get(encodeURIComponent('$size')) : SIZE
+    const queryObj = url.searchParams;
+    log.info(queryObj.toString());
 
-    queryObj.delete('$page')
-    queryObj.delete('$size')
+    // if the query has page and size, save them
+    const page = queryObj.has('page') ? queryObj.get('page') : PAGE
+    const size = queryObj.has('size') ? queryObj.get('size') : SIZE
 
-    const queryString = decodeURIComponent(queryObj.toString())
+    queryObj.delete('page');
+    queryObj.delete('size');
 
-    // if the query doesn't have hash params
-    // set them to default values
+    const queryString = decodeURIComponent(queryObj.toString());
+
+    // if the query doesn't have hash params, set them to default values
     const hash = url.hash
         .slice(1)
         .split('&')
@@ -728,24 +742,23 @@ const extractParamsAndHash = (url) => {
             const a = obj.split('='); 
             map[a[0]] = a[1]; 
             return map; 
-        }, {})
+        }, {});
 
-    const fp = hash.fp ? hash.fp : FIGPAGE
-    const fs = hash.fs ? hash.fs : FIGSIZE
+    const fp = hash.fp ? hash.fp : FIGPAGE;
+    const fs = hash.fs ? hash.fs : FIGSIZE;
 
     return { queryObj, queryString, page, size, fp, fs }
 }
 
 // case 1: loading the page from a link
 const loadPage = function () {
-    const url = new URL(location)
-
-    // fill form and set default page and size if not already set
-    const { queryObj, queryString, page, size, fp, fs } = extractParamsAndHash(url)
-    log.info(`- queryObj: ${JSON.stringify(queryObj)}\n- queryString: '${queryString}'\n- page: ${page}\n- size: ${size}\n- fp: ${fp}\n- fs: ${fs}`)
-
-    fillForm(queryObj)
+    const url = new URL(location);
     
-    // document.getElementById('q').value = decodeURIComponent(q)
-    res({resource: 'treatments', queryString: queryString, page: page, size: size, fp: fp, fs: fs})
+    // fill form and set default page and size if not already set
+    const { queryObj, queryString, page, size, fp, fs } = extractParamsAndHash(url);
+    // log.info(`- queryObj: ${JSON.stringify(queryObj)}\n- queryString: '${queryString}'\n- page: ${page}\n- size: ${size}\n- fp: ${fp}\n- fs: ${fs}`);
+
+    fillForm(queryObj);
+    
+    getResource({resource: 'treatments', queryString, page, size, fp, fs});
 }
