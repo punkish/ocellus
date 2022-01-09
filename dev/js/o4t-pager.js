@@ -154,34 +154,9 @@ const pager = ({total, subtotal, queryString, page, size, fp, fs, resource, subr
     }
 }
 
-// const outputPager_div = ({page_list, queryString, page, size, fp, fs, htmlElement, resource}) => {
-//     const url = `${G.ocellus4tUri}?${queryString}`
-
-//     const pager = page_list.map(e => {
-
-//         let disp
-
-//         if (e.cp) {
-//             disp = `<div class="cp"><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></div>`
-//         }
-//         else {
-//             if (e.sep1 || e.sep2) {
-//                 disp = `<div class="sep"><span>${SEP}</span></div>`
-//             }
-//             else {
-//                 disp = `<div><a href="${url}&page=${e.page_link}&size=${size}#fp=${e.fp}&fs=${e.fs}"><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></a></div>`
-//             }
-//         }
-
-//         return disp
-//     }).join('')
-
-//     htmlElement.querySelector('.pager').innerHTML = pager
-// }
-
 const outputPager = ({ resource, page_list, queryString, page, size, fp, fs, htmlElement }) => {
     
-    const url = G.ocellus4tUri
+    const url = O.globals.ocellus4tUri
     const queryObj = new URLSearchParams(queryString)
     
     const pager = page_list.map(e => {
@@ -259,33 +234,6 @@ const outputResult = ({ total, subtotal, page, size, fp, fs, htmlElement, resour
     sel_searchResults.innerHTML = html
 }
 
-// const outputResult_old = ({ total, subtotal, page, size, fp, fs, htmlElement, resource, subresource, showResults }) => {
-
-//     let html
-
-//     if (total == 0) {
-//         html = `No ${resource} found.`
-//     }
-//     else {
-//         if (total > 1 && total < size) {
-//             html = `Found ${niceNumbers(total)} ${resource}`
-//         }
-//         else {
-//             html = `Found ${niceNumbers(total)} ${resource}`
-//         }
-
-//         if (resource === 'treatments' & subtotal == 0) {
-//             html += `, but no related ${subresource} found. Please search again.`
-//         }
-//         else {
-//             const p = resource === 'treatments' ? page : fp
-//             html += `. Showing results from the ${nth(p)} ${niceNumbers(size)} ${resource} below.`
-//         }
-//     }
-    
-//     htmlElement.querySelector('.search-results').innerHTML = html
-// }
-
 // Javascript: Ordinal suffix for numbers
 // https://stackoverflow.com/a/15810761
 const nth = function(n) {
@@ -307,59 +255,3 @@ const niceNumbers = (n) => {
     const nice = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine']
     return n < 10 ? nice[n - 1].toLowerCase() : n
 }
-
-// const output = (page_list, dest) => {
-//     const arr = page_list.map(e => {
-
-//         e.page = String(e.page).padStart(2, ' ')
-//         e.from = String(e.from).padStart(3, ' ')
-//         e.to = String(e.to).padStart(3, ' ')
-
-//         let disp
-
-//         if (e.cp) {
-//             if (dest === 'html') {
-//                 disp = `<div><span class="cp">${e.page}</span><span class="range">${e.from}–${e.to}</span></div>`
-//             }
-//             else if (dest === 'term') {
-//                 disp = red(`[${e.page}: ${e.from}-${e.to}]`)
-//             }
-//         }
-//         else {
-//             if (e.sep1 || e.sep2) {
-//                 if (dest === 'html') {
-//                     disp = `<div><span class="sep">${SEP}</span></div>`
-//                 }
-//                 else if (dest === 'term') {
-//                     disp = green(`[${SEP}]`)
-//                 }
-//             }
-//             else {
-//                 if (dest === 'html') {
-//                     disp = `<div><span class="p">${e.page}</span><span class="range">${e.from}–${e.to}</span></div>`
-//                 }
-//                 else if (dest === 'term') {
-//                     disp = `[${e.page}: ${e.from}-${e.to}]`
-//                 }
-//             }
-//         }
-
-//         return disp
-//     })
-
-//     console.log(arr.join(dest === 'term' ? ' ' : ''))
-// }
-
-// const total = 513
-// const pager_length = Math.ceil(total / SIZE)
-// const pages = [...Array(pager_length).keys()].map(e => e + 1)
-
-// pages.forEach(page => {
-//     const page_list = pager({
-//         total: total, 
-//         size: SIZE,
-//         page: page
-//     })
-    
-//     output(page_list, 'term')
-// })

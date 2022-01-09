@@ -153,7 +153,7 @@ const grid = function(size, r) {
      * Most figures are on Zenodo, but some are on Pensoft,
      * so the url has to be adjusted accordingly
      */
-    const i = r.httpUri.indexOf('zenodo') > -1 ? `${G.zenodoUri}/${r.id}/thumb${size}` : r.httpUri;
+    const i = r.httpUri.indexOf('zenodo') > -1 ? `${O.globals.zenodoUri}/${r.id}/thumb${size}` : r.httpUri;
 
     const height = getRandomInt(300)
 
@@ -170,7 +170,7 @@ const grid = function(size, r) {
         <a class="transition-050">rec ID: ${r.id}</a>
         <div class="desc hide">
             ${r.captionText}. 
-            <a class='showTreatment' href='${G.zenodeo3Uri}/treatments?treatmentId=${r.treatmentId}'>more</a>
+            <a class='showTreatment' href='${O.globals.zenodeo3Uri}/treatments?treatmentId=${r.treatmentId}'>more</a>
         </div>
     </figcaption>
 </figure>`
@@ -194,7 +194,7 @@ const getTreatment = async function(url) {
             */
             let i;
             if (r.httpUri.indexOf('zenodo') > -1) {
-                i = `${G.zenodoUri}/${r.httpUri.split('/')[4]}/thumb50`;
+                i = `${O.globals.zenodoUri}/${r.httpUri.split('/')[4]}/thumb50`;
             }
             else {
                 i = r.httpUri;
@@ -345,7 +345,7 @@ const go = function (e) {
 const getResource = async function({resource, queryString, page, size, fp, fs}) {
 
     //log.info(resource, queryString, page, size, fp, fs)
-    let url = `${G.zenodeo3Uri}/${resource.toLowerCase()}`;
+    let url = `${O.globals.zenodeo3Uri}/${resource.toLowerCase()}`;
     if (queryString) {
         url += `?${queryString}`;
     }
@@ -475,8 +475,8 @@ const packageFigureCitations = function(records) {
 }
 
 const init = function () {
-    log.level = log[G.loglevel];
-    log.info(`log level is ${G.loglevel}`)
+    log.level = log[O.globals.loglevel];
+    log.info(`log level is ${O.globals.loglevel}`)
 
     // add all the event listeners to various DOM elements
     listen();

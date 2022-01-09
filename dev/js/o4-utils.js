@@ -157,7 +157,7 @@ O.utils = {
                         title       : r.metadata.title,
                         creators    : r.metadata.creators ? r.metadata.creators.map(c => c.name) : [],
                         recId       : r.id,
-                        zenodoRecord: `${G.zenodoUri}/${r.id}`,
+                        zenodoRecord: `${O.globals.zenodoUri}/${r.id}`,
                         description : r.metadata.description,
                         doi         : r.doi,
                         img         : r.links.thumbs ? true : false,
@@ -222,18 +222,18 @@ O.utils = {
                                 if (res.count == 1) {
                                     result.shown = 'it is shown below';
                                 }
-                                else if (res.count > 1 && res.count <= G.pageSize) {
+                                else if (res.count > 1 && res.count <= O.globals.pageSize) {
                                     result.shown = `one to ${result.niceNumbers} are shown below`;
                                 }
                                 else {
-                                    const from = O.utils.niceNumbers(((inputs.page - 1) * G.pageSize) + 1);
-                                    const to = O.utils.niceNumbers(inputs.page * G.pageSize);
+                                    const from = O.utils.niceNumbers(((inputs.page - 1) * O.globals.pageSize) + 1);
+                                    const to = O.utils.niceNumbers(inputs.page * O.globals.pageSize);
                                     result.shown = `${from} to ${to} are shown below`;
                                 }
                                                 
                                 result.figures = _makeLayout(resource, res.records);
 
-                                if (res.count >= G.pageSize) {
+                                if (res.count >= O.globals.pageSize) {
                                     const _prev = new URL(data.item._links._prev);
                                     const _next = new URL(data.item._links._next);
 
@@ -275,7 +275,7 @@ O.utils = {
 
         for (const key in inputs) {
 
-            if (G.zenodeoUriParams[resource].includes(key)) {
+            if (O.globals.zenodeoUriParams[resource].includes(key)) {
                 if (key === 'q') {
                     if (key.length == 32) {
                         if (resource === 'treaments') {
@@ -294,14 +294,14 @@ O.utils = {
                 }
             }
 
-            if (G.browserUriParams[resource].includes(key)) {
+            if (O.globals.browserUriParams[resource].includes(key)) {
                 bparams.push(`${key}=${inputs[key]}`);
             }
             
         }
 
         const zs = zparams.length ? `?${zparams.sort().join('&')}` : '';
-        const z = `${G.zenodeoUri}/${resource}${zs}`;
+        const z = `${O.globals.zenodeoUri}/${resource}${zs}`;
 
         const bs = bparams.length ? `?${bparams.join('&')}` : '';
         const b = `${resource}.html${bs}`;

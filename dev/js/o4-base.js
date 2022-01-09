@@ -24,8 +24,8 @@ O.base = {
     },
 
     init: function() {
-        log.level = log[G.loglevel];
-        log.info(`the log level is ${G.loglevel}`);
+        log.level = log[O.globals.loglevel];
+        log.info(`the log level is ${O.globals.loglevel}`);
 
         // add click events to modal togglers and modal close links
         O.base.addEventHandlers([
@@ -46,7 +46,7 @@ O.base = {
         const {hash, resource, search} = O.base.resourceFromUrl(location);
 
         if (O.closedForMaintenance) {
-            if (G.pseudoResources.includes(resource)) {
+            if (O.globals.pseudoResources.includes(resource)) {
                 O.base.show(resource);
             }
             else {
@@ -81,7 +81,7 @@ O.base = {
                 }
             ]);
 
-            if (G.pseudoResources.includes(resource)) {
+            if (O.globals.pseudoResources.includes(resource)) {
                 O.base.show(resource);
             }
             else {
@@ -94,7 +94,7 @@ O.base = {
                     source: async function(term, suggest) {
                         try { fetch.abort() } catch(e) {}
 
-                        let response = await fetch(`${G.zenodeoUri}/families?q=${term}`);
+                        let response = await fetch(`${O.globals.zenodeoUri}/families?q=${term}`);
 
                         // if HTTP-status is 200-299
                         // get the response body (the method explained below)
@@ -117,7 +117,7 @@ O.base = {
                     O.base.updatePlaceholder(document.querySelector('input[name=resource]:checked').value);
                     O.base.show('index');                
                 }
-                else if (G.resources.includes(resource)) {
+                else if (O.globals.resources.includes(resource)) {
                     
                     if (search) {
                         log.info(`- getting search`);
@@ -238,7 +238,7 @@ O.base = {
     formatSearchCriteria: function(s) {
         const criteria = [];
         for (let k in s) {
-            if (!G.notInSearchCriteria.includes(k)) {
+            if (!O.globals.notInSearchCriteria.includes(k)) {
                 const v = s[k];
 
                 if (k === 'q') {
@@ -282,7 +282,7 @@ O.base = {
         
         // first, close all figcaptions 
         for (let i = 0, j = figcaptions.length; i < j; i++) {
-            figcaptions[i].style.maxHeight = G.closedFigcaptionHeight;
+            figcaptions[i].style.maxHeight = O.globals.closedFigcaptionHeight;
             figcaptions[i].style.overflow = 'hidden';
         }
 
@@ -430,7 +430,7 @@ O.base = {
         // use search to fiil the form
         const s = new URLSearchParams(search);
         for (const [key, value] of s) {
-            if (G.validQueryParams.includes(key)) {
+            if (O.globals.validQueryParams.includes(key)) {
                 const inputs = f.querySelectorAll(`input[name="${key}"]`);
                 for (let i = 0, j = inputs.length; i < j; i++) {
                     const input = inputs[i];
