@@ -1,8 +1,26 @@
-#container {
-    position: relative;
-    height: 100vh;
+html,
+body {
+    height: 100%;
+    margin: 0;
 }
-
+.box {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+.box .row {
+    border: 1px dotted #0313fc;
+}
+.box .row.header {
+    flex: 0 1 auto;
+}
+.box .row.content {
+    flex: 1 1 auto;
+    position: relative;
+}
+.box .row.footer {
+    flex: 0 1 40px;
+}
 #map-target {
     position: absolute;
     top: 0;
@@ -10,8 +28,11 @@
     width: 100%;
     height: 100%;
 }
-
 div.info {
     background-color: white;
     opacity: 0.8;
+    border-radius: 5px;
+    border: 1px solid;
+    padding: 1rem;
+    width: 150px;
 }

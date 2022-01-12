@@ -11,9 +11,11 @@
 
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
-    <title>ocellus^4T</title>
+    <title>ocellus^4M</title>
 
     <link rel="icon" type="image/png" href="../img/ocellus.png">
+
+    <!-- build:css -->
     <link rel="stylesheet" href="css/uglyduck.css">
     <link rel="stylesheet" href="css/o4t-base.css">
     <link rel="stylesheet" href="css/o4t-header.css">
@@ -23,46 +25,8 @@
     <link rel="stylesheet" href="css/o4t-pager.css">
     <link rel="stylesheet" href="css/o4t-treatmentDetails.css">
     <link rel="stylesheet" href="css/o4t-media-queries.css">
-    <style>
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-      }
-      .box {
-        display: flex;
-        flex-flow: column;
-        height: 100%;
-      }
-      .box .row {
-        border: 1px dotted #0313fc;
-      }
-      .box .row.header {
-        flex: 0 1 auto;
-      }
-      .box .row.content {
-        flex: 1 1 auto;
-        position: relative;
-      }
-      .box .row.footer {
-        flex: 0 1 40px;
-      }
-      #map-target {
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          width: 100%;
-          height: 100%;
-      }
-      div.info {
-        background-color: white;
-        opacity: 0.8;
-        border-radius: 5px;
-        border: 1px solid;
-        padding: 1rem;
-        width: 150px;
-      }
-    </style>
+    <link rel="stylesheet" href="css/o4t-map.css">
+    <!-- endbuild -->
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
@@ -117,15 +81,12 @@
     crossorigin=""></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
 <script src="../node_modules/leaflet.heat/dist/leaflet-heat.js"></script>
-<!-- <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script> -->
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 <!-- <script src="//api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js"></script> -->
 <script src="https://unpkg.com/h3-js"></script>
 
 <!-- build:js -->
 <script src="js/o4-globals.js"></script>
-<!-- <script src="js/o4t-ng.js"></script>
-<script src="js/o4t-pager.js"></script> -->
 <script src="js/o4-map.js"></script>
 <!-- endbuild -->
 
