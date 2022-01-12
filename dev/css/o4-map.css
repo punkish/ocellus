@@ -1,0 +1,17 @@
+#container {
+    position: relative;
+    height: 100vh;
+}
+
+#map-target {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+
+div.info {
+    background-color: white;
+    opacity: 0.8;
+}

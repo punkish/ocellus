@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="Ocellus, a Biodiversity Literature Repository (BLR) Explorer">
+    <meta name="version" content="4.0T">
+    <meta name="author" content="Puneet Kishor">
+    <meta name="copyright" content="CC0 Public Domain Dedication">
+    <meta name="date" content="%date%">
+
+    <meta http-equiv="Cache-Control" content="max-age=604800, public">
+
+    <title>ocellus^4T</title>
+
+    <link rel="icon" type="image/png" href="../img/ocellus.png">
+    <link rel="stylesheet" href="css/uglyduck.css">
+    <link rel="stylesheet" href="css/o4t-base.css">
+    <link rel="stylesheet" href="css/o4t-header.css">
+    <link rel="stylesheet" href="css/o4t-form.css">
+    <link rel="stylesheet" href="css/o4t-throbber.css">
+    <link rel="stylesheet" href="css/o4t-grid.css">
+    <link rel="stylesheet" href="css/o4t-pager.css">
+    <link rel="stylesheet" href="css/o4t-treatmentDetails.css">
+    <link rel="stylesheet" href="css/o4t-media-queries.css">
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      .box {
+        display: flex;
+        flex-flow: column;
+        height: 100%;
+      }
+      .box .row {
+        border: 1px dotted #0313fc;
+      }
+      .box .row.header {
+        flex: 0 1 auto;
+      }
+      .box .row.content {
+        flex: 1 1 auto;
+        position: relative;
+      }
+      .box .row.footer {
+        flex: 0 1 40px;
+      }
+      #map-target {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 100%;
+          height: 100%;
+      }
+      div.info {
+        background-color: white;
+        opacity: 0.8;
+        border-radius: 5px;
+        border: 1px solid;
+        padding: 1rem;
+        width: 150px;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css">
+  </head>
+  <body>
+    <div class="box">
+        <header>
+            <div id="brand">4MAPS</div>
+            <div class="title">
+                <h1>ocellus</h1>
+                <small>A Plazi Project</small><br>
+                <a href="about.html" class="modal-open">about</a>
+            </div>
+            
+            <form>
+                <div class="form-wrapper">
+                    <div class="input-wrapper">
+                        <input id="q" type="text" placeholder="search for something" class="clearable" disabled>
+        
+                        <span id="refreshCacheWrapper" aria-label="refresh cache" data-pop="top" data-pop-no-shadow data-pop-arrow>
+                            <input name="refreshCache" id="refreshCache" type="checkbox" value="true" class="unchecked" disabled>
+                        </span>
+        
+                        <!-- <span id="clearQ" class="removeClick" aria-label="clear input" data-pop="top" data-pop-no-shadow data-pop-arrow>&times;</span> -->
+                        <span id="clearQ" class="removeClick" aria-label="clear input" data-pop="top" data-pop-no-shadow data-pop-arrow>clear<br>input</span>
+                    </div>
+                    <button id="go" disabled>go</button>
+                </div>
+                <div id="refreshCache-target" class="hide">This will refresh the cache. You probably don’t want to do this.</div>
+            </form>
+        </header>
+        <div id="throbber" class="nothrob"></div>
+
+      <div class="row content">
+        <div id="map-target"></div>
+      </div>
+
+      <!-- <footer class="row footer">
+        <img src="../img/fish.jpg">
+      </footer> -->
+    </div>
+    <script src="/node_modules/picolog/dist/picolog.min.js"></script>
+<script src="/js/config.js"></script>
+<script src="../libs/lazysizes.min.js"></script>
+
+<!-- Make sure you put this AFTER Leaflet's CSS -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+<script src="../node_modules/leaflet.heat/dist/leaflet-heat.js"></script>
+<!-- <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script> -->
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+<!-- <script src="//api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js"></script> -->
+<script src="https://unpkg.com/h3-js"></script>
+
+<!-- build:js -->
+<script src="js/o4-globals.js"></script>
+<!-- <script src="js/o4t-ng.js"></script>
+<script src="js/o4t-pager.js"></script> -->
+<script src="js/o4-map.js"></script>
+<!-- endbuild -->
+
+<script>
+window.onload = function() {
+    O.map.init()
+}
+</script>
+  </body>
+</html>

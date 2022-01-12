@@ -16,6 +16,7 @@
     "gulp-useref": "^4.0.1",
     "isotope-layout": "^3.0.6",
     "isotope-masonry-horizontal": "^2.0.1",
+    "leaflet.heat": "^0.2.0",
     "picolog": "^1.0.4"
   }
 }
