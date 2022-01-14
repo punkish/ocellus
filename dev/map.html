@@ -8,7 +8,6 @@
     <meta name="author" content="Puneet Kishor">
     <meta name="copyright" content="CC0 Public Domain Dedication">
     <meta name="date" content="%date%">
-
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4M</title>
@@ -25,12 +24,10 @@
     <link rel="stylesheet" href="css/o4t-pager.css">
     <link rel="stylesheet" href="css/o4t-treatmentDetails.css">
     <link rel="stylesheet" href="css/o4t-media-queries.css">
-    <link rel="stylesheet" href="css/o4t-map.css">
+    <link rel="stylesheet" href="css/o4-map.css">
     <!-- endbuild -->
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-    crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css">
   </head>
@@ -66,34 +63,28 @@
       <div class="row content">
         <div id="map-target"></div>
       </div>
-
-      <!-- <footer class="row footer">
-        <img src="../img/fish.jpg">
-      </footer> -->
     </div>
     <script src="/node_modules/picolog/dist/picolog.min.js"></script>
-<script src="/js/config.js"></script>
-<script src="../libs/lazysizes.min.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="../libs/lazysizes.min.js"></script>
 
-<!-- Make sure you put this AFTER Leaflet's CSS -->
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-    crossorigin=""></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
-<script src="../node_modules/leaflet.heat/dist/leaflet-heat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
-<!-- <script src="//api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js"></script> -->
-<script src="https://unpkg.com/h3-js"></script>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <script src="../node_modules/leaflet.heat/dist/leaflet-heat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+    <!-- <script src="//api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js"></script> -->
+    <script src="https://unpkg.com/h3-js"></script>
 
-<!-- build:js -->
-<script src="js/o4-globals.js"></script>
-<script src="js/o4-map.js"></script>
-<!-- endbuild -->
+    <!-- build:js -->
+    <script src="js/o4-globals.js"></script>
+    <script src="js/o4-map.js"></script>
+    <!-- endbuild -->
 
-<script>
-window.onload = function() {
-    O.map.init()
-}
-</script>
+    <script>
+    window.onload = function() {
+        O.map.init()
+    }
+    </script>
   </body>
 </html>
