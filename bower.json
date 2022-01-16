@@ -1,0 +1,20 @@
+{
+  "name": "ocellus",
+  "description": "",
+  "main": "",
+  "authors": [
+    "punkish <punk.kish@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/punkish/ocellus",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "rrose": "^0.2.0"
+  }
+}
