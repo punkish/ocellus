@@ -6,7 +6,7 @@ O.map = {
     map: L.map( 'map-target', {
         center: [0, 0],
         //minZoom: 0,
-        zoom: 7,
+        zoom: 2,
 
         // to fix popups and shift-drag on Safari
         // see https://github.com/Leaflet/Leaflet/issues/7266
@@ -17,7 +17,7 @@ O.map = {
     }),
 
     init: () => {
-        O.map.layers.baselayer = L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        O.map.layers.baselayer = L.tileLayer( 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
             subdomains: ['a','b','c']
         });
@@ -310,30 +310,59 @@ O.map = {
 
             O.map.fixTransmeridian(grid);
 
+            const min = 0;
+            const max = 6600;
+
             const style = function(feature) {
-                const num = feature.properties.density;
-                let fillColor = '';
-
-                if (num >= 5775 &&  num < 6600) { fillColor = '#b10026' }
-                else if (num >= 4950 &&  num < 5775) { fillColor = '#e31a1c' }
-                else if (num >= 4125 &&  num < 4950) { fillColor = '#fc4e2a' }
-                else if (num >= 3300 &&  num < 4125) { fillColor = '#fd8d3c' }
-                else if (num >= 2475 &&  num < 3300) { fillColor = '#feb24c' }
-                else if (num >= 1650 &&  num < 2475) { fillColor = '#fed976' }
-                else if (num >= 825 &&  num < 1650) { fillColor = '#ffeda0' }
-                else if (num >= 0 &&  num < 825) { fillColor = '#ffffcc' }
-
                 return { 
-                    fillColor,
+                    fillColor: O.map.getH3Color(feature.properties.density, min, max).fillColor,
                     color: 'grey',
                     weight: 1,
-                    fillOpacity: 0.3
+                    fillOpacity: 0.6
                 };
             }
 
             O.map.layers.H3 = L.geoJSON(grid, {style, onEachFeature: O.map.onEachFeature});
             O.map.map.addLayer(O.map.layers.H3);
             O.map.makeH3Info();
+            O.map.makeH3Legend(min, max);
+        }
+    },
+
+    H3ColorRamp: [
+        '#ffffcc',
+        '#ffeda0',
+        '#fed976',
+        '#feb24c',
+        '#fd8d3c',
+        '#fc4e2a',
+        '#e31a1c',
+        '#b10026',
+    ],
+
+    getH3Classes: (min, max) => {
+        const range = max - min;
+        const interval = range / O.map.H3ColorRamp.length;
+        let i = 0;
+        const classes = [];
+        
+        for (let from = min; from < max; from = from + interval) {
+            const to = from + interval;
+            const fillColor = O.map.H3ColorRamp[i];
+            classes.push({from, to, fillColor})
+            i++;
+        }
+    
+        return classes;
+    },
+
+    getH3Color: (num, min, max) => {
+        const classes = O.map.getH3Classes(min, max);
+    
+        for (let i = 0, j = classes.length; i < j; i++) {
+            if (num >= classes[i].from && num < classes[i].to) {
+                return classes[i];
+            }
         }
     },
 
@@ -356,10 +385,32 @@ O.map = {
         O.map.layers.H3info.addTo(O.map.map);
     },
 
+    makeH3Legend: (min, max) => {
+        O.map.layers.H3legend = L.control({position: 'bottomright'});
+
+        O.map.layers.H3legend.onAdd = function() {
+            const div = L.DomUtil.create('div', 'info legend');
+            const classes = O.map.getH3Classes(min, max);
+            //const labels = [];
+        
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (let i = 0; i < classes.length; i++) {
+                div.innerHTML += `<div class="interval">
+                    <div class="interval_color_tile interval_color_${i}" style:></div> <div class="interval_text">${classes[i].from}–${classes[i].to}</div>
+                </div>`;
+            }
+        
+            return div;
+        };
+        
+        O.map.layers.H3legend.addTo(O.map.map);
+    },
+
     addLayerH3: () => {
         if (!O.map.map.hasLayer(O.map.layers.H3)) { 
             O.map.map.addLayer(O.map.layers.H3);
             O.map.layers.H3info.addTo(O.map.map);
+            O.map.layers.H3legend.addTo(O.map.map);
         }
     },
 
@@ -367,6 +418,7 @@ O.map = {
         if (O.map.map.hasLayer(O.map.layers.H3)) {
             O.map.map.removeLayer(O.map.layers.H3);
             O.map.layers.H3info.remove();
+            O.map.layers.H3legend.remove();
         }
     },
 
