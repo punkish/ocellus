@@ -1,7 +1,7 @@
 import { $, $$ } from './i-utils.js';
 import * as listeners from './i-listeners.js';
 import { globals } from './i-globals.js';
-log.level = log.INFO;
+log.level = log.ERROR;
 
 const init = () => {
     const loc = new URL(location);
