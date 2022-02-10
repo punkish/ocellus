@@ -150,17 +150,17 @@ const _pager = ({total, subtotal, queryString, page, size, fp, fs, resource, sub
 
 const pager = ({total, subtotal, queryString, page, size, fp, fs, resource, subresource, htmlElement}) => {
 
-    outputResult({
-        total: total,
-        subtotal: subtotal,
-        page: page,
-        size: size,
-        fp: fp,
-        fs: fs,
-        htmlElement: htmlElement,
-        resource: resource,
-        subresource: subresource
-    })
+    // outputResult({
+    //     total: total,
+    //     subtotal: subtotal,
+    //     page: page,
+    //     size: size,
+    //     fp: fp,
+    //     fs: fs,
+    //     htmlElement: htmlElement,
+    //     resource: resource,
+    //     subresource: subresource
+    // })
 
     if (resource === 'treatments' && (total > 0 && subtotal > 0)) {
         _pager({total, subtotal, queryString, page, size, fp, fs, resource, subresource, htmlElement})
@@ -200,32 +200,32 @@ const outputPager = ({page_list, queryString, page, size, fp, fs, htmlElement, r
     htmlElement.querySelector('.pager').innerHTML = pager
 }
 
-const outputResult = ({total, subtotal, page, size, fp, fs, htmlElement, resource, subresource}) => {
+// const outputResult = ({total, subtotal, page, size, fp, fs, htmlElement, resource, subresource}) => {
 
-    let html
+//     let html
 
-    if (total == 0) {
-        html = `No ${resource} found.`
-    }
-    else {
-        if (total > 1 && total < size) {
-            html = `Found ${niceNumbers(total)} ${resource}`
-        }
-        else {
-            html = `Found ${niceNumbers(total)} ${resource}`
-        }
+//     if (total == 0) {
+//         html = `No ${resource} found.`
+//     }
+//     else {
+//         if (total > 1 && total < size) {
+//             html = `Found ${niceNumbers(total)} ${resource}`
+//         }
+//         else {
+//             html = `Found ${niceNumbers(total)} ${resource}`
+//         }
 
-        if (resource === 'treatments' & subtotal == 0) {
-            html += `, but no related ${subresource} found. Please search again.`
-        }
-        else {
-            const p = resource === 'treatments' ? page : fp
-            html += `. Showing results from the ${nth(p)} ${niceNumbers(size)} ${resource} below.`
-        }
-    }
+//         if (resource === 'treatments' & subtotal == 0) {
+//             html += `, but no related ${subresource} found. Please search again.`
+//         }
+//         else {
+//             const p = resource === 'treatments' ? page : fp
+//             html += `. Showing results from the ${nth(p)} ${niceNumbers(size)} ${resource} below.`
+//         }
+//     }
     
-    htmlElement.querySelector('.search-results').innerHTML = html
-}
+//     htmlElement.querySelector('.search-results').innerHTML = html
+// }
 
 
 // const output = (page_list, dest) => {
@@ -283,3 +283,5 @@ const outputResult = ({total, subtotal, page, size, fp, fs, htmlElement, resourc
     
 //     output(page_list, 'term')
 // })
+
+export {pager}

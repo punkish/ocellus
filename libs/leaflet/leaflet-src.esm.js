@@ -2244,8 +2244,8 @@ function get(id) {
 function getStyle(el, style) {
 	var value = el.style[style] || (el.currentStyle && el.currentStyle[style]);
 
-	if ((!value || value === 'auto') && document.defaultView) {
-		var css = document.defaultView.getComputedStyle(el, null);
+	if ((!value || value === 'auto') && document.view) {
+		var css = document.view.getComputedStyle(el, null);
 		value = css ? css[style] : null;
 	}
 	return value === 'auto' ? null : value;

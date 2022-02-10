@@ -10,7 +10,8 @@ O.map = {
 
         // to fix popups and shift-drag on Safari
         // see https://github.com/Leaflet/Leaflet/issues/7266
-        tap: false
+        tap: false,
+        autoPan: false
         // maxZoom: 18,
         // tileSize: 512,
         // zoomOffset: -1
@@ -160,16 +161,16 @@ O.map = {
                 const latlng = new L.LatLng(r.latitude, r.longitude);
                 const marker = L.marker(latlng, {icon: O.map.treatmentIcon});
 
-                const tid = r.treatmentId;
-                const url = `${O.globals.zenodeo3Uri}/treatments?treatmentId=${tid}&cols=httpUri&cols=captionText`;
-                const el = document.createElement('div');
-                el.classList.add("my-class");
-                const html = `<h4 class="popup">${r.treatmentTitle}</h4>`;
-
                 marker.bindPopup(() => {
+                    const tid = r.treatmentId;
+                    const url = `${O.globals.zenodeo3Uri}/treatments?treatmentId=${tid}&cols=httpUri&cols=captionText`;
+                    const el = document.createElement('div');
+                    el.classList.add("my-class");
+                    const html = `<h4 class="popup">${r.treatmentTitle}</h4>`;
+
                     O.map.showMarker(url, tid, el, html);
                     return el;
-                });
+                }, {autoPan: false});
 
                 // const rrose = new L.Rrose({ offset: new L.Point(12,3), closeButton: false, autoPan: false }).setContent(() => {
                 //     let html = `<h4 class="popup">${r.treatmentTitle}</h4>`;

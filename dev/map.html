@@ -35,7 +35,7 @@
   <body>
     <div class="box">
         <header>
-            <div id="brand">4MAPS</div>
+          <div id="brand">MAPS</div>
             <div class="title">
                 <h1>ocellus</h1>
                 <small>A Plazi Project</small><br>
@@ -45,26 +45,27 @@
             <form>
                 <div class="form-wrapper">
                     <div class="input-wrapper">
-                        <input id="q" type="text" placeholder="search for something" class="clearable" disabled>
+                        <input id="q" type="text" placeholder="search for something" class="clearable">
         
                         <span id="refreshCacheWrapper" aria-label="refresh cache" data-pop="top" data-pop-no-shadow data-pop-arrow>
-                            <input name="refreshCache" id="refreshCache" type="checkbox" value="true" class="unchecked" disabled>
+                            <input name="refreshCache" id="refreshCache" type="checkbox" value="true" class="unchecked">
                         </span>
         
                         <!-- <span id="clearQ" class="removeClick" aria-label="clear input" data-pop="top" data-pop-no-shadow data-pop-arrow>&times;</span> -->
                         <span id="clearQ" class="removeClick" aria-label="clear input" data-pop="top" data-pop-no-shadow data-pop-arrow>clear<br>input</span>
                     </div>
-                    <button id="go" disabled>go</button>
+                    <button id="go">go</button>
                 </div>
                 <div id="refreshCache-target" class="hide">This will refresh the cache. You probably don’t want to do this.</div>
             </form>
         </header>
         <div id="throbber" class="nothrob"></div>
 
-      <div class="row content">
-        <div id="map-target"></div>
-      </div>
+        <div class="row content">
+            <div id="map-target"></div>
+        </div>
     </div>
+
     <script src="/node_modules/picolog/dist/picolog.min.js"></script>
     <script src="/js/config.js"></script>
     <script src="../libs/lazysizes.min.js"></script>
@@ -86,9 +87,9 @@
     <!-- endbuild -->
 
     <script>
-    window.onload = function() {
-        O.map.init()
-    }
+      window.onload = function() {
+          O.map.init()
+      }
     </script>
   </body>
 </html>

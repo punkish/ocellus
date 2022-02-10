@@ -19,9 +19,11 @@
         border-right: none; */
     }
     
+    /* 
     .pager div:last-of-type {
-        /* border: 1px solid; */
+        border: 1px solid;
     }
+     */
 }
 
 /* Larger than tablet */
@@ -36,9 +38,9 @@
     }
 
     .modal {
-        width: 50%;
-        left: 25%;
-        top: 5rem;
+        max-width: 70%;
+        left: 15%;
+        top: 120px;
     }
 }
 

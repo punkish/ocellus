@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="Ocellus, an explorer for the Biodiversity Literature Repository (BLR) on Zenodo">
+    <meta name="version" content="4.0">
+    <meta name="author" content="Puneet Kishor">
+    <meta name="copyright" content="CC0 Public Domain Dedication">
+    <meta name="date" content="%date%">
+    <meta http-equiv="Cache-Control" content="max-age=604800, public">
+
+    <title>ocellus^4</title>
+
+    <link rel="icon" type="image/png" href="../img/ocellus.png">
+    <!-- build:css -->
+    <link rel="stylesheet" href="css/uglyduck.css">
+    <link rel="stylesheet" href="css/o-base.css">
+    <link rel="stylesheet" href="css/o4t-header.css">
+    <link rel="stylesheet" href="css/o-form.css">
+    <link rel="stylesheet" href="css/o4t-grid.css">
+    <link rel="stylesheet" href="css/o-throbber.css">
+    <link rel="stylesheet" href="css/o-pager.css">
+    <link rel="stylesheet" href="css/o-map.css">
+    <link rel="stylesheet" href="css/o4t-treatmentDetails.css">
+    <link rel="stylesheet" href="css/o4t-media-queries.css">
+    <!-- endbuild -->
+
+    <link rel="stylesheet" href="/node_modules/@sn8z/pop-pop.css/dist/pop-pop.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css">
+  </head>
+  <body>
+    <header>
+        <div id="brand">4</div>
+        <div class="title">
+            <h1>ocellus</h1>
+            <small>A Plazi Project</small><br>
+            <a href="#about" class="modalToggle">about</a>
+        </div>
+        
+        <form>
+            <div class="form-wrapper">
+                <div class="view-wrapper">
+                    <!-- <fieldset>
+                        <div class="tab" aria-label="search images from Zenodo" data-pop="top" data-pop-no-shadow data-pop-arrow>
+                            <input id="setview_images" name="setview" type="radio" value="images" checked>
+                            <label for="setview_images">images</label>
+                        </div>
+                        <div class="tab" aria-label="search treatments with images" data-pop="top" data-pop-no-shadow data-pop-arrow>
+                            <input id="setview_treatments" name="setview" type="radio" value="treatments">
+                            <label for="setview_treatments">treatments</label>
+                        </div>
+                        <div class="tab" aria-label="search treatments with locations" data-pop="top" data-pop-no-shadow data-pop-arrow>
+                            <input id="setview_map" name="setview" type="radio" value="map">
+                            <label for="setview_map">map</label>
+                        </div>
+                    </fieldset> -->
+                </div>
+                <div class="input-wrapper">
+                    <input id="q" type="text" placeholder="search for something" class="clearable">
+                    <span id="refreshCacheWrapper" aria-label="refresh cache" data-pop="top" data-pop-no-shadow data-pop-arrow><input name="refreshCache" id="refreshCache" type="checkbox" value="true" class="unchecked"></span>
+                    <span id="clear-q" aria-label="clear input" data-pop="top" data-pop-no-shadow data-pop-arrow>&times;</span>
+                </div>
+                <button type="submit" id="go">GO</button>
+            </div>
+            <div id="refreshCacheMsg" class="hidden">This will refresh the cache. You probably don’t want to do this.</div>
+        </form>
+    </header>
+    <div id="throbber" class="nothrob"></div>
+
+    <main>
+        <div id="container">
+            <section id="images" class="hidden noblock">
+
+                <div id="results">
+                    <div id="search-results"></div>
+                    <div id="images-pager" class="pager"></div>
+                </div>
+
+                <!-- this is where the images go -->
+                <div id="grid-images" class="columns"></div>
+            </section>
+
+            <!-- 
+            <section id="treatments" class="hidden noblock">
+                <div id="puff"></div>
+
+                <div id="treatmentDetails" class="lightbox hidden">
+                    <div onClick="closeLightbox()" class="closeBtn">close</div>
+                    <div class="text"></div>
+                </div>
+                
+                <div id="palette"></div>
+                <div id="hidden-figures"></div>
+                
+                <div id="results">
+                    <div id="search-results"></div>
+                    <div id="treatments-pager" class="pager"></div>
+                    <div id="figures-pager" class="pager"></div>
+                </div>
+
+                <div id="grid-treatments" class="columns"></div>
+            </section>
+             
+            
+            <section id="map" class="hidden noblock"></section>
+
+            <section id="about" class="modal hidden noblock">
+                <a href="#" class="close modalToggle">close</a>
+
+                <h1>About Ocellus</h1>
+                
+                <p>Ocellus is a frontend to the Biodiversity Literature Repository (BLR) with <span id="num-of-images" class="numbers"></span> images on <a href="https://zenodo.org" target="_blank">Zenodo</a>, <span id="num-of-treatments" class="numbers"></span> taxonomic treatments in <a href="http://treatmentbank.org" target="_blank">TreatmentBank</a>, and <span id="num-of-citations" class="numbers"></span>  citations on <a href="https://refbank.org" target="_blank">RefBank</a>. Ocellus depends on <a href="http://zenodeo.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API that queries, analyzes and aggregates results from these various repositories via a single, unified interface.</p>
+            
+                <p>Check out our policies on <a href="#privacy" class="modalToggle">privacy</a> and <a href="#ip" class="modalToggle">intellectual property</a>, or <a href="contact.html" class="modalToggle">send us feedback</a>.</p>
+            </section>
+            -->
+
+            <section id="privacy" class="modal hidden noblock">
+                <a href="#" class="close modalToggle">close</a>
+
+                <h1>Privacy</h1>
+        
+                <p>We track nothing. What you do with the data here is not our business. Check out our policy on <a href="#ip" class="modalToggle">intellectual property</a> or <a href="#contact" class="modalToggle">give us feedback</a>.</p>
+            </section>
+
+            <section id="ip" class="modal hidden noblock">
+                <a href="#" class="close modalToggle">close</a>
+        
+                <h1>Intellectual Property</h1>
+            
+                <p>All information we extract or create is dedicated to the public domain under the CC0 Public Domain Dedication. All original content by authors of source article is copyrighted by either the authors or their publishers and is used under its applicable open license. For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country.</p>
+        
+                <p>If you use are our, please be nice and give us credit by citing us as follows: <cite>Biodiversity Literature Repository. 2018-. blah, blah. Plazi.</cite></p>
+        
+                <p>The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up" target="_blank">Internet Archive</a> and has no known copyright restrictions.</p>
+        
+                <p>Check out our <a href="#privacy" class="modalToggle">privacy policy</a> or <a href="#contact" class="modalToggle">give us feedback</a>.</p>
+            </section>
+
+            <section id="contact" class="modal hidden noblock">
+                <a href="#" class="close modalToggle">close</a>
+            
+                <h1>Contact</h1>
+        
+                <p>Biodiversity Literature Repository (BLR aka BioLitRepo) is a production of Plazi in partnership with Pensoft Publishers, Sofia, Bulgaria and Zenodo/CERN, Geneva, with generous support from Arcadia Foundation, UK.</p>
+                
+                <p>Check out our policies on <a href="#privacy" class="modalToggle">privacy</a> and <a href="#ip" class="modalToggle">intellectual property</a>, or contact <a href="mailto:blr@plazi.org">Plazi</a> for more information.</p>
+            </section>
+        </div>
+    </main>
+
+    <footer aria-label="This half-fish is based on the original of a Blunt-Nosed Minnow, Pimephales notatus (Rafinesque) ♂ from the Internet Archive, and has no known copyright restrictions." data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>
+        <img src="/img/fish.jpg">
+    </footer>
+    
+    <script src="/js/config.js"></script>
+    <!-- build:js -->
+    <!-- <script type="module" src="js/o-a.js"></script> -->
+    <!-- <script type="module" src="js/o-b.js"></script> -->
+    <!-- <script type="module" src="js/o.js"></script> -->
+    <!-- endbuild -->
+    <script src="/libs/lazysizes.min.js"></script>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <script src=" https://unpkg.com/h3-js@3.7.2/dist/h3-js.umd.js"></script>
+
+    <script type="module">
+        import { init } from './js/o-main.js';
+        window.onload = () => init();
+    </script>
+  </body>
+</html>

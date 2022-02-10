@@ -1,5 +1,3 @@
-'use strict'
-
 // DOM selectors
 const sel_throbber = document.getElementById('throbber')
 const sel_gridTarget = document.getElementById('grid-target')
@@ -476,7 +474,8 @@ const packageFigureCitations = function(records) {
 
 const init = function () {
     log.level = log[O.globals.loglevel];
-    log.info(`log level is ${O.globals.loglevel}`)
+
+    // log.info(`log level is ${O.globals.loglevel}`)
 
     // add all the event listeners to various DOM elements
     listen();
@@ -597,7 +596,7 @@ const smoke = function (e) {
 }
 
 const revealBrand = function (e) {
-    sel_brand.innerHTML = '4TREATMENTS'
+    sel_brand.innerHTML = 'TREATMENTS'
     flashBrand()
 }
 
