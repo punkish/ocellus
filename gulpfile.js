@@ -9,7 +9,7 @@ const { terser } = require('rollup-plugin-terser');
 function html() {
     console.log('writing html');
     return src('dev/index.html')
-        .pipe(inject.replace('%date%', Date()))
+        .pipe(inject.replace('%date%', new Date()))
         .pipe(htmlreplace({
             'css': '/css/ocellus.min.css'
         }))
@@ -43,7 +43,13 @@ async function build() {
     return bundle.write({
         file: 'js/ocellus.js',
         format: "esm",
-        plugins: [terser()],
+        plugins: [
+            terser({
+                format: {
+                    preamble: `/* generated: ${new Date()} */`
+                }
+            })
+        ]
     });
 }
 

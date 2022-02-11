@@ -11,6 +11,7 @@
     "picolog": "^1.0.4"
   },
   "devDependencies": {
+    "@rollup/plugin-replace": "^3.0.1",
     "rollup": "^2.67.2",
     "rollup-plugin-css-only": "^3.1.0",
     "rollup-plugin-terser": "^7.0.2"
