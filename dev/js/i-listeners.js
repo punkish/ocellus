@@ -43,6 +43,7 @@ const controlDetails = (e) => {
 
 const insertExample = (e) => {
     $('#q').value = e.target.closest('details').querySelector('summary').textContent;
+    $('#go').classList.add('glowing');
 
     const sources = $$('input[name=source');
     sources.forEach(s => {
@@ -81,7 +82,8 @@ const go = (e) => {
     else {
         $('#q').classList.remove('red-placeholder');
         $('#throbber').classList.remove('nothrob');
-
+        $('#go').classList.remove('glowing');
+        
         if (q.indexOf('=') > -1) {
             const sources = $$('input[name=source]');
             sources.forEach(s => {

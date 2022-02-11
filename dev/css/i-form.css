@@ -110,6 +110,21 @@ form {
     background-color: green;
     color: white;
 }
+
+@keyframes glowing {
+    0% {
+        background-color: #2ba805;
+    }
+    50% {
+        background-color: #49e819;
+    }
+    100% {
+        background-color: #2ba805;
+    }
+}
+.glowing {
+    animation: glowing 1300ms infinite;
+}
 /* end Clearable */
 
 #refreshCacheMsg {
