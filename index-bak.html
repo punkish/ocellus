@@ -11,18 +11,18 @@
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
     <title>ocellus^4</title>
     <link rel="icon" type="image/png" href="/img/ocellus.png">
-    <link rel="stylesheet" href="/css/uglyduck.css">
     
     <!-- build:css -->
-    <link rel="stylesheet" href="css/i-base.css">
-    <link rel="stylesheet" href="css/i-header.css">
-    <link rel="stylesheet" href="css/i-form.css">
-    <link rel="stylesheet" href="css/i-grid.css">
-    <link rel="stylesheet" href="css/i-throbber.css">
-    <link rel="stylesheet" href="css/i-pager.css">
-    <link rel="stylesheet" href="css/i-map.css">
-    <link rel="stylesheet" href="css/i-treatmentDetails.css">
-    <link rel="stylesheet" href="css/i-media-queries.css">
+    <link rel="stylesheet" href="/css/uglyduck.css">
+    <link rel="stylesheet" href="/dev/css/i-base.css">
+    <link rel="stylesheet" href="/dev/css/i-header.css">
+    <link rel="stylesheet" href="/dev/css/i-form.css">
+    <link rel="stylesheet" href="/dev/css/i-grid.css">
+    <link rel="stylesheet" href="/dev/css/i-throbber.css">
+    <link rel="stylesheet" href="/dev/css/i-pager.css">
+    <link rel="stylesheet" href="/dev/css/i-map.css">
+    <link rel="stylesheet" href="/dev/css/i-treatmentDetails.css">
+    <link rel="stylesheet" href="/dev/css/i-media-queries.css">
     <!-- endbuild -->
 
     <link rel="stylesheet" href="/node_modules/@sn8z/pop-pop.css/dist/pop-pop.min.css">
@@ -133,16 +133,17 @@
 
     <script src="/js/config.js"></script>
 
+    <!-- build:js -->
+    <!-- endbuild -->
+
     <script src="/node_modules/picolog/dist/picolog.min.js"></script>
     <script src="/libs/lazysizes.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     <script src="https://unpkg.com/h3-js@3.7.2/dist/h3-js.umd.js"></script>
 
-    <!-- build:js -->
-    <!-- endbuild -->
     <script type="module">
-        import { init } from './js/ocellus.js';
+        import { init } from './js/ocellus.min.js';
         window.onload = () => init();
     </script>
   </body>

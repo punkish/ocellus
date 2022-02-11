@@ -25,6 +25,8 @@
 *.log
 *.sql
 *.sqlite
+*.xml
+scratch/
 
 # OS generated files #
 ######################

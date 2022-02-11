@@ -1,6 +1,6 @@
 import { $, $$ } from './i-utils.js';
 import { globals } from './i-globals.js';
-import { case2 } from './i.js';
+import { case2 } from './ocellus.js';
 
 const addListeners = () => {
     log.info('- listeners.addListeners()');
