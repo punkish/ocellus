@@ -307,6 +307,10 @@ z-index: 2;
     font-size: small;
     text-align: left;
 }
+.examples > div {
+    font-style: italic;
+    font-family: serif;
+}
 p.example-desc {
     margin-top: 0px;
     margin-left: 12px;

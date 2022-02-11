@@ -303,6 +303,7 @@ const makeFigure = ({ size, treatmentId, title, zenodoRec, uri, caption }) => {
     
     return `<figure class="figure-${size} ${type}">
     <div class="switches">
+        <div class="treatmentId">${type === 'treatment' ? treatmentId : ''}</div>
         <div class="close"></div>
     </div>
     <picture>
