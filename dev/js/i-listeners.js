@@ -82,19 +82,14 @@ const go = (e) => {
         $('#q').classList.remove('red-placeholder');
         $('#throbber').classList.remove('nothrob');
 
-        // let qs = `q=${q}`;
-        // if (q.indexOf('=') !== -1) {
-        //     qs = q;
-        // }
-
-        // const page = $('#page').value;
-        // const size = $('#size').value;
-
-        // qs = `${qs}&page=${page}&size=${size}`
-
-        // if ($('#refreshCache').checked) {
-        //     qs = `${qs}&refreshCache=true`
-        // }
+        if (q.indexOf('=') > -1) {
+            const sources = $$('input[name=source]');
+            sources.forEach(s => {
+                if (s.value === 'treatments') {
+                    s.checked = true;
+                }
+            })
+        }
 
         case2();
     }

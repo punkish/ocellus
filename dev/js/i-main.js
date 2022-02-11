@@ -39,13 +39,13 @@ const case3 = (qs) => {
     getImages(qs);
 }
 
-const showPage = ({ qs, source }) => {
-    log.info('- showPage(qs)');
-    log.info(`  - qs: ${qs}`);
-    log.info(`  - source: ${source}`);
+// const showPage = ({ qs, source }) => {
+//     log.info('- showPage(qs)');
+//     log.info(`  - qs: ${qs}`);
+//     log.info(`  - source: ${source}`);
 
-    getImages({ qs, source });
-}
+//     getImages({ qs, source });
+// }
 
 // convert form inputs to queryString
 const form2qs = () => {
@@ -122,7 +122,17 @@ const qs2form = (qs) => {
         }
     });
 
-    $('#q').value = q.join('&');
+    const q_str = q.join('&');
+    if (q_str.indexOf('=') > -1) {
+        const sources = $$('input[name=source]');
+        sources.forEach(s => {
+            if (s.value === 'treatments') {
+                s.checked = true;
+            }
+        })
+    }
+
+    $('#q').value = q_str;
 
     //return inputs;
 }
