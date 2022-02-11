@@ -10,9 +10,51 @@ const addListeners = () => {
     $$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
     $('#q').addEventListener('focus', cue);
     $('#clear-q').addEventListener('click', clearCue);
+    $('#help').addEventListener('click', toggleExamples);
+    $$('.example-insert').forEach(el => el.addEventListener('click', insertExample));
+    $('div.examples').addEventListener('toggle', controlDetails, true);
     //$$('input[name=setview').forEach(el => el.addEventListener('click', setView));
     //$$('input[name=source').forEach(el => el.addEventListener('click', setSource));
     $('#brand').addEventListener('click', flashBrand);
+}
+
+const toggleExamples = (e) => {
+    if ($('.examples').classList.contains('hidden')) {
+        $('.examples').classList.remove('hidden');
+    }
+    else {
+        $('.examples').classList.add('hidden');
+    }
+}
+
+// https://gomakethings.com/only-allowing-one-open-dropdown-at-a-time-with-the-details-element/
+const controlDetails = (e) => {
+
+    // Only run if the detail is open
+	if (!e.target.open) return;
+
+	// Get all other open dropdowns and close them
+	var details = $$('details[open]');
+	Array.prototype.forEach.call(details, function (detail) {
+		if (detail === e.target) return;
+		detail.removeAttribute('open');
+	});
+}
+
+const insertExample = (e) => {
+    $('#q').value = e.target.closest('details').querySelector('summary').textContent;
+
+    const sources = $$('input[name=source');
+    sources.forEach(s => {
+        if (s.value === 'treatments') {
+            s.checked = true;
+        }
+    })
+
+    toggleExamples();
+
+    e.stopPropagation();
+    e.preventDefault();
 }
 
 const toggleRefreshCache = (e) => {

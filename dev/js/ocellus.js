@@ -81,7 +81,7 @@ const form2qs = () => {
                 }
                 else {
                     sp.append(key, val);
-                    source = 'treatments';
+                    //source = 'treatments';
                 }
             })
         }
@@ -164,37 +164,29 @@ const getImages = async function(qs) {
 
     const queries = [];
 
+    const imageQuery = {
+        resource: 'images',
+        queryString
+    };
+
+    const treatmentQuery = {
+        resource: 'treatments',
+        queryString: `${queryString}&httpUri=ne()&cols=treatmentTitle&cols=zenodoDep&cols=httpUri&cols=captionText`
+    }
+
     if (source === 'all') {
-        const images = getResource({
-            resource: 'images',
-            queryString
-        });
-
-        const treatments = getResource({
-            resource: 'treatments',
-            queryString: `${queryString}&httpUri=ne()&cols=treatmentTitle&cols=zenodoDep&cols=httpUri&cols=captionText`
-        });
-
-        queries.push(images, treatments);
+        queries.push(
+            getResource(imageQuery), 
+            getResource(treatmentQuery)
+        );
     }
     else if (source === 'Zenodo') {
-        const images = getResource({
-            resource: 'images',
-            queryString
-        });
-
-        queries.push(images);
+        queries.push(getResource(imageQuery));
     }
     else if (source === 'treatments') {
-        const treatments = getResource({
-            resource: 'treatments',
-            queryString: `${queryString}&httpUri=ne()&cols=treatmentTitle&cols=zenodoDep&cols=httpUri&cols=captionText`
-        });
-    
-        queries.push(treatments);
+        queries.push(getResource(treatmentQuery));
     }
     
-    //const sp = new URLSearchParams(qs);
     const page = sp.get('page');
     const size = sp.get('size');
 
@@ -209,8 +201,10 @@ const getImages = async function(qs) {
             };
 
             results.forEach(r => {
-                res.recs.push(...r.recs);
-                res.count += r.count;
+                if (typeof(r) != 'undefined') {
+                    res.recs.push(...r.recs);
+                    res.count += r.count;
+                }
             })
 
             return res;
@@ -346,12 +340,12 @@ const renderPage = ({ figures, qs, count, prev, next }) => {
     // const page = sp.get('page');
     // const size = sp.get('size');
 
-    renderFigures(figures);
-    renderPager(qs, prev, next);
+    renderFigures(figures, qs, prev, next);
+    
     //renderSearchCriteria(qs, count);
 }
 
-const renderFigures = (figures) => {
+const renderFigures = (figures, qs, prev, next) => {
     log.info('- renderFigures()');
     // log.info(`  - page: ${page}`);
     // log.info(`  - size: ${size}`);
@@ -360,7 +354,14 @@ const renderFigures = (figures) => {
     // const to = parseInt(from) + parseInt(size) - 1;
 
     // const figures = globals.results.figures.slice(from, to);
-    $('#grid-images').innerHTML = figures.join('');
+    if (figures.length) {
+        $('#grid-images').innerHTML = figures.join('');
+        renderPager(qs, prev, next);
+    }
+    else {
+        $('#grid-images').innerHTML = '<p class="nada">sorry, no images found</p>';
+    }
+
     $('#throbber').classList.add('nothrob');
     listeners.addListenersToFigcaptions();
 }

@@ -36,13 +36,14 @@ function css() {
 }
 
 async function build() {
-    await rollup({
-        input: 'dev/js/ocellus.js',
-        output: {
-            file: 'js/ocellus.js',
-            format: "esm",
-            plugins: [terser()],
-        }
+    const bundle = await rollup({
+        input: 'dev/js/ocellus.js'
+    });
+
+    return bundle.write({
+        file: 'js/ocellus.js',
+        format: "esm",
+        plugins: [terser()],
     });
 }
 

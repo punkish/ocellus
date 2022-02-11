@@ -9,7 +9,7 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Fri Feb 11 2022 12:50:43 GMT+0100 (Central European Standard Time)">
+    <meta name="date" content="Fri Feb 11 2022 15:18:07 GMT+0100 (Central European Standard Time)">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4</title>
@@ -58,7 +58,19 @@
             <div id="refreshCacheMsg" class="hidden">This will refresh the cache. You probably don’t want to do this.</div>
             <input id="page" type="hidden" value="1">
             <input id="size" type="hidden" value="30">
+            <div id="help">example searches</div>
+            <div class="examples hidden">
+                <details>
+                    <summary>shrimp&publicationDate=since(2020-12-21)</summary>
+                    <p class="example-desc">text contains 'shrimp' in articles published since 2020-12-21 <button class="example-insert">insert</button></p>
+                </details>
+                <details>
+                    <summary>checkinTime=since(2022-02-10)</summary>
+                    <p class="example-desc">images from treatments checked in since yesterday <button class="example-insert">insert</button></p>
+                </details>
+            </div>
         </form>
+        
     </header>
     <div id="throbber" class="nothrob"></div>
 
