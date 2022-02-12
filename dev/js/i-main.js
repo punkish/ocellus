@@ -264,11 +264,12 @@ const getResource = async ({ resource, queryString }) => {
                     })
                 }
                 else if (resource === 'treatments') {
+                    const imageZenodoRec = r.httpUri.split(/\//)[4];
                     images.recs.push({
                         treatmentId: r.treatmentId,
                         title: r.treatmentTitle,
                         zenodoRec: r.zenodoDep,
-                        uri: r.httpUri,
+                        uri: `${globals.zenodoUri}/${imageZenodoRec}/thumb250`,
                         caption: r.captionText
                     })
                 }
