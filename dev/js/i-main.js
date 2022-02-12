@@ -293,17 +293,17 @@ const makeFigure = ({ size, treatmentId, title, zenodoRec, uri, caption }) => {
     // log.info(`  - uri: ${uri}`);
     // log.info(`  - caption: ${caption}`);
 
-    let type = 'I';
+    let treatmentReveal = '';
     let treatmentLink = '';
 
     if (treatmentId) {
-        type = 'T';
+        treatmentReveal = `<div class="treatmentId reveal" data-reveal="${treatmentId}">T</div>`;
         treatmentLink = `<a href="${globals.tbUri}/${treatmentId}" target="_blank">more on TreatmentBank</a>`;
     }
     
-    return `<figure class="figure-${size} ${type}">
+    return `<figure class="figure-${size}">
     <div class="switches">
-        <div class="treatmentId reveal" data-reveal="${treatmentId}">${type}</div>
+        ${treatmentReveal}
         <div class="close"></div>
     </div>
     <picture>

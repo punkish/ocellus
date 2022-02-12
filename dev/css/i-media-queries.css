@@ -9,6 +9,7 @@
         --column-count: 2 !important;
     }
 
+    figure.figure-250 { width: 250px; }
     .range {
         display: inline-block;
     }
