@@ -60,19 +60,22 @@ figure {
 
 figure img {
     width: 100%;
-    /* cursor: pointer; */
 }
-
-/* figure.treatment:before {
-    content: 'T';
-    position: absolute;
+figure .reveal {
     background-color: white;
     color: grey;
     font-family: sans-serif;
+    font-size: 8px;
     padding: 2px 4px;
-    width: 20px;
+    cursor: pointer;
+    border: 1px solid grey;
+    border-radius: 5px;
     text-align: center;
-} */
+}
+figure .reveal:hover {
+    background-color: lightgrey;
+    color: black;
+}
 figure.figure-250 { width: 250px; }
 figure.figure-100 { width: 100px; }
 

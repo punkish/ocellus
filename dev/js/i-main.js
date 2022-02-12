@@ -293,17 +293,17 @@ const makeFigure = ({ size, treatmentId, title, zenodoRec, uri, caption }) => {
     // log.info(`  - uri: ${uri}`);
     // log.info(`  - caption: ${caption}`);
 
-    let type = 'image';
+    let type = 'I';
     let treatmentLink = '';
 
     if (treatmentId) {
-        type = 'treatment';
+        type = 'T';
         treatmentLink = `<a href="${globals.tbUri}/${treatmentId}" target="_blank">more on TreatmentBank</a>`;
     }
     
     return `<figure class="figure-${size} ${type}">
     <div class="switches">
-        <div class="treatmentId">${type === 'treatment' ? treatmentId : ''}</div>
+        <div class="treatmentId reveal" data-reveal="${treatmentId}">${type}</div>
         <div class="close"></div>
     </div>
     <picture>
@@ -357,6 +357,7 @@ const renderFigures = (figures, qs, prev, next) => {
 
     $('#throbber').classList.add('nothrob');
     listeners.addListenersToFigcaptions();
+    listeners.addListenersToFigureTypes();
 }
 
 const renderPager = (qs, prev, next) => {

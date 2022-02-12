@@ -15,7 +15,7 @@ const addListeners = () => {
     $('div.examples').addEventListener('toggle', controlDetails, true);
     //$$('input[name=setview').forEach(el => el.addEventListener('click', setView));
     //$$('input[name=source').forEach(el => el.addEventListener('click', setSource));
-    $('#brand').addEventListener('click', flashBrand);
+    $$('.reveal').forEach(el => el.addEventListener('click', reveal));
 }
 
 const toggleExamples = (e) => {
@@ -83,7 +83,7 @@ const go = (e) => {
         $('#q').classList.remove('red-placeholder');
         $('#throbber').classList.remove('nothrob');
         $('#go').classList.remove('glowing');
-        
+
         if (q.indexOf('=') > -1) {
             const sources = $$('input[name=source]');
             sources.forEach(s => {
@@ -196,9 +196,14 @@ const setSource = (e) => {
 //     history.pushState({}, null, url.href);
 // }
 
-const flashBrand = (e) => {
-    $('#brand').innerHTML = 'MAP • IMAGES • TREATMENTS';
-    setTimeout(() => { $('#brand').innerHTML = '4' }, 2000);
+const reveal = (e) => {
+    //$('#brand').innerHTML = 'MAP • IMAGES • TREATMENTS';
+    const t = e.target.innerText;
+    console.log(t);
+    e.target.innerText = e.target.dataset.reveal;
+    console.log(e.target.innerText);
+    setTimeout(() => { e.target.innerHTML = t }, 2000);
+
     e.stopPropagation();
     e.preventDefault();
 }
@@ -229,4 +234,11 @@ const addListenersToPagerLinks = () => {
     log.info('- listeners.addListenersToPagerLinks()');
 }
 
-export { addListeners, addListenersToFigcaptions, addListenersToPagerLinks };
+const addListenersToFigureTypes = () => {
+    const figtypes = $$('figure .reveal');
+    for (let i = 0, j = figtypes.length; i < j; i++) {
+        figtypes[i].addEventListener('click', reveal);
+    }
+}
+
+export { addListeners, addListenersToFigcaptions, addListenersToPagerLinks, addListenersToFigureTypes };

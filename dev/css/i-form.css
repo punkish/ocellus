@@ -110,7 +110,7 @@ form {
     background-color: green;
     color: white;
 }
-
+/* https://www.w3docs.com/snippets/css/how-to-create-flashing-glowing-button-using-animation-in-css3.html */
 @keyframes glowing {
     0% {
         background-color: #2ba805;
