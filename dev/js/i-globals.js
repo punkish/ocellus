@@ -130,13 +130,6 @@ const globals = {
     zenodoUri: 'https://zenodo.org/record',
     tbUri: 'https://tb.plazi.org/GgServer/html',
 
-    // values for the following are taken from config.js
-    // zenodeoUri   : '',
-    // zenodeo3Uri  : '',
-    // ocellusUri   : '',
-    // ocellus4tUri : '',
-    // ocellus4mUri : '',
-
     /* map related globals */
     // map       : null,
     // mapBounds : null,
