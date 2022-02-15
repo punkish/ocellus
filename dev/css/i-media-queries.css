@@ -9,6 +9,14 @@
         --column-count: 2 !important;
     }
 
+    header {
+        padding: 10px 10px 10px 10px;
+    }
+
+    header div.title {
+        display: block;
+    }
+
     figure.figure-250 { width: 250px; }
     .range {
         display: inline-block;

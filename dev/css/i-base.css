@@ -10,10 +10,11 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    padding-bottom: 0;
+    /* padding-bottom: 0; */
     max-width: unset;
     /* height: 100%; */
     margin: 0;
+    padding: 0px;
 }
 a,
 a:visited {
@@ -87,6 +88,7 @@ div.title a,
 
 footer  {
     margin: 100px auto 0 auto;
+    display: none;
 }
 
 footer img {
