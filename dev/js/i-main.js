@@ -264,12 +264,21 @@ const getResource = async ({ resource, queryString }) => {
                     })
                 }
                 else if (resource === 'treatments') {
-                    const imageZenodoRec = r.httpUri.split(/\//)[4];
+
+                    /*
+                    * Most figures are on Zenodo, but some are on Pensoft,
+                    * so the url has to be adjusted accordingly
+                    */
+                    const id = r.httpUri.split('/')[4];
+                    const uri = r.httpUri.indexOf('zenodo') > -1 ? 
+                        `${globals.zenodoUri}/${id}/thumb250` : 
+                        r.httpUri;
+
                     images.recs.push({
                         treatmentId: r.treatmentId,
                         title: r.treatmentTitle,
                         zenodoRec: r.zenodoDep,
-                        uri: `${globals.zenodoUri}/${imageZenodoRec}/thumb250`,
+                        uri,
                         caption: r.captionText
                     })
                 }
@@ -294,6 +303,12 @@ const makeFigure = ({ size, treatmentId, title, zenodoRec, uri, caption }) => {
     // log.info(`  - uri: ${uri}`);
     // log.info(`  - caption: ${caption}`);
 
+    let zenodoLink = '';
+
+    if (zenodoRec) {
+        zenodoLink = `<a href="${globals.zenodoUri}/${zenodoRec}" target="_blank">more on Zenodo</a><br></br>`;
+    }
+
     let treatmentReveal = '';
     let treatmentLink = '';
 
@@ -315,7 +330,7 @@ const makeFigure = ({ size, treatmentId, title, zenodoRec, uri, caption }) => {
         <div class="closed">
             <b class="figTitle">${title}</b><br>
             ${caption}<br>
-            <a href="${globals.zenodoUri}/${zenodoRec}" target="_blank">more on Zenodo</a><br>
+            ${zenodoLink}
             ${treatmentLink}
         </div>
     </figcaption>
