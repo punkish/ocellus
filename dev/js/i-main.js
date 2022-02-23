@@ -255,11 +255,16 @@ const getResource = async ({ resource, queryString }) => {
 
             records.forEach(r => {
                 if (resource === 'images') {
+                    let thumb = '/img/kein-preview.png';
+                    if ('thumbs' in r.links) {
+                        thumb = r.links.thumbs['250'];
+                    }
+
                     images.recs.push({
                         treatmentId: '',
                         title: r.metadata.title,
                         zenodoRec: r.id,
-                        uri: r.links.thumbs['250'],
+                        uri: thumb,
                         caption: r.metadata.description
                     })
                 }
