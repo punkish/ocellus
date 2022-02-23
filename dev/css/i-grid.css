@@ -19,7 +19,7 @@ table {
     margin: unset;
 }
 
-#grid {
+#grid-images {
     width: calc( ((var(--image-250) + var(--column-gap)) * var(--column-count) - var(--column-gap)) );
     margin: 0 auto;
 }
