@@ -94,3 +94,11 @@ footer  {
 footer img {
     max-width: 280px;
 }
+table.help {
+    font-family: sans-serif;
+    font-size: 10px;
+}
+table.help td, 
+table.help th {
+    border: 1px solid grey;
+}

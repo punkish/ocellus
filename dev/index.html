@@ -55,6 +55,7 @@
                         <label for="item2-state-on">images from Zenodo</label>
                         <label for="item2-state-off">images from treatments</label>
                     </span>
+                    <a href="#help" class="modalToggle">help</a>
                 </div>
                 <div class="input-wrapper">
                     <input id="q" type="text" placeholder="search all images" class="clearable">
@@ -68,7 +69,7 @@
             <div id="refreshCacheMsg" class="hidden">This will refresh the cache. You probably don’t want to do this.</div>
             <input id="page" type="hidden" value="1">
             <input id="size" type="hidden" value="30">
-            <div id="help">example searches</div>
+            <div id="search-help">example searches</div>
             <div class="examples hidden">
                 <div><b>Note:</b> these example queries with extended syntax are currently only possible against treatments</div>
                 <details>
@@ -101,7 +102,48 @@
             </div>
         </section>
 
-        <!-- modals: about, privacy, ip, contact -->
+        <!-- modals: help, about, privacy, ip, contact -->
+        <section id="help" class="modal hidden noblock">
+            <a href="#" class="close modalToggle">close</a>
+    
+            <h1>Help</h1>
+        
+            <p>At its simplest, </p>
+    
+            <table class="help">
+                <thead>
+                    <tr>
+                        <th>form</th>
+                        <th>query string</th>
+                        <th>Zenodo</th>
+                        <th>treatments</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>phylogeny</td>
+                        <td rowspan="2"><code>q=phylogeny</code></td>
+                        <td rowspan="2" colspan="2">FTS phylogeny</td>
+                    </tr>
+                    <tr>
+                        <td>q=phylogeny</td>
+                    </tr>
+                    <tr>
+                        <td>phylogeny&captionText=phylogeny</td>
+                        <td rowspan="3"><code>q=phylogeny&captionText=phylogeny</code></td>
+                        <td rowspan="3">FTS phylogeny</td>
+                        <td rowspan="3">FTS phylogeny & captionText phylogeny</td>
+                    </tr>
+                    <tr>
+                        <td>q=phylogeny&captionText=phylogeny</td>
+                    </tr>
+                    <tr>
+                        <td>captionText=phylogeny&phylogeny</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
         <section id="about" class="modal hidden noblock">
             <a href="#" class="close modalToggle">close</a>
     

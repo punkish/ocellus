@@ -286,7 +286,7 @@ z-index: 2;
 .tristate-switcher > input[type=radio]:checked + input[type=radio] + input[type=radio] + i:before {
     background-color: black;
 }
-#help { 
+#search-help { 
     color: blue;
     text-decoration: underline;
     padding-left: 12px;
@@ -301,7 +301,7 @@ z-index: 2;
     z-index: 999;
     box-shadow: 0 1px 8px 1px rgba(0, 0, 0, 0.3);
 }
-#help,
+#search-help,
 .examples {
     font-family: sans-serif;
     font-size: small;

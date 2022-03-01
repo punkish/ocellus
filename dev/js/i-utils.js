@@ -64,10 +64,6 @@ const smoke = function (e) {
             clearInterval(intervalId)
             t.style.display = 'none'
         }
-
-        // if (sel_hideUnhide.classList.contains("hide")) {
-        //     show(sel_hideUnhide)
-        // }
     }
 
     const xOffset = 24

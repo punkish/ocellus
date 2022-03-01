@@ -21,7 +21,6 @@ const case2 = () => {
 
     const qs = form2qs();
     updateUrl(qs);
-    //showPage({ qs, source });
     getImages(qs);
 }
 
@@ -35,17 +34,8 @@ const case3 = (qs) => {
 
     case1();
     qs2form(qs);
-    //showPage(qs);
     getImages(qs);
 }
-
-// const showPage = ({ qs, source }) => {
-//     log.info('- showPage(qs)');
-//     log.info(`  - qs: ${qs}`);
-//     log.info(`  - source: ${source}`);
-
-//     getImages({ qs, source });
-// }
 
 // convert form inputs to queryString
 const form2qs = () => {
@@ -117,24 +107,21 @@ const qs2form = (qs) => {
             }
         }
         else {
-            const cue = key === 'q' ? val : `${key}=${val}`;
-            q.push(cue);
+            if (val) {
+                if (key === 'q') {
+                    q.push(val);
+                }
+                else {
+                    q.push(`${key}=${val}`);
+                }
+            }
+            else {
+                q.push(key);
+            }
         }
     });
 
-    const q_str = q.join('&');
-    if (q_str.indexOf('=') > -1) {
-        const sources = $$('input[name=source]');
-        sources.forEach(s => {
-            if (s.value === 'treatments') {
-                s.checked = true;
-            }
-        })
-    }
-
-    $('#q').value = q_str;
-
-    //return inputs;
+    $('#q').value = q.join('&');
 }
 
 const updateUrl = (qs) => {
@@ -147,23 +134,31 @@ const updateUrl = (qs) => {
 const getImages = async function(qs) {
     log.info('- getImages(qs)');
     log.info(`  - qs: ${qs}`);
-    //log.info(`  - source: ${source}`);
 
     const sp = new URLSearchParams(qs);
     const source = sp.get('source');
     sp.delete('source');
-    const queryString = sp.toString();
+
+    
+    sp.forEach((val, key) => {
+        if (!val) {
+            sp.set('q', key);
+        }
+    });
+
+    const imageQueryString = `q=${sp.get('q')}`;
+    const treatmentQueryString = sp.toString();
 
     const queries = [];
 
     const imageQuery = {
         resource: 'images',
-        queryString
+        queryString: imageQueryString
     };
 
     const treatmentQuery = {
         resource: 'treatments',
-        queryString: `${queryString}&httpUri=ne()&cols=treatmentTitle&cols=zenodoDep&cols=httpUri&cols=captionText`
+        queryString: `${treatmentQueryString}&httpUri=ne()&cols=treatmentTitle&cols=zenodoDep&cols=httpUri&cols=captionText`
     }
 
     if (source === 'all') {
@@ -218,8 +213,6 @@ const getImages = async function(qs) {
                 uniq[r.uri] = figure;
             });
 
-            //globals.results.figures = Object.values(uniq);
-            //renderPage(qs, results.count, results.prev, results.next);
             renderPage({
                 figures: Object.values(uniq), 
                 qs, 
@@ -355,8 +348,7 @@ const renderPage = ({ figures, qs, count, prev, next }) => {
     // const size = sp.get('size');
 
     renderFigures(figures, qs, prev, next);
-    
-    //renderSearchCriteria(qs, count);
+    renderSearchCriteria(qs, count);
 }
 
 const renderFigures = (figures, qs, prev, next) => {
@@ -364,10 +356,6 @@ const renderFigures = (figures, qs, prev, next) => {
     // log.info(`  - page: ${page}`);
     // log.info(`  - size: ${size}`);
 
-    // const from = (page - 1) * size;
-    // const to = parseInt(from) + parseInt(size) - 1;
-
-    // const figures = globals.results.figures.slice(from, to);
     if (figures.length) {
         $('#grid-images').innerHTML = figures.join('');
         renderPager(qs, prev, next);
@@ -413,6 +401,7 @@ const renderSearchCriteria = (qs, count) => {
     
     searchParams.delete('page');
     searchParams.delete('size');
+    searchParams.delete('source');
     
     searchParams.forEach((v, k) => {
         if (k === 'q') {
@@ -438,10 +427,11 @@ const renderSearchCriteria = (qs, count) => {
 
     /*
     **1107** records found where **hake** is in the text… **19** unique images from the first **30** records are shown below.
-
     **1107** records found where **hake** is in the text… **27** unique images from records **31–60**  are shown below.
     */
-    str = `<span class="crit-count">${count}</span> records found where ${str}… <span class="crit-count">${globals.results.figures.length}</span> unique images from records ${from}–${to} are shown below`;
+   //… <span class="crit-count">${globals.results.figures.length}</span> unique images from records ${from}–${to} are shown below
+   const aboutCount = count - (count % 5);
+   str = `about <span class="crit-count">${aboutCount}</span> records found where ${str}`;
     
     $('#search-criteria').innerHTML = str;
 }

@@ -10,11 +10,9 @@ const addListeners = () => {
     $$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
     $('#q').addEventListener('focus', cue);
     $('#clear-q').addEventListener('click', clearCue);
-    $('#help').addEventListener('click', toggleExamples);
+    $('#search-help').addEventListener('click', toggleExamples);
     $$('.example-insert').forEach(el => el.addEventListener('click', insertExample));
     $('div.examples').addEventListener('toggle', controlDetails, true);
-    //$$('input[name=setview').forEach(el => el.addEventListener('click', setView));
-    //$$('input[name=source').forEach(el => el.addEventListener('click', setSource));
     $$('.reveal').forEach(el => el.addEventListener('click', reveal));
 }
 
@@ -84,15 +82,6 @@ const go = (e) => {
         $('#throbber').classList.remove('nothrob');
         $('#go').classList.remove('glowing');
 
-        if (q.indexOf('=') > -1) {
-            const sources = $$('input[name=source]');
-            sources.forEach(s => {
-                if (s.value === 'treatments') {
-                    s.checked = true;
-                }
-            })
-        }
-
         case2();
     }
     
@@ -112,9 +101,6 @@ const toggleModal = (e) => {
         });
 
         // now, let's open the targeted modal
-        // globals.hiddenClasses.forEach(c => {
-        //     $(t).classList.remove(c)
-        // });
         $(t).classList.remove(...globals.hiddenClasses);
     }
 
@@ -199,9 +185,7 @@ const setSource = (e) => {
 const reveal = (e) => {
     //$('#brand').innerHTML = 'MAP • IMAGES • TREATMENTS';
     const t = e.target.innerText;
-    console.log(t);
     e.target.innerText = e.target.dataset.reveal;
-    console.log(e.target.innerText);
     setTimeout(() => { e.target.innerHTML = t }, 2000);
 
     e.stopPropagation();
