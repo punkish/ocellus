@@ -20,20 +20,23 @@ table {
 }
 
 #grid-images {
-    width: calc( ((var(--image-250) + var(--column-gap)) * var(--column-count) - var(--column-gap)) );
+    width: var(--grid-width);
+    max-width: var(--grid-width);
     margin: 0 auto;
 }
 
 .columns {
+    column-count: var(--column-count);
     -webkit-column-count: var(--column-count);
     -moz-column-count: var(--column-count);
-    column-count: var(--column-count);
-    -webkit-column-width: calc(100% / var(--column-count));
-    -moz-column-width: calc(100% / var(--column-count));
-    column-width: calc(100% / var(--column-count));
+    
+    /* column-width: var(--column-width);
+    -webkit-column-width: var(--column-width);
+    -moz-column-width: var(--column-width); */
+    
+    column-gap: var(--column-gap);
     -moz-column-gap: var(--column-gap);
     -webkit-column-gap: var(--column-gap);
-    column-gap: var(--column-gap);
 }
 
 /* the following prevents the first figure in the 
@@ -76,8 +79,9 @@ figure .reveal:hover {
     background-color: lightgrey;
     color: black;
 }
-figure.figure-250 { width: 300px; }
+figure.figure-250 { width: 250px; }
 figure.figure-100 { width: 100px; }
+figure.figure-50 { width: 50px; }
 
 figcaption {
     font-size: 10px;
@@ -165,6 +169,7 @@ div.close:hover:before {
 }
 #search-criteria {
     margin-bottom: 1rem;
+    padding: 1rem;
 }
 #pager {
     /* border-top: 1px solid silver; */

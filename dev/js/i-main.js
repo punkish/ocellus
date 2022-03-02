@@ -2,6 +2,8 @@ import { $, $$ } from './i-utils.js';
 import { globals } from './i-globals.js';
 import * as listeners from './i-listeners.js';
 
+const figureSize = globals.figureSize;
+
 /*
 case 1: blank canvas
 show the default Ocellus page
@@ -202,7 +204,7 @@ const getImages = async function(qs) {
             const recs = results.recs;
             recs.forEach(r => {
                 const figure = makeFigure({
-                    size: 250, 
+                    figureSize, 
                     treatmentId: r.treatmentId, 
                     title: r.title,
                     zenodoRec: r.zenodoRec, 
@@ -250,7 +252,7 @@ const getResource = async ({ resource, queryString }) => {
                 if (resource === 'images') {
                     let thumb = '/img/kein-preview.png';
                     if ('thumbs' in r.links) {
-                        thumb = r.links.thumbs['250'];
+                        thumb = r.links.thumbs[figureSize];
                     }
 
                     images.recs.push({
@@ -269,7 +271,7 @@ const getResource = async ({ resource, queryString }) => {
                     */
                     const id = r.httpUri.split('/')[4];
                     const uri = r.httpUri.indexOf('zenodo') > -1 ? 
-                        `${globals.zenodoUri}/${id}/thumb250` : 
+                        `${globals.zenodoUri}/${id}/thumb${figureSize}` : 
                         r.httpUri;
 
                     images.recs.push({
@@ -292,9 +294,9 @@ const getResource = async ({ resource, queryString }) => {
     }
 }
 
-const makeFigure = ({ size, treatmentId, title, zenodoRec, uri, caption }) => {
+const makeFigure = ({ figureSize, treatmentId, title, zenodoRec, uri, caption }) => {
     log.info('- makeFigure()');
-    // log.info(`  - size: ${size}`);
+    // log.info(`  - figureSize: ${figureSize}`);
     // log.info(`  - treatmentId: ${treatmentId}`);
     // log.info(`  - title: ${title}`);
     // log.info(`  - zenodoRec: ${zenodoRec}`);
@@ -315,13 +317,13 @@ const makeFigure = ({ size, treatmentId, title, zenodoRec, uri, caption }) => {
         treatmentLink = `<a href="${globals.tbUri}/${treatmentId}" target="_blank">more on TreatmentBank</a>`;
     }
     
-    return `<figure class="figure-${size}">
+    return `<figure class="figure-${figureSize}">
     <div class="switches">
         ${treatmentReveal}
         <div class="close"></div>
     </div>
     <picture>
-        <img src="/img/bug.gif" width="${size}" data-src="${uri}" class="lazyload" data-recid="${treatmentId}">
+        <img src="/img/bug.gif" width="${figureSize}" data-src="${uri}" class="lazyload" data-recid="${treatmentId}">
     </picture>
     <figcaption>
         <a class="transition-050">Zenodo ID: ${zenodoRec}</a>

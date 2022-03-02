@@ -24,15 +24,7 @@
 
     .pager div {
         padding: 5px 7px;
-        /* border: 1px solid;
-        border-right: none; */
     }
-    
-    /* 
-    .pager div:last-of-type {
-        border: 1px solid;
-    }
-     */
 }
 
 /* Larger than tablet */
@@ -72,22 +64,24 @@
     :root {
         --column-count: 7 !important;
     }
-
-/*     .modal {
-        width: 30%;
-    } */
 }
 
 /* Larger than Desktop HD */
 @media (min-width: 2300px) {
     :root {
-        --column-count: 9 !important;
+        --column-count: 8 !important;
     }
-
-/*     .modal {
-        width: 25%;
-    } */
 }
 
 /* Larger than Desktop HD */
-@media (min-width: 2500px) {}
+@media (min-width: 2500px) {
+    :root {
+        --column-count: 9 !important;
+    }
+}
+
+@media (min-width: 3000px) {
+    :root {
+        --column-count: 11 !important;
+    }
+}
