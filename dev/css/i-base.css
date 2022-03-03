@@ -1,14 +1,3 @@
-:root {
-
-    /* settings for the grid */
-    --column-gap: 20px;
-    --image-size: 250px;
-    --column-count: 1;
-    --columns-width: calc( var(--image-size) * var(--column-count) );
-    --gaps-width: calc( (var(--column-count) - 1) * var(--column-gap) );
-    --grid-width: calc( var(--columns-width) + var(--gaps-width) );
-    
-}
 html,
 body {
     display: flex;

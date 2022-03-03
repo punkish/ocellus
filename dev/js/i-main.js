@@ -216,6 +216,7 @@ const getImages = async function(qs) {
             });
 
             renderPage({
+                figureSize,
                 figures: Object.values(uniq), 
                 qs, 
                 count: results.count, 
@@ -316,16 +317,30 @@ const makeFigure = ({ figureSize, treatmentId, title, zenodoRec, uri, caption })
         treatmentReveal = `<div class="treatmentId reveal" data-reveal="${treatmentId}">T</div>`;
         treatmentLink = `<a href="${globals.tbUri}/${treatmentId}" target="_blank">more on TreatmentBank</a>`;
     }
+
+    const onerror = `this.onerror=null; setTimeout(() => { this.src='${uri}' }, 1000);`;
+    const img = `<img src="/img/bug.gif" width="${figureSize}" data-src="${uri}" class="lazyload" data-recid="${treatmentId}" onerror="${onerror}">`
+    
+    let imageLink = '';
+    if (treatmentLink) {
+        imageLink = `<a href="${globals.tbUri}/${treatmentId}" target="_blank">${img}</a>`;
+    }
+    else if (zenodoLink) {
+        imageLink = `<a href="${globals.zenodoUri}/${zenodoRec}" target="_blank">${img}</a>`;
+    }
+
+    let figcaptionClass = 'noblock';
+    if (figureSize === 250) {
+        figcaptionClass = 'visible';
+    }
     
     return `<figure class="figure-${figureSize}">
     <div class="switches">
         ${treatmentReveal}
         <div class="close"></div>
     </div>
-    <picture>
-        <img src="/img/bug.gif" width="${figureSize}" data-src="${uri}" class="lazyload" data-recid="${treatmentId}">
-    </picture>
-    <figcaption>
+    ${imageLink}
+    <figcaption class="${figcaptionClass}">
         <a class="transition-050">Zenodo ID: ${zenodoRec}</a>
         <div class="closed">
             <b class="figTitle">${title}</b><br>
@@ -337,17 +352,16 @@ const makeFigure = ({ figureSize, treatmentId, title, zenodoRec, uri, caption })
 </figure>`
 }
 
-const renderPage = ({ figures, qs, count, prev, next }) => {
+const renderPage = ({ figureSize, figures, qs, count, prev, next }) => {
     log.info('- renderPage()');
+    log.info(`  - figureSize: ${figureSize}px`);
     log.info(`  - figures: ${figures.length} figures`);
     log.info(`  - qs: ${qs}`);
     log.info(`  - count: ${count}`);
     log.info(`  - prev: ${prev}`);
     log.info(`  - next: ${next}`);
 
-    // const sp = new URLSearchParams(qs);
-    // const page = sp.get('page');
-    // const size = sp.get('size');
+    $('#grid-images').classList.add(`columns-${figureSize}`);
 
     renderFigures(figures, qs, prev, next);
     renderSearchCriteria(qs, count);
