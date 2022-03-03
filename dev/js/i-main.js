@@ -2,7 +2,7 @@ import { $, $$ } from './i-utils.js';
 import { globals } from './i-globals.js';
 import * as listeners from './i-listeners.js';
 
-const figureSize = globals.figureSize;
+let figureSize = globals.figureSize;
 
 /*
 case 1: blank canvas
@@ -91,7 +91,14 @@ const qs2form = (qs) => {
     // we don't want 'refreshCache' in bookmarked queries
     sp.delete('refreshCache');
 
-    const notq = ['source', 'page', 'size'];
+    if (sp.has('grid')) {
+        const grid = sp.get('grid');
+        if (grid === 'small') {
+            figureSize = 100;
+        }
+    }
+
+    const notq = ['source', 'page', 'size', 'grid'];
 
     let q = [];
     sp.forEach((val, key) => {
@@ -140,8 +147,8 @@ const getImages = async function(qs) {
     const sp = new URLSearchParams(qs);
     const source = sp.get('source');
     sp.delete('source');
+    sp.delete('grid');
 
-    
     sp.forEach((val, key) => {
         if (!val) {
             sp.set('q', key);

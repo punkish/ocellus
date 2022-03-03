@@ -7,7 +7,7 @@ const globals = {
     fpage       : 1,
     fsize       : 30,
     refreshCache: false,
-    figureSize  : 100,
+    figureSize  : 250,
 
     //view : 'images',
     views : {
