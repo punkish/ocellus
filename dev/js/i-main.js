@@ -425,6 +425,7 @@ const renderSearchCriteria = (qs, count) => {
     searchParams.delete('page');
     searchParams.delete('size');
     searchParams.delete('source');
+    searchParams.delete('grid');
     
     searchParams.forEach((v, k) => {
         if (k === 'q') {
