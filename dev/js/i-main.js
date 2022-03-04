@@ -111,9 +111,9 @@ const qs2form = (qs) => {
                     }
                 })
             }
-            else {
-                $(`#${key}`).value = val;
-            }
+            // else {
+            //     $(`#${key}`).value = val;
+            // }
         }
         else {
             if (val) {
