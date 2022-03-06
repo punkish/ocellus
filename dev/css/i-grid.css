@@ -7,7 +7,7 @@ table {
     /* settings for the grid */
     --column-count: 1;
     --column-gap: 20px;
-    --image-size: 250px;
+    --image-size: 300px;
     --columns-width: calc( var(--image-size) * var(--column-count) );
     --gaps-width: calc( (var(--column-count) - 1) * var(--column-gap) );
     --grid-width: calc( var(--columns-width) + var(--gaps-width) );
@@ -118,7 +118,7 @@ figure .reveal:hover {
 }
 
 figure.figure-250 { 
-    width: 250px; 
+    width: var(--image-size); 
     margin: 0 auto 20px auto;
 }
 figure.figure-100 { 

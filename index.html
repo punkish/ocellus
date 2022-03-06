@@ -9,7 +9,7 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Fri Mar 04 2022 21:06:14 GMT+0100 (Central European Standard Time)">
+    <meta name="date" content="Sun Mar 06 2022 22:23:26 GMT+0100 (Central European Standard Time)">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4</title>
@@ -17,7 +17,7 @@
     <link rel="icon" type="image/png" href="/img/ocellus.png">
 
     <link rel="stylesheet" href="/css/uglyduck.css">
-    <link rel="stylesheet" href="/css/ocellus-1646424374009.css">
+    <link rel="stylesheet" href="/css/ocellus-1646601806060.css">
     <link rel="stylesheet" href="/node_modules/@sn8z/pop-pop.css/dist/pop-pop.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
@@ -45,7 +45,7 @@
                         <label for="item2-state-on">images from Zenodo</label>
                         <label for="item2-state-off">images from treatments</label>
                     </span>
-                    <a href="#help" class="modalToggle">help</a>
+                    <!-- <a href="#help" class="modalToggle">help</a> -->
                 </div>
                 <div class="input-wrapper">
                     <input id="q" type="text" placeholder="search all images" class="clearable">
@@ -60,7 +60,8 @@
             
             <div id="search-help">example searches</div>
             <div class="examples hidden">
-                <div><b>Note:</b> these example queries with extended syntax are currently only possible against treatments</div>
+                <p><em><b>Note:</b> these example queries with extended syntax are currently only possible against treatments.</em></p>
+    
                 <details>
                     <summary>shrimp&publicationDate=since(2020-12-21)</summary>
                     <p class="example-desc">text contains 'shrimp' in articles published since 2020-12-21 <button class="example-insert">try this search</button></p>
@@ -92,7 +93,7 @@
         </section>
 
         <!-- modals: help, about, privacy, ip, contact -->
-        <section id="help" class="modal hidden noblock">
+        <!-- <section id="help" class="modal hidden noblock">
             <a href="#" class="close modalToggle">close</a>
     
             <h1>Help</h1>
@@ -131,7 +132,7 @@
                     </tr>
                 </tbody>
             </table>
-        </section>
+        </section> -->
 
         <section id="about" class="modal hidden noblock">
             <a href="#" class="close modalToggle">close</a>
@@ -188,7 +189,7 @@
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     <script src="https://unpkg.com/h3-js@3.7.2/dist/h3-js.umd.js"></script>
     <script type="module">
-        import { init } from './js/ocellus-1646424374009.js';
+        import { init } from './js/ocellus-1646601806060.js';
         window.onload = () => init();
     </script>
   </body>

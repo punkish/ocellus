@@ -1,11 +1,10 @@
 /* Mobile first queries */
 
 /* Larger than mobile */
-@media (min-width: 400px) {
+@media only screen and (min-width: 400px) {
     .columns-50 {
         --column-count: 6 !important;
     }
-
     .columns-100 {
         --column-count: 3 !important;
     }
@@ -16,13 +15,16 @@
     .columns-50 {
         --column-count: 9 !important;
     }
-
     .columns-100 {
         --column-count: 5 !important;
     }
-
     .columns-250 {
+        --image-size: 250px;
         --column-count: 2 !important;
+    }
+    figure.figure-250 { 
+        /* width: 250px;  */
+        margin: 0 auto 20px auto;
     }
 
     header {
