@@ -111,9 +111,6 @@ const qs2form = (qs) => {
                     }
                 })
             }
-            // else {
-            //     $(`#${key}`).value = val;
-            // }
         }
         else {
             if (val) {
@@ -146,17 +143,96 @@ const getImages = async function(qs) {
 
     const sp = new URLSearchParams(qs);
     const source = sp.get('source');
-    sp.delete('source');
-    sp.delete('grid');
 
-    sp.forEach((val, key) => {
-        if (!val) {
-            sp.set('q', key);
+    // we don't need the following keys in the search
+    const notsp = [ 'source', 'grid' ];
+    notsp.forEach(n => sp.delete(n));
+
+    // 
+    // a qs can look like so
+    //
+    // phylogeny&keyword=plantae
+    //
+    // in the above, 'phylogeny' is a key with 
+    // no val, so we will use that as 'q'
+    sp.forEach((v, k) => {
+        if (!v) { 
+            sp.set('q', k); 
+            sp.delete(k) 
         }
     });
 
-    const imageQueryString = `q=${sp.get('q')}`;
-    const treatmentQueryString = sp.toString();
+    // make copies of the searchparams, one for images
+    // and another for treatments
+    const sp_i = new URLSearchParams(sp.toString());
+    const sp_t = new URLSearchParams(sp.toString());
+    
+    const validZenodo = [
+        'id',
+        'subtype',
+        'communities',
+        'q',
+        'creator',
+        'title',
+        'keywords'
+    ];
+
+    sp_i.forEach((v, k) => {
+        if (!validZenodo.includes(k)) {
+            sp_i.delete(k);
+        }
+    })
+
+    const validZenodeo = [
+        'treatmentId',
+        'treatmentTitle',
+        'treatmentVersion',
+        'treatmentDOI',
+        'treatmentLSID',
+        'zenodoDep',
+        'zoobankId',
+        'articleId',
+        'articleTitle',
+        'articleAuthor',
+        'articleDOI',
+        'publicationDate',
+        'journalTitle',
+        'journalYear',
+        'journalVolume',
+        'journalIssue',
+        'pages',
+        'authorityName',
+        'authorityYear',
+        'kingdom',
+        'phylum',
+        'order',
+        'family',
+        'genus',
+        'species',
+        'status',
+        'taxonomicNameLabel',
+        'rank',
+        'geolocation',
+        'isOnLand',
+        'validGeo',
+        'collectionCode',
+        'q',
+        'updateTime',
+        'checkinTime',
+        'httpUri',
+        'captionText'
+    ];
+
+    sp_t.forEach((v, k) => {
+        
+        if (!validZenodeo.includes(k)) {
+            sp_t.delete(k);
+        }
+    })
+
+    const imageQueryString = sp_i.toString();
+    const treatmentQueryString = sp_t.toString();
+    console.log(imageQueryString, treatmentQueryString);
 
     const queries = [];
 
