@@ -232,7 +232,6 @@ const getImages = async function(qs) {
 
     const imageQueryString = sp_i.toString();
     const treatmentQueryString = sp_t.toString();
-    console.log(imageQueryString, treatmentQueryString);
 
     const queries = [];
 

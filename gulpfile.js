@@ -6,6 +6,8 @@ const concat = require('gulp-concat');
 const { rollup } = require('rollup');
 const { terser } = require('rollup-plugin-terser');
 const rm = require('gulp-rm');
+
+// https://stackoverflow.com/questions/36188219/add-commit-and-push-at-once-using-gulp-git
 const argv = require('yargs').argv;
 const git = require('gulp-git');
 
@@ -111,4 +113,4 @@ async function gitpush (){
 
 // exports.default = series(cleanup, js, parallel(css, html));
 
-exports.default = series(cleanup, parallel(css, js, html), gitadd, gitcommit, gitpush);
+exports.default = series(cleanup, parallel(css, js, html));
