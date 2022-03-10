@@ -275,6 +275,8 @@ const getImages = async function(qs) {
                 if (typeof(r) != 'undefined') {
                     res.recs.push(...r.recs);
                     res.count += r.count;
+
+                    res.cacheHit = r.cacheHit;
                 }
             })
 
@@ -303,7 +305,8 @@ const getImages = async function(qs) {
                 qs, 
                 count: results.count, 
                 prev: results.prev, 
-                next: results.next
+                next: results.next,
+                cacheHit: results.cacheHit
             });
         })
 }
@@ -325,7 +328,8 @@ const getResource = async ({ resource, queryString }) => {
             count: 0,
             recs: [],
             prev: '',
-            next: ''
+            next: '',
+            cacheHit: json.cacheHit || false
         };
 
         if (records) {
@@ -434,7 +438,7 @@ const makeFigure = ({ figureSize, treatmentId, title, zenodoRec, uri, caption })
 </figure>`
 }
 
-const renderPage = ({ figureSize, figures, qs, count, prev, next }) => {
+const renderPage = ({ figureSize, figures, qs, count, prev, next, cacheHit }) => {
     log.info('- renderPage()');
     log.info(`  - figureSize: ${figureSize}px`);
     log.info(`  - figures: ${figures.length} figures`);
@@ -446,7 +450,7 @@ const renderPage = ({ figureSize, figures, qs, count, prev, next }) => {
     $('#grid-images').classList.add(`columns-${figureSize}`);
 
     renderFigures(figures, qs, prev, next);
-    renderSearchCriteria(qs, count);
+    renderSearchCriteria(qs, count, cacheHit);
 }
 
 const renderFigures = (figures, qs, prev, next) => {
@@ -481,7 +485,7 @@ const renderPager = (qs, prev, next) => {
     listeners.addListenersToPagerLinks();
 }
 
-const renderSearchCriteria = (qs, count) => {
+const renderSearchCriteria = (qs, count, cacheHit) => {
     log.info('- renderSearchCriteria(qs, count)');
     log.info(`  - qs: ${qs}`);
     log.info(`  - count: ${count}`);
@@ -531,6 +535,7 @@ const renderSearchCriteria = (qs, count) => {
    //… <span class="crit-count">${globals.results.figures.length}</span> unique images from records ${from}–${to} are shown below
    const aboutCount = count - (count % 5);
    str = `about <span class="crit-count">${aboutCount}</span> records found where ${str}`;
+   str += cacheHit ? '💥' : '';
     
     $('#search-criteria').innerHTML = str;
 }
