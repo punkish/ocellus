@@ -532,10 +532,10 @@ const renderSearchCriteria = (qs, count, cacheHit) => {
     **1107** records found where **hake** is in the text… **19** unique images from the first **30** records are shown below.
     **1107** records found where **hake** is in the text… **27** unique images from records **31–60**  are shown below.
     */
-   //… <span class="crit-count">${globals.results.figures.length}</span> unique images from records ${from}–${to} are shown below
-   const aboutCount = count - (count % 5);
-   str = `about <span class="crit-count">${aboutCount}</span> records found where ${str}`;
-   str += cacheHit ? '💥' : '';
+    //… <span class="crit-count">${globals.results.figures.length}</span> unique images from records ${from}–${to} are shown below
+    const aboutCount = count - (count % 5);
+    str = `about <span class="crit-count">${aboutCount}</span> records found where ${str}`;
+    str += cacheHit ? '<span aria-label="cache hit" data-pop="top" data-pop-no-shadow data-pop-arrow>💥</span>' : '';
     
     $('#search-criteria').innerHTML = str;
 }
