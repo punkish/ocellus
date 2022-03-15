@@ -220,11 +220,13 @@ const getImages = async function(qs) {
         'updateTime',
         'checkinTime',
         'httpUri',
-        'captionText'
+        'captionText',
+        'refreshCache',
+        'page',
+        'size'
     ];
 
     sp_t.forEach((v, k) => {
-        
         if (!validZenodeo.includes(k)) {
             sp_t.delete(k);
         }
@@ -490,6 +492,10 @@ const renderSearchCriteria = (qs, count, cacheHit) => {
     log.info(`  - qs: ${qs}`);
     log.info(`  - count: ${count}`);
 
+    if (!count) {
+        return;
+    }
+    
     const searchParams = new URLSearchParams(qs);
     const page = searchParams.get('page');
     const size = searchParams.get('size');

@@ -62,7 +62,7 @@ div.title a,
 
 footer  {
     margin: 100px auto 0 auto;
-    display: none;
+    /* display: none; */
 }
 
 footer img {
