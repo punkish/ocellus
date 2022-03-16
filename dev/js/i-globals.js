@@ -77,38 +77,65 @@ const globals = {
     resources       : ['treatments', 'citations', 'images'],
     pseudoResources : ['about', 'ip', 'contact', 'privacy'],
 
-    // the following are the valid query params
-    validQueryParams : [
-        'communities', 
-        'view', 
-        'page', 
-        'size', 
+    // the following params don't go in the q field
+    notq: ['source', 'page', 'size', 'grid'],
+
+    // the following are the valid query params for Zenodo
+    validZenodo: [
+        'id',
+        'subtype',
+        'communities',
         'q',
-        //'refreshCache'
+        'creator',
+        'title',
+        'keywords'
     ],
 
-    // the following params don't go in the q field
-    not_q : [
-        'view',
+    // the following are the valid query params for Zenodeo
+    validZenodeo: [
+        'treatmentId',
+        'treatmentTitle',
+        'treatmentVersion',
+        'treatmentDOI',
+        'treatmentLSID',
+        'zenodoDep',
+        'zoobankId',
+        'articleId',
+        'articleTitle',
+        'articleAuthor',
+        'articleDOI',
+        'publicationDate',
+        'journalTitle',
+        'journalYear',
+        'journalVolume',
+        'journalIssue',
+        'pages',
+        'authorityName',
+        'authorityYear',
+        'kingdom',
+        'phylum',
+        'order',
+        'family',
+        'genus',
+        'species',
+        'status',
+        'taxonomicNameLabel',
+        'rank',
+        'geolocation',
+        'isOnLand',
+        'validGeo',
+        'collectionCode',
+        'q',
+        'updateTime',
+        'checkinTime',
+        'httpUri',
+        'captionText',
         'refreshCache',
-        'go'
+        'page',
+        'size'
     ],
 
     hiddenClasses: ['hidden', 'noblock'],
-
-    // valid params for zenodeo uri
-    // zenodeoUriParams : {
-    //     images: [ 'q', 'size', 'page', 'communities', 'refreshCache' ],
-    //     treatments: [ 'q', 'size', 'page', 'refreshCache' ],
-    //     citations: [ 'q', 'size', 'page', 'refreshCache' ]
-    // },
-
-    // valid params for browser uri
-    // browserUriParams : {
-    //     images: [ 'q', 'size', 'page', 'communities' ],
-    //     treatments: [ 'q', 'size', 'page' ],
-    //     citations: [ 'q', 'size', 'page' ]
-    // },
 
     /*
     * the following input params are ignored while creating the 
@@ -123,7 +150,9 @@ const globals = {
         'size', 
         'page',
         'reset',
-        'submit'
+        'submit',
+        'source',
+        'grid'
     ],
 
     closedFigcaptionHeight : '30px',
@@ -169,4 +198,4 @@ const globals = {
     sep_position2 : 6,
 };
 
-export {globals}
+export { globals }

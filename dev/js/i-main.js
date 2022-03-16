@@ -5,8 +5,8 @@ import * as listeners from './i-listeners.js';
 let figureSize = globals.figureSize;
 
 /*
-case 1: blank canvas
-show the default Ocellus page
+    case 1: blank canvas
+    show the default Ocellus page
 */
 const case1 = () => {
     log.info('case1()');
@@ -15,8 +15,8 @@ const case1 = () => {
 }
 
 /*
-case 2: click on [go] button
-get query results and render the page
+    case 2: click on [go] button
+    get query results and render the page
 */
 const case2 = () => {
     log.info('case2()');
@@ -27,8 +27,9 @@ const case2 = () => {
 }
 
 /*
-case 3: load page from bookmark
-fill the form, get query results and render the page
+    case 3: load page from bookmark
+    fill the form, get query results and 
+    render the page
 */
 const case3 = (qs) => {
     log.info('case3(qs)');
@@ -98,11 +99,9 @@ const qs2form = (qs) => {
         }
     }
 
-    const notq = ['source', 'page', 'size', 'grid'];
-
     let q = [];
     sp.forEach((val, key) => {
-        if (notq.includes(key)) {
+        if (globals.notq.includes(key)) {
             if (key === 'source') {
                 const sources = $$('input[name=source]');
                 sources.forEach(s => {
@@ -148,13 +147,14 @@ const getImages = async function(qs) {
     const notsp = [ 'source', 'grid' ];
     notsp.forEach(n => sp.delete(n));
 
-    // 
-    // a qs can look like so
-    //
-    // phylogeny&keyword=plantae
-    //
-    // in the above, 'phylogeny' is a key with 
-    // no val, so we will use that as 'q'
+    /*
+        a qs can look like so
+
+        `phylogeny&keyword=plantae`
+
+        in the above, 'phylogeny' is a key with 
+        no val, so we will use that as 'q'
+    */
     sp.forEach((v, k) => {
         if (!v) { 
             sp.set('q', k); 
@@ -162,72 +162,21 @@ const getImages = async function(qs) {
         }
     });
 
-    // make copies of the searchparams, one for images
-    // and another for treatments
+    /*
+        make copies of the searchparams, one for images
+        and another for treatments
+    */
     const sp_i = new URLSearchParams(sp.toString());
     const sp_t = new URLSearchParams(sp.toString());
-    
-    const validZenodo = [
-        'id',
-        'subtype',
-        'communities',
-        'q',
-        'creator',
-        'title',
-        'keywords'
-    ];
 
     sp_i.forEach((v, k) => {
-        if (!validZenodo.includes(k)) {
+        if (!globals.validZenodo.includes(k)) {
             sp_i.delete(k);
         }
     })
 
-    const validZenodeo = [
-        'treatmentId',
-        'treatmentTitle',
-        'treatmentVersion',
-        'treatmentDOI',
-        'treatmentLSID',
-        'zenodoDep',
-        'zoobankId',
-        'articleId',
-        'articleTitle',
-        'articleAuthor',
-        'articleDOI',
-        'publicationDate',
-        'journalTitle',
-        'journalYear',
-        'journalVolume',
-        'journalIssue',
-        'pages',
-        'authorityName',
-        'authorityYear',
-        'kingdom',
-        'phylum',
-        'order',
-        'family',
-        'genus',
-        'species',
-        'status',
-        'taxonomicNameLabel',
-        'rank',
-        'geolocation',
-        'isOnLand',
-        'validGeo',
-        'collectionCode',
-        'q',
-        'updateTime',
-        'checkinTime',
-        'httpUri',
-        'captionText',
-        'refreshCache',
-        'page',
-        'size'
-    ];
-
     sp_t.forEach((v, k) => {
-        if (!validZenodeo.includes(k)) {
+        if (!globals.validZenodeo.includes(k)) {
             sp_t.delete(k);
         }
     })
@@ -355,8 +304,8 @@ const getResource = async ({ resource, queryString }) => {
                 else if (resource === 'treatments') {
 
                     /*
-                    * Most figures are on Zenodo, but some are on Pensoft,
-                    * so the url has to be adjusted accordingly
+                        Most figures are on Zenodo, but some are on Pensoft,
+                        so the url has to be adjusted accordingly
                     */
                     const id = r.httpUri.split('/')[4];
                     const uri = r.httpUri.indexOf('zenodo') > -1 ? 
@@ -384,14 +333,6 @@ const getResource = async ({ resource, queryString }) => {
 }
 
 const makeFigure = ({ figureSize, treatmentId, title, zenodoRec, uri, caption }) => {
-    log.info('- makeFigure()');
-    // log.info(`  - figureSize: ${figureSize}`);
-    // log.info(`  - treatmentId: ${treatmentId}`);
-    // log.info(`  - title: ${title}`);
-    // log.info(`  - zenodoRec: ${zenodoRec}`);
-    // log.info(`  - uri: ${uri}`);
-    // log.info(`  - caption: ${caption}`);
-
     let zenodoLink = '';
 
     if (zenodoRec) {
@@ -422,7 +363,7 @@ const makeFigure = ({ figureSize, treatmentId, title, zenodoRec, uri, caption })
         figcaptionClass = 'visible';
     }
     
-    return `<figure class="figure-${figureSize}">
+    return `<figure class="figure-${figureSize} ${treatmentId ? 'tb' : ''}">
     <div class="switches">
         ${treatmentReveal}
         <div class="close"></div>
@@ -457,8 +398,6 @@ const renderPage = ({ figureSize, figures, qs, count, prev, next, cacheHit }) =>
 
 const renderFigures = (figures, qs, prev, next) => {
     log.info('- renderFigures()');
-    // log.info(`  - page: ${page}`);
-    // log.info(`  - size: ${size}`);
 
     if (figures.length) {
         $('#grid-images').innerHTML = figures.join('');
@@ -495,7 +434,7 @@ const renderSearchCriteria = (qs, count, cacheHit) => {
     if (!count) {
         return;
     }
-    
+
     const searchParams = new URLSearchParams(qs);
     const page = searchParams.get('page');
     const size = searchParams.get('size');
