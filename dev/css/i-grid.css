@@ -81,7 +81,7 @@ table {
 figure {
     position: relative;
     height: auto;
-    border: 1px solid;
+    border: 1px solid lightgrey;
     padding: 0;
     opacity: 1;
 
@@ -91,7 +91,9 @@ figure {
     break-inside: avoid-column;
     -webkit-column-break-inside: avoid;
 }
-
+figure.tb {
+    
+}
 figure img {
     width: 100%;
 }
@@ -124,6 +126,14 @@ figure.figure-250 {
 figure.figure-100 { 
     width: 100px; 
     margin: 0 auto 10px auto;
+}
+figure.figure-100.tb { 
+    width: 100px; 
+    margin: 0 auto 10px auto;
+    border: 1px solid black;
+}
+figure.figure-100.tb .reveal { 
+    display: none;
 }
 figure.figure-50 { 
     width: 50px; 

@@ -10,7 +10,6 @@ let figureSize = globals.figureSize;
 */
 const case1 = () => {
     log.info('case1()');
-
     listeners.addListeners();
 }
 
@@ -20,7 +19,6 @@ const case1 = () => {
 */
 const case2 = () => {
     log.info('case2()');
-
     const qs = form2qs();
     updateUrl(qs);
     getImages(qs);
@@ -34,7 +32,6 @@ const case2 = () => {
 const case3 = (qs) => {
     log.info('case3(qs)');
     log.info(`- qs: ${qs}`);
-
     case1();
     qs2form(qs);
     getImages(qs);
@@ -45,7 +42,6 @@ const form2qs = () => {
     log.info('- form2qs()');
 
     const sp = new URLSearchParams();
-    //let source = 'all';
 
     $$('form input').forEach(i => {
         if (i.id === 'q') {
@@ -56,7 +52,6 @@ const form2qs = () => {
                 }
                 else {
                     sp.append(key, val);
-                    //source = 'treatments';
                 }
             })
         }
@@ -192,8 +187,10 @@ const getImages = async function(qs) {
     };
 
     const treatmentQuery = {
-        resource: 'treatments',
-        queryString: `${treatmentQueryString}&httpUri=ne()&cols=treatmentTitle&cols=zenodoDep&cols=httpUri&cols=captionText`
+        //resource: 'treatments',
+        //queryString: `${treatmentQueryString}&httpUri=ne()&cols=treatmentTitle&cols=zenodoDep&cols=httpUri&cols=captionText`
+        resource: 'treatmentimages',
+        queryString: `${treatmentQueryString}`
     }
 
     if (source === 'all') {
@@ -234,10 +231,9 @@ const getImages = async function(qs) {
             return res;
         })
         .then(results => {
-            const uniq = {};
+            const figures = [];
 
-            const recs = results.recs;
-            recs.forEach(r => {
+            results.recs.forEach(r => {
                 const figure = makeFigure({
                     figureSize, 
                     treatmentId: r.treatmentId, 
@@ -247,12 +243,12 @@ const getImages = async function(qs) {
                     caption: r.caption
                 });
 
-                uniq[r.uri] = figure;
+                figures.push(figure);
             });
 
             renderPage({
                 figureSize,
-                figures: Object.values(uniq), 
+                figures,
                 qs, 
                 count: results.count, 
                 prev: results.prev, 
@@ -301,7 +297,7 @@ const getResource = async ({ resource, queryString }) => {
                         caption: r.metadata.description
                     })
                 }
-                else if (resource === 'treatments') {
+                else if (resource === 'treatmentimages') {
 
                     /*
                         Most figures are on Zenodo, but some are on Pensoft,
@@ -445,19 +441,22 @@ const renderSearchCriteria = (qs, count, cacheHit) => {
     }
 
     const criteria = [];
-    
-    searchParams.delete('page');
-    searchParams.delete('size');
-    searchParams.delete('source');
-    searchParams.delete('grid');
+    globals.notInSearchCriteria.forEach(p => searchParams.delete(p));
     
     searchParams.forEach((v, k) => {
+        let c;
+
         if (k === 'q') {
-            criteria.push(`<span class="crit-key">${v}</span> is in the text`);
+            c = `<span class="crit-key">${v}</span> is in the text`;
+        }
+        else if (k === 'keywords') {
+            c = `<span class="crit-key">keyword</span> is <span class="crit-val">${v}</span>`;
         }
         else {
-            criteria.push(`<span class="crit-key">${k}</span> is <span class="crit-val">${v}</span>`);
+            c = `<span class="crit-key">${k}</span> is <span class="crit-val">${v}</span>`;
         }
+
+        criteria.push(c);
     })
 
     let str;
