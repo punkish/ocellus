@@ -78,7 +78,7 @@ const globals = {
     pseudoResources : ['about', 'ip', 'contact', 'privacy'],
 
     // the following params don't go in the q field
-    notq: ['source', 'page', 'size', 'grid', 'refreshCache'],
+    notq: ['source', 'page', 'size', 'grid', 'refreshCache', 'cols'],
 
     // the following are the valid query params for Zenodo
     validZenodo: [
@@ -136,12 +136,24 @@ const globals = {
     // ],
 
     validZenodeo: [
-        'q',
         'httpUri',
         'captionText',
+        'treatmentId',
+        'treatmentTitle',
+        'treatmentDOI',
+        'zenodoDep',
+        'q',
+        'publicationDate',
+        'checkinTime',
+        'latitude',
+        'longitude',
+        'geolocation',
+        'isOnLand',
+        'validGeo',
         'refreshCache',
         'page',
-        'size'
+        'size',
+        'cols'
     ],
 
     hiddenClasses: ['hidden', 'noblock'],

@@ -91,9 +91,9 @@ figure {
     break-inside: avoid-column;
     -webkit-column-break-inside: avoid;
 }
-figure.tb {
+/* figure.tb {
     
-}
+} */
 figure img {
     width: 100%;
 }

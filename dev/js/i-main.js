@@ -190,7 +190,7 @@ const getImages = async function(qs) {
         //resource: 'treatments',
         //queryString: `${treatmentQueryString}&httpUri=ne()&cols=treatmentTitle&cols=zenodoDep&cols=httpUri&cols=captionText`
         resource: 'treatmentimages',
-        queryString: `${treatmentQueryString}`
+        queryString: `${treatmentQueryString}&cols=httpUri&cols=treatmentTitle&cols=zenodoDep&cols=treatmentId&cols=captionText`
     }
 
     if (source === 'all') {
@@ -477,8 +477,8 @@ const renderSearchCriteria = (qs, count, cacheHit) => {
     **1107** records found where **hake** is in the text… **27** unique images from records **31–60**  are shown below.
     */
     //… <span class="crit-count">${globals.results.figures.length}</span> unique images from records ${from}–${to} are shown below
-    const aboutCount = count - (count % 5);
-    str = `about <span class="crit-count">${aboutCount}</span> records found where ${str}`;
+    //const aboutCount = count - (count % 5);
+    str = `<span class="crit-count">${count}</span> records found where ${str}`;
     str += cacheHit ? '<span aria-label="cache hit" data-pop="top" data-pop-no-shadow data-pop-arrow>💥</span>' : '';
     
     $('#search-criteria').innerHTML = str;
