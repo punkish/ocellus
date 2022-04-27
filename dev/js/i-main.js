@@ -395,17 +395,19 @@ const renderPage = ({ figureSize, figures, qs, count, prev, next, cacheHit }) =>
 const renderFigures = (figures, qs, prev, next) => {
     log.info('- renderFigures()');
 
+    $('#throbber').classList.add('nothrob');
+
     if (figures.length) {
         $('#grid-images').innerHTML = figures.join('');
         renderPager(qs, prev, next);
+        listeners.addListenersToFigcaptions();
+        listeners.addListenersToFigureTypes();
     }
-    else {
-        $('#grid-images').innerHTML = '<p class="nada">sorry, no images found</p>';
-    }
+    // else {
+    //     $('#grid-images').innerHTML = '<p class="nada">sorry, no images found</p>';
+    // }
 
-    $('#throbber').classList.add('nothrob');
-    listeners.addListenersToFigcaptions();
-    listeners.addListenersToFigureTypes();
+    
 }
 
 const renderPager = (qs, prev, next) => {
@@ -427,10 +429,6 @@ const renderSearchCriteria = (qs, count, cacheHit) => {
     log.info(`  - qs: ${qs}`);
     log.info(`  - count: ${count}`);
 
-    if (!count) {
-        return;
-    }
-
     const searchParams = new URLSearchParams(qs);
     const page = searchParams.get('page');
     const size = searchParams.get('size');
@@ -438,6 +436,10 @@ const renderSearchCriteria = (qs, count, cacheHit) => {
     let to = parseInt(from) + parseInt(size - 1);
     if (to > count) {
         to = count;
+    }
+
+    if (!count) {
+        count = 'sorry, no';
     }
 
     const criteria = [];
