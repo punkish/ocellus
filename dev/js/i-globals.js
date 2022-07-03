@@ -143,6 +143,7 @@ const globals = {
         'treatmentDOI',
         'zenodoDep',
         'q',
+        'family',
         'publicationDate',
         'checkinTime',
         'latitude',

@@ -46,7 +46,9 @@ const form2qs = () => {
     $$('form input').forEach(i => {
         if (i.id === 'q') {
             const sp_tmp = new URLSearchParams(i.value);
+
             sp_tmp.forEach((val, key) => {
+
                 if (val === '') {
                     sp.append('q', key);
                 }
