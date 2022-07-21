@@ -346,7 +346,7 @@ const makeFigure = ({ figureSize, treatmentId, title, zenodoRec, uri, caption })
     }
 
     const onerror = `this.onerror=null; setTimeout(() => { this.src='${uri}' }, 1000);`;
-    const img = `<img src="/img/bug.gif" width="${figureSize}" data-src="${uri}" class="lazyload" data-recid="${treatmentId}" onerror="${onerror}">`
+    const img = `<img src="img/bug.gif" width="${figureSize}" data-src="${uri}" class="lazyload" data-recid="${treatmentId}" onerror="${onerror}">`
     
     let imageLink = '';
     if (treatmentLink) {
