@@ -1,8 +1,4 @@
 {
-  "dependencies": {
-    "@sn8z/pop-pop.css": "^1.0.2",
-    "picolog": "^1.0.4"
-  },
   "devDependencies": {
     "@rollup/plugin-replace": "^3.0.1",
     "gulp": "^4.0.2",
