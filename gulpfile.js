@@ -37,7 +37,7 @@ async function html() {
             .pipe(inject.replace('%dsecs%', dsecs))
             .pipe(inject.replace('./js/ocellus.js', `./js/ocellus-${dsecs}.js`))
             .pipe(htmlreplace({
-                'css': `/css/ocellus-${dsecs}.css`
+                'css': `css/ocellus-${dsecs}.css`
             }))
             .pipe(dest('.'))
     }
