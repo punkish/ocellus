@@ -9,7 +9,7 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Thu Jul 21 2022 23:24:44 GMT+0200 (Central European Summer Time)">
+    <meta name="date" content="%date%">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4</title>
@@ -17,8 +17,18 @@
     <link rel="icon" type="image/png" href="img/ocellus.png">
 
     <link rel="stylesheet" href="css/uglyduck.css">
-    <link rel="stylesheet" href="css/ocellus-1658438684496.css">
-    <link rel="stylesheet" href="libs/pop-pop/pop-pop.min.css">
+    <!-- build:css -->
+    <link rel="stylesheet" href="css/i-base.css">
+    <link rel="stylesheet" href="css/i-header.css">
+    <link rel="stylesheet" href="css/i-form.css">
+    <link rel="stylesheet" href="css/i-grid.css">
+    <link rel="stylesheet" href="css/i-throbber.css">
+    <link rel="stylesheet" href="css/i-pager.css">
+    <link rel="stylesheet" href="css/i-map.css">
+    <link rel="stylesheet" href="css/i-treatmentDetails.css">
+    <link rel="stylesheet" href="css/i-media-queries.css">
+    <!-- endbuild -->
+    <link rel="stylesheet" href="https://unpkg.com/@sn8z/pop-pop.css@latest/dist/pop-pop.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css">
@@ -149,14 +159,15 @@
         <img src="img/fish.jpg">
     </footer>
     
-    <script src="js/config-gh.js"></script>
-    <script src="libs/picolog/picolog.min.js"></script>
-    <script src="libs/lazysizes.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/download/picolog@1.0.4/dist/picolog.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     <script src="https://unpkg.com/h3-js@3.7.2/dist/h3-js.umd.js"></script>
+    <!-- build:js -->
+    <!-- endbuild -->
     <script type="module">
-        import { init } from './js/ocellus-1658438684496.js';
+        import { init } from './js/ocellus.js';
         window.onload = () => init();
     </script>
   </body>

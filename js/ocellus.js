@@ -4,7 +4,11 @@
 // import { globals } from './i-globals.js';
 import { case1, case3 } from './i-main.js';
 
-log.level = log[O.loglevel];
+const loglevel = window.location.hostname === 'localhost' 
+        ? 'INFO' 
+        : 'ERROR';
+
+log.level = log[loglevel];
 
 const init = () => {
     const loc = new URL(location);

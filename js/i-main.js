@@ -265,7 +265,11 @@ const getResource = async ({ resource, queryString }) => {
     log.info(`  - resource: ${resource}`);
     log.info(`  - queryString: ${queryString}`);
 
-    const url = `${O.zenodeo3Uri}/${resource}?${queryString}`;
+    const z = window.location.hostname === 'localhost' 
+        ? 'http://localhost:3010/v3' 
+        : 'https://test.zenodeo.org/v3';
+
+    const url = `${z}/${resource}?${queryString}`;
     const response = await fetch(url);
 
     // if HTTP-status is 200-299
