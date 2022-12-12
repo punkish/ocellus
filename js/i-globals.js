@@ -145,6 +145,7 @@ const globals = {
         'q',
         'journalTitle',
         'phylum',
+        'class',
         'family',
         'order',
         'publicationDate',

@@ -40,7 +40,7 @@ const controlDetails = (e) => {
 }
 
 const insertExample = (e) => {
-    $('#q').value = e.target.closest('details').querySelector('summary').textContent;
+    $('#q').value = e.target.textContent;
     $('#go').classList.add('glowing');
 
     const sources = $$('input[name=source');

@@ -76,3 +76,24 @@ table.help td,
 table.help th {
     border: 1px solid grey;
 }
+#quicksearch {
+    text-align: left;
+    margin-top: -15px;
+    margin-left: 10px;
+}
+#quicksearch img {
+    width: 30px;
+    height: 30px;
+    padding: 2px 5px;
+    border: 1px solid lightgray;
+    border-radius: 2px;
+}
+#quicksearch img:hover {
+    background: lightgray;
+}
+#quicksearch a, a.hover {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+}

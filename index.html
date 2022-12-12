@@ -69,33 +69,43 @@
             </div>
             <div id="refreshCacheMsg" class="hidden">This will refresh the cache. You probably don’t want to do this.</div>
             
-            <div id="search-help">example searches</div>
+            <div id="quicksearch">
+                <a href="?source=treatments&family=Formicidae" title="find images of ants"><img src="img/icon_ant.png" width="24"></a> 
+                <a href="?source=treatments&class=Actinopterygii" title="find images of fishes"><img src="img/icon_fish.png" width="24"></a>
+                <a href="?source=treatments&class=Arachnida" title="find images of spiders"><img src="img/icon_spider.png" width="24"></a>
+                <a href="?source=treatments&class=Malacostraca" title="find shrimp and crabs"><img src="img/icon_shrimp.png" width="24"></a>
+            </div>
+            <div id="search-help">more example searches</div>
             <div class="examples hidden">
-                <p><em><b>Note:</b> these example queries with extended syntax are currently only possible against treatments.</em></p>
+                <p>Click on the link to try the search<br><em><b>Note:</b> These extended syntax queries are currently only possible against treatments.</em></p>
     
-                <details>
-                    <summary>shrimp&publicationDate=since(2020-12-21)</summary>
-                    <p class="example-desc">text contains 'shrimp' in articles published since 2020-12-21 <button class="example-insert">try this search</button></p>
+                <details open>
+                    <summary>all fishes in articles published since 2021-12-21</summary>
+                    <button class="example-insert">class=Actinopterygii&publicationDate=since(2021-12-21)</button>
                 </details>
                 <details>
-                    <summary>checkinTime=since(yesterday)</summary>
-                    <p class="example-desc">images from treatments checked in since yesterday <button class="example-insert">try this search</button></p>
+                    <summary>text contains 'shrimp' in articles published since 2020-12-21</summary>
+                    <button class="example-insert">shrimp&publicationDate=since(2020-12-21)</button>
                 </details>
                 <details>
-                    <summary>tyrannosaurus&authorityName=Osborn</summary>
-                    <p class="example-desc">text contains 'tyrannosaurus' and <i>authorityName</i> starts with 'Osborn' <button class="example-insert">try this search</button></p>
+                    <summary>images from treatments checked in since yesterday</summary>
+                    <button class="example-insert">checkinTime=since(yesterday)</button>
                 </details>
                 <details>
-                    <summary>family=Agamidae</summary>
-                    <p class="example-desc">images from treatments from family 'Agamidae' <button class="example-insert">try this search</button></p>
+                    <summary>text contains 'tyrannosaurus' and <i>authorityName</i> starts with 'Osborn'</summary>
+                    <button class="example-insert">tyrannosaurus&authorityName=Osborn</button>
                 </details>
                 <details>
-                    <summary>moloch OR horridus</summary>
-                    <p class="example-desc">text contains 'moloch' OR 'horridus' <button class="example-insert">try this search</button></p>
+                    <summary>images from treatments from family 'Agamidae'</summary>
+                    <button class="example-insert">family=Agamidae</button>
                 </details>
                 <details>
-                    <summary>decapoda&journalTitle=not_like(zootaxa)</summary>
-                    <p class="example-desc">text contains 'decapoda' and the journal is not "Zootaxa" <button class="example-insert">try this search</button></p>
+                    <summary>text contains 'moloch' OR 'horridus'</summary>
+                    <button class="example-insert">moloch OR horridus</button>
+                </details>
+                <details>
+                    <summary>text contains 'decapoda' and the journal is not "Zootaxa"</summary>
+                    <button class="example-insert">decapoda&journalTitle=not_like(zootaxa)</button>
                 </details>
             </div>
         </form>
