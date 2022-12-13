@@ -486,7 +486,7 @@ const renderSearchCriteria = (qs, count, cacheHit) => {
     */
     //… <span class="crit-count">${globals.results.figures.length}</span> unique images from records ${from}–${to} are shown below
     //const aboutCount = count - (count % 5);
-    str = `<span class="crit-count">${count}</span> records found where ${str}`;
+    str = `<span class="crit-count">${count}</span> images found where ${str}`;
     str += cacheHit ? '<span aria-label="cache hit" data-pop="top" data-pop-no-shadow data-pop-arrow>💥</span>' : '';
     
     $('#search-criteria').innerHTML = str;
