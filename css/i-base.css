@@ -84,16 +84,15 @@ table.help th {
 #quicksearch img {
     width: 30px;
     height: 30px;
-    padding: 2px 5px;
     border: 1px solid lightgray;
     border-radius: 2px;
 }
 #quicksearch img:hover {
     background: lightgray;
+    border: 1px solid gray;
 }
 #quicksearch a, a.hover {
     padding: 0;
     border: 0;
-    border-radius: 0;
     background: none;
 }
