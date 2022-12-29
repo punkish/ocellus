@@ -1,19 +1,22 @@
-import { $, $$ } from './i-utils.js';
-import { globals } from './i-globals.js';
-import { case2 } from './i-main.js';
+import { $, $$ } from './utils.js';
+import { globals } from './globals.js';
+import { submitForm } from './main.js';
 
 const addListeners = () => {
     log.info('- listeners.addListeners()');
 
     $('#refreshCache').addEventListener('click', toggleRefreshCache);
-    $('#go').addEventListener('click', go);
+    $('#ns-go').addEventListener('click', go);
     $$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
     $('#q').addEventListener('focus', cue);
-    $('#clear-q').addEventListener('click', clearCue);
+    //$('#clear-q').addEventListener('click', clearCue);
     $('#search-help').addEventListener('click', toggleExamples);
     $$('.example-insert').forEach(el => el.addEventListener('click', insertExample));
     $('div.examples').addEventListener('toggle', controlDetails, true);
     $$('.reveal').forEach(el => el.addEventListener('click', reveal));
+    $("#switch").addEventListener('click', toggleSearch);
+    // $("#switchNormalSearch").addEventListener('click', toggleNormalSearch);
+    $$('input[name=source]').forEach(el => el.addEventListener('click', togglePlaceHolder));
 }
 
 const toggleExamples = (e) => {
@@ -23,6 +26,43 @@ const toggleExamples = (e) => {
     else {
         $('.examples').classList.add('hidden');
     }
+}
+
+const toggleSearch = (e) => {
+    $('#fancySearch').classList.toggle('hidden');
+    $('#fancySearch').classList.toggle('noblock');
+    $('#normalSearch').classList.toggle('hidden');
+    $('#normalSearch').classList.toggle('noblock');
+
+    // if event exists, the switch was clicked, so update
+    // the URL hash
+    if (e) {
+        const hash = $('#switch').checked 
+            ? '#fs'
+            : '';
+
+        // https://stackoverflow.com/a/14690177
+        if (history.pushState) {
+            history.pushState(null, null, hash);
+        }
+        else {
+            location.hash = hash;
+        }
+    }
+
+    // no event, so toggleSearch was called programmatically.
+    // no need to update the URL, but the switch should be set.
+    else {
+        $('#switch').checked = $('#fancySearch').classList.contains('hidden')
+            ? false
+            : true;
+    }
+}
+
+const togglePlaceHolder = (e) => {
+    const inputs = $$('input[name=source');
+    const i = Array.from(inputs).filter(i => i.checked)[0];
+    $('#q').placeholder = i.labels[0].innerHTML;
 }
 
 // https://gomakethings.com/only-allowing-one-open-dropdown-at-a-time-with-the-details-element/
@@ -41,7 +81,7 @@ const controlDetails = (e) => {
 
 const insertExample = (e) => {
     $('#q').value = e.target.textContent;
-    $('#go').classList.add('glowing');
+    $('#ns-go').classList.add('glowing');
 
     const sources = $$('input[name=source');
     sources.forEach(s => {
@@ -57,18 +97,20 @@ const insertExample = (e) => {
 }
 
 const toggleRefreshCache = (e) => {
-    if ($('#refreshCache').classList.contains("unchecked")) {
-        $('#refreshCache').classList.remove("unchecked");
-        $('#refreshCache').classList.add("checked");
-        $('#refreshCache').checked = true;
-        $('#refreshCacheMsg').classList.remove('hidden');
-    }
-    else {
-        $('#refreshCache').classList.remove("checked");
-        $('#refreshCache').classList.add("unchecked");
-        $('#refreshCache').checked = false;
-        $('#refreshCacheMsg').classList.add('hidden');
-    }
+    // if ($('#refreshCache').classList.contains("unchecked")) {
+    //     $('#refreshCache').classList.remove("unchecked");
+    //     $('#refreshCache').classList.add("checked");
+    //     $('#refreshCache').checked = true;
+    //     $('#refreshCacheMsg').classList.remove('hidden');
+    // }
+    // else {
+    //     $('#refreshCache').classList.remove("checked");
+    //     $('#refreshCache').classList.add("unchecked");
+    //     $('#refreshCache').checked = false;
+    //     $('#refreshCacheMsg').classList.add('hidden');
+    // }
+
+    $('#refreshCach').toggleAttribute('data-pop-show');
 }
 
 const go = (e) => {
@@ -80,9 +122,9 @@ const go = (e) => {
     else {
         $('#q').classList.remove('red-placeholder');
         $('#throbber').classList.remove('nothrob');
-        $('#go').classList.remove('glowing');
+        $('#ns-go').classList.remove('glowing');
 
-        case2();
+        submitForm();
     }
     
     e.stopPropagation();
@@ -225,4 +267,10 @@ const addListenersToFigureTypes = () => {
     }
 }
 
-export { addListeners, addListenersToFigcaptions, addListenersToPagerLinks, addListenersToFigureTypes };
+export { 
+    addListeners, 
+    addListenersToFigcaptions, 
+    addListenersToPagerLinks, 
+    addListenersToFigureTypes,
+    toggleSearch
+};

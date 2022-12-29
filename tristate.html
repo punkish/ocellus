@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+
+    <title>tristate</title>
+
+    <link rel="icon" type="image/png" href="img/ocellus.png">
+
+    <link rel="stylesheet" href="css/uglyduck.css">
+
+    <style>
+div#ts1 {
+    --switch-dim: 20px;
+    --theme: lightgreen;
+    --theme-off: #f5f5f5;
+    --theme-on: darkgreen;
+    --num-of-switches: 3;
+}
+div#ts1 {
+    border: 1px solid black;
+    background-color: var(--theme);
+    width: calc( ( var(--switch-dim) + 5px ) * var(--num-of-switches) );
+    height: calc( var(--switch-dim) + 6px );
+    border-radius: calc( var(--switch-dim) / 2 + 3px );
+    padding: 2px;
+    position: relative;
+    margin: 1rem;
+}
+div#ts1 label {
+    position: absolute;
+    top: 0px;
+    left: calc( ( var(--switch-dim) + 5px ) * var(--num-of-switches) + 5px );
+    visibility: hidden;
+    display: block ruby;
+}
+div#ts1 input[type=radio],
+div#ts1 input[type=radio]:checked {
+    width: var(--switch-dim);
+    height: var(--switch-dim);
+    border-radius: 50%;
+}
+div#ts1 input[type=radio] {
+    opacity: 0;
+    border: 1px solid var(--theme);
+    background-color: var(--theme-off);
+    appearance: none;
+    cursor: pointer;
+    margin: 0;
+    transition: all 0.3s;
+}
+div#ts1 input[type=radio]:hover {
+    opacity: .5;
+}
+div#ts1 input[type=radio]:checked {
+    opacity: 1;
+    border: 1px solid var(--theme-on);
+    background-color: var(--theme-on);
+}
+div#ts1 input[type=radio]:checked + label {
+    width: auto;
+    visibility: visible;
+}
+    
+    </style>
+
+    <style>
+div#ts2 {
+    --switch-dim: 20px;
+    --theme: lightgray;
+    --theme-off: #f5f5f5;
+    --theme-on: black;
+    --num-of-switches: 2;
+}
+div#ts2 {
+    border: 1px solid black;
+    background-color: var(--theme);
+    width: calc( ( var(--switch-dim) + 5px ) * var(--num-of-switches) );
+    height: calc( var(--switch-dim) + 6px );
+    border-radius: calc( var(--switch-dim) / 2 + 3px );
+    padding: 2px;
+    position: relative;
+    margin: 1rem;
+}
+div#ts2 label {
+    position: absolute;
+    top: 0px;
+    left: calc( ( var(--switch-dim) + 5px ) * var(--num-of-switches) + 5px );
+    visibility: hidden;
+    display: block ruby;
+}
+div#ts2 input[type=radio],
+div#ts2 input[type=radio]:checked {
+    width: var(--switch-dim);
+    height: var(--switch-dim);
+    border-radius: 50%;
+}
+div#ts2 input[type=radio] {
+    opacity: 0;
+    border: 1px solid var(--theme);
+    background-color: var(--theme-off);
+    appearance: none;
+    cursor: pointer;
+    margin: 0;
+    transition: all 0.3s;
+}
+div#ts2 input[type=radio]:hover {
+    opacity: .5;
+}
+div#ts2 input[type=radio]:checked {
+    opacity: 1;
+    border: 1px solid var(--theme-on);
+    background-color: var(--theme-on);
+}
+div#ts2 input[type=radio]:checked + label {
+    visibility: visible;
+}
+    </style>
+  </head>
+  <body>
+    <header>
+        <form>
+            <div id="ts1">
+                <input type="radio" id="ts-11" name="ts1" value="1" checked>
+                <label for="ts-11">images from treatments</label>
+                <input type="radio" id="ts-12" name="ts1" value="2">
+                <label for="ts-12">images from Zenodo</label>
+                <input type="radio" id="ts-13" name="ts1" value="3">
+                <label for="ts-13">all images</label>
+            </div>
+
+            <div id="ts2">
+                <input type="radio" id="ts-21" name="ts2" value="1" checked>
+                <label for="ts-21">normal search</label>
+                <input type="radio" id="ts-22" name="ts2" value="2">
+                <label for="ts-22">fancy search</label>
+            </div>
+        </form>
+    </header>
+    
+    <script type="module">
+        
+    </script>
+  </body>
+</html>

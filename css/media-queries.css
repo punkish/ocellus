@@ -27,11 +27,19 @@
         margin: 0 auto 20px auto;
     }
 
-    header {
+/*     header {
         padding: 10px 10px 10px 10px;
+    } */
+    
+    header h1 a {
+        font-size: 27px !important;
+    }
+    
+    #brand {
+        left: calc(50% + 50px);
     }
 
-    header div.title {
+    header div.subtitle {
         display: block;
     }
 
@@ -41,6 +49,10 @@
 
     .pager div {
         padding: 5px 7px;
+    }
+    
+    .modal {
+        max-width: unset;
     }
 }
 
@@ -58,10 +70,10 @@
         --column-count: 3 !important;
     }
 
-    form {
+    /* form {
         width: 400px;
         display: inline-block
-    }
+    } */
 
     .modal {
         max-width: 70%;
@@ -82,6 +94,11 @@
     
     .columns-250 {
         --column-count: 4 !important;
+    }
+
+    form {
+        width: 960px;
+        display: inline-block
     }
 }
 

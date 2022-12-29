@@ -1,0 +1,175 @@
+/* position form in the center of div */
+/* https://stackoverflow.com/a/31386275 */
+form {
+    position: relative;
+    text-align: left;
+    font-family: sans-serif;
+}
+#ns-container {
+    --ns-container-min-height: 36px;
+    --ns-button-width: 50px;
+    --ns-border-radius: calc( var(--ns-container-min-height) / 2 );
+    --ns-theme: gray;
+    font-family: sans-serif;
+    font-size: 12px;
+}
+.search-container {
+    border: none;
+    clear: both;
+    margin: 0px;
+}
+#bottom-menu {
+    position: relative;
+    clear: both;
+    height: 40px;
+    /* overflow: hidden; */
+}
+.switchSearch {
+    font-size: 10px;
+    text-align: right;
+    padding: 5px 20px;
+}
+#ns-help {
+    padding-left: 15px;
+}
+.ns {
+    border-radius: var(--ns-border-radius) 0 0 var(--ns-border-radius);
+    border: 1px solid var(--ns-theme);
+    width: calc( 100% - var(--ns-button-width) );
+    min-height: var(--ns-container-min-height);
+    padding: 0px;
+    float: left;
+}
+.ns-val-input {
+    float: left;
+    padding-left: 5px;
+    margin: 5px 0px 2px 0px;
+    line-height: 18px;
+    height: 24px;
+    border: none;
+    width: calc(100% - 97px);
+}
+input.ns-val-input:focus {
+    outline: none;
+}
+#ns-input-controls {
+    float: left;
+    /* width: 55px; */
+    height: 24px;
+    margin: 5px 2px 2px 0px;
+    padding: 0;
+    border: none;
+}
+#refreshCache {
+    width: 16px;
+    height: 16px;
+    background-color: white;
+    vertical-align: middle;
+    border: 1px solid #444;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+#refreshCache:checked {
+    background-color: red;
+}
+#refreshCache::before,
+#refreshCache::after {
+    --pop-bg-color: red;
+}
+
+#clear-q {
+    width: 18px;
+    height: 18px;
+    background-color: lightgrey;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: 1px solid lightgrey;
+    cursor: pointer;
+    line-height: 10px;
+    text-align: center;
+    padding: 0;
+}
+#clear-q:hover {
+    background-color: red;
+    color: white;
+}
+.ns-button-primary {
+    height: var(--ns-container-min-height);
+    width: var(--ns-button-width);
+    border-radius: 0 var(--ns-border-radius) var(--ns-border-radius) 0;
+    background-color: var(--ns-theme);
+    border: 1px solid var(--ns-theme);
+    color: white;
+    text-transform: uppercase;
+    padding: 0 15px 0 10px;
+    right: 0;
+    cursor: pointer;
+}
+.ns-button-primary:hover {
+    background-color: green;
+} 
+
+/* https://www.w3docs.com/snippets/css/how-to-create-flashing-glowing-button-using-animation-in-css3.html */
+@keyframes glowing {
+    0% {
+        background-color: #2ba805;
+    }
+    50% {
+        background-color: #49e819;
+    }
+    100% {
+        background-color: #2ba805;
+    }
+}
+.glowing {
+    animation: glowing 1300ms infinite;
+}
+/* end Clearable */
+
+#refreshCacheMsg {
+    margin-top: 5px;
+    color: red;
+    font-family: sans-serif;
+    font-size: 10px;
+    display:block;
+    text-align: center;
+}
+.red-placeholder {
+    color: red;
+}
+
+/* https://stackoverflow.com/a/30117998/183692 */
+/* Chrome, Firefox, Opera, Safari 10.1+ */
+.red-placeholder::placeholder { 
+    color: red;
+
+    /* Firefox */
+    opacity: 1; 
+}
+
+/* Internet Explorer 10-11 */
+.red-placeholder:-ms-input-placeholder {
+    color: red;
+}
+
+/* Microsoft Edge */
+.red-placeholder::-ms-input-placeholder {
+    color: red;
+}
+.view-wrapper {
+    text-align: left;
+    font-family: sans-serif;
+    font-size: small;
+    padding: 10px;
+}
+#search-help { 
+    color: blue;
+    text-decoration: underline;
+    padding-left: 12px;
+    cursor: help;
+    font-family: sans-serif;
+    font-size: small;
+    text-align: left;
+}

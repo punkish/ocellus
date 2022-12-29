@@ -1,0 +1,49 @@
+#search-help {
+    position: relative;
+    float: left;
+    height: 24px;
+    border: none;
+    font-family: sans-serif;
+    font-size: 9px;
+    text-align: left;
+    color: blue;
+    text-decoration: underline;
+    margin-top: 10px;
+    /* min-width: 300px; */
+/*     text-align: middle; */
+}
+.examples {
+    position: absolute;
+    background-color: white;
+    border: 1px solid lightgrey;
+    width: 100%;
+    padding: 10px;
+    z-index: 999;
+    box-shadow: 0 1px 8px 1px rgba(0, 0, 0, 0.3);
+    font-family: sans-serif;
+    font-size: 12px;
+    text-align: left;
+}
+.examples > div {
+    font-style: italic;
+    font-family: serif;
+}
+p.example-desc {
+    margin-top: 0px;
+    margin-left: 12px;
+    font-style: italic;
+    font-family: serif;
+}
+summary {
+    cursor: pointer;
+}
+button.example-insert {
+    border: none;
+    background-color: white;
+    color: blue;
+    text-decoration: underline;
+    font-size: 9px;
+}
+button.example-insert:hover {
+    background-color: lightgrey;
+}

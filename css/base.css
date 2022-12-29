@@ -4,12 +4,14 @@ body {
     flex-direction: column;
     min-height: 100vh;
     max-width: unset;
-    margin: 0;
-    padding: 0px;
+    /* margin: 5px; */
+}
+body {
+    margin: 10px;
 }
 a,
 a:visited {
-    color:blue !important;
+    color:blue;
 }
 a:hover {
     background-color: lightgrey;
@@ -37,7 +39,7 @@ div.title a,
     margin: 0 auto;
     z-index: 10000;
     position: fixed;
-    top: 80px;
+    top: 180px;
     left: 5%;
     background-color: white;
     padding: 1rem;
@@ -75,24 +77,4 @@ table.help {
 table.help td, 
 table.help th {
     border: 1px solid grey;
-}
-#quicksearch {
-    text-align: left;
-    margin-top: -15px;
-    margin-left: 10px;
-}
-#quicksearch img {
-    width: 30px;
-    height: 30px;
-    border: 1px solid lightgray;
-    border-radius: 2px;
-}
-#quicksearch img:hover {
-    background: lightgray;
-    border: 1px solid gray;
-}
-#quicksearch a, a.hover {
-    padding: 0;
-    border: 0;
-    background: none;
 }

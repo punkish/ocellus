@@ -1,0 +1,56 @@
+#switchSearch {
+    --ss-switch-width: 40px;
+    --ss-toggle-width: 10px;
+    --ss-switch-height: 30px;
+}
+#switchSearch {
+    margin: 0 15px;
+    padding: 5px 0;
+    width: var(--ss-switch-width);
+    height: var(--ss-switch-height);
+    border: none;
+    float: right;
+    right: 35px;
+}
+#switch {
+    height: 0;
+    width: 0;
+    visibility: hidden;
+    float: left;
+}
+label[for=switch] {
+    cursor: pointer;
+/*     text-indent: -9999px; */
+    width: var(--ss-switch-width);
+    height: 22px;
+    border: 1px dotted grey;
+    border-radius: 20px;
+    background: grey;
+    display: block;
+    position: relative;
+    font-size: 10px;
+}
+label[for=switch]:after {
+    content: 'ns';
+    line-height: 20px;
+    text-align: center;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: calc( var(--ss-switch-width) - var(--ss-toggle-width) );
+    height: 20px;
+    border-radius: 10px;
+    background: #fff;
+    transition: 0.3s;
+}
+#switch:checked + label {
+    background: #bada55;
+}
+#switch:checked + label:after {
+    left: calc( var(--ss-toggle-width) - 2px );
+    transform: translateX(calc(100% - (var(--ss-switch-width) - var(--ss-toggle-width))));
+    content: 'fs';
+}
+label[for=switch]:active:after {
+    width: calc( var(--ss-switch-width) - var(--ss-toggle-width) );
+}

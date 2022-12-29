@@ -1,0 +1,23 @@
+#quicksearch {
+    text-align: left;
+    /* margin-top: -15px; */
+    margin-left: 15px;
+    position: relative;
+    float: left;
+    padding-top: 5px;
+}
+#quicksearch img {
+    width: 30px;
+    height: 30px;
+    border: 1px solid lightgray;
+    border-radius: 2px;
+}
+#quicksearch img:hover {
+    background: lightgray;
+    border: 1px solid gray;
+}
+#quicksearch a, a.hover {
+    padding: 0;
+    border: 0;
+    background: none;
+}

@@ -1,66 +1,78 @@
 const globals = {
 
+    server: window.location.hostname === 'localhost' 
+        ? 'http://localhost:3010/v3' 
+        : 'https://test.zenodeo.org/v3',
+
+    validFormFields: [
+        'page',
+        'size',
+        'source',
+        'q',
+        'refreshCache'
+    ],
+
     // various querystring defaults
     // 'view' is the only one we update based on the value in the qs
-    page        : 1,
-    size        : 30,
-    fpage       : 1,
-    fsize       : 30,
-    refreshCache: false,
+    // page        : 1,
+    // size        : 30,
+    // fpage       : 1,
+    // fsize       : 30,
+    // refreshCache: false,
     figureSize  : 250,
 
     //view : 'images',
-    views : {
-        images: {
-            description: 'images from Zenodo',
-            totalCount: 0,
-            figures: [],
-            page: 1,
-            size: 30
-        },
-        treatments: {
-            description: 'treatments with images',
-            totalCount: 0,
-            countOfTreatments: 0,
-            countOfFigures: 0,
-            figures: [],
-            page: 1,
-            size: 30,
-            figpage: 2,
-            figsize: 30
-        },
-        map: {
-            description: 'treatments with locations',
-            totalCount: 0,
-            obj: null,
-            bounds: null,
-            layers: {
-                baselayer: {
-                    groups: {
-                        osm: null
-                    }
-                },
-                h3: {
-                    groups: {
-                        grid2: null
-                    },
-                    controls: {
-                        info: null,
-                        legend: null
-                    }
-                },
-                treatments: {
-                    groups: {
-                        treatmentsOnLand: null,
-                        treatmentsInWater: null
-                    },
-                    controls: {
-                        layerControl: null
-                    }
-                }
-            }
-        }
-    },
+    // views : {
+    //     images: {
+    //         description: 'images from Zenodo',
+    //         totalCount: 0,
+    //         figures: [],
+    //         page: 1,
+    //         size: 30
+    //     },
+    //     treatments: {
+    //         description: 'treatments with images',
+    //         totalCount: 0,
+    //         countOfTreatments: 0,
+    //         countOfFigures: 0,
+    //         figures: [],
+    //         page: 1,
+    //         size: 30,
+    //         figpage: 2,
+    //         figsize: 30
+    //     },
+    //     map: {
+    //         description: 'treatments with locations',
+    //         totalCount: 0,
+    //         obj: null,
+    //         bounds: null,
+    //         layers: {
+    //             baselayer: {
+    //                 groups: {
+    //                     osm: null
+    //                 }
+    //             },
+    //             h3: {
+    //                 groups: {
+    //                     grid2: null
+    //                 },
+    //                 controls: {
+    //                     info: null,
+    //                     legend: null
+    //                 }
+    //             },
+    //             treatments: {
+    //                 groups: {
+    //                     treatmentsOnLand: null,
+    //                     treatmentsInWater: null
+    //                 },
+    //                 controls: {
+    //                     layerControl: null
+    //                 }
+    //             }
+    //         }
+    //     }
+    // },
 
     results: {
         totalCount: 0,
@@ -144,6 +156,8 @@ const globals = {
         'zenodoDep',
         'q',
         'journalTitle',
+        'journalYear',
+        'authorityName',
         'phylum',
         'class',
         'family',
@@ -218,10 +232,10 @@ const globals = {
     },
 
     // pager
-    pager_length  : 9,
-    sep           : '•••',
-    sep_position1 : 2,
-    sep_position2 : 6,
+    // pager_length  : 9,
+    // sep           : '•••',
+    // sep_position1 : 2,
+    // sep_position2 : 6,
 };
 
 export { globals }
