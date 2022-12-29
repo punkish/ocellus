@@ -18,24 +18,18 @@
 
     <link rel="stylesheet" href="css/uglyduck.css">
     <!-- build:css -->
-    <link rel="stylesheet" href="css/2/base.css">
-    <link rel="stylesheet" href="css/2/header.css">
-    <link rel="stylesheet" href="css/2/form.css">
-    <link rel="stylesheet" href="css/2/tristate-toggle.css">
-    <link rel="stylesheet" href="css/2/examples.css">
-    <link rel="stylesheet" href="css/2/quicksearch.css">
-    <link rel="stylesheet" href="css/2/searchSwitcher.css">
-    <link rel="stylesheet" href="css/2/grid.css">
-    <link rel="stylesheet" href="css/2/throbber.css">
-    <link rel="stylesheet" href="css/2/pager.css">
-    <link rel="stylesheet" href="css/2/map.css">
-    <link rel="stylesheet" href="css/2/treatmentDetails.css">
-    <link rel="stylesheet" href="css/2/media-queries.css">
-    <link rel="stylesheet" href="libs/fancySearch/fancySearch.css">
+    <link rel="stylesheet" href="css/0/i-base.css">
+    <link rel="stylesheet" href="css/0/i-header.css">
+    <link rel="stylesheet" href="css/0/i-form.css">
+    <link rel="stylesheet" href="css/0/i-grid.css">
+    <link rel="stylesheet" href="css/0/i-throbber.css">
+    <link rel="stylesheet" href="css/0/i-pager.css">
+    <link rel="stylesheet" href="css/0/i-map.css">
+    <link rel="stylesheet" href="css/0/i-treatmentDetails.css">
+    <link rel="stylesheet" href="css/0/i-media-queries.css">
     <!-- endbuild -->
-    <link rel="stylesheet" href="libs/JavaScript-autoComplete/auto-complete.css">
     <link rel="stylesheet" href="libs/pop-pop/pop-pop.min.css">
-    
+
     <!--
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
@@ -47,64 +41,44 @@
     <header>
         <div class="title">
             <div id="brand" class="reveal" data-reveal="MAP • IMAGES • TREATMENTS">4</div>
-            <h1><a href="/index2.html">ocellus</a></h1>
-            <div class="subtitle">
-                <small>A Plazi Project</small><br>
-                <a href="#about" class="modalToggle">about</a>
-            </div>
+            <h1>ocellus</h1>
+            <small>A Plazi Project</small><br>
+            <a href="#about" class="modalToggle">about</a>
         </div>
         
         <form>
-            <input id="page" name="page" type="hidden" value="1">
-            <input id="size" name="size" type="hidden" value="30">
-
+            <div class="form-wrapper">
+                <div class="view-wrapper">
+                    <span class="tristate tristate-switcher">
+                        <input type="radio" id="item2-state-off" name="source" value="all" checked>
+                        <input type="radio" id="item2-state-null" name="source" value="Zenodo">
+                        <input type="radio" id="item2-state-on" name="source" value="treatments">
+                        <i></i>
+                        <label for="item2-state-null">all images</label>
+                        <label for="item2-state-on">images from Zenodo</label>
+                        <label for="item2-state-off">images from treatments</label>
+                    </span>
+                </div>
+                <div class="input-wrapper">
+                    <input id="q" type="text" placeholder="search all images" class="clearable">
+                    <span id="refreshCacheWrapper" aria-label="refresh cache" data-pop="top" data-pop-no-shadow data-pop-arrow>
+                        <input name="refreshCache" id="refreshCache" type="checkbox" value="true" class="unchecked">
+                    </span>
+                    <span id="clear-q" aria-label="clear input" data-pop="top" data-pop-no-shadow data-pop-arrow>&times;</span>
+                </div>
+                <input id="page" type="hidden" value="1">
+                <input id="size" type="hidden" value="30">
+                <button type="submit" id="go">GO</button>
+            </div>
+            <div id="refreshCacheMsg" class="hidden">This will refresh the cache. You probably don’t want to do this.</div>
+            
             <div id="quicksearch">
-                <a href="index2.html?source=treatments&family=Formicidae" aria-label="find ants" data-pop="top" data-pop-no-shadow data-pop-arrow><img src="img/icon-ant.svg"></a> 
-                <a href="index2.html?source=treatments&class=Actinopterygii" aria-label="find fishes" data-pop="top" data-pop-no-shadow data-pop-arrow><img src="img/icon-fish.svg"></a>
-                <a href="index2.html?source=treatments&class=Arachnida" aria-label="find spiders" data-pop="top" data-pop-no-shadow data-pop-arrow><img src="img/icon-spider.svg"></a>
-                <a href="index2.html?source=treatments&class=Malacostraca" aria-label="find shrimp, crabs and other crustacea" data-pop="top" data-pop-no-shadow data-pop-arrow><img src="img/icon-shrimp.svg"></a>
+                <a href="?source=treatments&family=Formicidae"><span aria-label="find ants" data-pop="top" data-pop-no-shadow data-pop-arrow><img src="img/icon-ant.svg"></span></a> 
+                <a href="?source=treatments&class=Actinopterygii"><span aria-label="find fishes" data-pop="top" data-pop-no-shadow data-pop-arrow><img src="img/icon-fish.svg"></span></a>
+                <a href="?source=treatments&class=Arachnida"><span aria-label="find spiders" data-pop="top" data-pop-no-shadow data-pop-arrow><img src="img/icon-spider.svg"></span></a>
+                <a href="?source=treatments&class=Malacostraca"><span aria-label="find shrimp, crabs and other crustacea" data-pop="top" data-pop-no-shadow data-pop-arrow><img src="img/icon-shrimp.svg"></span></a>
             </div>
-
-            <div id="normalSearch" class="search-container">
-                <div id="ns-container">
-                    <div id="ns-help"></div>
-                    <div id="ns-widget">
-                        <div id="ns" class="ns">
-                            <div id="ts1" aria-label="switch source of images" data-pop="right" data-pop-no-shadow data-pop-arrow>
-                                <input type="radio" id="ts-13" name="source" value="treatments" checked>
-                                <label for="ts-13">search treatments</label>
-                                <input type="radio" id="ts-12" name="source" value="Zenodo">
-                                <label for="ts-12">search Zenodo</label>
-                                <input type="radio" id="ts-11" name="source" value="all">
-                                <label for="ts-11">search all images</label>
-                            </div>
-
-                            <input id="q" name="q" type="text" placeholder="search treatments" class="ns-val-input">
-
-                            <div id="ns-input-controls">
-                                <input name="refreshCache" id="refreshCache" type="checkbox" value="true" class="unchecked" aria-label="This will refresh the cache. You probably don't want to do this." data-pop="bottom" data-pop-no-shadow data-pop-arrow data-pop-multiline>
-                                <button id="clear-q" type="reset" aria-label="reset search" data-pop="top" data-pop-no-shadow data-pop-arrow>&#8855;</button>
-                            </div>
-                        </div>
-
-                        <button id="ns-go" name="go" type="submit" class="ns-button-primary">go</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="fancySearch" class="search-container hidden">
-                <div id="fs-container"></div>
-            </div>
-
-            <div id="bottom-menu">
-                <div id="search-help">more examples</div>
-                
-                <div id="switchSearch" aria-label="toggle search type" data-pop="top" data-pop-no-shadow data-pop-arrow>
-                    <input type="checkbox" id="switch" name="switch" />
-                    <label for="switch"></label>
-                </div>
-            </div>
-
+            <div id="search-help">more example searches</div>
             <div class="examples hidden">
                 <p>Click on the link to try the search<br><em><b>Note:</b> These extended syntax queries are currently only possible against treatments.</em></p>
     
@@ -138,6 +112,7 @@
                 </details>
             </div>
         </form>
+        
     </header>
     <div id="throbber" class="nothrob"></div>
 
@@ -194,6 +169,7 @@
             
             <p>Check out our policies on <a href="#privacy" class="modalToggle">privacy</a> and <a href="#ip" class="modalToggle">intellectual property</a>, or contact <a href="mailto:blr@plazi.org">Plazi</a> for more information.</p>
         </section>
+        <!-- end modals -->
     </main>
 
     <footer aria-label="This half-fish is based on the original of a Blunt-Nosed Minnow, Pimephales notatus (Rafinesque) ♂ from the Internet Archive, and has no known copyright restrictions." data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>
@@ -201,19 +177,21 @@
     </footer>
     
     <!--
+    <script src="https://cdn.jsdelivr.net/gh/download/picolog@1.0.4/dist/picolog.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     <script src="https://unpkg.com/h3-js@3.7.2/dist/h3-js.umd.js"></script>
     -->
-
+    
     <!-- build:js -->
     <!-- endbuild -->
     <script src="libs/picolog/picolog.min.js"></script>
     <script src="libs/lazysizes.min.js"></script>
     <script src="libs/JavaScript-autoComplete/auto-complete.js"></script>
-
+    
     <script type="module">
-        import { init } from './js/2/ocellus.js';
+        import { init } from './js/0/ocellus.js';
         window.onload = () => init();
     </script>
   </body>

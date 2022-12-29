@@ -1,7 +1,7 @@
 import { $, $$ } from './utils.js';
 import { globals } from './globals.js';
 import * as listeners from './listeners.js';
-import { fancySearch } from '../../libs/fancySearch/fancySearch.js';
+import { fancySearch } from '../libs/fancySearch/fancySearch.js';
 
 let figureSize = globals.figureSize;
 
