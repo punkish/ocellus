@@ -158,6 +158,7 @@ const globals = {
         'journalTitle',
         'journalYear',
         'authorityName',
+        'kingdom',
         'phylum',
         'class',
         'family',
