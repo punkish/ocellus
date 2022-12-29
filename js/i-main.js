@@ -1,36 +1,38 @@
-import { $, $$ } from './utils.js';
-import { globals } from './globals.js';
-import * as listeners from './listeners.js';
-import { fancySearch } from '../libs/fancySearch/fancySearch.js';
+import { $, $$ } from './i-utils.js';
+import { globals } from './i-globals.js';
+import * as listeners from './i-listeners.js';
 
 let figureSize = globals.figureSize;
 
-/**
- * case 1: blank canvas show the default Ocellus page
- */
-const loadBlankWebSite = () => {
-    log.info('loadBlankWebSite()');
+/*
+    case 1: blank canvas
+    show the default Ocellus page
+*/
+const case1 = () => {
+    log.info('case1()');
     listeners.addListeners();
 }
 
-/**
- * case 2: click on [go] button get query results and render the page
- */
-const submitForm = () => {
-    log.info('submitForm()');
+/*
+    case 2: click on [go] button
+    get query results and render the page
+*/
+const case2 = () => {
+    log.info('case2()');
     const qs = form2qs();
     updateUrl(qs);
     getImages(qs);
 }
 
-/**
- * case 3: load page from bookmark fill the form, get query results and 
- * render the page
- */
-const loadBookmarkedWebSite = (qs) => {
-    log.info('loadBookmarkedWebSite(qs)');
+/*
+    case 3: load page from bookmark
+    fill the form, get query results and 
+    render the page
+*/
+const case3 = (qs) => {
+    log.info('case3(qs)');
     log.info(`- qs: ${qs}`);
-    loadBlankWebSite();
+    case1();
     qs2form(qs);
     getImages(qs);
 }
@@ -41,41 +43,36 @@ const form2qs = () => {
 
     const sp = new URLSearchParams();
 
-    // const validFormFields = [
-    //     'page',
-    //     'size',
-    //     'source',
-    //     'q',
-    //     'refreshCache'
-    // ];
+    $$('form input').forEach(i => {
+        if (i.id === 'q') {
+            const sp_tmp = new URLSearchParams(i.value);
 
-    globals.validFormFields.forEach(f => {
-        const fld = $(`input[name=${f}`);
-        const val = fld.value;
+            sp_tmp.forEach((val, key) => {
 
-        if (f === 'q') {
-            const spTmp = new URLSearchParams(val);
-            spTmp.forEach((v, k) => {
-                if (v === '') {
-                    sp.append('q', k);
+                if (val === '') {
+                    sp.append('q', key);
                 }
                 else {
-                    sp.append(k, v);
+                    sp.append(key, val);
                 }
-            });
+            })
         }
         else {
-            if (f === 'refreshCache' && fld.checked) {
-                sp.append('refreshCache', true);
+            if (i.id === 'refreshCache') {
+                if (i.checked) {
+                    sp.append('refreshCache', true);
+                }
             }
-            else if (f === 'source' && fld.checked) {
-                sp.append('source', val);
+            else if (i.name === 'source') {
+                if (i.checked) {
+                    sp.append('source', i.value);
+                }
             }
             else {
-                sp.append(f, val);
+                sp.append(i.id, i.value);
             }
         }
-    });
+    })
 
     return sp.toString();
 }
@@ -112,22 +109,17 @@ const qs2form = (qs) => {
             }
         }
         else {
-            let qt = key;
-
             if (val) {
-                qt = key === 'q' ? val : `${key}=${val}`;
-                // if (key === 'q') {
-                //     q.push(val);
-                // }
-                // else {
-                //     q.push(`${key}=${val}`);
-                // }
+                if (key === 'q') {
+                    q.push(val);
+                }
+                else {
+                    q.push(`${key}=${val}`);
+                }
             }
-            // else {
-            //     q.push(key);
-            // }
-
-            q.push(qt);
+            else {
+                q.push(key);
+            }
         }
     });
 
@@ -273,7 +265,11 @@ const getResource = async ({ resource, queryString }) => {
     log.info(`  - resource: ${resource}`);
     log.info(`  - queryString: ${queryString}`);
 
-    const url = `${globals.server}/${resource}?${queryString}`;
+    const z = window.location.hostname === 'localhost' 
+        ? 'http://localhost:3010/v3' 
+        : 'https://test.zenodeo.org/v3';
+
+    const url = `${z}/${resource}?${queryString}`;
     const response = await fetch(url);
 
     // if HTTP-status is 200-299
@@ -364,13 +360,10 @@ const makeFigure = ({ figureSize, treatmentId, title, zenodoRec, uri, caption })
         imageLink = `<a href="${globals.zenodoUri}/${zenodoRec}" target="_blank">${img}</a>`;
     }
 
-    // let figcaptionClass = 'noblock';
-    // if (figureSize === 250) {
-    //     figcaptionClass = 'visible';
-    // }
-    const figcaptionClass = figureSize === 250 
-        ? 'visible' 
-        : 'noblock';
+    let figcaptionClass = 'noblock';
+    if (figureSize === 250) {
+        figcaptionClass = 'visible';
+    }
     
     return `<figure class="figure-${figureSize} ${treatmentId ? 'tb' : ''}">
     <div class="switches">
@@ -391,13 +384,13 @@ const makeFigure = ({ figureSize, treatmentId, title, zenodoRec, uri, caption })
 }
 
 const renderPage = ({ figureSize, figures, qs, count, prev, next, cacheHit }) => {
-    log.info(`- renderPage()
-- figureSize: ${figureSize}px
-- figures: ${figures.length} figures
-- qs: ${qs}
-- count: ${count}
-- prev: ${prev}
-- next: ${next}`);
+    log.info('- renderPage()');
+    log.info(`  - figureSize: ${figureSize}px`);
+    log.info(`  - figures: ${figures.length} figures`);
+    log.info(`  - qs: ${qs}`);
+    log.info(`  - count: ${count}`);
+    log.info(`  - prev: ${prev}`);
+    log.info(`  - next: ${next}`);
 
     $('#grid-images').classList.add(`columns-${figureSize}`);
 
@@ -499,182 +492,4 @@ const renderSearchCriteria = (qs, count, cacheHit) => {
     $('#search-criteria').innerHTML = str;
 }
 
-const initializeFancySearch = (searchType) => {
-
-    const doSomethingWithQuery = function(query) {
-        query.source = 'treatments';
-
-        const sp = new URLSearchParams(query);
-
-        const validFormFields = [
-            'page',
-            'size',
-            'refreshCache'
-        ];
-
-        validFormFields.forEach(f => {
-            const fld = $(`input[name=${f}`);
-            const val = fld.value;
-
-            if (f === 'refreshCache' && fld.checked) {
-                sp.append('refreshCache', true);
-            }
-            else {
-                sp.append(f, val);
-            }
-            
-        });
-
-        const qs = sp.toString();
-        updateUrl(qs);
-        getImages(qs);
-    };
-
-    const cbMaker = (facet) => {
-        return async (response) => {
-            const json = await response.json();
-            const res = [];
-
-            if (json.item.result.records) {
-                json.item.result.records.forEach(r => res.push(r[facet]));
-            }
-            else {
-                res.push('nothing found… please try again');
-            }
-
-            return res;
-        }
-    }
-
-    const yearsArray = (from, to) => {
-        const length = to - from;
-        return Array.from({ length }, (_, index) => index + from)
-            .map(e => String(e));
-    }
-
-    /**
-     * 'values' can be
-     *      - an empty string
-     *      - an array of options
-     *      - a function that returns an array of options
-     *      - an object with
-     *          - a URL that returns an array of options OR
-     *          - a URL + a callback that converts the results of the URL 
-     *            into an array of options
-     */
-    const facets = [
-        {   
-            "key": "text contains",
-            "actualKey": "q", 
-            "values": "", 
-            "prompt": "search the full text of treatments",
-            "noDuplicates": true 
-        },
-        {   "key": "title",
-            "actualKey": "title", 
-            "values": "", 
-            "prompt": "search within the title",
-            "noDuplicates": true 
-        },
-        {   "key": "authority", 
-            "actualKey": "authorityName",
-            "values": {
-                url: `${globals.server}/authors?q=`, 
-                cb: cbMaker('author')
-            },
-            "prompt": "type at least 3 letters to choose an author",
-            "noDuplicates": true 
-        },
-        // {   "key": "keywords", 
-        //     "actualKey": "keywords",
-        //     "values": {
-        //         url: `${server}/v3/keywords?q=`, 
-        //         cb: cbMaker('keyword')
-        //     },
-        //     "prompt": "type at least 3 letters to choose a keyword",
-        //     "noDuplicates": false 
-        // },
-        {   "key": "family", 
-            "actualKey": "family",
-            "values": {
-                url: `${globals.server}/families?q=`, 
-                cb: cbMaker('family')
-            },
-            "prompt": "type at least 3 letters to choose a family",
-            "noDuplicates": false 
-        },
-        {   "key": "phylum", 
-            "actualKey": "phylum",
-            "values": {
-                url: `${globals.server}/phyla?q=`, 
-                cb: cbMaker('phylum')
-            },
-            "prompt": "type at least 3 letters to choose a phylum",
-            "noDuplicates": false 
-        },
-        {   "key": "class", 
-            "actualKey": "class",
-            "values": {
-                url: `${globals.server}/classes?q=`, 
-                cb: cbMaker('class')
-            },
-            "prompt": "type at least 3 letters to choose a class",
-            "noDuplicates": false 
-        },
-        {   "key": "genus", 
-            "actualKey": "genus",
-            "values": {
-                url: `${globals.server}/genera?q=`, 
-                cb: cbMaker('genus')
-            },
-            "prompt": "type at least 3 letters to choose a genus",
-            "noDuplicates": false 
-        },
-        {   "key": "order", 
-            "actualKey": "order",
-            "values": {
-                url: `${globals.server}/orders?q=`, 
-                cb: cbMaker('order')
-            },
-            "prompt": "type at least 3 letters to choose an order",
-            "noDuplicates": false 
-        },
-        {   "key": "taxon", 
-            "actualKey": "taxon",
-            "values": {
-                url: `${globals.server}/taxa?q=`, 
-                cb: cbMaker('taxon')
-            },
-            "prompt": "type at least 3 letters to choose a taxon",
-            "noDuplicates": false 
-        },
-        {   "key": "journal year", 
-            "actualKey": "journalYear",
-            "values": yearsArray(1995, 2022), 
-            "prompt": "pick a year of publication",
-            "noDuplicates": true 
-        },
-        // {   "key": "countries", 
-        //     "actualKey": "countries",
-        //     "values": [ "Afghanistan","Aland Islands","Albania","Algeria" ], 
-        //     "prompt": "choose a country",
-        //     "noDuplicates": false 
-        // }
-    ];
-
-    new fancySearch({
-        selector: $('#fs-container'), 
-        helpText: '',
-        facets,
-        cb: doSomethingWithQuery
-    });
-
-    $('#fancySearch').classList.add('hidden');
-    $('#fancySearch').classList.add('noblock');
-
-    if (searchType) {
-        listeners.toggleSearch();
-    }
-}
-
-export { loadBlankWebSite, submitForm, loadBookmarkedWebSite, initializeFancySearch }
+export { case1, case2, case3 }

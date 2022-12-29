@@ -1,30 +1,33 @@
 /* generated: __buildDate__ */
-// import { $, $$ } from './i-utils.js';
-// import * as listeners from './i-listeners.js';
-// import { globals } from './i-globals.js';
-import { case1, case3 } from './i-main.js';
+
+import * as main from './main.js';
 
 const loglevel = window.location.hostname === 'localhost' 
-        ? 'INFO' 
-        : 'ERROR';
+    ? 'INFO'
+    : 'ERROR';
 
 log.level = log[loglevel];
 
 const init = () => {
     const loc = new URL(location);
     let qs = loc.search;
+    
+    const searchType = loc.hash && loc.hash === '#fs'
+        ? 'fs'
+        : '';
+
+    main.initializeFancySearch(searchType);
 
     if (qs) {
         if (qs.substring(0, 1) === '?') {
             qs = qs.substring(1);
         }
 
-        case3(qs);
+        main.loadBookmarkedWebSite(qs);
     }
     else {
-        case1();
+        main.loadBlankWebSite();
     }
 }
 
-//export { init, case2 }
 export { init }

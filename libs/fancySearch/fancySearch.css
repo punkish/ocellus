@@ -1,8 +1,5 @@
 #fs-container {
     all: initial;
-    * { all: unset; }
-}
-#fs-container {
     --fs-container-min-height: 36px;
     --fs-button-width: 50px;
     --fs-border-radius: calc( var(--fs-container-min-height) / 2 );

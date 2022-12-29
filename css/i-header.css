@@ -1,0 +1,36 @@
+header {
+    text-align: center;
+    border-bottom: 1px solid silver;
+    padding: 0 10px 10px 10px;
+    position: relative;
+    display: block;
+}
+
+header div.title {
+    margin-bottom: 1rem;
+    display: none;
+}
+
+header h1 {
+    margin: 0 auto;
+    margin-bottom: -10px;
+    font-weight: 200;
+}
+
+#brand {
+    font-size: 12px;
+    position: absolute;
+    font-family: sans-serif;
+    left: calc(50% + 50px);
+    cursor: pointer;
+}
+
+#brand:hover {
+    color: lightgrey;
+}
+
+header small {
+    text-transform: uppercase;
+    font-size: 10px;
+    font-family: sans-serif;
+}

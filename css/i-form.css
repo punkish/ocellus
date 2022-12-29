@@ -2,10 +2,6 @@
 /* https://stackoverflow.com/a/31386275 */
 form {
     position: relative;
-    --ns-container-min-height: 36px;
-    --ns-button-width: 50px;
-    --ns-border-radius: calc( var(--ns-container-min-height) / 2 );
-    --ns-theme: gray;
 }
 
 /* Clearable text inputs */
@@ -14,13 +10,12 @@ form {
 }
 
 .input-wrapper { 
-    border-radius: var(--ns-border-radius) 0 0 var(--ns-border-radius);
-    border: 1px solid var(--ns-theme);
+    border-radius: 5px 0 0 5px;
+    border: 1px solid silver;
     float: left;
     position: relative;
-    width: calc(100% - var(--ns-button-width));
-    /* height: 43px; */
-    height: var(--ns-container-min-height);
+    width: calc(100% - 50px);
+    height: 43px;
 }
 
 #clear-q {
@@ -87,9 +82,9 @@ form {
 
 #q { 
     border: none;
-    /* border-radius: 5px 0 0 5px; */
+    border-radius: 5px 0 0 5px;
     width: calc(100% - 80px);
-    /* height: 40px; */
+    height: 40px;
     position: absolute;
     left: 0;
     text-indent: 10px;
@@ -98,17 +93,17 @@ form {
 #q, 
 #go {
     font-family: sans-serif;
-    /* padding: 8px;
-    font-size: 12px; */
+    padding: 8px;
+    font-size: 12px;
 }
 
 #go {
     cursor: pointer;
     text-transform: uppercase;
-    border: 1px solid var(--ns-theme);
-    border-radius: 0 var(--ns-border-radius) var(--ns-border-radius) 0;
-    width: var(--ns-button-width);
-    height: var(--ns-container-min-height);
+    border: 1px solid silver;
+    border-radius: 0 5px 5px 0;
+    width: 45px;
+    height: 43px;
 }
 
 #go:hover {
