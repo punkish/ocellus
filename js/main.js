@@ -603,6 +603,15 @@ const initializeFancySearch = (searchType) => {
             "prompt": "type at least 3 letters to choose a family",
             "noDuplicates": false 
         },
+        {   "key": "kingdom", 
+            "actualKey": "kingdom",
+            "values": {
+                url: `${globals.server}/kingdoms?q=`, 
+                cb: cbMaker('kingdom')
+            },
+            "prompt": "type at least 3 letters to choose a kingdom",
+            "noDuplicates": false 
+        },
         {   "key": "phylum", 
             "actualKey": "phylum",
             "values": {
