@@ -4,13 +4,19 @@ const globals = {
         ? 'http://localhost:3010/v3' 
         : 'https://test.zenodeo.org/v3',
 
-    validFormFields: [
-        'page',
-        'size',
-        'source',
-        'q',
-        'refreshCache'
-    ],
+    // validQsKeys: [
+    //     'page',
+    //     'size',
+    //     'resource',
+    //     'q',
+    //     'refreshCache'
+    // ],
+
+    cache: {
+        zenodoImages: 0,
+        zenodeoImages: 0,
+        zenodeoTreatments: 0
+    },
 
     // various querystring defaults
     // 'view' is the only one we update based on the value in the qs
@@ -19,7 +25,11 @@ const globals = {
     // fpage       : 1,
     // fsize       : 30,
     // refreshCache: false,
-    figureSize  : 250,
+    figureSize:  {
+        normal: 250,
+        small: 100,
+        tiny: 50
+    },
 
     //view : 'images',
     // views : {
@@ -89,8 +99,83 @@ const globals = {
     resources       : ['treatments', 'citations', 'images'],
     pseudoResources : ['about', 'ip', 'contact', 'privacy'],
 
+    params: {
+
+        // validQs: [
+        //     'page',
+        //     'size',
+        //     'resource',
+        //     'q',
+        //     'refreshCache'
+        // ],
+
+        // params allowed in queryString but not in the 
+        // 'q' input field
+        notValidQ: ['resource', 'page', 'size', 'grid', 'refreshCache', 'cols'],
+
+        // params valid for Zenodo
+        validZenodo: [
+            'id',
+            'subtype',
+            'communities',
+            'q',
+            'creator',
+            'title',
+            'keywords'
+        ],
+
+        // the following are the valid query params for Zenodeo
+        validZenodeo: [
+            'httpUri',
+            'captionText',
+            'treatmentId',
+            'treatmentTitle',
+            'treatmentDOI',
+            'zenodoDep',
+            'q',
+            'journalTitle',
+            'journalYear',
+            'authorityName',
+            'kingdom',
+            'phylum',
+            'class',
+            'family',
+            'order',
+            'genus',
+            'species',
+            'publicationDate',
+            'checkinTime',
+            'latitude',
+            'longitude',
+            'geolocation',
+            'isOnLand',
+            'validGeo',
+            'refreshCache',
+            'page',
+            'size',
+            'cols'
+        ],
+
+        // the following input params are ignored while creating the 
+        // textual version of the search criteria
+        // 
+        notValidSearchCriteria : [
+            'resource', 
+            'communities', 
+            'communitiesChooser',
+            'refreshCache', 
+            'view',
+            'size', 
+            'page',
+            'reset',
+            'submit',
+            'source',
+            'grid'
+        ],
+    },
+
     // the following params don't go in the q field
-    notq: ['source', 'page', 'size', 'grid', 'refreshCache', 'cols'],
+    notq: ['resource', 'page', 'size', 'grid', 'refreshCache', 'cols'],
 
     // the following are the valid query params for Zenodo
     validZenodo: [
@@ -105,83 +190,59 @@ const globals = {
 
     // the following are the valid query params for Zenodeo
     // validZenodeo: [
+    //     //     'treatmentVersion',
+    //     //     'treatmentLSID',
+    //     //     'zoobankId',
+    //     //     'articleId',
+    //     //     'articleTitle',
+    //     //     'articleAuthor',
+    //     //     'articleDOI',
+    //     //     'journalVolume',
+    //     //     'journalIssue',
+    //     //     'pages',
+    //     //     'authorityYear',
+    //     //     'status',
+    //     //     'taxonomicNameLabel',
+    //     //     'rank',
+    //     //     'collectionCode',
+    //     //     'updateTime',
+    //     'httpUri',
+    //     'captionText',
     //     'treatmentId',
     //     'treatmentTitle',
-    //     'treatmentVersion',
     //     'treatmentDOI',
-    //     'treatmentLSID',
     //     'zenodoDep',
-    //     'zoobankId',
-    //     'articleId',
-    //     'articleTitle',
-    //     'articleAuthor',
-    //     'articleDOI',
-    //     'publicationDate',
+    //     'q',
     //     'journalTitle',
     //     'journalYear',
-    //     'journalVolume',
-    //     'journalIssue',
-    //     'pages',
     //     'authorityName',
-    //     'authorityYear',
     //     'kingdom',
     //     'phylum',
-    //     'order',
+    //     'class',
     //     'family',
+    //     'order',
     //     'genus',
     //     'species',
-    //     'status',
-    //     'taxonomicNameLabel',
-    //     'rank',
+    //     'publicationDate',
+    //     'checkinTime',
+    //     'latitude',
+    //     'longitude',
     //     'geolocation',
     //     'isOnLand',
     //     'validGeo',
-    //     'collectionCode',
-    //     'q',
-    //     'updateTime',
-    //     'checkinTime',
-    //     'httpUri',
-    //     'captionText',
     //     'refreshCache',
     //     'page',
-    //     'size'
+    //     'size',
+    //     'cols',
+    //     //'resource'
     // ],
-
-    validZenodeo: [
-        'httpUri',
-        'captionText',
-        'treatmentId',
-        'treatmentTitle',
-        'treatmentDOI',
-        'zenodoDep',
-        'q',
-        'journalTitle',
-        'journalYear',
-        'authorityName',
-        'kingdom',
-        'phylum',
-        'class',
-        'family',
-        'order',
-        'publicationDate',
-        'checkinTime',
-        'latitude',
-        'longitude',
-        'geolocation',
-        'isOnLand',
-        'validGeo',
-        'refreshCache',
-        'page',
-        'size',
-        'cols'
-    ],
 
     hiddenClasses: ['hidden', 'noblock'],
 
-    /*
-    * the following input params are ignored while creating the 
-    * textual version of the search criteria
-    */
+    /**
+     * the following input params are ignored while creating the 
+     * textual version of the search criteria
+     */
     notInSearchCriteria : [
         'resource', 
         'communities', 

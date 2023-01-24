@@ -1,10 +1,5 @@
-const $ = (selector) => {
-    return document.querySelector(selector)
-}
-
-const $$ = (selector) => {
-    return document.querySelectorAll(selector)
-}
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => document.querySelectorAll(selector);
 
 // Javascript: Ordinal suffix for numbers
 // https://stackoverflow.com/a/15810761
@@ -24,8 +19,13 @@ const nth = function(n) {
 }
 
 const niceNumbers = (n) => {
-    const nice = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine']
-    return n < 10 ? nice[n - 1].toLowerCase() : n
+    const nice = [
+        'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'
+    ];
+
+    return n < 10 
+        ? nice[n - 1].toLowerCase() 
+        : n
 }
 
 const smoke = function (e) {

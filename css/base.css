@@ -4,10 +4,12 @@ body {
     flex-direction: column;
     min-height: 100vh;
     max-width: unset;
-    /* margin: 5px; */
+    margin: unset;
+    padding: unset;
 }
 body {
-    margin: 10px;
+    margin: 5px;
+    padding: 0;
 }
 a,
 a:visited {

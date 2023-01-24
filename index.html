@@ -21,10 +21,9 @@
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/form.css">
-    <link rel="stylesheet" href="css/tristate-toggle.css">
     <link rel="stylesheet" href="css/examples.css">
     <link rel="stylesheet" href="css/quicksearch.css">
-    <link rel="stylesheet" href="css/searchSwitcher.css">
+    <link rel="stylesheet" href="css/toggleSwitch.css">
     <link rel="stylesheet" href="css/grid.css">
     <link rel="stylesheet" href="css/throbber.css">
     <link rel="stylesheet" href="css/pager.css">
@@ -55,34 +54,26 @@
         </div>
         
         <form>
-            <input id="page" name="page" type="hidden" value="1">
-            <input id="size" name="size" type="hidden" value="30">
+            <input class="query" id="page" name="page" type="hidden" value="1">
+            <input class="query" id="size" name="size" type="hidden" value="30">
 
-            <div id="quicksearch">
-                <a href="?source=treatments&family=Formicidae" aria-label="find ants" data-pop="top" data-pop-no-shadow data-pop-arrow><img src="img/icon-ant.svg"></a> 
-                <a href="?source=treatments&class=Actinopterygii" aria-label="find fishes" data-pop="top" data-pop-no-shadow data-pop-arrow><img src="img/icon-fish.svg"></a>
-                <a href="?source=treatments&class=Arachnida" aria-label="find spiders" data-pop="top" data-pop-no-shadow data-pop-arrow><img src="img/icon-spider.svg"></a>
-                <a href="?source=treatments&class=Malacostraca" aria-label="find shrimp, crabs and other crustacea" data-pop="top" data-pop-no-shadow data-pop-arrow><img src="img/icon-shrimp.svg"></a>
-            </div>
-
+            <div id="help-msg">search images</div>
             <div id="normalSearch" class="search-container">
                 <div id="ns-container">
-                    <div id="ns-help"></div>
+                    <!-- <div id="ns-help">search images</div> -->
                     <div id="ns-widget">
                         <div id="ns" class="ns">
-                            <div id="ts1" aria-label="switch source of images" data-pop="right" data-pop-no-shadow data-pop-arrow>
-                                <input type="radio" id="ts-13" name="source" value="treatments" checked>
-                                <label for="ts-13">search treatments</label>
-                                <input type="radio" id="ts-12" name="source" value="Zenodo">
-                                <label for="ts-12">search Zenodo</label>
-                                <input type="radio" id="ts-11" name="source" value="all">
-                                <label for="ts-11">search all images</label>
+                            <div class="switch resource regular pill green" aria-label="toggle resource" data-pop="right" data-pop-no-shadow="true" data-pop-arrow="true">
+                                <input class="query" type="radio" id="switchResource-1" name="resource" value="images" autocomplete="off" checked="true">
+                                <label for="switchResource-1"></label>
+                                <input class="query" type="radio" id="switchResource-2" name="resource" value="treatments" autocomplete="off">
+                                <label for="switchResource-2"></label>
                             </div>
 
-                            <input id="q" name="q" type="text" placeholder="search treatments" class="ns-val-input">
+                            <input id="q" name="q" type="text" placeholder="search for something" class="query ns-val-input">
 
                             <div id="ns-input-controls">
-                                <input name="refreshCache" id="refreshCache" type="checkbox" value="true" class="unchecked" aria-label="This will refresh the cache. You probably don't want to do this." data-pop="bottom" data-pop-no-shadow data-pop-arrow data-pop-multiline>
+                                <input name="refreshCache" id="refreshCache" type="checkbox" value="true" class="query unchecked" aria-label="This will refresh the cache. You probably don't want to do this." data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>
                                 <button id="clear-q" type="reset" aria-label="reset search" data-pop="top" data-pop-no-shadow data-pop-arrow>&#8855;</button>
                             </div>
                         </div>
@@ -97,11 +88,20 @@
             </div>
 
             <div id="bottom-menu">
-                <div id="search-help">more examples</div>
-                
-                <div id="switchSearch" aria-label="toggle search type" data-pop="top" data-pop-no-shadow data-pop-arrow>
-                    <input type="checkbox" id="switch" name="switch" />
-                    <label for="switch"></label>
+                <div id="quicksearch">
+                    <a href="?resource=images&family=Formicidae" aria-label="find ants" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-ant.svg"></a> 
+                    <a href="?resource=images&class=Actinopterygii" aria-label="find fishes" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-fish.svg"></a>
+                    <a href="?resource=images&class=Arachnida" aria-label="find spiders" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-spider.svg"></a>
+                    <a href="?resource=images&class=Malacostraca" aria-label="find shrimp, crabs and other crustacea" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-shrimp.svg"></a>
+                    <a href="?resource=images&order=Coleoptera" aria-label="find beetles" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-beetle.svg"></a>
+                    <a id="search-help" href="#" aria-label="more examples" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-more-examples.svg"></a>
+                </div>
+
+                <div class="switch search small slider green" aria-label="toggle search type" data-pop="left" data-pop-no-shadow data-pop-arrow>
+                    <input type="radio" id="switchSearch-1" name="searchType" value="ns" checked="true" data-checked="true">
+                    <label for="switchSearch-1"></label>
+                    <input type="radio" id="switchSearch-2" name="searchType" value="fs" data-checked="false">
+                    <label for="switchSearch-2"></label>
                 </div>
             </div>
 

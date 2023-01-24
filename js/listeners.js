@@ -1,22 +1,27 @@
 import { $, $$ } from './utils.js';
 import { globals } from './globals.js';
-import { submitForm } from './main.js';
+import { submitForm, updatePlaceHolder } from './main.js';
 
 const addListeners = () => {
-    log.info('- listeners.addListeners()');
+    log.info('- addListeners()');
 
     $('#refreshCache').addEventListener('click', toggleRefreshCache);
     $('#ns-go').addEventListener('click', go);
-    $$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
     $('#q').addEventListener('focus', cue);
-    //$('#clear-q').addEventListener('click', clearCue);
     $('#search-help').addEventListener('click', toggleExamples);
-    $$('.example-insert').forEach(el => el.addEventListener('click', insertExample));
     $('div.examples').addEventListener('toggle', controlDetails, true);
+
+    $$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
     $$('.reveal').forEach(el => el.addEventListener('click', reveal));
-    $("#switch").addEventListener('click', toggleSearch);
-    // $("#switchNormalSearch").addEventListener('click', toggleNormalSearch);
-    $$('input[name=source]').forEach(el => el.addEventListener('click', togglePlaceHolder));
+
+    const examples = $$('.example-insert');
+    examples.forEach(el => el.addEventListener('click', insertExample));
+
+    const switches = $$("input[name=searchType");
+    switches.forEach(el => el.addEventListener('click', toggleSearch));
+
+    const resources = $$('.resource input');
+    resources.forEach(el => el.addEventListener('click', toggleResource));
 }
 
 const toggleExamples = (e) => {
@@ -34,12 +39,32 @@ const toggleSearch = (e) => {
     $('#normalSearch').classList.toggle('hidden');
     $('#normalSearch').classList.toggle('noblock');
 
-    // if event exists, the switch was clicked, so update
-    // the URL hash
+    const searchType = Array.from($$('input[name=searchType]'))
+        .filter(i => i.checked)[0].value;
+
+    // if event exists, the switch was clicked, so check the correct
+    // switch and update the URL hash
     if (e) {
-        const hash = $('#switch').checked 
+        if (e.target.dataset.checked === 'true') {
+            const other = $('input[data-checked=false]');
+            other.dataset.checked = true;
+            other.checked = true;
+
+            e.target.dataset.checked = 'false';
+            e.target.checked = false;
+        }
+        else {
+            const other = $('input[data-checked=true]');
+            other.dataset.checked = false;
+            other.checked = false;
+
+            e.target.dataset.checked = 'true';
+            e.target.checked = true;
+        }
+
+        const hash = searchType === 'fs' 
             ? '#fs'
-            : '';
+            : window.location.pathname;
 
         // https://stackoverflow.com/a/14690177
         if (history.pushState) {
@@ -48,21 +73,38 @@ const toggleSearch = (e) => {
         else {
             location.hash = hash;
         }
+
+        // now, let's update the resource switch
+        const arr = Array.from($$('input[name=resource]'));
+        const checkedResource = arr.filter(i => i.checked)[0];
+        
+        const uncheckedTwin = arr
+            .filter(i => !i.checked && (i.value === checkedResource.value))[0];
+
+        checkedResource.checked = false;
+        uncheckedTwin.checked = true;
     }
 
     // no event, so toggleSearch was called programmatically.
     // no need to update the URL, but the switch should be set.
     else {
-        $('#switch').checked = $('#fancySearch').classList.contains('hidden')
-            ? false
-            : true;
+        const searchTgt = searchType === 'ns'
+            ? $('#switchSearch-1')
+            : $('#switchSearch-2');
+
+        searchTgt.checked = true;
     }
 }
 
-const togglePlaceHolder = (e) => {
-    const inputs = $$('input[name=source');
-    const i = Array.from(inputs).filter(i => i.checked)[0];
-    $('#q').placeholder = i.labels[0].innerHTML;
+const toggleResource = (e) => {
+
+    // find the value of the checked source button inside 
+    // the container div (cd) and set the source to that
+    // value
+    const resource = Array.from($$('input[name=resource]'))
+        .filter(i => i.checked)[0];
+    
+    updatePlaceHolder(resource.value);
 }
 
 // https://gomakethings.com/only-allowing-one-open-dropdown-at-a-time-with-the-details-element/
@@ -97,20 +139,7 @@ const insertExample = (e) => {
 }
 
 const toggleRefreshCache = (e) => {
-    // if ($('#refreshCache').classList.contains("unchecked")) {
-    //     $('#refreshCache').classList.remove("unchecked");
-    //     $('#refreshCache').classList.add("checked");
-    //     $('#refreshCache').checked = true;
-    //     $('#refreshCacheMsg').classList.remove('hidden');
-    // }
-    // else {
-    //     $('#refreshCache').classList.remove("checked");
-    //     $('#refreshCache').classList.add("unchecked");
-    //     $('#refreshCache').checked = false;
-    //     $('#refreshCacheMsg').classList.add('hidden');
-    // }
-
-    $('#refreshCach').toggleAttribute('data-pop-show');
+    $('#refreshCache').toggleAttribute('data-pop-show');
 }
 
 const go = (e) => {
@@ -171,7 +200,7 @@ const clearCue = (e)=> {
  * @summary activate the source of the images
  */
 const setSource = (e) => {
-    const sources = $$('input[name=source');
+    const sources = $$('input[name=resource');
     let source = 'all';
     sources.forEach(s => {
         if (s.checked) {
@@ -272,5 +301,6 @@ export {
     addListenersToFigcaptions, 
     addListenersToPagerLinks, 
     addListenersToFigureTypes,
-    toggleSearch
+    toggleSearch,
+    toggleResource
 };

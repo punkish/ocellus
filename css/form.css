@@ -29,8 +29,10 @@ form {
     text-align: right;
     padding: 5px 20px;
 }
-#ns-help {
+#help-msg {
+    font-size: 10px;
     padding-left: 15px;
+    line-height: 18px;
 }
 .ns {
     border-radius: var(--ns-border-radius) 0 0 var(--ns-border-radius);
@@ -42,12 +44,12 @@ form {
 }
 .ns-val-input {
     float: left;
-    padding-left: 5px;
+    padding-left: 0px;
     margin: 5px 0px 2px 0px;
     line-height: 18px;
     height: 24px;
     border: none;
-    width: calc(100% - 97px);
+    width: calc(100% - 105px);
 }
 input.ns-val-input:focus {
     outline: none;

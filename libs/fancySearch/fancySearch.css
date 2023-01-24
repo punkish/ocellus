@@ -5,13 +5,14 @@
     --fs-border-radius: calc( var(--fs-container-min-height) / 2 );
     --fs-theme: #bada55;
     position: relative;
-    width: 100%;
-    height: auto;
+    /* width: 100%;
+    height: auto; */
     font-family: sans-serif;
     font-size: 12px;
 }
 #fs-help {
     padding-left: 15px;
+    line-height: 18px;
 }
 .fs {
     border-radius: var(--fs-border-radius) 0 0 var(--fs-border-radius);
@@ -51,7 +52,7 @@
     line-height: 18px;
     height: 24px;
     padding: 0;
-    margin: 5px 6px 2px 7px;
+    margin: 5px 6px 2px 0;
 }
 .fs-key,
 .fs-val {

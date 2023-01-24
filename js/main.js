@@ -1,26 +1,25 @@
 import { $, $$ } from './utils.js';
 import { globals } from './globals.js';
-import * as listeners from './listeners.js';
-import { fancySearch } from '../libs/fancySearch/fancySearch.js';
-
-let figureSize = globals.figureSize;
+import { addListeners } from './listeners.js';
+import { getCountOfResource, getResource } from './querier.js';
 
 /**
- * case 1: blank canvas show the default Ocellus page
+ * case 1: blank canvas shows the default Ocellus page
  */
 const loadBlankWebSite = () => {
     log.info('loadBlankWebSite()');
-    listeners.addListeners();
+    addListeners();
+    updatePlaceHolder('images');
 }
 
 /**
- * case 2: click on [go] button get query results and render the page
+ * case 2: click on [go] button gets query results and renders the page
  */
 const submitForm = () => {
     log.info('submitForm()');
     const qs = form2qs();
     updateUrl(qs);
-    getImages(qs);
+    getResource(qs);
 }
 
 /**
@@ -30,660 +29,150 @@ const submitForm = () => {
 const loadBookmarkedWebSite = (qs) => {
     log.info('loadBookmarkedWebSite(qs)');
     log.info(`- qs: ${qs}`);
-    loadBlankWebSite();
+    addListeners();
     qs2form(qs);
-    getImages(qs);
+
+    // get the qs from the form so hidden fields such as page and size 
+    // are also included properly in the qs
+    qs = form2qs();
+    getResource(qs);
 }
 
-// convert form inputs to queryString
+/**
+ * convert form inputs to searchParams. All possible inputs
+ * are as follows along with their defaults:
+ * 
+ * page: 1
+ * size: 30
+ * resource: images
+ * q: <no default>
+ * <many others> (see globals.validZenodeo)
+ * refreshCache: <no default>
+ * go: go
+ * 
+ */
 const form2qs = () => {
     log.info('- form2qs()');
 
     const sp = new URLSearchParams();
 
-    // const validFormFields = [
-    //     'page',
-    //     'size',
-    //     'source',
-    //     'q',
-    //     'refreshCache'
-    // ];
+    Array.from($$('form input.query'))
+        .filter(i => i.value)
+        .forEach(i => {
+            
+            let key = i.name;
+            let val = i.value;
 
-    globals.validFormFields.forEach(f => {
-        const fld = $(`input[name=${f}`);
-        const val = fld.value;
+            if (i.name === 'q') {
+                const spTmp = new URLSearchParams(i.value);
 
-        if (f === 'q') {
-            const spTmp = new URLSearchParams(val);
-            spTmp.forEach((v, k) => {
-                if (v === '') {
-                    sp.append('q', k);
-                }
-                else {
-                    sp.append(k, v);
-                }
-            });
-        }
-        else {
-            if (f === 'refreshCache' && fld.checked) {
-                sp.append('refreshCache', true);
-            }
-            else if (f === 'source' && fld.checked) {
-                sp.append('source', val);
+                spTmp.forEach((v, k) => {
+                    if (v === '') {
+                        key = 'q';
+                        val = k;
+                    }
+                    else {
+                        key = k;
+                        val = v;
+                    }
+
+                    sp.append(key, val);
+                });
             }
             else {
-                sp.append(f, val);
-            }
-        }
-    });
+                
+                if ((i.type === 'radio' || i.type === 'checkbox')) {
+                    if (i.checked || i.checked === 'true') {
+                        sp.append(key, val);
+                    }
+                }
+                else {
+                    sp.append(key, val);
+                }
 
-    return sp.toString();
+            }
+        });
+
+    const qs = sp.toString();
+    return qs;
 }
 
-// convert queryString to form inputs
+/**
+ * convert queryString to form inputs. Right now qs2form() fills 
+ * only the normal search form. TODO: be able to fill fancy search
+ * form as well.
+ */
 const qs2form = (qs) => {
-    log.info('- qs2form(qs)');
-    log.info(`  - qs: ${qs}`);
-
-    //const inputs = {};
+    log.info(`- qs2form(qs)
+    - qs: ${qs}`);
 
     const sp = new URLSearchParams(qs);
 
     // we don't want 'refreshCache' in bookmarked queries
     sp.delete('refreshCache');
 
-    if (sp.has('grid')) {
-        const grid = sp.get('grid');
-        if (grid === 'small') {
-            figureSize = 100;
-        }
-    }
+    // temp array to store values for input field 'q'
+    const q = [];
 
-    let q = [];
     sp.forEach((val, key) => {
-        if (globals.notq.includes(key)) {
-            if (key === 'source') {
-                const sources = $$('input[name=source]');
-                sources.forEach(s => {
-                    if (s.value === val) {
-                        s.checked = true;
-                    }
-                })
-            }
-        }
-        else {
-            let qt = key;
 
-            if (val) {
-                qt = key === 'q' ? val : `${key}=${val}`;
-                // if (key === 'q') {
-                //     q.push(val);
-                // }
-                // else {
-                //     q.push(`${key}=${val}`);
-                // }
-            }
-            // else {
-            //     q.push(key);
-            // }
+        // ignore all keys that are not valid for Zenodeo
+        if (globals.params.validZenodeo.includes(key)) {
 
-            q.push(qt);
+            // for keys that won't go into 'q'
+            if (globals.params.notValidQ.includes(key)) {
+
+                if (key === 'resource') {
+                    Array.from($$('input[name=resource]'))
+                        .filter(i => i.value === val)[0].checked = "true";
+                }
+                else {
+                    $(`input[name=${key}]`).value = val;
+                }
+
+            }
+
+            // all the keys that will go into 'q'
+            else {
+
+                // default value
+                let value = key;
+    
+                if (val) {
+                    value = key === 'q' 
+                        ? val 
+                        : `${key}=${val}`;
+                }
+    
+                q.push(value);
+            }
+
         }
+        
     });
 
     $('#q').value = q.join('&');
 }
 
+const updatePlaceHolder = async (resource) => {
+    const source = resource === 'images'
+        ? 'zenodoImages'
+        : 'zenodeoTreatments';
+
+    const count = await getCountOfResource(source);
+    $('#help-msg').innerText = `search ${count} ${resource}`;
+}
+
 const updateUrl = (qs) => {
     log.info('- updateUrl(qs)');
-    log.info(`  - qs: ${qs}`);
-
+    //const qs = sp.toString();
     history.pushState('', null, `?${qs}`);
 }
 
-const getImages = async function(qs) {
-    log.info('- getImages(qs)');
-    log.info(`  - qs: ${qs}`);
-
-    const sp = new URLSearchParams(qs);
-    const source = sp.get('source');
-
-    // we don't need the following keys in the search
-    const notsp = [ 'source', 'grid' ];
-    notsp.forEach(n => sp.delete(n));
-
-    /*
-        a qs can look like so
-
-        `phylogeny&keyword=plantae`
-
-        in the above, 'phylogeny' is a key with 
-        no val, so we will use that as 'q'
-    */
-    sp.forEach((v, k) => {
-        if (!v) { 
-            sp.set('q', k); 
-            sp.delete(k) 
-        }
-    });
-
-    /*
-        make copies of the searchparams, one for images
-        and another for treatments
-    */
-    const sp_i = new URLSearchParams(sp.toString());
-    const sp_t = new URLSearchParams(sp.toString());
-
-    sp_i.forEach((v, k) => {
-        if (!globals.validZenodo.includes(k)) {
-            sp_i.delete(k);
-        }
-    })
-
-    sp_t.forEach((v, k) => {
-        if (!globals.validZenodeo.includes(k)) {
-            sp_t.delete(k);
-        }
-    })
-
-    const imageQueryString = sp_i.toString();
-    const treatmentQueryString = sp_t.toString();
-
-    const queries = [];
-
-    const imageQuery = {
-        resource: 'images',
-        queryString: imageQueryString
-    };
-
-    const treatmentQuery = {
-        //resource: 'treatments',
-        //queryString: `${treatmentQueryString}&httpUri=ne()&cols=treatmentTitle&cols=zenodoDep&cols=httpUri&cols=captionText`
-        resource: 'treatmentimages',
-        queryString: `${treatmentQueryString}&cols=httpUri&cols=treatmentTitle&cols=zenodoDep&cols=treatmentId&cols=captionText`
-    }
-
-    if (source === 'all') {
-        queries.push(
-            getResource(imageQuery), 
-            getResource(treatmentQuery)
-        );
-    }
-    else if (source === 'Zenodo') {
-        queries.push(getResource(imageQuery));
-    }
-    else if (source === 'treatments') {
-        queries.push(getResource(treatmentQuery));
-    }
-    
-    const page = sp.get('page');
-    const size = sp.get('size');
-
-    Promise.all(queries)
-        .then(results => {
-            const res = {
-                prev: page > 1 ? page - 1 : 1,
-                next: parseInt(page) + 1,
-                size: size,
-                count: 0,
-                recs: []
-            };
-
-            results.forEach(r => {
-                if (typeof(r) != 'undefined') {
-                    res.recs.push(...r.recs);
-                    res.count += r.count;
-
-                    res.cacheHit = r.cacheHit;
-                }
-            })
-
-            return res;
-        })
-        .then(results => {
-            const figures = [];
-
-            results.recs.forEach(r => {
-                const figure = makeFigure({
-                    figureSize, 
-                    treatmentId: r.treatmentId, 
-                    title: r.title,
-                    zenodoRec: r.zenodoRec, 
-                    uri: r.uri,
-                    caption: r.caption
-                });
-
-                figures.push(figure);
-            });
-
-            renderPage({
-                figureSize,
-                figures,
-                qs, 
-                count: results.count, 
-                prev: results.prev, 
-                next: results.next,
-                cacheHit: results.cacheHit
-            });
-        })
+export { 
+    loadBlankWebSite, 
+    submitForm, 
+    loadBookmarkedWebSite, 
+    updatePlaceHolder,
+    updateUrl
 }
-
-const getResource = async ({ resource, queryString }) => {
-    log.info('- getResource()');
-    log.info(`  - resource: ${resource}`);
-    log.info(`  - queryString: ${queryString}`);
-
-    const url = `${globals.server}/${resource}?${queryString}`;
-    const response = await fetch(url);
-
-    // if HTTP-status is 200-299
-    if (response.ok) {
-        const json = await response.json();
-        const records = json.item.result.records;
-
-        const images = {
-            count: 0,
-            recs: [],
-            prev: '',
-            next: '',
-            cacheHit: json.cacheHit || false
-        };
-
-        if (records) {
-            images.count = images.count + json.item.result.count;
-
-            records.forEach(r => {
-                if (resource === 'images') {
-                    let thumb = '/img/kein-preview.png';
-                    if ('thumbs' in r.links) {
-                        thumb = r.links.thumbs[figureSize];
-                    }
-
-                    images.recs.push({
-                        treatmentId: '',
-                        title: r.metadata.title,
-                        zenodoRec: r.id,
-                        uri: thumb,
-                        caption: r.metadata.description
-                    })
-                }
-                else if (resource === 'treatmentimages') {
-
-                    /*
-                        Most figures are on Zenodo, but some are on Pensoft,
-                        so the url has to be adjusted accordingly
-                    */
-                    const id = r.httpUri.split('/')[4];
-                    const uri = r.httpUri.indexOf('zenodo') > -1 ? 
-                        `${globals.zenodoUri}/${id}/thumb${figureSize}` : 
-                        r.httpUri;
-
-                    images.recs.push({
-                        treatmentId: r.treatmentId,
-                        title: r.treatmentTitle,
-                        zenodoRec: r.zenodoDep,
-                        uri,
-                        caption: r.captionText
-                    })
-                }
-            })
-
-            return images;
-        }
-    }
-
-    // throw an error
-    else {
-        alert("HTTP-Error: " + response.status);
-    }
-}
-
-const makeFigure = ({ figureSize, treatmentId, title, zenodoRec, uri, caption }) => {
-    let zenodoLink = '';
-
-    if (zenodoRec) {
-        zenodoLink = `<a href="${globals.zenodoUri}/${zenodoRec}" target="_blank">more on Zenodo</a><br></br>`;
-    }
-
-    let treatmentReveal = '';
-    let treatmentLink = '';
-
-    if (treatmentId) {
-        treatmentReveal = `<div class="treatmentId reveal" data-reveal="${treatmentId}">T</div>`;
-        treatmentLink = `<a href="${globals.tbUri}/${treatmentId}" target="_blank">more on TreatmentBank</a>`;
-    }
-
-    const onerror = `this.onerror=null; setTimeout(() => { this.src='${uri}' }, 1000);`;
-    const img = `<img src="img/bug.gif" width="${figureSize}" data-src="${uri}" class="lazyload" data-recid="${treatmentId}" onerror="${onerror}">`
-    
-    let imageLink = '';
-    if (treatmentLink) {
-        imageLink = `<a href="${globals.tbUri}/${treatmentId}" target="_blank">${img}</a>`;
-    }
-    else if (zenodoLink) {
-        imageLink = `<a href="${globals.zenodoUri}/${zenodoRec}" target="_blank">${img}</a>`;
-    }
-
-    // let figcaptionClass = 'noblock';
-    // if (figureSize === 250) {
-    //     figcaptionClass = 'visible';
-    // }
-    const figcaptionClass = figureSize === 250 
-        ? 'visible' 
-        : 'noblock';
-    
-    return `<figure class="figure-${figureSize} ${treatmentId ? 'tb' : ''}">
-    <div class="switches">
-        ${treatmentReveal}
-        <div class="close"></div>
-    </div>
-    ${imageLink}
-    <figcaption class="${figcaptionClass}">
-        <a class="transition-050">Zenodo ID: ${zenodoRec}</a>
-        <div class="closed">
-            <b class="figTitle">${title}</b><br>
-            ${caption}<br>
-            ${zenodoLink}
-            ${treatmentLink}
-        </div>
-    </figcaption>
-</figure>`
-}
-
-const renderPage = ({ figureSize, figures, qs, count, prev, next, cacheHit }) => {
-    log.info(`- renderPage()
-- figureSize: ${figureSize}px
-- figures: ${figures.length} figures
-- qs: ${qs}
-- count: ${count}
-- prev: ${prev}
-- next: ${next}`);
-
-    $('#grid-images').classList.add(`columns-${figureSize}`);
-
-    renderFigures(figures, qs, prev, next);
-    renderSearchCriteria(qs, count, cacheHit);
-}
-
-const renderFigures = (figures, qs, prev, next) => {
-    log.info('- renderFigures()');
-
-    $('#throbber').classList.add('nothrob');
-
-    if (figures.length) {
-        $('#grid-images').innerHTML = figures.join('');
-        renderPager(qs, prev, next);
-        listeners.addListenersToFigcaptions();
-        listeners.addListenersToFigureTypes();
-    }
-    // else {
-    //     $('#grid-images').innerHTML = '<p class="nada">sorry, no images found</p>';
-    // }
-
-    
-}
-
-const renderPager = (qs, prev, next) => {
-    log.info('- renderPager()');
-    log.info(`  - qs: ${qs}`);
-    log.info(`  - prev: ${prev}`);
-    log.info(`  - next: ${next}`);
-
-    const sp = new URLSearchParams(qs);
-    sp.delete('page');
-
-    $('#pager').innerHTML = `<a href="?${sp.toString()}&page=${prev}">prev</a> <a href="?${sp.toString()}&page=${next}">next</a>`;
-    $('#pager').classList.add('filled');
-    listeners.addListenersToPagerLinks();
-}
-
-const renderSearchCriteria = (qs, count, cacheHit) => {
-    log.info('- renderSearchCriteria(qs, count)');
-    log.info(`  - qs: ${qs}`);
-    log.info(`  - count: ${count}`);
-
-    const searchParams = new URLSearchParams(qs);
-    const page = searchParams.get('page');
-    const size = searchParams.get('size');
-    const from = ((page - 1) * size) + 1;
-    let to = parseInt(from) + parseInt(size - 1);
-    if (to > count) {
-        to = count;
-    }
-
-    if (!count) {
-        count = 'sorry, no';
-    }
-
-    const criteria = [];
-    globals.notInSearchCriteria.forEach(p => searchParams.delete(p));
-    
-    searchParams.forEach((v, k) => {
-        let c;
-
-        if (k === 'q') {
-            c = `<span class="crit-key">${v}</span> is in the text`;
-        }
-        else if (k === 'keywords') {
-            c = `<span class="crit-key">keyword</span> is <span class="crit-val">${v}</span>`;
-        }
-        else {
-            c = `<span class="crit-key">${k}</span> is <span class="crit-val">${v}</span>`;
-        }
-
-        criteria.push(c);
-    })
-
-    let str;
-    const len = criteria.length;
-
-    if (len === 1) {
-        str = criteria[0];
-    }
-    else if (len === 2) {
-        str = `${criteria[0]} and ${criteria[1]}`;
-    }
-    else {
-        str = `${criteria.slice(0, len - 2).join(', ')}, and ${criteria[len - 1]}`;
-    }
-
-    /*
-    **1107** records found where **hake** is in the text… **19** unique images from the first **30** records are shown below.
-    **1107** records found where **hake** is in the text… **27** unique images from records **31–60**  are shown below.
-    */
-    //… <span class="crit-count">${globals.results.figures.length}</span> unique images from records ${from}–${to} are shown below
-    //const aboutCount = count - (count % 5);
-    str = `<span class="crit-count">${count}</span> images found where ${str}`;
-    str += cacheHit ? '<span aria-label="cache hit" data-pop="top" data-pop-no-shadow data-pop-arrow>💥</span>' : '';
-    
-    $('#search-criteria').innerHTML = str;
-}
-
-const initializeFancySearch = (searchType) => {
-
-    const doSomethingWithQuery = function(query) {
-        query.source = 'treatments';
-
-        const sp = new URLSearchParams(query);
-
-        const validFormFields = [
-            'page',
-            'size',
-            'refreshCache'
-        ];
-
-        validFormFields.forEach(f => {
-            const fld = $(`input[name=${f}`);
-            const val = fld.value;
-
-            if (f === 'refreshCache' && fld.checked) {
-                sp.append('refreshCache', true);
-            }
-            else {
-                sp.append(f, val);
-            }
-            
-        });
-
-        const qs = sp.toString();
-        updateUrl(qs);
-        getImages(qs);
-    };
-
-    const cbMaker = (facet) => {
-        return async (response) => {
-            const json = await response.json();
-            const res = [];
-
-            if (json.item.result.records) {
-                json.item.result.records.forEach(r => res.push(r[facet]));
-            }
-            else {
-                res.push('nothing found… please try again');
-            }
-
-            return res;
-        }
-    }
-
-    const yearsArray = (from, to) => {
-        const length = to - from;
-        return Array.from({ length }, (_, index) => index + from)
-            .map(e => String(e));
-    }
-
-    /**
-     * 'values' can be
-     *      - an empty string
-     *      - an array of options
-     *      - a function that returns an array of options
-     *      - an object with
-     *          - a URL that returns an array of options OR
-     *          - a URL + a callback that converts the results of the URL 
-     *            into an array of options
-     */
-    const facets = [
-        {   
-            "key": "text contains",
-            "actualKey": "q", 
-            "values": "", 
-            "prompt": "search the full text of treatments",
-            "noDuplicates": true 
-        },
-        {   "key": "title",
-            "actualKey": "title", 
-            "values": "", 
-            "prompt": "search within the title",
-            "noDuplicates": true 
-        },
-        {   "key": "authority", 
-            "actualKey": "authorityName",
-            "values": {
-                url: `${globals.server}/authors?q=`, 
-                cb: cbMaker('author')
-            },
-            "prompt": "type at least 3 letters to choose an author",
-            "noDuplicates": true 
-        },
-        // {   "key": "keywords", 
-        //     "actualKey": "keywords",
-        //     "values": {
-        //         url: `${server}/v3/keywords?q=`, 
-        //         cb: cbMaker('keyword')
-        //     },
-        //     "prompt": "type at least 3 letters to choose a keyword",
-        //     "noDuplicates": false 
-        // },
-        {   "key": "family", 
-            "actualKey": "family",
-            "values": {
-                url: `${globals.server}/families?q=`, 
-                cb: cbMaker('family')
-            },
-            "prompt": "type at least 3 letters to choose a family",
-            "noDuplicates": false 
-        },
-        {   "key": "kingdom", 
-            "actualKey": "kingdom",
-            "values": {
-                url: `${globals.server}/kingdoms?q=`, 
-                cb: cbMaker('kingdom')
-            },
-            "prompt": "type at least 3 letters to choose a kingdom",
-            "noDuplicates": false 
-        },
-        {   "key": "phylum", 
-            "actualKey": "phylum",
-            "values": {
-                url: `${globals.server}/phyla?q=`, 
-                cb: cbMaker('phylum')
-            },
-            "prompt": "type at least 3 letters to choose a phylum",
-            "noDuplicates": false 
-        },
-        {   "key": "class", 
-            "actualKey": "class",
-            "values": {
-                url: `${globals.server}/classes?q=`, 
-                cb: cbMaker('class')
-            },
-            "prompt": "type at least 3 letters to choose a class",
-            "noDuplicates": false 
-        },
-        {   "key": "genus", 
-            "actualKey": "genus",
-            "values": {
-                url: `${globals.server}/genera?q=`, 
-                cb: cbMaker('genus')
-            },
-            "prompt": "type at least 3 letters to choose a genus",
-            "noDuplicates": false 
-        },
-        {   "key": "order", 
-            "actualKey": "order",
-            "values": {
-                url: `${globals.server}/orders?q=`, 
-                cb: cbMaker('order')
-            },
-            "prompt": "type at least 3 letters to choose an order",
-            "noDuplicates": false 
-        },
-        {   "key": "taxon", 
-            "actualKey": "taxon",
-            "values": {
-                url: `${globals.server}/taxa?q=`, 
-                cb: cbMaker('taxon')
-            },
-            "prompt": "type at least 3 letters to choose a taxon",
-            "noDuplicates": false 
-        },
-        {   "key": "journal year", 
-            "actualKey": "journalYear",
-            "values": yearsArray(1995, 2022), 
-            "prompt": "pick a year of publication",
-            "noDuplicates": true 
-        },
-        // {   "key": "countries", 
-        //     "actualKey": "countries",
-        //     "values": [ "Afghanistan","Aland Islands","Albania","Algeria" ], 
-        //     "prompt": "choose a country",
-        //     "noDuplicates": false 
-        // }
-    ];
-
-    new fancySearch({
-        selector: $('#fs-container'), 
-        helpText: '',
-        facets,
-        cb: doSomethingWithQuery
-    });
-
-    $('#fancySearch').classList.add('hidden');
-    $('#fancySearch').classList.add('noblock');
-
-    if (searchType) {
-        listeners.toggleSearch();
-    }
-}
-
-export { loadBlankWebSite, submitForm, loadBookmarkedWebSite, initializeFancySearch }

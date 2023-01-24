@@ -35,7 +35,6 @@
  * 
  */
 
-
 /**
  * create an instance of fancySearch.
  * @constructor
@@ -69,7 +68,12 @@ const fancySearch = function({ selector, helpText, facets, cb }) {
         const el = document.createElement(element);
 
         for (let [key, val] of Object.entries(attribs)) {
-            el[key] = val;
+            if (key === 'innerText' || key === 'innerHTML') {
+                el[key] = val;
+            }
+            else {
+                el.setAttribute(key, val);
+            }
         }
 
         container.appendChild(el);
@@ -84,14 +88,14 @@ const fancySearch = function({ selector, helpText, facets, cb }) {
      */
     const makeFsContainer = function(selector, helpText) {
 
-        fsHelp = elementMaker({
-            element: 'div', 
-            attribs: {
-                id: 'fs-help', 
-                innerHTML: helpText
-            },
-            container: selector
-        });
+        // fsHelp = elementMaker({
+        //     element: 'div', 
+        //     attribs: {
+        //         id: 'fs-help', 
+        //         innerHTML: helpText
+        //     },
+        //     container: selector
+        // });
 
         const fsw = elementMaker({
             element: 'div', 
@@ -105,9 +109,63 @@ const fancySearch = function({ selector, helpText, facets, cb }) {
             element: 'div', 
             attribs: {
                 id: 'fs', 
-                className: 'fs'
+                'class': 'fs'
             },
             container: fsw
+        });
+
+        const sw = elementMaker({
+            element: 'div',
+            attribs: {
+                'class': 'switch resource regular pill green',
+                'aria-label': 'toggle resource',
+                'data-pop': 'right',
+                'data-pop-no-shadow': true,
+                'data-pop-arrow': true
+            },
+            container: fs
+        });
+
+        elementMaker({
+            element: 'input',
+            attribs: {
+                type: 'radio',
+                id: 'switchResource-3',
+                name: 'resource',
+                value: 'images',
+                'class': 'query',
+                autocomplete: 'off',
+            },
+            container: sw
+        });
+
+        elementMaker({
+            element: 'label',
+            attribs: {
+                "for": 'switchResource-3'
+            },
+            container: sw
+        });
+
+        elementMaker({
+            element: 'input',
+            attribs: {
+                type: 'radio',
+                id: 'switchResource-4',
+                name: 'resource',
+                value: 'treatments',
+                'class': 'query',
+                autocomplete: 'off',
+            },
+            container: sw
+        });
+
+        elementMaker({
+            element: 'label',
+            attribs: {
+                "for": 'switchResource-4'
+            },
+            container: sw
         });
 
         let fsb = elementMaker({
@@ -115,7 +173,7 @@ const fancySearch = function({ selector, helpText, facets, cb }) {
             attribs: {
                 id: 'fs-go', 
                 type: 'submit', 
-                className: 'fs-button-primary', 
+                'class': 'fs-button-primary', 
                 innerText: 'go'
             },
             container: fsw
@@ -139,7 +197,7 @@ const fancySearch = function({ selector, helpText, facets, cb }) {
         const fsp = elementMaker({
             element: 'div', 
             attribs: {
-                className: 'fs-param-empty'
+                'class': 'fs-param-empty'
             },
             container: fs
         });
@@ -150,7 +208,7 @@ const fancySearch = function({ selector, helpText, facets, cb }) {
         elementMaker({
             element: 'div', 
             attribs: {
-                className: 'fs-key fs-off'
+                'class': 'fs-key fs-off'
             },
             container: fsp
         });
@@ -161,7 +219,7 @@ const fancySearch = function({ selector, helpText, facets, cb }) {
         const fskInput = elementMaker({
             element: 'input', 
             attribs: {
-                className: 'fs-key-input',
+                'class': 'query fs-key-input',
                 placeholder: 'choose a key…'
             },
             container: fsp
@@ -173,7 +231,7 @@ const fancySearch = function({ selector, helpText, facets, cb }) {
         elementMaker({
             element: 'div', 
             attribs: {
-                className: 'fs-val fs-off'
+                'class': 'fs-val fs-off'
             },
             container: fsp
         });
@@ -184,7 +242,7 @@ const fancySearch = function({ selector, helpText, facets, cb }) {
         const fsvInput = elementMaker({
             element: 'input', 
             attribs: {
-                className: 'fs-val-input fs-off',
+                'class': 'query fs-val-input fs-off',
                 placeholder: 'choose a value…'
             },
             container: fsp
@@ -216,7 +274,7 @@ const fancySearch = function({ selector, helpText, facets, cb }) {
         const fsc = elementMaker({
             element: 'button',
             attribs: {
-                className: 'fs-cancel fs-off',
+                'class': 'fs-cancel fs-off',
                 type: 'reset',
                 innerHTML: '&#8855;'
             },
@@ -411,7 +469,7 @@ const fancySearch = function({ selector, helpText, facets, cb }) {
                     nextInput.focus();
                 }
                 else if (type === 'val') {
-                    fsHelp.innerHTML = helpText;
+                    //fsHelp.innerHTML = helpText;
     
                     const fsv = fsp.children[2];
                     

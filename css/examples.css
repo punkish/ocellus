@@ -1,6 +1,7 @@
 #search-help {
     position: relative;
-    float: left;
+    /* float: left; */
+    width: 24px;
     height: 24px;
     border: none;
     font-family: sans-serif;
@@ -8,7 +9,7 @@
     text-align: left;
     color: blue;
     text-decoration: underline;
-    margin-top: 10px;
+    /* margin-top: 10px; */
     /* min-width: 300px; */
 /*     text-align: middle; */
 }

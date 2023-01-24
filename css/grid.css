@@ -139,11 +139,15 @@ figure.figure-50 {
     width: 50px; 
     margin: 0 auto 10px auto;
 }
-
-figcaption {
-    font-size: 10px;
+figure.tb {
+    padding: 10px;
     font-family: sans-serif;
-    padding: 5px 5px 0 5px;
+    font-size: 12px;
+}
+figcaption {
+/*     font-size: 10px; */
+/*     font-family: sans-serif; */
+/*     padding: 5px 5px 0 5px; */
     text-align: left;
     cursor: pointer;
 }
