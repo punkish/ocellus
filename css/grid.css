@@ -156,6 +156,9 @@ figcaption div.closed {
     height: 0;
 }
 
+figcaption div.figTitle {
+    font-weight: 800;
+}
 figcaption div.open {
     height: 100%;
 }
@@ -243,6 +246,7 @@ div.close:hover:before {
     margin: 1rem;
 }
 .crit-count,
-.crit-key {
+.crit-key,
+.crit-val {
     font-weight: 800;
 }

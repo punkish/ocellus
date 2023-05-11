@@ -155,11 +155,7 @@ const qs2form = (qs) => {
 }
 
 const updatePlaceHolder = async (resource) => {
-    const source = resource === 'images'
-        ? 'zenodoImages'
-        : 'zenodeoTreatments';
-
-    const count = await getCountOfResource(source);
+    const count = await getCountOfResource(resource);
     $('#help-msg').innerText = `search ${count} ${resource}`;
 }
 

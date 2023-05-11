@@ -7,6 +7,7 @@ import { toggleSearch, toggleResource } from './listeners.js';
 import { loadBookmarkedWebSite, loadBlankWebSite, updateUrl } from './main.js';
 import { getResource } from './querier.js';
 
+// set loglevel to 'INFO' on local development machine and to 'ERROR' on prod
 const loglevel = window.location.hostname === 'localhost' 
     ? 'INFO'
     : 'ERROR';
@@ -16,12 +17,14 @@ log.level = log[loglevel];
 const init = () => {
     const loc = new URL(location);
     
-    // default searchType is normalSearch
+    // default searchType is normalSearch. Set it to fancySearch if #fs is 
+    // in URL hash
     const searchType = loc.hash === '#fs'
         ? 'fs'
         : 'ns';
 
     initializeFancySearch(searchType);
+
     if (searchType === 'fs') {
         toggleResource();
     }
@@ -36,9 +39,9 @@ const init = () => {
 }
 
 const initializeFancySearch = (searchType) => {
-    log.info(`initializing search type ${searchType}`);
+    log.info(`initializing fancySearch`);
 
-    const doSomethingWithQuery = function(query) {
+    const doSomethingWithQuery = (query) => {
         const sp = new URLSearchParams(query);
 
         // add resource, page and size from the form to the query
@@ -80,16 +83,15 @@ const initializeFancySearch = (searchType) => {
             .map(e => String(e));
     }
 
-    /**
-     * 'values' can be
-     *      - an empty string
-     *      - an array of options
-     *      - a function that returns an array of options
-     *      - an object with
-     *          - a URL that returns an array of options OR
-     *          - a URL + a callback that converts the results of the URL 
-     *            into an array of options
-     */
+    //
+    // 'values' can be
+    //      - an empty string
+    //      - an array of options
+    //      - a function that returns an array of options
+    //      - an object with
+    //          - a URL that returns an array of options OR
+    //          - a URL + a callback that converts the results of the URL 
+    //            into an array of options
     const facets = [
         {   
             "key": "text contains",
@@ -107,7 +109,7 @@ const initializeFancySearch = (searchType) => {
         {   "key": "authority", 
             "actualKey": "authorityName",
             "values": {
-                url: `${globals.server}/authors?q=`, 
+                url: `${globals.server}/treatmentAuthors?q=`, 
                 cb: cbMaker('author')
             },
             "prompt": "type at least 3 letters to choose an author",

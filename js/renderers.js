@@ -39,10 +39,10 @@ const makeTreatment = ({ figureSize, rec }) => {
 }
 
 const makeImage = ({ figureSize, rec }) => {
-    const img = `<img src="img/bug.gif" width="${rec.figureSize}" data-src="${rec.uri}" class="lazyload" data-recid="${rec.treatmentId}" onerror="this.onerror=null; setTimeout(() => { this.src='${rec.uri}' }, 1000);">`
+    const img = `<img src="img/bug.gif" width="${rec.figureSize}" data-src="${rec.uri}" class="lazyload" data-recid="${rec.treatmentId}" onerror="this.onerror=null; setTimeout(() => { this.src='${rec.uri}' }, 1000);">`;
 
     const zenodoLink = rec.zenodoRec
-        ? `<a href="${globals.zenodoUri}/${rec.zenodoRec}" target="_blank">more on Zenodo</a><br></br>`
+        ? `<a href="${globals.zenodoUri}/${rec.zenodoRec}" target="_blank">more on Zenodo</a>`
         : '';
 
     let treatmentReveal = '';
@@ -78,11 +78,12 @@ const makeImage = ({ figureSize, rec }) => {
     ${content}
     <figcaption class="${figcaptionClass}">
         <a class="transition-050">Zenodo ID: ${rec.zenodoRec}</a>
+        
         <div class="closed">
-            <b class="figTitle">${rec.title}</b><br>
-            ${rec.caption}<br>
-            ${zenodoLink}
-            ${treatmentLink}
+            <br>
+            <div class="figTitle">${rec.treatmentTitle}</div>
+            <p>${rec.caption}</p>
+            ${zenodoLink} ${treatmentLink}
         </div>
     </figcaption>
 </figure>`
@@ -168,14 +169,19 @@ const renderSearchCriteria = (qs, count, cacheHit) => {
     searchParams.forEach((v, k) => {
         let c;
 
-        if (k === 'q') {
-            c = `<span class="crit-key">${v}</span> is in the text`;
-        }
-        else if (k === 'keywords') {
-            c = `<span class="crit-key">keyword</span> is <span class="crit-val">${v}</span>`;
+        const match = v.match(/(?<operator>\w+)\((?<term>[\w\s]+)\)/);
+
+        if (match) {
+            const { operator, term } = match.groups;
+            c = `<span class="crit-key">${k}</span> ${operator.replace(/_/,' ')} <span class="crit-val">${term}</span>`;
         }
         else {
-            c = `<span class="crit-key">${k}</span> is <span class="crit-val">${v}</span>`;
+            if (k === 'q') {
+                c = `<span class="crit-key">${v}</span> is in the text`;
+            }
+            else {
+                c = `<span class="crit-key">${k}</span> is <span class="crit-val">${v}</span>`;
+            }
         }
 
         criteria.push(c);

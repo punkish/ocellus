@@ -2,12 +2,8 @@ import { $, $$ } from './utils.js';
 import { globals } from './globals.js';
 import { makeFigure, renderPage } from './renderers.js';
 
-const getCountOfResource = async (source) => {
-    if (!globals.cache[source]) {
-        const resource = source === 'zenodoImages'
-            ? 'images'
-            : 'treatments';
-
+const getCountOfResource = async (resource) => {
+    if (!globals.cache[resource]) {
         const url = `${globals.server}/${resource}?cols=`;
         const response = await fetch(url);
     
@@ -15,7 +11,7 @@ const getCountOfResource = async (source) => {
         if (response.ok) {
             const json = await response.json();
             const count = json.item.result.count;
-            globals.cache[source] = count;
+            globals.cache[resource] = count;
         }
     
         // throw an error
@@ -24,7 +20,7 @@ const getCountOfResource = async (source) => {
         }
     }
 
-    return globals.cache[source];
+    return globals.cache[resource];
 }
 
 const getResource = async (qs) => {
@@ -38,9 +34,6 @@ const getResource = async (qs) => {
     // save page and size to use later to update the results
     const page = sp.get('page');
     const size = sp.get('size');
-    // sp.delete('page');
-    // sp.delete('size');
-
     const grid = sp.get('grid') || 'normal';
     const figureSize = globals.figureSize[grid];
 
@@ -49,7 +42,7 @@ const getResource = async (qs) => {
 
     // a flag to decide whether or not images have to be 
     // retrived from Zenodo
-    let haveToGetImagesFromZenodo = true;
+    //let haveToGetImagesFromZenodo = true;
 
     // make an array from searchParams (sp) to iterate over
     // so we can safely remove keys from the sp
@@ -59,13 +52,13 @@ const getResource = async (qs) => {
 
             if (val) { 
 
-                // We haveToGetImagesFromZenodo only if 
-                // no other key besides 'q' is used. If any 
-                // key other than 'q' is used then we 
-                // set haveToGetImagesFromZenodo to false
-                if (key !== 'q') {
-                    haveToGetImagesFromZenodo = false;
-                }
+            //     // We haveToGetImagesFromZenodo only if 
+            //     // no other key besides 'q' is used. If any 
+            //     // key other than 'q' is used then we 
+            //     // set haveToGetImagesFromZenodo to false
+            //     if (key !== 'q') {
+            //         haveToGetImagesFromZenodo = false;
+            //     }
             }
 
             // a qs can look like so
@@ -87,55 +80,14 @@ const getResource = async (qs) => {
     });
 
     // let's define the cols to retrieve from Zenodeo
-    const cols = [ 'treatmentId', 'treatmentTitle', 'zenodoDep' ];
+    const cols = [ 
+        'treatmentId', 'treatmentTitle', 'zenodoDep', 'treatmentDOI', 
+        'articleTitle', 'articleAuthor', 'httpUri', 'captionText' 
+    ];
     
-    if (!haveToGetImagesFromZenodo) {
-
-        // adjust the defauls in case source is different
-        if (resource === 'treatments') {
-            cols.push(...[ 
-                'treatmentDOI', 'articleTitle', 'articleAuthor' 
-            ]);
-        }
-        else if (resource === 'images') {
-            cols.push(...[ 'httpUri', 'captionText' ]);
-        }
-    }
-    
-    const newQs = sp.toString();
-    const zQs = `${newQs}&${cols.map(c => `cols=${c}`).join('&')}`;
-    const queries = [];
-
-    if (resource === 'images') {
-        const q = {
-            source: 'treatmentimages',
-            queryString: zQs,
-            figureSize
-        }
-
-        queries.push(getResults(q));
-
-        if (haveToGetImagesFromZenodo) {
-
-            const q = {
-                source: 'images',
-                queryString: newQs,
-                figureSize
-            }
-
-            queries.push(getResults(q));
-        }
-    }
-    else {
-
-        const q = {
-            source: 'treatments',
-            queryString: zQs,
-            figureSize
-        }
-
-        queries.push(getResults(q));
-    }
+    const queryString = `${sp.toString()}&${cols.map(c => `cols=${c}`).join('&')}`;
+    const queries = [];    
+    queries.push(getResults({ resource, queryString, figureSize }))
 
     Promise.all(queries)
         .then(results => {
@@ -184,13 +136,13 @@ const getResource = async (qs) => {
         });
 }
 
-const getResults = async ({ source, queryString, figureSize }) => {
-    log.info(`- getResults({ source, queryString, figureSize })
-    - source: ${source}
+const getResults = async ({ resource, queryString, figureSize }) => {
+    log.info(`- getResults({ resource, queryString, figureSize })
+    - resource: ${resource}
     - queryString: ${queryString},
     - figureSize: ${figureSize}`);
 
-    const url = `${globals.server}/${source}?${queryString}`;
+    const url = `${globals.server}/${resource}?${queryString}`;
     const response = await fetch(url);
 
     // if HTTP-status is 200-299
@@ -199,10 +151,7 @@ const getResults = async ({ source, queryString, figureSize }) => {
         const records = json.item.result.records;
 
         const results = {
-            //source,
-            resource: source === 'treatments'
-                ? 'treatments'
-                : 'images',
+            resource,
             count: 0,
             recs: [],
             prev: '',
@@ -216,44 +165,53 @@ const getResults = async ({ source, queryString, figureSize }) => {
             records.forEach(r => {
                 const record = {};
 
-                if (source === 'images') {
+                // if (source === 'images') {
 
-                    // there is no treatmentId associated with 
-                    // Zenodo images
-                    record.treatmentId = '';
-                    record.title = r.metadata.title;
-                    record.zenodoRec = r.id;
+                //     // there is no treatmentId associated with 
+                //     // Zenodo images
+                //     record.treatmentId = r.treatmentId;
+                //     //record.title = r.metadata.title;
+                //     record.title = r.treatmentTitle;
+                //     record.zenodoRec = r.zenodoDep;
 
-                    // set a default thumbnail in case preview  
-                    // is not available on Zenodo
-                    record.uri = 'thumbs' in r.links 
-                        ? r.links.thumbs[figureSize]
-                        : '/img/kein-preview.png';
+                //     // set a default thumbnail in case preview  
+                //     // is not available on Zenodo
+                //     record.uri = 'thumbs' in r.links 
+                //         ? r.links.thumbs[figureSize]
+                //         : '/img/kein-preview.png';
 
-                    record.caption = r.metadata.description;
-                }
-                else if (source === 'treatmentimages') {
+                //     record.caption = r.metadata.description;
+                // }
+                //if (resource === 'images') {
                     record.treatmentId = r.treatmentId;
-                    record.title = r.treatmentTitle;
+                    record.treatmentTitle = r.treatmentTitle;
                     record.zenodoRec = r.zenodoDep;
+                    record.figureSize = figureSize;
 
-                    // Most figures are on Zenodo, but some are on
-                    // Pensoft, so adjust the url accordingly
+                    // Most figures are on Zenodo, so adjust their url 
+                    // accordingly
                     const id = r.httpUri.split('/')[4];
-                    record.uri = r.httpUri.indexOf('zenodo') > -1 
-                        ? `${globals.zenodoUri}/${id}/thumb${figureSize}` 
-                        : r.httpUri;
+
+                    // if the figure is on zenodo, show their thumbnails unless 
+                    // it is an svg, in which case, show it directly
+                    if (r.httpUri.indexOf('zenodo') > -1) {
+                        if (r.httpUri.indexOf('.svg') > -1) {
+                            record.uri = '/img/kein-preview.png';
+                        }
+                        else {
+                            record.uri = `${globals.zenodoUri}/${id}/thumb${figureSize}`;
+                        }
+                    }
+
+                    // but some are on Pensoft, so use the uri directly
+                    else {
+                        record.uri = r.httpUri;
+                    }
                     
                     record.caption = r.captionText;
-                }
-                else if (source === 'treatments') {
-                    record.treatmentId = r.treatmentId;
-                    record.title = r.treatmentTitle;
-                    record.zenodoRec = r.zenodoDep;
                     record.treatmentDOI = r.treatmentDOI;
                     record.articleTitle = r.articleTitle;
                     record.articleAuthor = r.articleAuthor;
-                }
 
                 results.recs.push(record);
             })
