@@ -17,12 +17,13 @@
     position: absolute;
     background-color: white;
     border: 1px solid lightgrey;
-    width: 100%;
+    margin-left: 10%;
+    width: 80%;
     padding: 10px;
     z-index: 999;
     box-shadow: 0 1px 8px 1px rgba(0, 0, 0, 0.3);
     font-family: sans-serif;
-    font-size: 12px;
+    font-size: 14px;
     text-align: left;
 }
 .examples > div {
@@ -39,11 +40,16 @@ summary {
     cursor: pointer;
 }
 button.example-insert {
-    border: none;
+    width: 100%;
+    border: 1px solid lightgrey;
+    padding: 10px;
+    margin: 2px;
+/*     border: none; */
     background-color: white;
     color: blue;
     text-decoration: underline;
-    font-size: 9px;
+    font-size: 12px;
+    text-align: left;
 }
 button.example-insert:hover {
     background-color: lightgrey;

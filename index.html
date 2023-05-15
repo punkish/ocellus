@@ -112,6 +112,23 @@
                 <p>Click on the link to try the search<br><em><b>Note:</b> These extended syntax queries are currently only possible against treatments.</em></p>
     
                 <details open>
+                    <summary>all images from the article with the given DOI (either of the two below will work)</summary>
+                    <button class="example-insert">10.11646/zootaxa.5284.3.7</button><br>
+                    <button class="example-insert">articleDOI=10.11646/zootaxa.5284.3.7</button>
+                </details>
+                <details>
+                    <summary>all images from articles published in the European Journal of Taxonomy</summary>
+                    <button class="example-insert">journalTitle=eq(European Journal of Taxonomy)</button>
+                </details>
+                <details>
+                    <summary>all images from article whose title starts with "Morphology and taxonomic assessment"</summary>
+                    <button class="example-insert">articleTitle=starts_with(Morphology and taxonomic assessment)</button>
+                </details>
+                <details>
+                    <summary>all images from treatments with materialCitations found within 10 kms of a given lat/lng</summary>
+                    <button class="example-insert">geolocation=within(radius:10, units:'kilometers', lat:40.21, lng:-120.33)</button>
+                </details>
+                <details>
                     <summary>all fishes in articles published since 2021-12-21</summary>
                     <button class="example-insert">class=Actinopterygii&publicationDate=since(2021-12-21)</button>
                 </details>
