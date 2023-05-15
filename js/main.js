@@ -64,12 +64,27 @@ const form2qs = () => {
             let val = i.value;
 
             if (i.name === 'q') {
+
                 const spTmp = new URLSearchParams(i.value);
+
+                
+
+                
 
                 spTmp.forEach((v, k) => {
                     if (v === '') {
-                        key = 'q';
-                        val = k;
+
+                        // check if the input looks like a DOI
+                        const match = val.match(/(^10\.[0-9]{4,}.*)/);
+                        if (match && match[1]) {
+                            key = 'articleDOI';
+                            val = match[1];
+                        }
+                        else {
+                            key = 'q';
+                            val = k;
+                        }
+                        
                     }
                     else {
                         key = k;
@@ -80,7 +95,7 @@ const form2qs = () => {
                 });
             }
             else {
-                
+        
                 if ((i.type === 'radio' || i.type === 'checkbox')) {
                     if (i.checked || i.checked === 'true') {
                         sp.append(key, val);
