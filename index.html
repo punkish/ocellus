@@ -112,9 +112,17 @@
                 <p>Click on the link to try the search<br><em><b>Note:</b> These extended syntax queries are currently only possible against treatments.</em></p>
     
                 <details open>
-                    <summary>all images from the article with the given DOI (either of the two below will work)</summary>
+                    <summary>images from the article with the given DOI (either of the two below will work)</summary>
                     <button class="example-insert">10.11646/zootaxa.5284.3.7</button><br>
                     <button class="example-insert">articleDOI=10.11646/zootaxa.5284.3.7</button>
+                </details>
+                <details open>
+                    <summary><img src="img/icon_fts_all.svg" width="30" align="top"> images from treatments with the given term anywhere in the text (a fulltext search against the entire treatment)</summary>
+                    <button class="example-insert">phylogeny</button><br>
+                </details>
+                <details open>
+                    <summary><img src="img/icon_fts_caption.svg" width="30" align="top"> images with the given term anywhere in the text of the image caption (a fulltext search against just the image caption)</summary>
+                    <button class="example-insert">captionText=phylogeny</button><br>
                 </details>
                 <details>
                     <summary>all images from articles published in the European Journal of Taxonomy</summary>
