@@ -81,7 +81,7 @@ table {
 figure {
     position: relative;
     height: auto;
-    border: 1px solid lightgrey;
+    border: 1px solid #444;
     padding: 0;
     opacity: 1;
 
