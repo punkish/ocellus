@@ -127,6 +127,7 @@ const globals = {
         // the following are the valid query params for Zenodeo
         validZenodeo: [
             'httpUri',
+            'caption',
             'captionText',
             'treatmentId',
             'treatmentTitle',

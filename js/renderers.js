@@ -1,7 +1,8 @@
 import { $, $$ } from './utils.js';
 import { globals } from './globals.js';
 import { 
-    addListenersToFigcaptions, 
+    //addListenersToFigcaptions, 
+    addListenersToFigDetails,
     addListenersToFigureTypes, 
     addListenersToPagerLinks 
 } from './listeners.js';
@@ -42,14 +43,14 @@ const makeImage = ({ figureSize, rec }) => {
     const img = `<img src="img/bug.gif" width="${rec.figureSize}" data-src="${rec.uri}" class="lazyload" data-recid="${rec.treatmentId}" onerror="this.onerror=null; setTimeout(() => { this.src='${rec.uri}' }, 1000);">`;
 
     const zenodoLink = rec.zenodoRec
-        ? `<a href="${globals.zenodoUri}/${rec.zenodoRec}" target="_blank">more on Zenodo</a>`
+        ? `Zenodo ID: <a href="${globals.zenodoUri}/${rec.zenodoRec}" target="_blank">more on Zenodo</a>`
         : '';
 
-    let treatmentReveal = '';
+    //let treatmentReveal = '';
     let treatmentLink = '';
 
     if (rec.treatmentId) {
-        treatmentReveal = `<div class="treatmentId reveal" data-reveal="${rec.treatmentId}">T</div>`;
+        //treatmentReveal = `<div class="treatmentId reveal" data-reveal="${rec.treatmentId}">T</div>`;
         treatmentLink = `<a href="${globals.tbUri}/${rec.treatmentId}" target="_blank">more on TreatmentBank</a>`;
     }
 
@@ -70,24 +71,28 @@ const makeImage = ({ figureSize, rec }) => {
         ? 'tb' 
         : '');
 
+    const lenTitle = 30;
+    const titleAbbrev = rec.treatmentTitle.length > lenTitle
+        ? `${rec.treatmentTitle.substring(0, lenTitle)}…`
+        : rec.treatmentTitle;
+
     return `<figure class="${figureClass}">
     <div class="switches">
-        ${treatmentReveal}
         <div class="close"></div>
     </div>
     ${content}
     <figcaption class="${figcaptionClass}">
-        <a class="transition-050">Zenodo ID: ${rec.zenodoRec}</a>
-        
-        <div class="closed">
-            <br>
-            <div class="figTitle">${rec.treatmentTitle}</div>
-            <p>${rec.caption}</p>
-            ${zenodoLink} ${treatmentLink}
-        </div>
+        <details>
+            <summary class="figTitle" data-title="${rec.treatmentTitle}">${titleAbbrev}</summary>
+            <p>${rec.captionText}</p>
+            ${treatmentLink}<br>
+            ${zenodoLink}
+        </details>
     </figcaption>
 </figure>`
 }
+
+
 
 const makeFigure = ({ resource, figureSize, rec }) => {
     const obj = { figureSize, rec };
@@ -118,7 +123,8 @@ const renderFigures = (figures, qs, prev, next) => {
     if (figures.length) {
         $('#grid-images').innerHTML = figures.join('');
         renderPager(qs, prev, next);
-        addListenersToFigcaptions();
+        //addListenersToFigcaptions();
+        addListenersToFigDetails();
         addListenersToFigureTypes();
     }
     // else {

@@ -263,26 +263,25 @@ const reveal = (e) => {
     e.preventDefault();
 }
 
-const addListenersToFigcaptions = () => {
-    const figcaptions = $$('figcaption > a');
-    for (let i = 0, j = figcaptions.length; i < j; i++) {
-        figcaptions[i].addEventListener('click', toggleFigcaption);
-    }
-}
+const addListenersToFigDetails = () => {
+    const figDetails = $$('figcaption > details');
 
-const toggleFigcaption = (e) => {
-    const figcaptions = $$('figcaption');
-    
-    // first, close all figcaptions 
-    for (let i = 0, j = figcaptions.length; i < j; i++) {
-        figcaptions[i].querySelector('div').classList.remove('open');
-        figcaptions[i].querySelector('div').classList.add('closed');
-    }
+    for (let i = 0, j = figDetails.length; i < j; i++) {
+        figDetails[i].addEventListener('toggle', (event) => {
+            const summary = event.target.querySelector('summary');
+            const fullText = summary.dataset.title;
+            const summaryText = fullText.length > 30
+                ? `${fullText.substring(0, 30)}…`
+                : fullText;
 
-    // now open the clicked figcaption
-    const fc = e.target.parentElement;
-    fc.querySelector('div').classList.remove('closed');
-    fc.querySelector('div').classList.add('open');
+            if (figDetails[i].open) {
+                summary.innerText = fullText;
+            } 
+            else {
+                summary.innerText = summaryText;
+            }
+        });
+    }
 }
 
 const addListenersToPagerLinks = () => {
@@ -298,7 +297,7 @@ const addListenersToFigureTypes = () => {
 
 export { 
     addListeners, 
-    addListenersToFigcaptions, 
+    addListenersToFigDetails,
     addListenersToPagerLinks, 
     addListenersToFigureTypes,
     toggleSearch,

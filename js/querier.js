@@ -82,7 +82,7 @@ const getResource = async (qs) => {
     // let's define the cols to retrieve from Zenodeo
     const cols = [ 
         'treatmentId', 'treatmentTitle', 'zenodoDep', 'treatmentDOI', 
-        'articleTitle', 'articleAuthor', 'httpUri', 'captionText' 
+        'articleTitle', 'articleAuthor', 'httpUri', 'caption'
     ];
     
     const queryString = `${sp.toString()}&${cols.map(c => `cols=${c}`).join('&')}`;
@@ -208,7 +208,7 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                         record.uri = r.httpUri;
                     }
                     
-                    record.caption = r.captionText;
+                    record.captionText = r.captionText;
                     record.treatmentDOI = r.treatmentDOI;
                     record.articleTitle = r.articleTitle;
                     record.articleAuthor = r.articleAuthor;
