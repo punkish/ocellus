@@ -399,7 +399,7 @@ const fancySearch = function({ selector, helpText, facets, cb }) {
                     matches = values();
                 }
                 else if (typeof(values) === 'object' && values.url) {
-                    const response = await fetch(`${values.url}${term}`);
+                    const response = await fetch(`${values.url}${term}*`);
 
                     if (!response.ok) {
                         throw Error("HTTP-Error: " + response.status)

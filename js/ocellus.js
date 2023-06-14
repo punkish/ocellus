@@ -101,15 +101,15 @@ const initializeFancySearch = (searchType) => {
             "noDuplicates": true 
         },
         {   "key": "title",
-            "actualKey": "title", 
+            "actualKey": "treatmentTitle", 
             "values": "", 
-            "prompt": "search within the title",
+            "prompt": "search for treatmentTitles starting with the search term",
             "noDuplicates": true 
         },
         {   "key": "authority", 
             "actualKey": "authorityName",
             "values": {
-                url: `${globals.server}/treatmentAuthors?q=`, 
+                url: `${globals.server}/treatmentAuthors?treatmentAuthor=`, 
                 cb: cbMaker('author')
             },
             "prompt": "type at least 3 letters to choose an author",
@@ -127,7 +127,7 @@ const initializeFancySearch = (searchType) => {
         {   "key": "family", 
             "actualKey": "family",
             "values": {
-                url: `${globals.server}/families?q=`, 
+                url: `${globals.server}/families?family=`, 
                 cb: cbMaker('family')
             },
             "prompt": "type at least 3 letters to choose a family",
@@ -136,7 +136,7 @@ const initializeFancySearch = (searchType) => {
         {   "key": "kingdom", 
             "actualKey": "kingdom",
             "values": {
-                url: `${globals.server}/kingdoms?q=`, 
+                url: `${globals.server}/kingdoms?kingdom=`, 
                 cb: cbMaker('kingdom')
             },
             "prompt": "type at least 3 letters to choose a kingdom",
@@ -145,7 +145,7 @@ const initializeFancySearch = (searchType) => {
         {   "key": "phylum", 
             "actualKey": "phylum",
             "values": {
-                url: `${globals.server}/phyla?q=`, 
+                url: `${globals.server}/phyla?phylum=`, 
                 cb: cbMaker('phylum')
             },
             "prompt": "type at least 3 letters to choose a phylum",
@@ -154,7 +154,7 @@ const initializeFancySearch = (searchType) => {
         {   "key": "class", 
             "actualKey": "class",
             "values": {
-                url: `${globals.server}/classes?q=`, 
+                url: `${globals.server}/classes?class=`, 
                 cb: cbMaker('class')
             },
             "prompt": "type at least 3 letters to choose a class",
@@ -163,7 +163,7 @@ const initializeFancySearch = (searchType) => {
         {   "key": "genus", 
             "actualKey": "genus",
             "values": {
-                url: `${globals.server}/genera?q=`, 
+                url: `${globals.server}/genera?genus=`, 
                 cb: cbMaker('genus')
             },
             "prompt": "type at least 3 letters to choose a genus",
@@ -172,7 +172,7 @@ const initializeFancySearch = (searchType) => {
         {   "key": "order", 
             "actualKey": "order",
             "values": {
-                url: `${globals.server}/orders?q=`, 
+                url: `${globals.server}/orders?order=`, 
                 cb: cbMaker('order')
             },
             "prompt": "type at least 3 letters to choose an order",
@@ -181,7 +181,7 @@ const initializeFancySearch = (searchType) => {
         {   "key": "taxon", 
             "actualKey": "taxon",
             "values": {
-                url: `${globals.server}/taxa?q=`, 
+                url: `${globals.server}/taxa?taxon=`, 
                 cb: cbMaker('taxon')
             },
             "prompt": "type at least 3 letters to choose a taxon",

@@ -92,8 +92,6 @@ const makeImage = ({ figureSize, rec }) => {
 </figure>`
 }
 
-
-
 const makeFigure = ({ resource, figureSize, rec }) => {
     const obj = { figureSize, rec };
     return resource === 'images'
