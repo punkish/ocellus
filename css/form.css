@@ -175,3 +175,29 @@ input.ns-val-input:focus {
     font-size: small;
     text-align: left;
 }
+.qs {
+    background: url(/img/icons.svg);
+    display: inline-block;
+    height: 32px;
+    width: 31px;
+    outline: none;
+    border: none;
+}
+#ants {
+    background-position: -1px 0px;
+}
+#fishes {
+    background-position: -31px 0px;
+}
+#spiders {
+    background-position: -61px 0px;
+}
+#shrimp {
+    background-position: -91px 0px;
+}
+#beetles {
+    background-position: -121px 0px;
+}
+#examples {
+    background-position: -151px 0px;
+}
