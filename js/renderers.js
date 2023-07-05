@@ -263,13 +263,10 @@ const termFreqWithDygraphs = (ctx, width, height, series, termFreq) => {
     });
 }
 
-const termFreqWithChartjs = (ctx, width, height, series, termFreq) => {
-    const canvas = document.createElement('canvas');
-    canvas.id = "termFreq";
-    canvas.width = width;
-    canvas.height = height;
-    ctx.appendChild(canvas);
+let termFreqChart;
 
+const termFreqWithChartjs = (ctx, width, height, series, termFreq) => {
+    
     const config = {
         type: 'line',
         data: {
@@ -346,79 +343,20 @@ const termFreqWithChartjs = (ctx, width, height, series, termFreq) => {
         }
     };
 
-    // const actions = [
-    //     {
-    //       name: 'Mode: index',
-    //       handler(chart) {
-    //         chart.options.interaction.axis = 'xy';
-    //         chart.options.interaction.mode = 'index';
-    //         chart.update();
-    //       }
-    //     },
-    //     {
-    //       name: 'Mode: dataset',
-    //       handler(chart) {
-    //         chart.options.interaction.axis = 'xy';
-    //         chart.options.interaction.mode = 'dataset';
-    //         chart.update();
-    //       }
-    //     },
-    //     {
-    //       name: 'Mode: point',
-    //       handler(chart) {
-    //         chart.options.interaction.axis = 'xy';
-    //         chart.options.interaction.mode = 'point';
-    //         chart.update();
-    //       }
-    //     },
-    //     {
-    //       name: 'Mode: nearest, axis: xy',
-    //       handler(chart) {
-    //         chart.options.interaction.axis = 'xy';
-    //         chart.options.interaction.mode = 'nearest';
-    //         chart.update();
-    //       }
-    //     },
-    //     {
-    //       name: 'Mode: nearest, axis: x',
-    //       handler(chart) {
-    //         chart.options.interaction.axis = 'x';
-    //         chart.options.interaction.mode = 'nearest';
-    //         chart.update();
-    //       }
-    //     },
-    //     {
-    //       name: 'Mode: nearest, axis: y',
-    //       handler(chart) {
-    //         chart.options.interaction.axis = 'y';
-    //         chart.options.interaction.mode = 'nearest';
-    //         chart.update();
-    //       }
-    //     },
-    //     {
-    //       name: 'Mode: x',
-    //       handler(chart) {
-    //         chart.options.interaction.mode = 'x';
-    //         chart.update();
-    //       }
-    //     },
-    //     {
-    //       name: 'Mode: y',
-    //       handler(chart) {
-    //         chart.options.interaction.mode = 'y';
-    //         chart.update();
-    //       }
-    //     },
-    //     {
-    //       name: 'Toggle Intersect',
-    //       handler(chart) {
-    //         chart.options.interaction.intersect = !chart.options.interaction.intersect;
-    //         chart.update();
-    //       }
-    //     },
-    // ];
+    let canvas = document.getElementById('termFreq');
 
-    new Chart(canvas, config);
+    if (canvas) {
+        termFreqChart.destroy();
+        termFreqChart = new Chart(canvas, config);
+    }
+    else {
+        canvas = document.createElement('canvas');
+        canvas.id = "termFreq";
+        canvas.width = width;
+        canvas.height = height;
+        ctx.appendChild(canvas);
+        termFreqChart = new Chart(canvas, config);
+    }
 }
 
 export {
