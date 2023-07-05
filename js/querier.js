@@ -85,9 +85,9 @@ const getResource = async (qs) => {
         'articleTitle', 'articleAuthor', 'httpUri', 'caption'
     ];
     
-    const queryString = `${sp.toString()}&${cols.map(c => `cols=${c}`).join('&')}`;
+    const queryString = `${sp.toString()}&${cols.map(c => `cols=${c}`).join('&')}&termFreq=true`;
     const queries = [];    
-    queries.push(getResults({ resource, queryString, figureSize }))
+    queries.push(getResults({ resource, queryString, figureSize }));
 
     Promise.all(queries)
         .then(results => {
@@ -108,12 +108,15 @@ const getResource = async (qs) => {
             // are for images, they can have one or two sources, 
             // Zenodo and/or Zenodeo
             results.forEach(r => {
+
                 if (typeof(r) != 'undefined') {
                     res.recs.push(...r.recs);
                     res.count += r.count;
+                    res.termFreq = r.termFreq;
                     res.cacheHit = r.cacheHit;
                 }
-            })
+
+            });
 
             return res;
         })
@@ -129,6 +132,7 @@ const getResource = async (qs) => {
                 figures,
                 qs, 
                 count: results.count, 
+                termFreq: results.termFreq,
                 prev: results.prev, 
                 next: results.next,
                 cacheHit: results.cacheHit
@@ -154,6 +158,7 @@ const getResults = async ({ resource, queryString, figureSize }) => {
             resource,
             count: 0,
             recs: [],
+            termFreq: json.item.result.termFreq,
             prev: '',
             next: '',
             cacheHit: json.cacheHit || false

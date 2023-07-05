@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="css/quicksearch.css">
     <link rel="stylesheet" href="css/toggleSwitch.css">
     <link rel="stylesheet" href="css/grid.css">
+    <link rel="stylesheet" href="css/charts.css">
     <link rel="stylesheet" href="css/throbber.css">
     <link rel="stylesheet" href="css/pager.css">
     <link rel="stylesheet" href="css/map.css">
@@ -34,6 +35,8 @@
     <!-- endbuild -->
     <link rel="stylesheet" href="libs/JavaScript-autoComplete/auto-complete.css">
     <link rel="stylesheet" href="libs/pop-pop/pop-pop.min.css">
+
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/dygraphs@2.2.1/dist/dygraph.min.css" />
     
     <!--
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
@@ -92,12 +95,20 @@
 
             <div id="bottom-menu">
                 <div id="quicksearch">
+                    <!-- <button class="qs" id="ants"></button>
+                    <button class="qs" id="fishes"></button>
+                    <button class="qs" id="spiders"></button>
+                    <button class="qs" id="shrimp"></button>
+                    <button class="qs" id="beetles"></button>
+                    <button class="qs" id="examples"></button> -->
+                    
                     <a href="?resource=images&family=Formicidae" aria-label="find ants" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-ant.svg"></a> 
                     <a href="?resource=images&class=Actinopterygii" aria-label="find fishes" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-fish.svg"></a>
                     <a href="?resource=images&class=Arachnida" aria-label="find spiders" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-spider.svg"></a>
                     <a href="?resource=images&class=Malacostraca" aria-label="find shrimp, crabs and other crustacea" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-shrimp.svg"></a>
                     <a href="?resource=images&order=Coleoptera" aria-label="find beetles" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-beetle.svg"></a>
                     <a id="search-help" href="#" aria-label="more examples" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-more-examples.svg"></a>
+                    
                 </div>
 
                 <div class="switch search small slider green" aria-label="toggle search type" data-pop="left" data-pop-no-shadow data-pop-arrow>
@@ -171,7 +182,7 @@
 
     <main>
         <section id="images">
-            <div class="column-1 box"></div>
+            <div id="graphdiv" class="column-1 box"></div>
             <div class="column-2 box">
                 <div id="search-criteria"></div>
 
@@ -240,6 +251,9 @@
     <script src="libs/lazysizes.min.js"></script>
     <script src="libs/JavaScript-autoComplete/auto-complete.js"></script>
 
+    <script type="text/javascript" src="https://unpkg.com/dygraphs@2.2.1/dist/dygraph.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <script type="module">
         import { init } from './js/ocellus.js';
         window.onload = () => init();

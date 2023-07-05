@@ -1,0 +1,11 @@
+#images {
+    width: 100%;
+    text-align: center;
+    position: relative;
+}
+
+#graphdiv {
+    margin: 0 auto !important;
+    font-family: sans-serif;
+    width: 100%;
+}

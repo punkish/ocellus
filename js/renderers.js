@@ -99,7 +99,7 @@ const makeFigure = ({ resource, figureSize, rec }) => {
         : makeTreatment(obj);
 }
 
-const renderPage = ({ figureSize, figures, qs, count, prev, next, cacheHit }) => {
+const renderPage = ({ figureSize, figures, qs, count, termFreq, prev, next, cacheHit }) => {
     log.info(`- renderPage()
     - figureSize: ${figureSize}px
     - figures: ${figures.length} figures
@@ -113,6 +113,7 @@ const renderPage = ({ figureSize, figures, qs, count, prev, next, cacheHit }) =>
     renderFigures(figures, qs, prev, next);
     renderSearchCriteria(qs, count, cacheHit);
     $('#throbber').classList.add('nothrob');
+    renderTermFreq(termFreq);
 }
 
 const renderFigures = (figures, qs, prev, next) => {
@@ -216,11 +217,207 @@ const renderSearchCriteria = (qs, count, cacheHit) => {
     $('#search-criteria').innerHTML = str;
 }
 
+const renderTermFreq = (termFreq) => {
+    let width = 960;
+
+    // How to find the width of a div using vanilla JavaScript?
+    // https://stackoverflow.com/a/4787561/183692
+    const ctx = document.getElementById('graphdiv');
+    const gwidth = ctx.offsetWidth;
+
+    if (gwidth < 960) {
+        width = gwidth;
+    } 
+
+    const height = 150;
+    const series = {
+        x: "journal year",
+        y1: "total",
+        y2: "with images"
+    }
+    
+    //termFreqWithDygraphs(ctx, width, height, series, termFreq);
+    termFreqWithChartjs(ctx, width, height, series, termFreq);
+}
+
+const termFreqWithDygraphs = (ctx, width, height, series, termFreq) => {
+    const dygraphOpts = {
+        width,
+        height,
+        logscale: true,
+        labels: Object.values(series)
+    };
+
+    const data = termFreq.map(e => [ e.journalYear, e.total, e.withImages ]);
+    
+    Dygraph.onDOMready(function onDOMready() {
+        const g = new Dygraph(
+            ctx,
+            data,
+            dygraphOpts
+        );
+    });
+}
+
+const termFreqWithChartjs = (ctx, width, height, series, termFreq) => {
+    const canvas = document.createElement('canvas');
+    canvas.id = "termFreq";
+    canvas.width = width;
+    canvas.height = height;
+    ctx.appendChild(canvas);
+
+    const config = {
+        type: 'line',
+        data: {
+            labels: termFreq.map(e => e.journalYear),
+            datasets: [
+                {
+                    label: series.y1,
+                    data: termFreq.map(e => e.total),
+                    borderWidth: 1
+                },
+                {
+                    label: series.y2,
+                    data: termFreq.map(e => e.withImages),
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            interaction: {
+                intersect: false,
+                mode: 'x',
+            },
+            animation: false,
+            responsive: true,
+            scales: {
+                x: {
+                    display: true,
+                },
+                y: {
+                    display: true,
+                    type: 'logarithmic',
+                    grid: {
+                        // color: (context) => {
+                        //     if (context.tick.value > 0) {
+                        //         return Utils.CHART_COLORS.green;
+                        //     } 
+                        //     else if (context.tick.value < 0) {
+                        //         return Utils.CHART_COLORS.red;
+                        //     }
+                
+                        //     return '#000000';
+                        // },
+                        borderColor: 'grey',
+                        tickColor: 'grey'
+                    },
+                    min: 1,
+                    //suggestedMax: 10000,
+                    ticks: {
+                        callback: function (value, index, values) {
+                            if (value === 1000000) return "1M";
+                            if (value === 100000) return "100K";
+                            if (value === 10000) return "10K";
+                            if (value === 1000) return "1K";
+                            if (value === 100) return "100";
+                            if (value === 10) return "10";
+                            if (value === 1) return "1";
+                            return null;
+                        },
+
+                        // forces step size to be 50 units
+                        stepSize: 50
+                   }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'chartArea'
+                },
+                tooltip: {
+                    enabled: true
+                }
+            }
+        }
+    };
+
+    // const actions = [
+    //     {
+    //       name: 'Mode: index',
+    //       handler(chart) {
+    //         chart.options.interaction.axis = 'xy';
+    //         chart.options.interaction.mode = 'index';
+    //         chart.update();
+    //       }
+    //     },
+    //     {
+    //       name: 'Mode: dataset',
+    //       handler(chart) {
+    //         chart.options.interaction.axis = 'xy';
+    //         chart.options.interaction.mode = 'dataset';
+    //         chart.update();
+    //       }
+    //     },
+    //     {
+    //       name: 'Mode: point',
+    //       handler(chart) {
+    //         chart.options.interaction.axis = 'xy';
+    //         chart.options.interaction.mode = 'point';
+    //         chart.update();
+    //       }
+    //     },
+    //     {
+    //       name: 'Mode: nearest, axis: xy',
+    //       handler(chart) {
+    //         chart.options.interaction.axis = 'xy';
+    //         chart.options.interaction.mode = 'nearest';
+    //         chart.update();
+    //       }
+    //     },
+    //     {
+    //       name: 'Mode: nearest, axis: x',
+    //       handler(chart) {
+    //         chart.options.interaction.axis = 'x';
+    //         chart.options.interaction.mode = 'nearest';
+    //         chart.update();
+    //       }
+    //     },
+    //     {
+    //       name: 'Mode: nearest, axis: y',
+    //       handler(chart) {
+    //         chart.options.interaction.axis = 'y';
+    //         chart.options.interaction.mode = 'nearest';
+    //         chart.update();
+    //       }
+    //     },
+    //     {
+    //       name: 'Mode: x',
+    //       handler(chart) {
+    //         chart.options.interaction.mode = 'x';
+    //         chart.update();
+    //       }
+    //     },
+    //     {
+    //       name: 'Mode: y',
+    //       handler(chart) {
+    //         chart.options.interaction.mode = 'y';
+    //         chart.update();
+    //       }
+    //     },
+    //     {
+    //       name: 'Toggle Intersect',
+    //       handler(chart) {
+    //         chart.options.interaction.intersect = !chart.options.interaction.intersect;
+    //         chart.update();
+    //       }
+    //     },
+    // ];
+
+    new Chart(canvas, config);
+}
+
 export {
     makeFigure,
-    renderPage,
-    renderFigures,
-    renderTreatments,
-    renderPager,
-    renderSearchCriteria
+    renderPage
 }
