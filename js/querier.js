@@ -127,16 +127,21 @@ const getResource = async (qs) => {
                 rec
             }));
 
-            renderPage({
+            const resultsObj = {
                 figureSize,
                 figures,
                 qs, 
                 count: results.count, 
-                termFreq: results.termFreq,
                 prev: results.prev, 
                 next: results.next,
                 cacheHit: results.cacheHit
-            });
+            };
+
+            if (results.termFreq) {
+                resultsObj.termFreq = results.termFreq;
+            }
+
+            renderPage(resultsObj);
         });
 }
 

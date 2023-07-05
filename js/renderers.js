@@ -113,7 +113,11 @@ const renderPage = ({ figureSize, figures, qs, count, termFreq, prev, next, cach
     renderFigures(figures, qs, prev, next);
     renderSearchCriteria(qs, count, cacheHit);
     $('#throbber').classList.add('nothrob');
-    renderTermFreq(termFreq);
+
+    if (termFreq) {
+        renderTermFreq(termFreq);
+    }
+    
 }
 
 const renderFigures = (figures, qs, prev, next) => {
