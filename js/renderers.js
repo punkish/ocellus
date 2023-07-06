@@ -99,7 +99,12 @@ const makeFigure = ({ resource, figureSize, rec }) => {
         : makeTreatment(obj);
 }
 
-const renderPage = ({ figureSize, figures, qs, count, termFreq, prev, next, cacheHit }) => {
+const renderPage = (resultsObj) => {
+    const { 
+        figureSize, figures, qs, count, term, 
+        termFreq, prev, next, cacheHit 
+    } = resultsObj;
+
     log.info(`- renderPage()
     - figureSize: ${figureSize}px
     - figures: ${figures.length} figures
@@ -115,7 +120,7 @@ const renderPage = ({ figureSize, figures, qs, count, termFreq, prev, next, cach
     $('#throbber').classList.add('nothrob');
 
     if (termFreq) {
-        renderTermFreq(termFreq);
+        renderTermFreq(term, termFreq);
     }
     
 }
@@ -221,7 +226,7 @@ const renderSearchCriteria = (qs, count, cacheHit) => {
     $('#search-criteria').innerHTML = str;
 }
 
-const renderTermFreq = (termFreq) => {
+const renderTermFreq = (term, termFreq) => {
     let width = 960;
 
     // How to find the width of a div using vanilla JavaScript?
@@ -240,11 +245,11 @@ const renderTermFreq = (termFreq) => {
         y2: "with images"
     }
     
-    //termFreqWithDygraphs(ctx, width, height, series, termFreq);
-    termFreqWithChartjs(ctx, width, height, series, termFreq);
+    //termFreqWithDygraphs(ctx, width, height, series, term, termFreq);
+    termFreqWithChartjs(ctx, width, height, series, term, termFreq);
 }
 
-const termFreqWithDygraphs = (ctx, width, height, series, termFreq) => {
+const termFreqWithDygraphs = (ctx, width, height, series, term, termFreq) => {
     const dygraphOpts = {
         width,
         height,
@@ -265,7 +270,7 @@ const termFreqWithDygraphs = (ctx, width, height, series, termFreq) => {
 
 let termFreqChart;
 
-const termFreqWithChartjs = (ctx, width, height, series, termFreq) => {
+const termFreqWithChartjs = (ctx, width, height, series, term, termFreq) => {
     
     const config = {
         type: 'line',
@@ -275,12 +280,22 @@ const termFreqWithChartjs = (ctx, width, height, series, termFreq) => {
                 {
                     label: series.y1,
                     data: termFreq.map(e => e.total),
-                    borderWidth: 1
+                    borderColor: 'red',
+                    borderWidth: 1,
+                    backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                    pointStyle: 'circle',
+                    pointRadius: 3,
+                    pointBorderColor: 'rgb(0, 0, 0)'
                 },
                 {
                     label: series.y2,
                     data: termFreq.map(e => e.withImages),
-                    borderWidth: 1
+                    borderColor: 'blue',
+                    borderWidth: 1,
+                    backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                    pointStyle: 'circle',
+                    pointRadius: 3,
+                    pointBorderColor: 'rgb(0, 0, 0)'
                 }
             ]
         },
@@ -294,6 +309,7 @@ const termFreqWithChartjs = (ctx, width, height, series, termFreq) => {
             scales: {
                 x: {
                     display: true,
+
                 },
                 y: {
                     display: true,
@@ -324,17 +340,21 @@ const termFreqWithChartjs = (ctx, width, height, series, termFreq) => {
                             if (value === 10) return "10";
                             if (value === 1) return "1";
                             return null;
-                        },
-
-                        // forces step size to be 50 units
-                        stepSize: 50
+                        }
                    }
                 }
             },
             plugins: {
+                title: {
+                    display: true,
+                    text: `occurrence of '${term}' in text by year`,
+                },
                 legend: {
                     display: true,
-                    position: 'chartArea'
+                    position: 'chartArea',
+                    labels: {
+                        usePointStyle: true,
+                    }
                 },
                 tooltip: {
                     enabled: true

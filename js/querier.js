@@ -39,10 +39,11 @@ const getResource = async (qs) => {
 
     // what are we getting, images or treatments?
     const resource = sp.get('resource');
-
-    // a flag to decide whether or not images have to be 
-    // retrived from Zenodo
-    //let haveToGetImagesFromZenodo = true;
+   // let termFreq = false;
+    let term;
+    if (sp.has('q')) {
+        term = sp.get('q');
+    }
 
     // make an array from searchParams (sp) to iterate over
     // so we can safely remove keys from the sp
@@ -50,26 +51,18 @@ const getResource = async (qs) => {
 
         if (globals.params.validZenodeo.includes(key)) {
 
-            if (val) { 
+            if (!val) { 
 
-            //     // We haveToGetImagesFromZenodo only if 
-            //     // no other key besides 'q' is used. If any 
-            //     // key other than 'q' is used then we 
-            //     // set haveToGetImagesFromZenodo to false
-            //     if (key !== 'q') {
-            //         haveToGetImagesFromZenodo = false;
-            //     }
-            }
+                // a qs can look like so
+                //
+                // `phylogeny&keyword=Plantae`
+                //
+                // where 'phylogeny' is a "key" with 
+                // no val, so we will use that as 'q'
 
-            // a qs can look like so
-            //
-            // `phylogeny&keyword=Plantae`
-            //
-            // where 'phylogeny' is a "key" with 
-            // no val, so we will use that as 'q'
-            else {
                 sp.set('q', key); 
                 sp.delete(key);
+                term = key;
             }
         }
 
@@ -83,9 +76,15 @@ const getResource = async (qs) => {
     const cols = [ 
         'treatmentId', 'treatmentTitle', 'zenodoDep', 'treatmentDOI', 
         'articleTitle', 'articleAuthor', 'httpUri', 'caption'
-    ];
+    ].join('&cols=');
     
-    const queryString = `${sp.toString()}&${cols.map(c => `cols=${c}`).join('&')}&termFreq=true`;
+    // cols.map(c => `cols=${c}`).join('&')
+    let queryString = `${sp.toString()}&cols=${cols}`;
+
+    if (term) {
+        queryString += `&termFreq=true`;
+    }
+
     const queries = [];    
     queries.push(getResults({ resource, queryString, figureSize }));
 
@@ -139,6 +138,7 @@ const getResource = async (qs) => {
 
             if (results.termFreq) {
                 resultsObj.termFreq = results.termFreq;
+                resultsObj.term = term;
             }
 
             renderPage(resultsObj);
