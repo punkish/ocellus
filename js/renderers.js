@@ -115,7 +115,7 @@ const renderPage = (resultsObj) => {
 
     $('#grid-images').classList.add(`columns-${figureSize}`);
 
-    //renderFigures(figures, qs, prev, next);
+    renderFigures(figures, qs, prev, next);
     renderSearchCriteria(qs, count, cacheHit);
     $('#throbber').classList.add('nothrob');
 
@@ -272,6 +272,8 @@ let termFreqChart;
 
 const termFreqWithChartjs = (ctx, width, height, series, term, termFreq) => {
     
+    // for config details, see
+    // https://stackoverflow.com/a/76636677/183692
     const config = {
         type: 'line',
         data: {
