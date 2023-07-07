@@ -115,7 +115,7 @@ const renderPage = (resultsObj) => {
 
     $('#grid-images').classList.add(`columns-${figureSize}`);
 
-    renderFigures(figures, qs, prev, next);
+    //renderFigures(figures, qs, prev, next);
     renderSearchCriteria(qs, count, cacheHit);
     $('#throbber').classList.add('nothrob');
 
@@ -238,7 +238,7 @@ const renderTermFreq = (term, termFreq) => {
         width = gwidth;
     } 
 
-    const height = 150;
+    const height = 200;
     const series = {
         x: "journal year",
         y1: "total",
@@ -280,22 +280,22 @@ const termFreqWithChartjs = (ctx, width, height, series, term, termFreq) => {
                 {
                     label: series.y1,
                     data: termFreq.map(e => e.total),
-                    borderColor: 'red',
+                    borderColor: 'rgba(255, 0, 0, 0.6)',
                     borderWidth: 1,
                     backgroundColor: 'rgba(255, 0, 0, 0.1)',
                     pointStyle: 'circle',
                     pointRadius: 3,
-                    pointBorderColor: 'rgb(0, 0, 0)'
+                    pointBorderColor: 'red'
                 },
                 {
                     label: series.y2,
                     data: termFreq.map(e => e.withImages),
-                    borderColor: 'blue',
+                    borderColor: 'rgba(0, 0, 255, 0.6)',
                     borderWidth: 1,
                     backgroundColor: 'rgba(0, 0, 255, 0.1)',
                     pointStyle: 'circle',
                     pointRadius: 3,
-                    pointBorderColor: 'rgb(0, 0, 0)'
+                    pointBorderColor: 'blue'
                 }
             ]
         },
@@ -309,29 +309,45 @@ const termFreqWithChartjs = (ctx, width, height, series, term, termFreq) => {
             scales: {
                 x: {
                     display: true,
-
                 },
                 y: {
                     display: true,
                     type: 'logarithmic',
+
                     grid: {
-                        // color: (context) => {
-                        //     if (context.tick.value > 0) {
-                        //         return Utils.CHART_COLORS.green;
-                        //     } 
-                        //     else if (context.tick.value < 0) {
-                        //         return Utils.CHART_COLORS.red;
-                        //     }
-                
-                        //     return '#000000';
-                        // },
-                        borderColor: 'grey',
-                        tickColor: 'grey'
+                      
+                        // minor ticks not visible
+                        tickColor: (data) => data.tick.major 
+                          ? 'silver' 
+                          : '',
+                      
+                        //lineWidth: (data) => data.tick.major ? 2 : 1,
+                      
+                        color: (data) => data.tick.major 
+                          ? 'rgba(0, 0, 0, 0.4)' 
+                          : 'silver',
+                      
+                        //z: -100000
+                    },
+                    border: {
+                      
+                        // dash line for grid lines
+                        // (unexpected position for this option here)
+                        //dash: (data) => data.tick.major ? null : [5, 1]
                     },
                     min: 1,
-                    //suggestedMax: 10000,
+                  
+                    // this eliminates tick values like 15 or 150 and only keeps
+                    // those of the form n*10^m with n, m one digit integers
+                    // this might not be necessary
+                    afterBuildTicks: (ax) => {
+                        ax.ticks = ax.ticks.filter(({value})=>{
+                            const r = value / Math.pow(10, Math.floor(Math.log10(value)+1e-5));
+                            return Math.abs(r - Math.round(r)) < 1e-5
+                        })
+                    },
                     ticks: {
-                        callback: function (value, index, values) {
+                        callback: function (value, index, ticks) {
                             if (value === 1000000) return "1M";
                             if (value === 100000) return "100K";
                             if (value === 10000) return "10K";
@@ -339,9 +355,12 @@ const termFreqWithChartjs = (ctx, width, height, series, term, termFreq) => {
                             if (value === 100) return "100";
                             if (value === 10) return "10";
                             if (value === 1) return "1";
-                            return null;
-                        }
-                   }
+                            return '';
+                        },
+                        //major: {
+                        //  enabled: true
+                        //}
+                    }
                 }
             },
             plugins: {
