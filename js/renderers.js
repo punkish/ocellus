@@ -270,6 +270,104 @@ const termFreqWithDygraphs = (ctx, width, height, series, term, termFreq) => {
 
 let termFreqChart;
 
+const pluginLegendBackground = {
+	id: 'legendBackground',
+	beforeDraw({legend}) {
+		// avoid useless drawing of the legend before the rectangle is drawn
+		this._draw = legend.draw;
+		legend.draw = ()=>null;
+	},
+
+	beforeUpdate({legend}) {
+		legend.topChanged = false;
+	},
+
+    //beforeUpdate: ({legend}) => legend.topChanged = false,
+
+	afterDraw({legend}, args, opts) {
+		const {
+			options: {labels: {padding}},
+			legendHitBoxes,
+			ctx
+		} = legend;
+
+		let {top, bottom, left, right} = legendHitBoxes.reduce(
+			({top, bottom, left, right}, {top: t, height: h, left: l, width: w})=>
+				({
+					top: Math.min(top, t),
+					bottom: Math.max(bottom, t+h),
+					left: Math.min(left, l),
+					right: Math.max(right, l+w)
+				}), {top: 1/0, bottom: 0, left: 1/0, right: 0})
+
+		if(top < bottom && left < right) {
+			top -= padding.top ?? padding;
+			bottom += padding.bottom ?? padding;
+			left -= padding.left ?? padding;
+			right += padding.right ?? padding;
+
+			const borderWidth = opts.borderWidth ?? 0;
+			let deltaX = 0, deltaY = 0;
+
+			if (left - borderWidth <= 0) {
+				deltaX = -left + borderWidth;
+			}
+			else if (right + borderWidth >= legend.chart.width) {
+				deltaX = legend.chart.width - (right + borderWidth);
+			}
+
+			if (top - borderWidth < 0) {
+				deltaY = - top + borderWidth;
+			}
+
+			if (bottom + borderWidth > legend.chart.height) {
+				deltaY = legend.chart.height - bottom - borderWidth;
+			}
+
+			if (deltaX !== 0 || deltaY !== 0) {
+				left += deltaX;
+				right += deltaX;
+				legendHitBoxes.forEach(lb => lb.left += deltaX)
+				legend.left += deltaX;
+			}
+
+			if (deltaX !== 0 || deltaY !== 0) {
+				top += deltaY;
+				bottom += deltaY;
+
+				if(!legend.topChanged){
+					legend.top += deltaY;
+					legend.topChanged = true;
+				}
+			}
+
+			left -= Math.floor(borderWidth/2);
+			right += Math.floor(borderWidth/2);
+			top -= Math.floor(borderWidth/2);
+			bottom += Math.floor(borderWidth/2);
+
+			ctx.save();
+			ctx.fillStyle = opts.color ?? 'transparent';
+			ctx.lineWidth = opts.borderWidth ?? 0;
+			ctx.strokeStyle = opts.borderColor ?? 'black';
+			// ctx.fillRect(left, top, right - left, bottom - top);
+			// ctx.strokeRect(left, top, right - left, bottom - top);
+            ctx.beginPath();
+            ctx.roundRect(left, top, right - left, bottom - top, 5);
+            ctx.stroke();
+            ctx.fill();
+			ctx.restore();
+		}
+        
+		legend.draw = this._draw;
+		delete this._draw;
+		legend._draw();
+	}
+};
+
+//console.log(pluginLegendBackground)
+Chart.register(pluginLegendBackground);
+
 const termFreqWithChartjs = (ctx, width, height, series, term, termFreq) => {
     const colors = {
         red: 'rgba(255, 0, 0, 0.6)',
@@ -302,108 +400,6 @@ const termFreqWithChartjs = (ctx, width, height, series, term, termFreq) => {
         pointBorderColor: 'blue'
     };
 
-    const pluginLegendBackground = {
-        id: 'legendBackground',
-        beforeDraw({legend}){
-            // avoid useless drawing of the legend before the rectangle is drawn
-            this._draw = legend.draw;
-            legend.draw = ()=>null;
-        },
-        beforeUpdate({legend}){
-            legend.topChanged = false;
-        },
-        afterDraw({legend}, args, opts){
-            const {
-                options: {labels: {padding}},
-                legendHitBoxes,
-                ctx
-            } = legend;
-
-            let {top, bottom, left, right} = legendHitBoxes.reduce(
-                ({top, bottom, left, right}, {top: t, height: h, left: l, width: w})=>
-                    ({
-                        top: Math.min(top, t),
-                        bottom: Math.max(bottom, t+h),
-                        left: Math.min(left, l),
-                        right: Math.max(right, l+w)
-                    }), {top: 1/0, bottom: 0, left: 1/0, right: 0});
-
-            if (top < bottom && left < right) {
-                top -= padding.top ?? padding;
-                bottom += padding.bottom ?? padding;
-                left -= padding.left ?? padding;
-                right += padding.right ?? padding;
-    
-                const borderWidth = opts.borderWidth ?? 0;
-    
-                let deltaX = 0, deltaY = 0;
-
-                if (left - borderWidth <= 0) {
-                    deltaX = -left + borderWidth;
-                }
-                else if (right + borderWidth >= legend.chart.width) {
-                    deltaX = legend.chart.width - (right + borderWidth);
-                }
-
-                if (top - borderWidth < 0) {
-                    deltaY = - top + borderWidth;
-                }
-
-                if (bottom + borderWidth > legend.chart.height) {
-                    deltaY = legend.chart.height - bottom - borderWidth;
-                }
-
-                if (deltaX !== 0 || deltaY !== 0) {
-                    left += deltaX;
-                    right += deltaX;
-                    legendHitBoxes.forEach(lb => lb.left += deltaX)
-                    legend.left += deltaX;
-                }
-
-                if (deltaX !== 0 || deltaY !== 0) {
-                    top += deltaY;
-                    bottom += deltaY;
-
-                    if (!legend.topChanged) {
-                        legend.top += deltaY;
-                        legend.topChanged = true;
-                    }
-                }
-
-                left -= Math.floor(borderWidth/2);
-                right += Math.floor(borderWidth/2);
-                top -= Math.floor(borderWidth/2);
-                bottom += Math.floor(borderWidth/2);
-    
-                ctx.save();
-                ctx.fillStyle = opts.color ?? 'transparent';
-                ctx.lineWidth = opts.borderWidth ?? 0;
-                ctx.strokeStyle = opts.borderColor ?? 'black';
-                //ctx.fillRect(left, top, right - left, bottom - top);
-                //ctx.strokeRect(left, top, right - left, bottom - top);
-                ctx.roundRect(left, top, right - left, bottom - top, 5);
-                ctx.stroke();
-                ctx.fill();
-                ctx.restore();
-            }
-
-            legend.draw = this._draw;
-            delete this._draw;
-            legend._draw();
-        }
-    };
-
-    //Chart.register(pluginLegendBackground);
-
-    // const plugin = {
-    //     id: 'legendBackground',
-    //     beforeDraw: (chart, args, opts) => {
-    //         const { chartArea: { width, top, left }, ctx } = chart;
-    //         ctx.fillStyle = opts.color || 'white';
-    //         ctx.fillRect(left, 0, width, top)
-    //     }
-    // }
-
     // for config details, see
     // https://stackoverflow.com/a/76636677/183692
     const config = {
@@ -412,7 +408,6 @@ const termFreqWithChartjs = (ctx, width, height, series, term, termFreq) => {
             labels: termFreq.map(e => e.journalYear),
             datasets: [ total, withImages ]
         },
-        //plugins: [ plugin ],
         plugins: [{legendBackground: pluginLegendBackground}],
         options: {
             interaction: {
@@ -459,7 +454,7 @@ const termFreqWithChartjs = (ctx, width, height, series, term, termFreq) => {
                         // fraction of the previous major tick value,
                         // use 1 to have 8 minor ticks between two major ones,
                         // which is the usual
-                        const minorTickStepSize = 0.5;
+                        const minorTickSteps = 0.5;
                         
                         ax.ticks = ax.ticks
                             .filter(({ major }) => major)
@@ -469,7 +464,7 @@ const termFreqWithChartjs = (ctx, width, height, series, term, termFreq) => {
                                 } 
                                 else {
                                     const { value: prevValue } = a[i - 1];
-                                    const h = Math.abs(minorTickStepSize * prevValue);
+                                    const h = Math.abs(minorTickSteps * prevValue);
                                     const aMinor = [];
                                     let minorValue = prevValue + h;
 
@@ -502,7 +497,7 @@ const termFreqWithChartjs = (ctx, width, height, series, term, termFreq) => {
                             if (value === 1) return "1";
                             return '';
                         },
-                        autoSkip: false
+                        autoSkip: true
                     }
                 }
             },
@@ -520,16 +515,14 @@ const termFreqWithChartjs = (ctx, width, height, series, term, termFreq) => {
                     backgroundColor: 'rgba(0, 0, 255, 1)'
                 },
                 legendBackground:{
-					color: 'rgb(255,255,255)',
+					color: 'rgba(255,255,255)',
 					borderWidth: 1,
 					borderColor: 'black'
 				},
                 tooltip: {
-                    enabled: true
-                },
-                // legendBackground: {
-                //     color: 'blue'
-                // }
+                    enabled: true,
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)'
+                }
             }
         }
     };
@@ -543,7 +536,6 @@ const termFreqWithChartjs = (ctx, width, height, series, term, termFreq) => {
     else {
         canvas = document.createElement('canvas');
         canvas.id = "termFreq";
-        console.log(`setting canvas dims to ${width} x ${height}`)
         canvas.width = width;
         canvas.height = height;
         ctx.appendChild(canvas);
