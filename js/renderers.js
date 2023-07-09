@@ -115,7 +115,7 @@ const renderPage = (resultsObj) => {
 
     $('#grid-images').classList.add(`columns-${figureSize}`);
 
-    //renderFigures(figures, qs, prev, next);
+    renderFigures(figures, qs, prev, next);
     renderSearchCriteria(qs, count, cacheHit);
     $('#throbber').classList.add('nothrob');
 
