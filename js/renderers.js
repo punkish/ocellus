@@ -115,11 +115,12 @@ const renderPage = (resultsObj) => {
 
     $('#grid-images').classList.add(`columns-${figureSize}`);
 
-    renderFigures(figures, qs, prev, next);
     renderSearchCriteria(qs, count, cacheHit);
+    renderFigures(figures, qs, prev, next);
     $('#throbber').classList.add('nothrob');
 
-    if (termFreq) {
+    // draw the termFreq chart *only* if values exists
+    if (termFreq && termFreq.length) {
         renderTermFreq(term, termFreq);
     }
     
@@ -131,13 +132,14 @@ const renderFigures = (figures, qs, prev, next) => {
     if (figures.length) {
         $('#grid-images').innerHTML = figures.join('');
         renderPager(qs, prev, next);
-        //addListenersToFigcaptions();
         addListenersToFigDetails();
         addListenersToFigureTypes();
     }
-    // else {
-    //     $('#grid-images').innerHTML = '<p class="nada">sorry, no images found</p>';
-    // }
+    else {
+
+        // if nothing is found, remove previous search results 
+        $('#grid-images').innerHTML = '';
+    }
 }
 
 const renderTreatments = () => {
