@@ -393,7 +393,7 @@ const termFreqWithChartjs = (ctx, width, height, series, term, termFreq) => {
         }
     };
 
-    Chart.register(pluginLegendBackground);
+    //Chart.register(pluginLegendBackground);
 
     // const plugin = {
     //     id: 'legendBackground',
