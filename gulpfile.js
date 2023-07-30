@@ -119,6 +119,7 @@ async function css2() {
             `${source}/css/base.css`,
             `${source}/css/header.css`,
             `${source}/css/form.css`,
+            `${source}/css/charts.css`,
             `${source}/css/examples.css`,
             `${source}/css/quicksearch.css`,
             `${source}/css/toggleSwitch.css`,
