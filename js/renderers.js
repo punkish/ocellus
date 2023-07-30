@@ -1,5 +1,6 @@
 import { $, $$ } from './utils.js';
 import { globals } from './globals.js';
+
 import { 
     //addListenersToFigcaptions, 
     addListenersToFigDetails,
@@ -102,7 +103,7 @@ const makeFigure = ({ resource, figureSize, rec }) => {
 const renderPage = (resultsObj) => {
     const { 
         figureSize, figures, qs, count, term, 
-        termFreq, prev, next, cacheHit 
+        termFreq, prev, next, stored, ttl, cacheHit 
     } = resultsObj;
 
     log.info(`- renderPage()
@@ -115,7 +116,7 @@ const renderPage = (resultsObj) => {
 
     $('#grid-images').classList.add(`columns-${figureSize}`);
 
-    renderSearchCriteria(qs, count, cacheHit);
+    renderSearchCriteria(qs, count, stored, ttl, cacheHit);
     renderFigures(figures, qs, prev, next);
     $('#throbber').classList.add('nothrob');
 
@@ -160,7 +161,7 @@ const renderPager = (qs, prev, next) => {
     addListenersToPagerLinks();
 }
 
-const renderSearchCriteria = (qs, count, cacheHit) => {
+const renderSearchCriteria = (qs, count, stored, ttl, cacheHit) => {
     log.info('- renderSearchCriteria(qs, count)');
     log.info(`  - qs: ${qs}`);
     log.info(`  - count: ${count}`);
@@ -171,6 +172,7 @@ const renderSearchCriteria = (qs, count, cacheHit) => {
     const size = searchParams.get('size');
     const from = ((page - 1) * size) + 1;
     let to = parseInt(from) + parseInt(size - 1);
+
     if (to > count) {
         to = count;
     }
@@ -223,9 +225,51 @@ const renderSearchCriteria = (qs, count, cacheHit) => {
     //… <span class="crit-count">${globals.results.figures.length}</span> unique images from records ${from}–${to} are shown below
     //const aboutCount = count - (count % 5);
     str = `<span class="crit-count">${count}</span> ${resource} found where ${str}`;
-    str += cacheHit ? '<span aria-label="cache hit" data-pop="top" data-pop-no-shadow data-pop-arrow>💥</span>' : '';
+
+    let cacheHitMsg = '';
+
+    if (cacheHit) {
+        const storedDate = new Date(stored);
+        const expires = new Date(stored + ttl) - new Date();
+        cacheHitMsg = `cache hit, stored ${formatDate(storedDate)}, expires in ${formatTime(expires)}`;
+        str += `<span aria-label="${cacheHitMsg}" data-html="true" data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>💥</span>`;
+    }
     
     $('#search-criteria').innerHTML = str;
+}
+
+// Javascript show milliseconds as days:hours:mins without seconds
+// https://stackoverflow.com/a/8528531/183692
+const formatTime = (t) => {
+    const cd = 24 * 60 * 60 * 1000;
+    const ch = 60 * 60 * 1000;
+    let d = Math.floor(t / cd);
+    let h = Math.floor( (t - d * cd) / ch);
+    let m = Math.round( (t - d * cd - h * ch) / 60000);
+    const pad = (n) => n < 10 ? '0' + n : n;
+
+    if (m === 60){
+        h++;
+        m = 0;
+    }
+
+    if (h === 24) {
+        d++;
+        h = 0;
+    }
+
+    return `${d} days ${pad(h)} hours ${pad(m)} mins`;
+}
+
+const formatDate = (d) => {
+    const yyyy = d.getFullYear();
+    const mm = d.getMonth();
+    const dd = d.getDate();
+    const hh = d.getHours();
+    const mn = d.getMinutes();
+    const ss = d.getSeconds();
+
+    return `${dd} ${globals.months[mm]}, ${yyyy} ${hh}:${mn}:${ss}`;
 }
 
 const renderTermFreq = (term, termFreq) => {
@@ -243,306 +287,397 @@ const renderTermFreq = (term, termFreq) => {
     const height = 200;
     const series = {
         x: "journal year",
-        y1: "total",
+        y1: "all",
         y2: "with images"
     }
     
     //termFreqWithDygraphs(ctx, width, height, series, term, termFreq);
-    termFreqWithChartjs(ctx, width, height, series, term, termFreq);
+    //termFreqWithChartjs(ctx, width, height, series, term, termFreq);
+    termFreqWithEcharts(ctx, width, height, series, term, termFreq);
 }
 
-const termFreqWithDygraphs = (ctx, width, height, series, term, termFreq) => {
-    const dygraphOpts = {
-        width,
-        height,
-        logscale: true,
-        labels: Object.values(series)
-    };
+// const termFreqWithDygraphs = (ctx, width, height, series, term, termFreq) => {
+//     const dygraphOpts = {
+//         width,
+//         height,
+//         logscale: true,
+//         labels: Object.values(series)
+//     };
 
-    const data = termFreq.map(e => [ e.journalYear, e.total, e.withImages ]);
+//     const data = termFreq.map(e => [ e.journalYear, e.total, e.withImages ]);
     
-    Dygraph.onDOMready(function onDOMready() {
-        const g = new Dygraph(
-            ctx,
-            data,
-            dygraphOpts
-        );
-    });
-}
+//     Dygraph.onDOMready(function onDOMready() {
+//         const g = new Dygraph(
+//             ctx,
+//             data,
+//             dygraphOpts
+//         );
+//     });
+// }
 
 let termFreqChart;
 
-const pluginLegendBackground = {
-	id: 'legendBackground',
-	beforeDraw({legend}) {
-		// avoid useless drawing of the legend before the rectangle is drawn
-		this._draw = legend.draw;
-		legend.draw = ()=>null;
-	},
+// const pluginLegendBackground = {
+// 	id: 'legendBackground',
+// 	beforeDraw({legend}) {
+// 		// avoid useless drawing of the legend before the rectangle is drawn
+// 		this._draw = legend.draw;
+// 		legend.draw = ()=>null;
+// 	},
 
-	beforeUpdate({legend}) {
-		legend.topChanged = false;
-	},
+// 	beforeUpdate({legend}) {
+// 		legend.topChanged = false;
+// 	},
 
-    //beforeUpdate: ({legend}) => legend.topChanged = false,
+//     //beforeUpdate: ({legend}) => legend.topChanged = false,
 
-	afterDraw({legend}, args, opts) {
-		const {
-			options: {labels: {padding}},
-			legendHitBoxes,
-			ctx
-		} = legend;
+// 	afterDraw({legend}, args, opts) {
+// 		const {
+// 			options: {labels: {padding}},
+// 			legendHitBoxes,
+// 			ctx
+// 		} = legend;
 
-		let {top, bottom, left, right} = legendHitBoxes.reduce(
-			({top, bottom, left, right}, {top: t, height: h, left: l, width: w})=>
-				({
-					top: Math.min(top, t),
-					bottom: Math.max(bottom, t+h),
-					left: Math.min(left, l),
-					right: Math.max(right, l+w)
-				}), {top: 1/0, bottom: 0, left: 1/0, right: 0})
+// 		let {top, bottom, left, right} = legendHitBoxes.reduce(
+// 			({top, bottom, left, right}, {top: t, height: h, left: l, width: w})=>
+// 				({
+// 					top: Math.min(top, t),
+// 					bottom: Math.max(bottom, t+h),
+// 					left: Math.min(left, l),
+// 					right: Math.max(right, l+w)
+// 				}), {top: 1/0, bottom: 0, left: 1/0, right: 0})
 
-		if(top < bottom && left < right) {
-			top -= padding.top ?? padding;
-			bottom += padding.bottom ?? padding;
-			left -= padding.left ?? padding;
-			right += padding.right ?? padding;
+// 		if(top < bottom && left < right) {
+// 			top -= padding.top ?? padding;
+// 			bottom += padding.bottom ?? padding;
+// 			left -= padding.left ?? padding;
+// 			right += padding.right ?? padding;
 
-			const borderWidth = opts.borderWidth ?? 0;
-			let deltaX = 0, deltaY = 0;
+// 			const borderWidth = opts.borderWidth ?? 0;
+// 			let deltaX = 0, deltaY = 0;
 
-			if (left - borderWidth <= 0) {
-				deltaX = -left + borderWidth;
-			}
-			else if (right + borderWidth >= legend.chart.width) {
-				deltaX = legend.chart.width - (right + borderWidth);
-			}
+// 			if (left - borderWidth <= 0) {
+// 				deltaX = -left + borderWidth;
+// 			}
+// 			else if (right + borderWidth >= legend.chart.width) {
+// 				deltaX = legend.chart.width - (right + borderWidth);
+// 			}
 
-			if (top - borderWidth < 0) {
-				deltaY = - top + borderWidth;
-			}
+// 			if (top - borderWidth < 0) {
+// 				deltaY = - top + borderWidth;
+// 			}
 
-			if (bottom + borderWidth > legend.chart.height) {
-				deltaY = legend.chart.height - bottom - borderWidth;
-			}
+// 			if (bottom + borderWidth > legend.chart.height) {
+// 				deltaY = legend.chart.height - bottom - borderWidth;
+// 			}
 
-			if (deltaX !== 0 || deltaY !== 0) {
-				left += deltaX;
-				right += deltaX;
-				legendHitBoxes.forEach(lb => lb.left += deltaX)
-				legend.left += deltaX;
-			}
+// 			if (deltaX !== 0 || deltaY !== 0) {
+// 				left += deltaX;
+// 				right += deltaX;
+// 				legendHitBoxes.forEach(lb => lb.left += deltaX)
+// 				legend.left += deltaX;
+// 			}
 
-			if (deltaX !== 0 || deltaY !== 0) {
-				top += deltaY;
-				bottom += deltaY;
+// 			if (deltaX !== 0 || deltaY !== 0) {
+// 				top += deltaY;
+// 				bottom += deltaY;
 
-				if(!legend.topChanged){
-					legend.top += deltaY;
-					legend.topChanged = true;
-				}
-			}
+// 				if(!legend.topChanged){
+// 					legend.top += deltaY;
+// 					legend.topChanged = true;
+// 				}
+// 			}
 
-			left -= Math.floor(borderWidth/2);
-			right += Math.floor(borderWidth/2);
-			top -= Math.floor(borderWidth/2);
-			bottom += Math.floor(borderWidth/2);
+// 			left -= Math.floor(borderWidth/2);
+// 			right += Math.floor(borderWidth/2);
+// 			top -= Math.floor(borderWidth/2);
+// 			bottom += Math.floor(borderWidth/2);
 
-			ctx.save();
-			ctx.fillStyle = opts.color ?? 'transparent';
-			ctx.lineWidth = opts.borderWidth ?? 0;
-			ctx.strokeStyle = opts.borderColor ?? 'black';
-			// ctx.fillRect(left, top, right - left, bottom - top);
-			// ctx.strokeRect(left, top, right - left, bottom - top);
-            ctx.beginPath();
-            ctx.roundRect(left, top, right - left, bottom - top, 5);
-            ctx.stroke();
-            ctx.fill();
-			ctx.restore();
-		}
+// 			ctx.save();
+// 			ctx.fillStyle = opts.color ?? 'transparent';
+// 			ctx.lineWidth = opts.borderWidth ?? 0;
+// 			ctx.strokeStyle = opts.borderColor ?? 'black';
+// 			// ctx.fillRect(left, top, right - left, bottom - top);
+// 			// ctx.strokeRect(left, top, right - left, bottom - top);
+//             ctx.beginPath();
+//             ctx.roundRect(left, top, right - left, bottom - top, 5);
+//             ctx.stroke();
+//             ctx.fill();
+// 			ctx.restore();
+// 		}
         
-		legend.draw = this._draw;
-		delete this._draw;
-		legend._draw();
-	}
-};
+// 		legend.draw = this._draw;
+// 		delete this._draw;
+// 		legend._draw();
+// 	}
+// };
 
-//console.log(pluginLegendBackground)
-Chart.register(pluginLegendBackground);
+//Chart.register(pluginLegendBackground);
 
-const termFreqWithChartjs = (ctx, width, height, series, term, termFreq) => {
-    const colors = {
-        red: 'rgba(255, 0, 0, 0.6)',
-        lightRed: 'rgba(255, 0, 0, 0.1)',
-        blue: 'rgba(0, 0, 255, 0.6)',
-        lightBlue: 'rgba(0, 0, 255, 0.1)',
-        black: 'rgba(0, 0, 0, 0.4)'
-    }
+// const termFreqWithChartjs = (ctx, width, height, series, term, termFreq) => {
+//     const colors = {
+//         red: 'rgba(255, 0, 0, 0.6)',
+//         lightRed: 'rgba(255, 0, 0, 0.1)',
+//         blue: 'rgba(0, 0, 255, 0.6)',
+//         lightBlue: 'rgba(0, 0, 255, 0.1)',
+//         black: 'rgba(0, 0, 0, 0.4)'
+//     }
     
-    // series "total"
-    const total = {
-        label: series.y1,
-        data: termFreq.map(e => e.total),
-        borderColor: colors.red,
-        borderWidth: 1,
-        backgroundColor: colors.lightRed,
-        pointStyle: 'circle',
-        pointRadius: 3,
-        pointBorderColor: 'red'
-    };
+//     // series "total"
+//     const total = {
+//         label: series.y1,
+//         data: termFreq.map(e => e.total),
+//         borderColor: colors.red,
+//         borderWidth: 1,
+//         backgroundColor: colors.lightRed,
+//         pointStyle: 'circle',
+//         pointRadius: 3,
+//         pointBorderColor: 'red'
+//     };
 
-    const withImages = {
-        label: series.y2,
-        data: termFreq.map(e => e.withImages),
-        borderColor: colors.blue,
-        borderWidth: 1,
-        backgroundColor: colors.lightBlue,
-        pointStyle: 'circle',
-        pointRadius: 3,
-        pointBorderColor: 'blue'
-    };
+//     const withImages = {
+//         label: series.y2,
+//         data: termFreq.map(e => e.withImages),
+//         borderColor: colors.blue,
+//         borderWidth: 1,
+//         backgroundColor: colors.lightBlue,
+//         pointStyle: 'circle',
+//         pointRadius: 3,
+//         pointBorderColor: 'blue'
+//     };
 
-    // for config details, see
-    // https://stackoverflow.com/a/76636677/183692
-    const config = {
-        type: 'line',
-        data: {
-            labels: termFreq.map(e => e.journalYear),
-            datasets: [ total, withImages ]
-        },
-        plugins: [{legendBackground: pluginLegendBackground}],
-        options: {
-            interaction: {
-                intersect: false,
-                mode: 'x',
-            },
-            animation: false,
-            responsive: true,
-            scales: {
-                x: {
-                    display: true,
-                },
-                y: {
-                    display: true,
-                    type: 'logarithmic',
-                    grid: {
+//     // for config details, see
+//     // https://stackoverflow.com/a/76636677/183692
+//     const config = {
+//         type: 'line',
+//         data: {
+//             labels: termFreq.map(e => e.journalYear),
+//             datasets: [ total, withImages ]
+//         },
+//         plugins: [{legendBackground: pluginLegendBackground}],
+//         options: {
+//             interaction: {
+//                 intersect: false,
+//                 mode: 'x',
+//             },
+//             animation: false,
+//             responsive: true,
+//             scales: {
+//                 x: {
+//                     display: true,
+//                 },
+//                 y: {
+//                     display: true,
+//                     type: 'logarithmic',
+//                     grid: {
                       
-                        // minor ticks not visible
-                        tickColor: (data) => data.tick.major ? 'silver' : '',
+//                         // minor ticks not visible
+//                         tickColor: (data) => data.tick.major ? 'silver' : '',
                       
-                        //lineWidth: (data) => data.tick.major ? 2 : 1,
+//                         //lineWidth: (data) => data.tick.major ? 2 : 1,
                       
-                        color: (data) => data.tick.major ? colors.black : 'silver',
-                    },
-                    border: {
+//                         color: (data) => data.tick.major ? colors.black : 'silver',
+//                     },
+//                     border: {
                       
-                        // dash line for grid lines
-                        // (unexpected position for this option here)
-                        //dash: (data) => data.tick.major ? null : [5, 1]
-                    },
-                    min: 1,
+//                         // dash line for grid lines
+//                         // (unexpected position for this option here)
+//                         //dash: (data) => data.tick.major ? null : [5, 1]
+//                     },
+//                     min: 1,
                   
-                    // this eliminates tick values like 15 or 150 and only keeps
-                    // those of the form n*10^m with n, m one digit integers
-                    // this might not be necessary
-                    // afterBuildTicks: (ax) => {
-                    //     ax.ticks = ax.ticks.filter(({value}) => {
-                    //         const r = value / Math.pow(10, Math.floor(Math.log10(value)+1e-5));
-                    //         return Math.abs(r - Math.round(r)) < 1e-5
-                    //     })
-                    // },
-                    afterBuildTicks: function(ax) {
+//                     // this eliminates tick values like 15 or 150 and only keeps
+//                     // those of the form n*10^m with n, m one digit integers
+//                     // this might not be necessary
+//                     // afterBuildTicks: (ax) => {
+//                     //     ax.ticks = ax.ticks.filter(({value}) => {
+//                     //         const r = value / Math.pow(10, Math.floor(Math.log10(value)+1e-5));
+//                     //         return Math.abs(r - Math.round(r)) < 1e-5
+//                     //     })
+//                     // },
+//                     afterBuildTicks: function(ax) {
 
-                        // fraction of the previous major tick value,
-                        // use 1 to have 8 minor ticks between two major ones,
-                        // which is the usual
-                        const minorTickSteps = 0.5;
+//                         // fraction of the previous major tick value,
+//                         // use 1 to have 8 minor ticks between two major ones,
+//                         // which is the usual
+//                         const minorTickSteps = 0.5;
                         
-                        ax.ticks = ax.ticks
-                            .filter(({ major }) => major)
-                            .flatMap(({ value, major, significand }, i, a) => {
-                                if (i === 0) {
-                                    return [{ value, major, significand }]
-                                } 
-                                else {
-                                    const { value: prevValue } = a[i - 1];
-                                    const h = Math.abs(minorTickSteps * prevValue);
-                                    const aMinor = [];
-                                    let minorValue = prevValue + h;
+//                         ax.ticks = ax.ticks
+//                             .filter(({ major }) => major)
+//                             .flatMap(({ value, major, significand }, i, a) => {
+//                                 if (i === 0) {
+//                                     return [{ value, major, significand }]
+//                                 } 
+//                                 else {
+//                                     const { value: prevValue } = a[i - 1];
+//                                     const h = Math.abs(minorTickSteps * prevValue);
+//                                     const aMinor = [];
+//                                     let minorValue = prevValue + h;
 
-                                    while (minorValue < value) {
-                                        aMinor.push({
-                                            value: minorValue,
-                                            major: false,
-                                            significand: minorValue //prevValue
-                                        });
+//                                     while (minorValue < value) {
+//                                         aMinor.push({
+//                                             value: minorValue,
+//                                             major: false,
+//                                             significand: minorValue //prevValue
+//                                         });
 
-                                        minorValue += h;
-                                    }
+//                                         minorValue += h;
+//                                     }
 
-                                    return [
-                                        ...aMinor, 
-                                        { value, major, significand }
-                                    ];
-                                }
-                            }
-                        );
-                    },
-                    ticks: {
-                        callback: function (value, index, ticks) {
-                            if (value === 1000000) return "1M";
-                            if (value === 100000) return "100K";
-                            if (value === 10000) return "10K";
-                            if (value === 1000) return "1K";
-                            if (value === 100) return "100";
-                            if (value === 10) return "10";
-                            if (value === 1) return "1";
-                            return '';
-                        },
-                        autoSkip: true
-                    }
-                }
+//                                     return [
+//                                         ...aMinor, 
+//                                         { value, major, significand }
+//                                     ];
+//                                 }
+//                             }
+//                         );
+//                     },
+//                     ticks: {
+//                         callback: function (value, index, ticks) {
+//                             if (value === 1000000) return "1M";
+//                             if (value === 100000) return "100K";
+//                             if (value === 10000) return "10K";
+//                             if (value === 1000) return "1K";
+//                             if (value === 100) return "100";
+//                             if (value === 10) return "10";
+//                             if (value === 1) return "1";
+//                             return '';
+//                         },
+//                         autoSkip: true
+//                     }
+//                 }
+//             },
+//             plugins: {
+//                 title: {
+//                     display: true,
+//                     text: `occurrence of '${term}' in text by year`,
+//                 },
+//                 legend: {
+//                     display: true,
+//                     position: 'chartArea',
+//                     labels: {
+//                         usePointStyle: true,
+//                     },
+//                     backgroundColor: 'rgba(0, 0, 255, 1)'
+//                 },
+//                 legendBackground:{
+// 					color: 'rgba(255,255,255)',
+// 					borderWidth: 1,
+// 					borderColor: 'black'
+// 				},
+//                 tooltip: {
+//                     enabled: true,
+//                     backgroundColor: 'rgba(0, 0, 0, 0.8)'
+//                 }
+//             }
+//         }
+//     };
+
+//     let canvas = document.getElementById('termFreq');
+
+//     if (canvas) {
+//         termFreqChart.destroy();
+//         termFreqChart = new Chart(canvas, config);
+//     }
+//     else {
+//         canvas = document.createElement('canvas');
+//         canvas.id = "termFreq";
+//         canvas.width = width;
+//         canvas.height = height;
+//         ctx.appendChild(canvas);
+//         termFreqChart = new Chart(canvas, config);
+//     }
+// }
+
+const termFreqWithEcharts = (ctx, width, height, series, term, termFreq) => {
+    const options = {
+        title: {
+            text: `occurence of '${term}' in text by year`,
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'axis',
+            formatter: '<div class="leg">year {b}<hr>{a0}: {c0}<br/>{a1}: {c1}</div>'
+        },
+        legend: {
+            left: 55,
+            top: 60,
+            orient: 'vertical',
+            borderWidth: 1,
+            borderRadius: 5,
+            borderColor: '#444',
+            backgroundColor: '#fff'
+        },
+        xAxis: {
+            type: 'category',
+            //name: series.x,
+            splitLine: { show: false },
+            data: termFreq.map(e => e.journalYear)
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        yAxis: {
+            type: 'log',
+            //name: 'y',
+            minorSplitLine: {
+                show: true
             },
-            plugins: {
-                title: {
-                    display: true,
-                    text: `occurrence of '${term}' in text by year`,
-                },
-                legend: {
-                    display: true,
-                    position: 'chartArea',
-                    labels: {
-                        usePointStyle: true,
-                    },
-                    backgroundColor: 'rgba(0, 0, 255, 1)'
-                },
-                legendBackground:{
-					color: 'rgba(255,255,255)',
-					borderWidth: 1,
-					borderColor: 'black'
-				},
-                tooltip: {
-                    enabled: true,
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)'
+            axisLabel: {
+                formatter: function (value, index) {
+                    let val = value;
+
+                    if (value === 1000) {
+                        val = '1K';
+                    }
+                    else if (value === 10000) {
+                        val = '10K';
+                    }
+                    else if (value === 100000) {
+                        val = '100K';
+                    }
+                    else if (value === 1000000) {
+                        val = '1M';
+                    }
+                    else if (value === 10000000) {
+                        val = '10M';
+                    }
+
+                    return val;
                 }
             }
-        }
+        },
+        series: [
+            {
+                name: series.y1,
+                type: 'line',
+                data: termFreq.map(e => e.total == 0 ? null : e.total),
+                color: '#f00',
+                lineStyle: {
+                    color: '#f00',
+                    width: 1
+                }
+            },
+            {
+                name: series.y2,
+                type: 'line',
+                data: termFreq.map(e => e.withImages == 0 ? null : e.withImages),
+                color: '#00f',
+                lineStyle: {
+                    color: '#00f',
+                    width: 1
+                }
+            }
+        ]
     };
 
-    let canvas = document.getElementById('termFreq');
-
-    if (canvas) {
-        termFreqChart.destroy();
-        termFreqChart = new Chart(canvas, config);
-    }
-    else {
-        canvas = document.createElement('canvas');
-        canvas.id = "termFreq";
-        canvas.width = width;
-        canvas.height = height;
-        ctx.appendChild(canvas);
-        termFreqChart = new Chart(canvas, config);
-    }
+    ctx.style.width = `${width}px`;
+    ctx.style.height = `${height}px`;
+    const myChart = echarts.init(ctx);
+    myChart.setOption(options); 
 }
 
 export {

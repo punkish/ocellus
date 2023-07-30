@@ -9,3 +9,11 @@
     font-family: sans-serif;
     width: 100%;
 }
+
+div.leg {
+    text-align: left;
+}
+
+div.leg hr {
+    margin: 0;
+}

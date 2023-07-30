@@ -113,6 +113,8 @@ const getResource = async (qs) => {
                     res.count += r.count;
                     res.termFreq = r.termFreq;
                     res.cacheHit = r.cacheHit;
+                    res.stored = r.stored;
+                    res.ttl = r.ttl;
                 }
 
             });
@@ -133,6 +135,8 @@ const getResource = async (qs) => {
                 count: results.count, 
                 prev: results.prev, 
                 next: results.next,
+                stored: results.stored,
+                ttl: results.ttl,
                 cacheHit: results.cacheHit
             };
 
@@ -166,6 +170,8 @@ const getResults = async ({ resource, queryString, figureSize }) => {
             termFreq: json.item.result.termFreq,
             prev: '',
             next: '',
+            stored: json.stored,
+            ttl: json.ttl,
             cacheHit: json.cacheHit || false
         };
 

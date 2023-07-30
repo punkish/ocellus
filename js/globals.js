@@ -301,6 +301,11 @@ const globals = {
     // sep           : '•••',
     // sep_position1 : 2,
     // sep_position2 : 6,
+
+    months: [ 
+        'January', 'February', 'March', 'April', 'May', 'June', 'July', 
+        'August', 'September', 'October', 'November', 'December'
+    ],
 };
 
 export { globals }
