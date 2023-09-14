@@ -1,6 +1,6 @@
-import { $, $$ } from './utils.js';
+import { $, $$ } from './base.js';
 import { globals } from './globals.js';
-import { submitForm, updatePlaceHolder } from './main.js';
+import { submitForm, updatePlaceHolder } from './utils.js';
 
 const addListeners = () => {
     log.info('- addListeners()');

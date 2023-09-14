@@ -129,8 +129,7 @@ async function css2() {
             `${source}/css/map.css`,
             `${source}/css/treatmentDetails.css`,
             `${source}/css/media-queries.css`,
-            `${source}/libs/fancySearch/fancySearch.css`,
-            
+            `${source}/libs/fancySearch/fancySearch.css`
         ])
         .pipe(cleanCSS({compatibility: 'ie8'}))
         .pipe(concat(`ocellus-${dsecs}.css`))

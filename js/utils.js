@@ -1,5 +1,8 @@
-const $ = (selector) => document.querySelector(selector);
-const $$ = (selector) => document.querySelectorAll(selector);
+import { $, $$ } from './base.js';
+import { getCountOfResource, getResource } from './querier.js';
+
+// const $ = (selector) => document.querySelector(selector);
+// const $$ = (selector) => document.querySelectorAll(selector);
 
 // Javascript: Ordinal suffix for numbers
 // https://stackoverflow.com/a/15810761
@@ -20,7 +23,8 @@ const nth = function(n) {
 
 const niceNumbers = (n) => {
     const nice = [
-        'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'
+        'One', 'Two', 'Three', 'Four', 
+        'Five', 'Six', 'Seven', 'Eight', 'Nine'
     ];
 
     return n < 10 
@@ -90,4 +94,98 @@ const smoke = function (e) {
     intervalId = setInterval(hide, 50)
 }
 
-export { $, $$, nth, niceNumbers, smoke }
+/**
+ * case 2: click on [go] button gets query results and renders the page
+ */
+const submitForm = () => {
+    log.info('submitForm()');
+    const qs = form2qs();
+    updateUrl(qs);
+    getResource(qs);
+}
+
+const updatePlaceHolder = async (resource) => {
+    const count = await getCountOfResource(resource);
+    $('#help-msg').innerText = `search ${count} ${resource}`;
+}
+
+/**
+ * convert form inputs to searchParams. All possible inputs
+ * are as follows along with their defaults:
+ * 
+ * page: 1
+ * size: 30
+ * resource: images
+ * q: <no default>
+ * <many others> (see globals.validZenodeo)
+ * refreshCache: <no default>
+ * go: go
+ * 
+ */
+const form2qs = () => {
+    log.info('- form2qs()');
+
+    const sp = new URLSearchParams();
+
+    Array.from($$('form input.query'))
+        .filter(i => i.value)
+        .forEach(i => {
+            
+            let key = i.name;
+            let val = i.value;
+
+            if (i.name === 'q') {
+
+                const spTmp = new URLSearchParams(i.value);
+
+                spTmp.forEach((v, k) => {
+                    if (v === '') {
+
+                        // check if the input looks like a DOI
+                        const match = val.match(/(^10\.[0-9]{4,}.*)/);
+                        if (match && match[1]) {
+                            key = 'articleDOI';
+                            val = match[1];
+                        }
+                        else {
+                            key = 'q';
+                            val = k;
+                        }
+                        
+                    }
+                    else {
+                        key = k;
+                        val = v;
+                    }
+
+                    sp.append(key, val);
+                });
+            }
+            else {
+        
+                if ((i.type === 'radio' || i.type === 'checkbox')) {
+                    if (i.checked || i.checked === 'true') {
+                        sp.append(key, val);
+                    }
+                }
+                else {
+                    sp.append(key, val);
+                }
+
+            }
+        });
+
+    const qs = sp.toString();
+    return qs;
+}
+
+const updateUrl = (qs) => {
+    log.info('- updateUrl(qs)');
+    //const qs = sp.toString();
+    history.pushState('', null, `?${qs}`);
+}
+
+export { 
+    $, $$, nth, niceNumbers, smoke, 
+    submitForm, updatePlaceHolder, form2qs, updateUrl 
+}

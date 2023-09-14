@@ -1,4 +1,4 @@
-import { $, $$ } from './utils.js';
+import { $, $$ } from './base.js';
 import { globals } from './globals.js';
 import { makeFigure, renderPage } from './renderers.js';
 
