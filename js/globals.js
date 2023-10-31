@@ -262,7 +262,7 @@ const globals = {
 
     closedFigcaptionHeight : '30px',
 
-    zenodoUri: 'https://zenodo.org/record',
+    zenodoUri: 'https://zenodo.org/records',
     tbUri: 'https://tb.plazi.org/GgServer/html',
 
     /* map related globals */
