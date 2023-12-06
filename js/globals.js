@@ -153,6 +153,8 @@ const globals = {
             'geolocation',
             'isOnLand',
             'validGeo',
+            'eco_name',
+            'biome',
             'refreshCache',
             'page',
             'size',

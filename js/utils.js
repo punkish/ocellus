@@ -126,6 +126,8 @@ const form2qs = () => {
     log.info('- form2qs()');
 
     const sp = new URLSearchParams();
+    //const arr = Array.from($$('form input.query'));
+    //const r = / & /g;
 
     Array.from($$('form input.query'))
         .filter(i => i.value)
@@ -136,7 +138,10 @@ const form2qs = () => {
 
             if (i.name === 'q') {
 
-                const spTmp = new URLSearchParams(i.value);
+                // see discussion at
+                // https://stackoverflow.com/q/77613064/183692
+                const formVal = i.value.replaceAll(/ & /g, '%20%26%20');
+                const spTmp = new URLSearchParams(formVal);
 
                 spTmp.forEach((v, k) => {
                     if (v === '') {

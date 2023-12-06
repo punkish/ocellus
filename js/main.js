@@ -72,7 +72,7 @@ const qs2form = (qs) => {
     
                 if (val) {
                     value = key === 'q' 
-                        ? val 
+                        ? decodeURIComponent(val) 
                         : `${key}=${val}`;
                 }
     
