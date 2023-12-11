@@ -156,6 +156,7 @@ const globals = {
             'eco_name',
             'biome',
             'refreshCache',
+            'cacheDuration',
             'page',
             'size',
             'cols'
