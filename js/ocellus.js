@@ -67,6 +67,10 @@ const initializeFancySearch = (searchType) => {
             const json = await response.json();
             const res = [];
 
+            if (facet === 'biome') {
+                facet = 'biome_synonym';
+            }
+
             if (json.item.result.records) {
                 json.item.result.records.forEach(r => res.push(r[facet]));
             }
@@ -193,6 +197,15 @@ const initializeFancySearch = (searchType) => {
             "values": yearsArray(1995, 2022), 
             "prompt": "pick a year of publication",
             "noDuplicates": true 
+        },
+        {   "key": "biome", 
+            "actualKey": "biome",
+            "values": {
+                url: `${globals.server}/biomes?biome=`, 
+                cb: cbMaker('biome')
+            },
+            "prompt": "type at least 3 letters to choose a biome",
+            "noDuplicates": false 
         },
         // {   "key": "countries", 
         //     "actualKey": "countries",

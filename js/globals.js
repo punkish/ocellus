@@ -111,7 +111,7 @@ const globals = {
 
         // params allowed in queryString but not in the 
         // 'q' input field
-        notValidQ: ['resource', 'page', 'size', 'grid', 'refreshCache', 'cols'],
+        notValidQ: ['resource', 'page', 'size', 'grid', 'refreshCache', 'cols', 'cacheDuration'],
 
         // params valid for Zenodo
         validZenodo: [
