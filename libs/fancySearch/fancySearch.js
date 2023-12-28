@@ -382,15 +382,15 @@ const fancySearch = function({ selector, helpText, facets, cb }) {
         new autoComplete({
             selector,
 
-            /**
-             * 
-             * 'term' refers to the value currently in the text input.
-             * 'response' callback, which expects a single argument: the data 
-             *      to suggest to the user. This data must be an array of 
-             *      filtered suggestions based on the provided term:
-             *      ['suggestion 1', 'suggestion 2', 'suggestion 3', ...]
-             * 
-             */
+            //
+            // 
+            // 'term' refers to the value currently in the text input.
+            // 'response' callback, which expects a single argument: the data 
+            //      to suggest to the user. This data must be an array of 
+            //      filtered suggestions based on the provided term:
+            //      ['suggestion 1', 'suggestion 2', 'suggestion 3', ...]
+            // 
+            //
             source: async function(term, suggest) {
                 
                 let matches = [];
@@ -408,33 +408,36 @@ const fancySearch = function({ selector, helpText, facets, cb }) {
                     matches = await values.cb(response);
                 }
                 else if (Array.isArray(values)) {
-                    // let i = 0;
-                    // const j = values.length;
-        
-                    // for (; i < j; i++) {
-
-                    //     const t = values[i];
-
-                    //     if (~t.toLowerCase().indexOf(term.toLowerCase())) {
-                    //         matches.push(t);
-                    //     }
-
-                    // }
                     matches = values;
                 }
 
-                if (matches.length) suggest(matches);
+                //
+                // We narrow the matches array as the user types in the input 
+                // field. This makes the dropdown box focus on only the 
+                // matching terms
+                //
+                if (matches.length) {
+                    const suggestions = [];
+
+                    for (let i=0; i<matches.length; i++) {
+                        if (~matches[i].toLowerCase().indexOf(term)) {
+                            suggestions.push(matches[i]);
+                        }
+                    }
+
+                    suggest(suggestions);
+                }
             },
 
             minChars: Array.isArray(values) ? 0 : 3,
             delay: 150,
 
-            /**
-             * A callback function that fires when a suggestion is selected by 
-             * mouse click, enter, or tab. event is the event that triggered 
-             * the callback, term is the selected value. and item is the item 
-             * rendered by the renderItem function.
-             */
+            //
+            // A callback function that fires when a suggestion is selected by 
+            // mouse click, enter, or tab. event is the event that triggered 
+            // the callback, term is the selected value. and item is the item 
+            // rendered by the renderItem function.
+            //
             onSelect: function(event, term, item) {
     
                 const thisInput = this.selector;
@@ -448,10 +451,10 @@ const fancySearch = function({ selector, helpText, facets, cb }) {
     
                     const thisFacet = facets.filter(f => f.key === term)[0];
 
-                    /**
-                     * remove the key from the facets if 
-                     * no duplicates are allowed
-                     */
+                    //
+                    // remove the key from the facets if 
+                    // no duplicates are allowed
+                    //
                     if (thisFacet.noDuplicates) {
                         facetKeys.splice(facetKeys.indexOf(term), 1);
                     }
