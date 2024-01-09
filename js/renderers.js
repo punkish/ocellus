@@ -13,8 +13,8 @@ const makeTreatment = ({ figureSize, rec }) => {
     let zenodoLink = '';
 
     if (rec.zenodoRec) {
-        zenodoRec = `<a class="transition-050">Zenodo ID: ${rec.zenodoRec}</a>`;
-        zenodoLink = `<a href="${globals.zenodoUri}/${rec.zenodoRec}" target="_blank">more on Zenodo</a><br>`;
+        //zenodoRec = `<a class="transition-050">Zenodo ID: ${rec.zenodoRec}</a>`;
+        zenodoLink = `<a href="${globals.zenodoUri}/${rec.zenodoRec}" target="_blank" title="more on Zenodo" alt="more on Zenodo"><img class="zenodoLink" src="img/zenodo-gradient-round.svg" width="50"></a>`;
     }
 
     const figcaptionClass = figureSize === 250 
@@ -25,16 +25,35 @@ const makeTreatment = ({ figureSize, rec }) => {
         ? 'tb' 
         : '');
 
+    const treatmentDOI = rec.treatmentDOI
+        ? `<a href="https://dx.doi.org/${rec.treatmentDOI}">${rec.treatmentDOI}</a>`
+        : '';
+
+    let citation = '';
+
+    if (rec.articleTitle) {
+        citation += `<span class="articleTitle">${rec.articleTitle}</span>`;
+    }
+
+    if (rec.articleAuthor) {
+        citation += ` by <span class="articleAuthor">${rec.articleAuthor}</span>`;
+    }
+
+    if (rec.journalTitle) {
+        citation += ` in <span class="journalTitle">${rec.journalTitle}</span>`;
+    }
+
+    if (treatmentDOI) {
+        citation += `. ${treatmentDOI}`;
+    }
+
     return `<figure class="${figureClass}">
-    <p class="articleTitle">${rec.articleTitle}</p>
-    <p class="treatmentDOI">${rec.treatmentDOI}</p>
-    <p class="articleAuthor">${rec.articleAuthor}</p>
+    <p class="treatmentTitle">${rec.treatmentTitle}</p>
+    <p class="citation">${citation}</p>
     <figcaption class="${figcaptionClass}">
-        ${zenodoRec}
+        <!-- ${zenodoRec} -->
         <div>
-            <b class="figTitle">${rec.title}</b><br>
-            ${zenodoLink}
-            <a href="${globals.tbUri}/${rec.treatmentId}" target="_blank">more on TreatmentBank</a>
+            ${zenodoLink} <a href="${globals.tbUri}/${rec.treatmentId}" target="_blank" title="more on TreatmentBank" alt="more on TreatmentBank"><img class="tbLink" src="img/treatmentBankLogo.png" width="100"></a>
         </div>
     </figcaption>
 </figure>`
@@ -182,7 +201,7 @@ const renderSearchCriteria = (qs, count, stored, ttl, cacheHit) => {
     }
 
     const criteria = [];
-    globals.notInSearchCriteria.forEach(p => searchParams.delete(p));
+    globals.params.notValidSearchCriteria.forEach(p => searchParams.delete(p));
     
     searchParams.forEach((v, k) => {
         let c;

@@ -111,7 +111,7 @@ const globals = {
 
         // params allowed in queryString but not in the 
         // 'q' input field
-        notValidQ: ['resource', 'page', 'size', 'grid', 'refreshCache', 'cols', 'cacheDuration'],
+        notValidQ: ['resource', 'page', 'size', 'grid', 'refreshCache', 'cols'],
 
         // params valid for Zenodo
         validZenodo: [
@@ -156,7 +156,6 @@ const globals = {
             'eco_name',
             'biome',
             'refreshCache',
-            'cacheDuration',
             'page',
             'size',
             'cols'
@@ -178,21 +177,31 @@ const globals = {
             'source',
             'grid'
         ],
+
+        images: [ 
+            'treatmentId', 'treatmentTitle', 'zenodoDep', 'treatmentDOI', 
+            'articleTitle', 'articleAuthor', 'httpUri', 'caption'
+        ],
+
+        treatments: [ 
+            'treatmentId', 'treatmentTitle', 'zenodoDep', 'treatmentDOI', 
+            'articleTitle', 'articleAuthor', 'journalTitle'
+        ]
     },
 
-    // the following params don't go in the q field
-    notq: ['resource', 'page', 'size', 'grid', 'refreshCache', 'cols'],
+    // // the following params don't go in the q field
+    // notq: ['resource', 'page', 'size', 'grid', 'refreshCache', 'cols'],
 
-    // the following are the valid query params for Zenodo
-    validZenodo: [
-        'id',
-        'subtype',
-        'communities',
-        'q',
-        'creator',
-        'title',
-        'keywords'
-    ],
+    // // the following are the valid query params for Zenodo
+    // validZenodo: [
+    //     'id',
+    //     'subtype',
+    //     'communities',
+    //     'q',
+    //     'creator',
+    //     'title',
+    //     'keywords'
+    // ],
 
     // the following are the valid query params for Zenodeo
     // validZenodeo: [
@@ -249,19 +258,19 @@ const globals = {
      * the following input params are ignored while creating the 
      * textual version of the search criteria
      */
-    notInSearchCriteria : [
-        'resource', 
-        'communities', 
-        'communitiesChooser',
-        'refreshCache', 
-        'view',
-        'size', 
-        'page',
-        'reset',
-        'submit',
-        'source',
-        'grid'
-    ],
+    // notInSearchCriteria : [
+    //     'resource', 
+    //     'communities', 
+    //     'communitiesChooser',
+    //     'refreshCache', 
+    //     'view',
+    //     'size', 
+    //     'page',
+    //     'reset',
+    //     'submit',
+    //     'source',
+    //     'grid'
+    // ],
 
     closedFigcaptionHeight : '30px',
 

@@ -47,14 +47,15 @@ const qs2form = (qs) => {
     const q = [];
 
     sp.forEach((val, key) => {
-
-        // ignore all keys that are not valid for Zenodeo
-        if (globals.params.validZenodeo.includes(key)) {
+        log.info(`val: ${val}, key: ${key}`)
+        // include only keys that are valid for Zenodeo
+        //if (globals.params.validZenodeo.includes(key)) {
 
             // for keys that won't go into 'q'
             if (globals.params.notValidQ.includes(key)) {
 
                 if (key === 'resource') {
+                    log.info(`setting form to query resource ${val}`)
                     Array.from($$('input[name=resource]'))
                         .filter(i => i.value === val)[0].checked = "true";
                 }
@@ -79,7 +80,7 @@ const qs2form = (qs) => {
                 q.push(value);
             }
 
-        }
+        //}
         
     });
 

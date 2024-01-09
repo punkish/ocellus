@@ -73,10 +73,9 @@ const getResource = async (qs) => {
     });
 
     // let's define the cols to retrieve from Zenodeo
-    const cols = [ 
-        'treatmentId', 'treatmentTitle', 'zenodoDep', 'treatmentDOI', 
-        'articleTitle', 'articleAuthor', 'httpUri', 'caption'
-    ].join('&cols=');
+    const cols = resource === 'images'
+        ?   globals.params.images.join('&cols=')
+        :   globals.params.treatments.join('&cols=')
     
     // cols.map(c => `cols=${c}`).join('&')
     let queryString = `${sp.toString()}&cols=${cols}`;
@@ -198,7 +197,7 @@ const getResults = async ({ resource, queryString, figureSize }) => {
 
                 //     record.caption = r.metadata.description;
                 // }
-                //if (resource === 'images') {
+                if (resource === 'images') {
                     record.treatmentId = r.treatmentId;
                     record.treatmentTitle = r.treatmentTitle;
                     record.zenodoRec = r.zenodoDep;
@@ -228,6 +227,40 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                     record.treatmentDOI = r.treatmentDOI;
                     record.articleTitle = r.articleTitle;
                     record.articleAuthor = r.articleAuthor;
+                }
+                else if (resource === 'treatments') {
+                    record.treatmentId = r.treatmentId;
+                    record.treatmentTitle = r.treatmentTitle;
+                    record.zenodoRec = r.zenodoDep;
+                    record.figureSize = figureSize;
+                    //record.publicationDate = r.publicationDate;
+                    record.journalTitle = r.journalTitle;
+
+                    // Most figures are on Zenodo, so adjust their url 
+                    // accordingly
+                    //const id = r.httpUri.split('/')[4];
+
+                    // if the figure is on zenodo, show their thumbnails unless 
+                    // it is an svg, in which case, show it directly
+                    // if (r.httpUri.indexOf('zenodo') > -1) {
+                    //     if (r.httpUri.indexOf('.svg') > -1) {
+                    //         record.uri = '/img/kein-preview.png';
+                    //     }
+                    //     else {
+                    //         record.uri = `${globals.zenodoUri}/${id}/thumb${figureSize}`;
+                    //     }
+                    // }
+
+                    // but some are on Pensoft, so use the uri directly
+                    // else {
+                    //     record.uri = r.httpUri;
+                    // }
+                    
+                    //record.captionText = r.captionText;
+                    record.treatmentDOI = r.treatmentDOI;
+                    record.articleTitle = r.articleTitle;
+                    record.articleAuthor = r.articleAuthor;
+                }
 
                 results.recs.push(record);
             })

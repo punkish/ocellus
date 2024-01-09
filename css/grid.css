@@ -184,6 +184,45 @@ details[open] summary {
     margin-bottom: 0.5em;
 }
 
+/* treatments figures */
+p.treatmentTitle {
+    font-weight: bold;
+    font-size: 150%;
+    font-family: serif;
+}
+
+p.citation {
+    text-align: left;
+}
+
+span.articleTitle {
+    font-family: serif;
+    font-style: italic;
+    font-size: 120%;
+}
+
+span.journalTitle {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+}
+
+img.zenodoLink {
+    width: 50px;
+    height: 20px;
+    padding-bottom: 2px;
+}
+
+img.tbLink {
+    width: 35px;
+    height: 20px;
+    padding-bottom: 2px;
+}
+
+img.zenodoLink:hover,
+img.tbLink:hover {
+    border-bottom: 1px solid blue;
+}
+/* end: treatments figures */
 
 @-webkit-keyframes fadeIn {
     from { opacity: 0; }
