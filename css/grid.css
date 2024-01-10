@@ -188,11 +188,14 @@ details[open] summary {
 p.treatmentTitle {
     font-weight: bold;
     font-size: 150%;
-    font-family: serif;
+    font-family: 'Fjalla One', sans-serif;
+    color: #444;
 }
 
 p.citation {
     text-align: left;
+    line-height: 1.5;
+    padding-bottom: 10px;
 }
 
 span.articleTitle {

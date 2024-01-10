@@ -1,6 +1,5 @@
 /* generated: __buildDate__ */
 
-//import { $, $$ } from './utils.js';
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
 import { fancySearch } from '../libs/fancySearch/fancySearch.js';

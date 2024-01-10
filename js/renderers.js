@@ -143,6 +143,10 @@ const renderPage = (resultsObj) => {
     if (termFreq && termFreq.length) {
         renderTermFreq(term, termFreq);
     }
+    else if (globals.termFreqChart) {
+        globals.termFreqChart.dispose();
+        document.getElementById('graphdiv').style.display = 'none';
+    }
     
 }
 
@@ -297,6 +301,7 @@ const renderTermFreq = (term, termFreq) => {
     // How to find the width of a div using vanilla JavaScript?
     // https://stackoverflow.com/a/4787561/183692
     const ctx = document.getElementById('graphdiv');
+    ctx.style.display = 'block';
     const gwidth = ctx.offsetWidth;
 
     if (gwidth < 960) {
@@ -334,7 +339,7 @@ const renderTermFreq = (term, termFreq) => {
 //     });
 // }
 
-let termFreqChart;
+
 
 // const pluginLegendBackground = {
 // 	id: 'legendBackground',
@@ -695,8 +700,10 @@ const termFreqWithEcharts = (ctx, width, height, series, term, termFreq) => {
 
     ctx.style.width = `${width}px`;
     ctx.style.height = `${height}px`;
-    const myChart = echarts.init(ctx);
-    myChart.setOption(options); 
+    // const myChart = echarts.init(ctx);
+    // myChart.setOption(options); 
+    globals.termFreqChart = echarts.init(ctx);
+    globals.termFreqChart.setOption(options);
 }
 
 export {
