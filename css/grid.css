@@ -199,9 +199,9 @@ p.citation {
 }
 
 span.articleTitle {
-    font-family: serif;
+    font-family: Lora, serif;
     font-style: italic;
-    font-size: 120%;
+    /* font-size: 120%; */
 }
 
 span.journalTitle {

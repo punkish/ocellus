@@ -146,6 +146,7 @@ const globals = {
             'order',
             'genus',
             'species',
+            'status',
             'publicationDate',
             'checkinTime',
             'latitude',

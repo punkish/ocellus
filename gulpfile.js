@@ -159,4 +159,4 @@ async function js2() {
 
 const one = series(cleanup, parallel(css, js, html));
 const two = series(cleanup2, parallel(css2, js2, html2))
-exports.default = parallel(one, two);
+exports.default = parallel(two);
