@@ -114,31 +114,32 @@ const globals = {
         notValidQ: ['resource', 'page', 'size', 'grid', 'refreshCache', 'cols'],
 
         // params valid for Zenodo
-        validZenodo: [
-            'id',
-            'subtype',
-            'communities',
-            'q',
-            'creator',
-            'title',
-            'keywords'
-        ],
+        // validZenodo: [
+        //     'id',
+        //     'subtype',
+        //     'communities',
+        //     'q',
+        //     'creator',
+        //     'title',
+        //     'keywords'
+        // ],
 
-        // the following are the valid query params for Zenodeo
-        validZenodeo: [
+        validImages: [
             'httpUri',
-            'caption',
-            'captionText',
+            'caption', // search against images.captionText
+            'captionText', // search against imagesFts.captionText
+            'q',
             'treatmentId',
             'treatmentTitle',
             'articleTitle',
             'treatmentDOI',
             'articleDOI',
             'zenodoDep',
-            'q',
+            'authorityName',
+            // 'articleAuthor',
+            'status',
             'journalTitle',
             'journalYear',
-            'authorityName',
             'kingdom',
             'phylum',
             'class',
@@ -146,7 +147,6 @@ const globals = {
             'order',
             'genus',
             'species',
-            'status',
             'publicationDate',
             'checkinTime',
             'latitude',
@@ -156,11 +156,84 @@ const globals = {
             'validGeo',
             'eco_name',
             'biome',
+            // 'realm'
+        ],
+
+        validTreatments: [
+            'treatmentId',
+            'treatmentTitle',
+            'treatmentDOI',
+            'zenodoDep',
+            'articleTitle',
+            // 'articleAuthor',
+            'articleDOI',
+            'publicationDate',
+            'journalYear',
+            'authorityName',
+            'status',
+            'checkinTime',
+            'validGeo',
+            'q',
+            'latitude',
+            'longitude',
+            'geolocation',
+            'eco_name',
+            'biome',
+            'isOnLand',
+            'journalTitle',
+            'kingdom',
+            'phylum',
+            'class',
+            'family',
+            'order',
+            'genus',
+            'species',
+        ],
+
+        validCommon: [
             'refreshCache',
             'page',
             'size',
             'cols'
         ],
+
+        // the following are the valid query params for Zenodeo
+        // validZenodeo: [
+        //     'httpUri',
+        //     'caption',
+        //     'captionText',
+        //     'treatmentId',
+        //     'treatmentTitle',
+        //     'articleTitle',
+        //     'treatmentDOI',
+        //     'articleDOI',
+        //     'zenodoDep',
+        //     'q',
+        //     'journalTitle',
+        //     'journalYear',
+        //     'authorityName',
+        //     'kingdom',
+        //     'phylum',
+        //     'class',
+        //     'family',
+        //     'order',
+        //     'genus',
+        //     'species',
+        //     'status',
+        //     'publicationDate',
+        //     'checkinTime',
+        //     'latitude',
+        //     'longitude',
+        //     'geolocation',
+        //     'isOnLand',
+        //     'validGeo',
+        //     'eco_name',
+        //     'biome',
+        //     'refreshCache',
+        //     'page',
+        //     'size',
+        //     'cols'
+        // ],
 
         // the following input params are ignored while creating the 
         // textual version of the search criteria

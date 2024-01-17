@@ -1,6 +1,7 @@
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
 import { makeFigure, renderPage } from './renderers.js';
+import { toggleWarn } from './listeners.js';
 
 const getCountOfResource = async (resource) => {
     if (!globals.cache[resource]) {
@@ -39,17 +40,26 @@ const getResource = async (qs) => {
 
     // what are we getting, images or treatments?
     const resource = sp.get('resource');
+    sp.delete('resource');
    // let termFreq = false;
     let term;
     if (sp.has('q')) {
         term = sp.get('q');
     }
 
+    const validParams = resource === 'images'
+        ? globals.params.validImages
+        : globals.params.validTreatments;
+
+    validParams.push(...globals.params.validCommon);
+
     // make an array from searchParams (sp) to iterate over
     // so we can safely remove keys from the sp
+    let allParamsValid = true;
+
     Array.from(sp).forEach(([key, val]) => {
 
-        if (globals.params.validZenodeo.includes(key)) {
+        if (validParams.includes(key)) {
 
             if (!val) { 
 
@@ -68,9 +78,16 @@ const getResource = async (qs) => {
 
         // remove invalid Zenodeo keys
         else {
-            sp.delete(key);
+            //console.log(`${key} is not valid`)
+            toggleWarn(`"${key}" is not a valid param`);
+            allParamsValid = false;
+            //sp.delete(key);
         }
     });
+
+    if (allParamsValid === false) {
+        return;
+    }
 
     // let's define the cols to retrieve from Zenodeo
     const cols = resource === 'images'

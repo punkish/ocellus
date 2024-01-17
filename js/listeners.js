@@ -33,6 +33,18 @@ const toggleExamples = (e) => {
     }
 }
 
+const toggleWarn = (msg) => {
+    if ($('.warn').classList.contains('hidden')) {
+        $('.warn').innerHTML = msg;
+        $('.warn').classList.remove('hidden');
+        $('#throbber').classList.add('nothrob');
+        setTimeout(() => { 
+            $('.warn').innerHTML = '';
+            $('.warn').classList.add('hidden');
+        }, 3000);
+    }
+}
+
 const toggleSearch = (e) => {
     $('#fancySearch').classList.toggle('hidden');
     $('#fancySearch').classList.toggle('noblock');
@@ -301,5 +313,6 @@ export {
     addListenersToPagerLinks, 
     addListenersToFigureTypes,
     toggleSearch,
-    toggleResource
+    toggleResource,
+    toggleWarn
 };

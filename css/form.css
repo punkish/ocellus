@@ -201,3 +201,13 @@ input.ns-val-input:focus {
 #examples {
     background-position: -151px 0px;
 }
+.warn {
+    background-color: orange;
+    color: white;
+    padding: 5px;
+    border-radius: 0 0 5px 5px;
+    float: right;
+    margin-left: 5px;
+    margin-top: -5px;
+    height: 35px;
+}
