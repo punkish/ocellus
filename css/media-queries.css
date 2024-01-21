@@ -54,6 +54,10 @@
     .modal {
         max-width: unset;
     }
+
+    div.r {
+        visibility: visible;
+    }
 }
 
 /* Larger than tablet */
