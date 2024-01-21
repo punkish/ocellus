@@ -9,7 +9,7 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Wed Jan 17 2024 18:59:36 GMT+0100 (GMT+01:00)">
+    <meta name="date" content="Sun Jan 21 2024 20:36:35 GMT+0100 (GMT+01:00)">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4</title>
@@ -17,7 +17,7 @@
     <link rel="icon" type="image/png" href="img/ocellus.png">
 
     <link rel="stylesheet" href="css/uglyduck.css">
-    <link rel="stylesheet" href="./css/ocellus-1705514376043.css">
+    <link rel="stylesheet" href="./css/ocellus-1705865795269.css">
     <link rel="stylesheet" href="libs/JavaScript-autoComplete/auto-complete.css">
     <!-- <link rel="stylesheet" href="libs/autoComplete.js-10.2.7/dist/css/autoComplete.css"> -->
     <link rel="stylesheet" href="libs/pop-pop/pop-pop.min.css">
@@ -100,12 +100,27 @@
                     <div class="warn hidden"></div>
                 </div>
 
-                <div class="switch search small slider green" aria-label="toggle search type" data-pop="left" data-pop-no-shadow data-pop-arrow>
+                <!-- <div class="switch search small slider green" aria-label="toggle search type" data-pop="left" data-pop-no-shadow data-pop-arrow>
                     <input type="radio" id="switchSearch-1" name="searchType" value="ns" checked="true" data-checked="true">
                     <label for="switchSearch-1"></label>
                     <input type="radio" id="switchSearch-2" name="searchType" value="fs" data-checked="false">
                     <label for="switchSearch-2"></label>
+                </div> -->
+
+                <!-- <div class="switch search small slider red" aria-label="toggle advanced search" data-pop="left" data-pop-no-shadow data-pop-arrow>
+                    <input type="radio" id="switchAdvSearch-1" name="searchType2" value="ss" checked="true" data-checked="true">
+                    <label for="switchAdvSearch-1"></label>
+                    <input type="radio" id="switchAdvSearch-2" name="searchType2" value="as" data-checked="false">
+                    <label for="switchAdvSearch-2"></label>
+                </div> -->
+
+                
+                <div class="button r" id="button-1" aria-label="toggle advanced search" data-pop="left" data-pop-no-shadow data-pop-arrow>
+                    <input name="searchtype" type="checkbox" class="checkbox" value="simple">
+                    <div class="knobs"></div>
+                    <div class="layer"></div>
                 </div>
+                
             </div>
 
             <div class="examples hidden">
@@ -165,6 +180,114 @@
                     <button class="example-insert">decapoda&journalTitle=not_like(zootaxa)</button>
                 </details>
             </div>
+
+            <div id="as-container" class="advanced-search noblock">
+                <table>
+                    <tr>
+                        <td class="h">Search Full Text</td>
+                        <td colspan="3"><input name="as-q" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td class="h">Treatment Title</td>
+                        <td colspan="3"><input name="as-treatmentTitle" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td class="h">Authority</td>
+                        <td colspan="3"><input name="as-authorityName" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td class="h">Article Title</td>
+                        <td colspan="3"><input name="as-articleTitle" type="text"></td>
+                    </tr>
+                    <!-- <tr>
+                        <td class="h">Authority Name</td>
+                        <td colspan="3"><input name="authorityName" type="text"></td>
+                    </tr> -->
+                    <tr>
+                        <td class="h">New Species</td>
+                        <td colspan="3"><input name="as-status" type="checkbox" value="sp. nov."></td>
+                    </tr>
+                    <tr>
+                        <td class="h">Journal Title</td>
+                        <td><input name="as-journalTitle" type="text"></td>
+                        <td class="h">Journal Year</td>
+                        <td>
+                            <select name="as-journalYear">
+                                <option value="">choose year…</option>
+                                <option value='1995'>1995</option>
+                                <option value='1996'>1996</option>
+                                <option value='1997'>1997</option>
+                                <option value='1998'>1998</option>
+                                <option value='1999'>1999</option>
+                                <option value='2000'>2000</option>
+                                <option value='2001'>2001</option>
+                                <option value='2002'>2002</option>
+                                <option value='2003'>2003</option>
+                                <option value='2004'>2004</option>
+                                <option value='2005'>2005</option>
+                                <option value='2006'>2006</option>
+                                <option value='2007'>2007</option>
+                                <option value='2008'>2008</option>
+                                <option value='2009'>2009</option>
+                                <option value='2010'>2010</option>
+                                <option value='2011'>2011</option>
+                                <option value='2012'>2012</option>
+                                <option value='2013'>2013</option>
+                                <option value='2014'>2014</option>
+                                <option value='2015'>2015</option>
+                                <option value='2016'>2016</option>
+                                <option value='2017'>2017</option>
+                                <option value='2018'>2018</option>
+                                <option value='2019'>2019</option>
+                                <option value='2020'>2020</option>
+                                <option value='2021'>2021</option>
+                                <option value='2022'>2022</option>
+                                <option value='2023'>2023</option>
+                                <option value='2024'>2024</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="h" aria-label="When the article was published." data-pop="left" data-pop-no-shadow data-pop-arrow data-pop-multiline>Publication Date</td>
+                        <td colspan="3">
+                            <select name="as-publicationDate">
+                                <option value="">choose duration…</option>
+                                <option value="since">since</option>
+                                <option value="until">until</option>
+                                <option value="between">between</option>
+                            </select>
+                            <input name="as-publicationDateFrom" type="date">
+                            <span class="hidden">and</span> 
+                            <input class="hidden" name="as-publicationDateTo" type="date">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="h" aria-label="When the article was checked into the Treatment Bank database." data-pop="left" data-pop-no-shadow data-pop-arrow data-pop-multiline>Check-in Time</td>
+                        <td colspan="3">
+                            <select name="as-checkinTime">
+                                <option value="">choose duration…</option>
+                                <option value="since">since</option>
+                                <option value="until">until</option>
+                                <option value="between">between</option>
+                            </select>
+                            <input name="as-checkinTimeFrom" type="date">
+                            <span class="hidden">and</span> 
+                            <input class="hidden" name="as-checkinTimeTo" type="date">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="h">Biome</td>
+                        <td colspan="3"><input name="as-biome" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="footer">
+                            <button id="as-go" name="as-go" type="submit" class="as-button-primary">search</button>
+                        </td>
+                    </tr>
+                </table>
+                
+            </div>
+
         </form>
     </header>
     <div id="throbber" class="nothrob"></div>
@@ -250,9 +373,8 @@
     <!-- <script src="https://unpkg.com/chart.js@4.3.0/dist/chart.umd.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
     
-    
     <script type="module">
-        import { init } from './js/ocellus-1705514376043.js';
+        import { init } from './js/ocellus-1705865795269.js';
         window.onload = () => init();
     </script>
   </body>
