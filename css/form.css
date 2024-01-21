@@ -13,6 +13,14 @@ form {
     font-family: sans-serif;
     font-size: 12px;
 }
+#as-container {
+    --as-container-min-height: 36px;
+    --as-button-width: 75px;
+    --as-border-radius: calc( var(--as-container-min-height) / 2 );
+    --as-theme: gray;
+    font-family: sans-serif;
+    font-size: 12px;
+}
 .search-container {
     border: none;
     clear: both;
@@ -109,10 +117,22 @@ input.ns-val-input:focus {
     right: 0;
     cursor: pointer;
 }
-.ns-button-primary:hover {
+.ns-button-primary:hover,
+.as-button-primary:hover {
     background-color: green;
 } 
-
+.as-button-primary {
+    height: var(--as-container-min-height);
+    width: var(--as-button-width);
+    border-radius: var(--as-border-radius);
+    background-color: var(--as-theme);
+    border: 1px solid var(--as-theme);
+    color: white;
+    text-transform: uppercase;
+    padding: 0 15px 0 10px;
+    /* right: 0; */
+    cursor: pointer;
+}
 /* https://www.w3docs.com/snippets/css/how-to-create-flashing-glowing-button-using-animation-in-css3.html */
 @keyframes glowing {
     0% {
@@ -210,4 +230,19 @@ input.ns-val-input:focus {
     margin-left: 5px;
     margin-top: -5px;
     height: 35px;
+}
+button[disabled],
+input[disabled] {
+    background-color: lightgrey;
+}
+.required {
+    outline: 1px solid red;
+    border: 1px solid red;
+    background-color: red;
+    color: white;
+}
+#button-1 {
+    float: right;
+    right: 50px;
+    top: 5px;
 }

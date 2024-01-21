@@ -64,6 +64,10 @@
     background-color: #a5dc86;
 }
 
+.red input:checked + label {
+    background-color: #f00;
+}
+
 .slider {
     border: 1px dotted #000;
     border-radius: 10px;
@@ -75,9 +79,15 @@
     opacity: 0;
 }
 
-.slider input:checked + label {
+.green input:checked + label {
   border: 1px dotted green;
   background-color: #a5dc86;
+  opacity: 1;
+}
+
+.red input:checked + label {
+  border: 1px dotted green;
+  background-color: #f00;
   opacity: 1;
 }
 

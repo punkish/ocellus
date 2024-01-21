@@ -100,8 +100,14 @@ const smoke = function (e) {
 const submitForm = () => {
     log.info('submitForm()');
     const qs = form2qs();
-    updateUrl(qs);
-    getResource(qs);
+
+    if (qs) {
+        updateUrl(qs);
+        getResource(qs);
+    }
+    else {
+        return false;
+    }
 }
 
 const updatePlaceHolder = async (resource) => {
@@ -129,7 +135,17 @@ const form2qs = () => {
     //const arr = Array.from($$('form input.query'));
     //const r = / & /g;
 
-    Array.from($$('form input.query'))
+    const searchtypeToggle = $('input[name=searchtype');
+    const typeOfSearch = searchtypeToggle.checked === true
+        ? 'as'
+        : 'ss';
+
+    let submitFlag = true;
+
+    if (typeOfSearch === 'ss') {
+        log.info('- form2qs(): simple search');
+
+        Array.from($$('form input.query'))
         .filter(i => i.value)
         .forEach(i => {
             
@@ -179,9 +195,145 @@ const form2qs = () => {
 
             }
         });
+    }
+    else {
+        log.info('- form2qs(): advanced search');
 
-    const qs = sp.toString();
-    return qs;
+        const processCommonInputs = (fldName) => {
+            const fld = $(`input[name=${fldName}]`);
+
+            if (fld.checked || fld.checked === 'true') {
+                sp.append(fldName, fld.value);
+            }
+        }
+
+        const commonInputs = [
+            'page',
+            'size',
+            'resource',
+            'refreshCache'
+        ];
+
+        commonInputs.forEach(i => processCommonInputs(i));
+
+        const processTextInputs = (fldName) => {
+            const fld = $(`input[name="as-${fldName}"]`);
+
+            if (fld.value) {
+                sp.append(fldName, fld.value);
+            }
+        }
+
+        const textInputs = [
+            'q',
+            'treatmentTitle',
+            'authorityName',
+            'articleTitle',
+            'journalTitle',
+            'biome'
+        ];
+
+        textInputs.forEach(i => processTextInputs(i));
+        
+        const processCheckboxIinputs = (fldName) => {
+            const fld = $(`input[name="as-${fldName}"]`);
+
+            if (fld.checked || fld.checked === 'true') {
+                sp.append(fldName, fld.value);
+            }
+            
+        }
+
+        const checkboxInputs = [
+            'status'
+        ];
+
+        checkboxInputs.forEach(i => processCheckboxIinputs(i));
+
+        const processSelectInputs = (fldName) => {
+            const op = $(`select[name="as-${fldName}"]`);
+            const i = op.selectedIndex;
+            const opVal = op.options[i].value;
+
+            if (opVal) {
+
+                if (fldName === 'journalYear') {
+                    sp.append(fldName, opVal);
+                }
+                else {
+
+                    if (opVal === 'between') {
+                        const from = $(`input[name="as-${fldName}From`);
+                        const valFrom = from.value;
+
+                        const to = $(`input[name="as-${fldName}To`);
+                        const valTo = to.value;
+
+                        if (valFrom && valTo) {
+                            sp.append(fldName, `between(${valFrom} and ${valTo})`);
+                        }
+                        else {
+                            let submitFlag = true;
+
+                            if (valFrom === '') {
+                                from.classList.add('required');
+                                submitFlag = false;
+                            }
+
+                            if (valTo === '') {
+                                to.classList.add('required');
+                                submitFlag = false;
+                            }
+
+                            if (!submitFlag) {
+                                return false;
+                            }
+                        }
+                    }
+                    else {
+                        const inp = $(`input[name="as-${fldName}From`);
+                        const val = inp.value;
+
+                        if (val) {
+                            sp.append(fldName, `${opVal}(${val})`);
+                        }
+                        else {
+                            inp.classList.add('required');
+                            return false;
+                        }
+                    }
+
+                }
+
+            }
+
+            return true;
+        }
+
+        const selectInputs = [
+            'journalYear',
+            'publicationDate',
+            'checkinTime'
+        ];
+
+        for (const i of selectInputs) {
+            const res = processSelectInputs(i);
+
+            if (!res) {
+                submitFlag = false;
+                break;
+            }
+        }
+        
+    }
+
+    if (submitFlag) {
+        const qs = sp.toString();
+        return qs;
+    }
+    else {
+        return false;
+    }
 }
 
 const updateUrl = (qs) => {

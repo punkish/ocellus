@@ -7,6 +7,7 @@ const addListeners = () => {
 
     $('#refreshCache').addEventListener('click', toggleRefreshCache);
     $('#ns-go').addEventListener('click', go);
+    $('#as-go').addEventListener('click', asGo);
     $('#q').addEventListener('focus', cue);
     $('#search-help').addEventListener('click', toggleExamples);
     $('div.examples').addEventListener('toggle', controlDetails, true);
@@ -20,8 +21,22 @@ const addListeners = () => {
     const switches = $$("input[name=searchType");
     switches.forEach(el => el.addEventListener('click', toggleSearch));
 
+    // const switches2 = $$("input[name=searchType2");
+    // switches2.forEach(el => el.addEventListener('click', toggleAdvSearch));
+    const searchToggle = $('#button-1');
+    searchToggle.addEventListener('click', toggleAdvSearch);
+
     const resources = $$('.resource input');
     resources.forEach(el => el.addEventListener('click', toggleResource));
+
+    const pdo = $('select[name="as-publicationDate"]');
+    const cio = $('select[name="as-checkinTime"]');
+    pdo.addEventListener('change', toggleDateSelector);
+    cio.addEventListener('change', toggleDateSelector);
+
+    $$('input[type=date').forEach(el => el.addEventListener(
+        'change', resetDatePickerWarning
+    ));
 }
 
 const toggleExamples = (e) => {
@@ -30,6 +45,12 @@ const toggleExamples = (e) => {
     }
     else {
         $('.examples').classList.add('hidden');
+    }
+}
+
+const resetDatePickerWarning = (e) => {
+    if (e.target.classList.contains('required')) {
+        e.target.classList.remove('required');
     }
 }
 
@@ -45,6 +66,28 @@ const toggleWarn = (msg) => {
     }
 }
 
+const toggleAdvSearch = (e) => {
+    log.info(('- toggling advanced search'));
+    $('#as-container').classList.toggle('noblock');
+    const advSearchIsActive = $('input[name=searchtype]').checked;
+
+    if (advSearchIsActive) {
+        $('#q').value = '';
+        $('#q').placeholder = 'use advanced search below';
+        $('#q').disabled = true;
+        $('#refreshCache').disabled = true;
+        $('#clear-q').disabled = true;
+        $('input[name="as-q"]').focus();
+    }
+    else {
+        $('#q').placeholder = 'search for something';
+        $('#q').disabled = false;
+        $('#refreshCache').disabled = false;
+        $('#clear-q').disabled = false;
+    }
+    
+}
+
 const toggleSearch = (e) => {
     $('#fancySearch').classList.toggle('hidden');
     $('#fancySearch').classList.toggle('noblock');
@@ -58,7 +101,7 @@ const toggleSearch = (e) => {
     // switch and update the URL hash
     if (e) {
         if (e.target.dataset.checked === 'true') {
-            const other = $('input[data-checked=false]');
+            const other = $('input[name=searchType][data-checked=false]');
             other.dataset.checked = true;
             other.checked = true;
 
@@ -66,7 +109,7 @@ const toggleSearch = (e) => {
             e.target.checked = false;
         }
         else {
-            const other = $('input[data-checked=true]');
+            const other = $('input[name=searchType][data-checked=true]');
             other.dataset.checked = false;
             other.checked = false;
 
@@ -167,6 +210,14 @@ const go = (e) => {
 
         submitForm();
     }
+    
+    e.stopPropagation();
+    e.preventDefault();
+}
+
+const asGo = (e) => {
+    $('#throbber').classList.remove('nothrob');
+    submitForm();
     
     e.stopPropagation();
     e.preventDefault();
@@ -307,6 +358,27 @@ const addListenersToFigureTypes = () => {
     }
 }
 
+const toggleDateSelector = (e) => {
+    if (e.target.value === 'between') {
+        const tos = e.target.parentNode.querySelectorAll('.hidden');
+
+        tos.forEach(t => {
+            if (t.classList.contains('hidden')) {
+                t.classList.remove('hidden');
+                t.classList.add('vis');
+            }
+        })
+    }
+    else {
+        const tos = e.target.parentNode.querySelectorAll('.vis');
+
+        tos.forEach(t => {
+            t.classList.add('hidden');
+            t.classList.remove('vis');
+        })
+    }
+}
+
 export { 
     addListeners, 
     addListenersToFigDetails,
@@ -314,5 +386,7 @@ export {
     addListenersToFigureTypes,
     toggleSearch,
     toggleResource,
-    toggleWarn
+    toggleWarn,
+    toggleAdvSearch,
+    toggleDateSelector
 };

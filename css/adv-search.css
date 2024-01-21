@@ -1,0 +1,51 @@
+div.advanced-search {
+    width: 80%;
+    margin: auto;
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+/*     font-size: 10px; */
+    padding: 10px;
+/*     display: inline-block; */
+}
+/* div.as_cell {
+    float: left;
+} */
+div.advanced-search tr {
+    border: none;
+    outline: none;
+}
+div.advanced-search td {
+/*     border: 1px solid red; */
+    font-size: 10px;
+    padding: 5px;
+}
+div.advanced-search input[type=text]:focus {
+    border-bottom: blue 2px solid !important;
+}
+div.advanced-search input[type=text],
+div.advanced-search input[type=date] {
+    outline: none;
+    border: none;
+    border-bottom: 1px solid grey;
+    width: 100%;
+}
+div.advanced-search td.h {
+    width: 120px;
+}
+div.advanced-search input[type='date'] {
+    width: 130px !important;
+}
+div.advanced-search input[name="as-status"] {
+    width: 16px;
+    height: 16px;
+    background-color: white;
+    vertical-align: middle;
+    border: 1px solid #444;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+div.advanced-search td.footer {
+    text-align: right;
+}

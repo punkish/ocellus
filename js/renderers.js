@@ -1,5 +1,6 @@
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
+import { toggleAdvSearch } from './listeners.js';
 
 import { 
     //addListenersToFigcaptions, 
@@ -147,6 +148,16 @@ const renderPage = (resultsObj) => {
         globals.termFreqChart.dispose();
         document.getElementById('graphdiv').style.display = 'none';
     }
+
+    // hide advanced search panel
+    const advSearchIsActive = $('input[name=searchtype]').checked;
+    
+    if (advSearchIsActive) {
+        $('input[name=searchtype]').checked = false;
+        toggleAdvSearch();
+    }
+    
+    
     
 }
 
@@ -616,7 +627,7 @@ const renderTermFreq = (term, termFreq) => {
 const termFreqWithEcharts = (ctx, width, height, series, term, termFreq) => {
     const options = {
         title: {
-            text: `occurence of '${term}' in text by year`,
+            text: `occurrence of '${term}' in text by year`,
             left: 'center'
         },
         tooltip: {

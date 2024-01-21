@@ -6,6 +6,7 @@ import { fancySearch } from '../libs/fancySearch/fancySearch.js';
 import { toggleSearch, toggleResource } from './listeners.js';
 import { loadBookmarkedWebSite, loadBlankWebSite, updateUrl } from './main.js';
 import { getResource } from './querier.js';
+import { init as initAs } from './adv-search.js';
 
 // set loglevel to 'INFO' on local development machine and to 'ERROR' on prod
 const loglevel = window.location.hostname === 'localhost' 
@@ -28,6 +29,10 @@ const init = () => {
     if (searchType === 'fs') {
         toggleResource();
     }
+
+    // hide advanced search
+    //$('#as-container').classList.add('noblock');
+    initAs();
 
     if (loc.search) {
         const qs = loc.search.substring(1);
@@ -182,15 +187,15 @@ const initializeFancySearch = (searchType) => {
             "prompt": "type at least 3 letters to choose an order",
             "noDuplicates": false 
         },
-        {   "key": "taxon", 
-            "actualKey": "taxon",
-            "values": {
-                url: `${globals.server}/taxa?taxon=`, 
-                cb: cbMaker('taxon')
-            },
-            "prompt": "type at least 3 letters to choose a taxon",
-            "noDuplicates": false 
-        },
+        // {   "key": "taxon", 
+        //     "actualKey": "taxon",
+        //     "values": {
+        //         url: `${globals.server}/taxa?taxon=`, 
+        //         cb: cbMaker('taxon')
+        //     },
+        //     "prompt": "type at least 3 letters to choose a taxon",
+        //     "noDuplicates": false 
+        // },
         {   "key": "journal year", 
             "actualKey": "journalYear",
             "values": yearsArray(1995, 2022), 
