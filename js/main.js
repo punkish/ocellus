@@ -90,5 +90,6 @@ const qs2form = (qs) => {
 export { 
     loadBlankWebSite, 
     loadBookmarkedWebSite, 
-    updateUrl
+    updateUrl,
+    qs2form
 }

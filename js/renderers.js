@@ -1,6 +1,7 @@
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
 import { toggleAdvSearch } from './listeners.js';
+import { qs2form } from './main.js';
 
 import { 
     //addListenersToFigcaptions, 
@@ -155,10 +156,9 @@ const renderPage = (resultsObj) => {
     if (advSearchIsActive) {
         $('input[name=searchtype]').checked = false;
         toggleAdvSearch();
+        qs2form(qs);
     }
-    
-    
-    
+
 }
 
 const renderFigures = (figures, qs, prev, next) => {

@@ -9,7 +9,7 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Sun Jan 21 2024 20:50:36 GMT+0100 (GMT+01:00)">
+    <meta name="date" content="Wed Jan 24 2024 21:56:49 GMT+0100 (GMT+01:00)">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4</title>
@@ -17,12 +17,9 @@
     <link rel="icon" type="image/png" href="img/ocellus.png">
 
     <link rel="stylesheet" href="css/uglyduck.css">
-    <link rel="stylesheet" href="./css/ocellus-1705866636666.css">
+    <link rel="stylesheet" href="./css/ocellus-1706129809746.css">
     <link rel="stylesheet" href="libs/JavaScript-autoComplete/auto-complete.css">
-    <!-- <link rel="stylesheet" href="libs/autoComplete.js-10.2.7/dist/css/autoComplete.css"> -->
     <link rel="stylesheet" href="libs/pop-pop/pop-pop.min.css">
-
-    <!-- <link rel="stylesheet" type="text/css" href="https://unpkg.com/dygraphs@2.2.1/dist/dygraph.min.css" /> -->
     
     <!--
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
@@ -30,8 +27,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css">
     -->
 
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Lora">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Lora">
   </head>
   <body>
     
@@ -56,8 +52,10 @@
                     <div id="ns-widget">
                         <div id="ns" class="ns">
 
-                            <!-- resource is what we want to retrieve and display -->
-                            <!-- resource is either "images" or "treatments" -->
+                            <!-- 
+                                resource is what we want to retrieve and display. resource is either "images" or 
+                                "treatments" 
+                            -->
                             <div class="switch resource regular pill green" aria-label="toggle resource" data-pop="right" data-pop-no-shadow="true" data-pop-arrow="true">
                                 <input class="query" type="radio" id="switchResource-1" name="resource" value="images" autocomplete="off" checked="true">
                                 <label for="switchResource-1"></label>
@@ -83,14 +81,7 @@
             </div>
 
             <div id="bottom-menu">
-                <div id="quicksearch">
-                    <!-- <button class="qs" id="ants"></button>
-                    <button class="qs" id="fishes"></button>
-                    <button class="qs" id="spiders"></button>
-                    <button class="qs" id="shrimp"></button>
-                    <button class="qs" id="beetles"></button>
-                    <button class="qs" id="examples"></button> -->
-                    
+                <div id="quicksearch">                    
                     <a href="?resource=images&family=Formicidae" aria-label="find ants" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-ant.svg"></a> 
                     <a href="?resource=images&class=Actinopterygii" aria-label="find fishes" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-fish.svg"></a>
                     <a href="?resource=images&class=Arachnida" aria-label="find spiders" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-spider.svg"></a>
@@ -366,15 +357,11 @@
         Get stylesheet file from /dist/css folder
         Get search icon from /dist/css/images folder 
     -->
-    <!-- <script src="libs/autoComplete.js-10.2.7/dist/autoComplete.min.js"></script> -->
 
-    <!-- <script type="text/javascript" src="https://unpkg.com/dygraphs@2.2.1/dist/dygraph.min.js"></script> -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
-    <!-- <script src="https://unpkg.com/chart.js@4.3.0/dist/chart.umd.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
     
     <script type="module">
-        import { init } from './js/ocellus-1705866636666.js';
+        import { init } from './js/ocellus-1706129809746.js';
         window.onload = () => init();
     </script>
   </body>
