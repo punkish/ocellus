@@ -379,6 +379,19 @@ const toggleDateSelector = (e) => {
     }
 }
 
+function showTooltip(evt, text) {
+    const tooltip = document.getElementById("tooltip");
+    tooltip.innerHTML = text;
+    tooltip.style.display = "block";
+    tooltip.style.left = evt.offsetX + 'px';
+    tooltip.style.top = evt.offsetY + 'px';
+}
+
+function hideTooltip() {
+    const tooltip = document.getElementById("tooltip");
+    tooltip.style.display = "none";
+}
+
 export { 
     addListeners, 
     addListenersToFigDetails,
@@ -388,5 +401,7 @@ export {
     toggleResource,
     toggleWarn,
     toggleAdvSearch,
-    toggleDateSelector
+    toggleDateSelector,
+    showTooltip,
+    hideTooltip
 };

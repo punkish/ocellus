@@ -4,10 +4,78 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <title>JS Bin</title>
+  <style>
+svg + svg {
+  margin-left: 20px;
+}
+
+.sparkline {
+  fill: none;
+}
+
+.sparkline--red {
+  stroke: #dc2b33;
+}
+  </style>
+<style>
+.chart {
+  display: inline-block;
+  margin-right: 0;
+  transition: all 0.3s ease;
+}
+
+.box {
+  background-color: #eee;
+  padding: 20px;
+  cursor: pointer;
+}
+.box:hover .chart, .box:focus .chart {
+  transform: scale(6) translate(7px, -20px);
+}
+
+.bar {
+  position: relative;
+  fill: #aaa;
+  /* height: 21px; */
+  transition: fill 0.3s ease;
+  cursor: pointer;
+  font-family: Helvetica, sans-serif;
+  display: inline-block;
+}
+
+.chart:hover .bar,
+.chart:focus .bar {
+  fill: #aaa;
+}
+
+.bar:hover,
+.bar:focus {
+  fill: #ff4136 !important;
+}
+.bar:hover text,
+.bar:focus text {
+  fill: #ff4136;
+}
+
+figcaption {
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+span {
+  color: #ff4136;
+}
+</style>
 </head>
 <body>
 	<div id="graphdiv"></div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<div id="imageCount"></div>
+	<svg class="sparkline sparkline--red" width="100" height="30" stroke-width="3"></svg>
+	<div id="sparkBox" class="box"></div>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script> -->
+	<script src="../libs/@fnando-sparkline/sparkline.js"></script>
 	<script>
 	const termFreqWithChartjs = (ctx, series, term, termFreq) => {
 		
@@ -473,7 +541,6 @@
 			"withImages": 0
 		}
 	];
-
 	const series = {
         x: "journal year",
         y1: "total",
@@ -481,7 +548,78 @@
     }
     
 	const ctx = document.getElementById('graphdiv');
-    termFreqWithChartjs(ctx, series, 'formica', termFreq);
+    //termFreqWithChartjs(ctx, series, 'formica', termFreq);
+
+	const cumImgCount = [1,1918,91405,109451,122365,147832,185661,307545,343763,384149,387051];
+	const numImg = [1,1917,89487,18046,12914,25467,37829,121884,36218,40386,2902];
+
+	const imageCount = () => {
+		const width = 150;
+		const height = 50;
+		const ctx = document.getElementById('imageCount');
+		ctx.style.display = 'block';
+		
+
+		const options = {
+			xAxis: {
+				type: 'category',
+				data: [2009,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024],
+				show: false
+			},
+			yAxis: {
+				type: 'value',
+				show: false
+			},
+			series: [
+				{
+				data: numImg,
+				type: 'bar'
+				}
+			]
+		};
+
+		ctx.style.width = `${width}px`;
+		ctx.style.height = `${height}px`;
+
+		const imageCountChart = echarts.init(ctx);
+    	imageCountChart.setOption(options);
+	}
+
+	//imageCount();
+	sparkline.sparkline(document.querySelector('.sparkline'), cumImgCount);
+
+	const svgSpark = (numImg) => {
+		const str = (i, className, height, sparkHeight, barWidth) => {
+			return `<g class="${className}" transform="translate(${i * barWidth},0)">
+				<rect height="${height}" y="${sparkHeight - height}" width="${barWidth}"></rect>
+			</g>`;
+		}
+
+		const barWidth = 3;
+		const className = 'bar';
+		const numOfRects = numImg.length;
+		const sparkWidth = barWidth * numOfRects;
+		const sparkHeight = 20;
+		const maxNum = Math.max(...numImg);
+		const heightRatio = sparkHeight / maxNum;
+		const totalImages = numImg.reduce((partialSum, a) => partialSum + a, 0);
+
+		let html = `<svg id="svgSpark" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="chart" height="${sparkHeight}" width="${sparkWidth}" aria-labelledby="title" role="img">`;
+
+		for (let i = 0, j = numImg.length; i < j; i++) {
+			const height = numImg[i] * heightRatio;
+			html += str(i, className, height, sparkHeight, barWidth);
+		}
+
+		html += '</svg>';
+		html += `search <span>${totalImages}</span> images checked in over the years.`;
+		
+		const svg = document.querySelector('#sparkBox');
+		//console.log(html)
+		svg.innerHTML = html;
+	}
+
+	svgSpark(numImg);
   </script>
 </body>
 </html>

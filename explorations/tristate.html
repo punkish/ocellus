@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="../css/uglyduck.css">
 
     <style>
-div#ts1 {
+/* div#ts1 {
     --switch-dim: 20px;
     --theme: lightgreen;
     --theme-off: #f5f5f5;
@@ -62,12 +62,12 @@ div#ts1 input[type=radio]:checked {
 div#ts1 input[type=radio]:checked + label {
     width: auto;
     visibility: visible;
-}
+} */
     
     </style>
 
     <style>
-div#ts2 {
+/* div#ts2 {
     --switch-dim: 20px;
     --theme: lightgray;
     --theme-off: #f5f5f5;
@@ -116,15 +116,14 @@ div#ts2 input[type=radio]:checked {
 }
 div#ts2 input[type=radio]:checked + label {
     visibility: visible;
-}
+} */
     </style>
 
     <style>
-
 /* CSS rules are kept repetitive so that you can get CSS rules for each button easily :) */
 div#button-1 {
-    --button-width: 30px; /* 50 */
-    --button-height: 20px; /* 28 */
+    --button-width: 32px; /* 50 */
+    --button-height: calc( (var(--button-width) / 2) + 2px ); /* 28 */
     --button-padding: 1px; 
     --knob-width: calc( var(--button-height) - (2 * var(--button-padding)));
 }
@@ -153,9 +152,7 @@ div#button-1 {
   top: 50%;
   width: var(--button-width);
   height: var(--button-height);
-  /* margin: -20px auto 0 auto; */
   overflow: hidden;
-  font-family: sans-serif;
   outline: 1px solid grey;
 }
 
@@ -163,10 +160,6 @@ div#button-1 {
 .button.r .layer {
   border-radius: 100px;
 }
-
-/* .button.b2 {
-  border-radius: 2px;
-} */
 
 .checkbox {
   position: relative;
@@ -192,31 +185,26 @@ div#button-1 {
 
 /* Button 1 */
 #button-1 .knobs:before {
-  content: "SS";
+  content: "";
   position: absolute;
   top: var(--button-padding);
   left: var(--button-padding);
   width: var(--knob-width);
   height: var(--knob-width);
-  color: #fff;
-  font-size: 7px;
-  font-weight: bold;
-  text-align: center;
-  line-height: 3;
-  /* padding: 9px 4px; */
   background-color: darkgreen;
-  border-radius: 50%;
+  border-radius: 50% 0 0 50%;
   transition: 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15) all;
 }
 
 #button-1 .checkbox:checked + .knobs:before {
-  content: "AS";
+  content: "";
   left: calc( var(--button-width) - var(--knob-width) - var(--button-padding));
-  background-color: #f44336;
+/*   background-color: #f44336; */
+  border-radius: 0 50% 50% 0;
 }
 
 #button-1 .checkbox:checked ~ .layer {
-  background-color: #fcebeb;
+/*   background-color: #fcebeb; */
 }
 
 #button-1 .knobs,
@@ -224,15 +212,12 @@ div#button-1 {
 #button-1 .layer {
   transition: 0.3s ease all;
 }
-
-
-    
     </style>
   </head>
   <body>
     <header>
         <form>
-            <div id="ts1">
+            <!-- <div id="ts1">
                 <input type="radio" id="ts-11" name="ts1" value="1" checked>
                 <label for="ts-11">images from treatments</label>
                 <input type="radio" id="ts-12" name="ts1" value="2">
@@ -246,7 +231,7 @@ div#button-1 {
                 <label for="ts-21">normal search</label>
                 <input type="radio" id="ts-22" name="ts2" value="2">
                 <label for="ts-22">fancy search</label>
-            </div>
+            </div> -->
 
             <div class="button r" id="button-1">
                 <input name="searchtype" type="checkbox" class="checkbox" value="simple">

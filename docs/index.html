@@ -9,7 +9,7 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Wed Jan 24 2024 21:56:49 GMT+0100 (GMT+01:00)">
+    <meta name="date" content="Mon Jan 29 2024 18:12:40 GMT+0100 (GMT+01:00)">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4</title>
@@ -17,7 +17,7 @@
     <link rel="icon" type="image/png" href="img/ocellus.png">
 
     <link rel="stylesheet" href="css/uglyduck.css">
-    <link rel="stylesheet" href="./css/ocellus-1706129809746.css">
+    <link rel="stylesheet" href="./css/ocellus-1706548360106.css">
     <link rel="stylesheet" href="libs/JavaScript-autoComplete/auto-complete.css">
     <link rel="stylesheet" href="libs/pop-pop/pop-pop.min.css">
     
@@ -45,7 +45,13 @@
             <input class="query" id="page" name="page" type="hidden" value="1">
             <input class="query" id="size" name="size" type="hidden" value="30">
 
-            <div id="help-msg">search images</div>
+            <!-- <div id="topbar-container">
+                <svg class="sparkline sparkline--red" width="100" height="20" stroke-width="2"></svg>
+                <div id="help-msg">search images</div>  
+            </div> -->
+            <div id="tooltip" display="none" style="position: absolute; display: none;"></div>
+            <div id="sparkBox" class="sparkBox"></div>
+            
             <div id="normalSearch" class="search-container">
                 <div id="ns-container">
                     <!-- <div id="ns-help">search images</div> -->
@@ -53,7 +59,8 @@
                         <div id="ns" class="ns">
 
                             <!-- 
-                                resource is what we want to retrieve and display. resource is either "images" or 
+                                resource is what we want to retrieve and 
+                                display. resource is either "images" or 
                                 "treatments" 
                             -->
                             <div class="switch resource regular pill green" aria-label="toggle resource" data-pop="right" data-pop-no-shadow="true" data-pop-arrow="true">
@@ -105,13 +112,11 @@
                     <label for="switchAdvSearch-2"></label>
                 </div> -->
 
-                
                 <div class="button r hidden" id="button-1" aria-label="toggle advanced search" data-pop="left" data-pop-no-shadow data-pop-arrow>
                     <input name="searchtype" type="checkbox" class="checkbox" value="simple">
                     <div class="knobs"></div>
                     <div class="layer"></div>
                 </div>
-                
             </div>
 
             <div class="examples hidden">
@@ -190,10 +195,6 @@
                         <td class="h">Article Title</td>
                         <td colspan="3"><input name="as-articleTitle" type="text"></td>
                     </tr>
-                    <!-- <tr>
-                        <td class="h">Authority Name</td>
-                        <td colspan="3"><input name="authorityName" type="text"></td>
-                    </tr> -->
                     <tr>
                         <td class="h">New Species</td>
                         <td colspan="3"><input name="as-status" type="checkbox" value="sp. nov."></td>
@@ -268,10 +269,31 @@
                     </tr>
                     <tr>
                         <td class="h">Biome</td>
-                        <td colspan="3"><input name="as-biome" type="text"></td>
+                        <!-- <td colspan="3"><input name="as-biome" type="text"></td> -->
+                        <td colspan="3">
+                            <select name="as-biome">
+                                <option value="">choose biome…</option>
+                                <option value="6">Boreal Forests/Taiga</option>
+                                <option value="4">Deserts & Xeric Shrublands</option>
+                                <option value="11">Flooded Grasslands & Savannas</option>
+                                <option value="10">Mangroves</option>
+                                <option value="3">Mediterranean Forests, Woodlands & Scrub</option>
+                                <option value="9">Montane Grasslands & Shrublands</option>
+                                <!-- <option value="15">N/A</option> -->
+                                <option value="8">Temperate Broadleaf & Mixed Forests</option>
+                                <option value="7">Temperate Conifer Forests</option>
+                                <option value="5" title="synonyms: pampas, veld, savanna">Temperate Grasslands, Savannas & Shrublands</option>
+                                <option value="14">Tropical & Subtropical Coniferous Forests</option>
+                                <option value="13">Tropical & Subtropical Dry Broadleaf Forests</option>
+                                <option value="12">Tropical & Subtropical Grasslands, Savannas & Shrublands</option>
+                                <option value="2">Tropical & Subtropical Moist Broadleaf Forests</option>
+                                <option value="1">Tundra</option>
+                            </select>
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="4" class="footer">
+                            <input name="as-refreshCache" id="refreshCache-2" type="checkbox" value="true" class="unchecked" aria-label="This will refresh the cache. You probably don't want to do this." data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>
                             <button id="as-go" name="as-go" type="submit" class="as-button-primary">search</button>
                         </td>
                     </tr>
@@ -351,18 +373,14 @@
     <script src="libs/picolog/picolog.min.js"></script>
     <script src="libs/lazysizes.min.js"></script>
     <script src="libs/JavaScript-autoComplete/auto-complete.js"></script>
-
-    <!-- 
-        Get javascript file from /dist/js folder
-        Get stylesheet file from /dist/css folder
-        Get search icon from /dist/css/images folder 
-    -->
-
+    <script src="libs/@fnando-sparkline/sparkline.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
     
     <script type="module">
-        import { init } from './js/ocellus-1706129809746.js';
+        import { init, showTooltip, hideTooltip } from './js/ocellus-1706548360106.js';
         window.onload = () => init();
+        window.showTooltip = showTooltip;
+        window.hideTooltip = hideTooltip;
     </script>
   </body>
 </html>

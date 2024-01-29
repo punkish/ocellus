@@ -331,6 +331,78 @@ const renderTermFreq = (term, termFreq) => {
     termFreqWithEcharts(ctx, width, height, series, term, termFreq);
 }
 
+// const renderImageCountOld = () => {
+//     const width = 100;
+//     const ctx = document.getElementById('imageCount');
+//     ctx.style.display = 'block';
+//     const height = 30;
+
+//     const options = {
+//         xAxis: {
+//             type: 'category',
+//             data: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37]
+//         },
+//         yAxis: {
+//             type: 'value'
+//         },
+//         series: [
+//             {
+//                 data: [1,8,21,1918,3996,83023,87532,91405,95521,98697,104278,109451,113853,117348,118401,122365,128386,135694,141606,147832,156049,171272,177425,185661,206291,228110,296174,307545,316031,324115,331649,343763,353149,364335,374693,384149,387051],
+//                 type: 'line'
+//             }
+//         ]
+//     };
+
+//     ctx.style.width = `${width}px`;
+//     ctx.style.height = `${height}px`;
+//     // const myChart = echarts.init(ctx);
+//     // myChart.setOption(options); 
+//     globals.imageCountChart = echarts.init(ctx);
+//     globals.imageCountChart.setOption(options);
+// }
+
+// const renderImageCountOlder = () => {
+//     const cumImgCount = [1,1918,91405,109451,122365,147832,185661,307545,343763,384149,387051];
+//     sparkline.sparkline(document.querySelector('.sparkline'), cumImgCount);
+// }
+
+// https://css-tricks.com/how-to-make-charts-with-svg/
+const renderImageCount = (resource, counts) => {
+
+    const str = (i, className, height, sparkHeight, barWidth, year, count) => {
+        return `<g class="${className}" transform="translate(${i * barWidth},0)">
+            <rect height="${height}" y="${sparkHeight - height}" width="${barWidth}" onmousemove="showTooltip(evt, '${year}: ${count}');" onmouseout="hideTooltip();"></rect>
+        </g>`;
+    }
+
+    const totalCount = counts.total;
+    const yearlyCounts = counts.yearly;
+
+    const barWidth = 3;
+    const className = 'bar';
+    const numOfRects = yearlyCounts.length;
+    const sparkWidth = barWidth * numOfRects;
+    const sparkHeight = 40;
+    const maxNum = Math.max(...yearlyCounts);
+    const heightRatio = sparkHeight / totalCount;
+    //const totalImages = numImg.reduce((partialSum, a) => partialSum + a, 0);
+
+    let html = `<svg id="svgSpark" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="chart" height="${sparkHeight}" width="${sparkWidth}" aria-labelledby="title" role="img">`;
+
+    for (let i = 0; i < numOfRects; i++) {
+        const year = yearlyCounts[i].year;
+        const count = yearlyCounts[i].count;
+        const height = count * heightRatio;
+        html += str(i, className, height, sparkHeight, barWidth, year, count);
+    }
+
+    html += '</svg>';
+    html += `<span>~${Math.ceil(totalCount / 1000)}K</span> ${resource} extracted over the years`;
+    
+    const svg = document.querySelector('#sparkBox');
+    //console.log(html)
+    svg.innerHTML = html;
+}
 // const termFreqWithDygraphs = (ctx, width, height, series, term, termFreq) => {
 //     const dygraphOpts = {
 //         width,
@@ -719,5 +791,8 @@ const termFreqWithEcharts = (ctx, width, height, series, term, termFreq) => {
 
 export {
     makeFigure,
-    renderPage
+    renderPage,
+    renderImageCount,
+    // showTooltip,
+    // hideTooltip
 }

@@ -7,7 +7,7 @@ import { getResource } from './querier.js';
 /**
  * case 1: blank canvas shows the default Ocellus page
  */
-const loadBlankWebSite = () => {
+const loadBlankWebSite = async () => {
     log.info('loadBlankWebSite()');
     addListeners();
     updatePlaceHolder('images');

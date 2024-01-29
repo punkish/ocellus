@@ -70,6 +70,8 @@ input.ns-val-input:focus {
     padding: 0;
     border: none;
 }
+
+#refreshCache-2,
 #refreshCache {
     width: 16px;
     height: 16px;
@@ -81,9 +83,14 @@ input.ns-val-input:focus {
     outline: none;
     cursor: pointer;
 }
+
+#refreshCache-2:checked,
 #refreshCache:checked {
     background-color: red;
 }
+
+#refreshCache-2::before,
+#refreshCache-2::after,
 #refreshCache::before,
 #refreshCache::after {
     --pop-bg-color: red;

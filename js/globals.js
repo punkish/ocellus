@@ -13,9 +13,15 @@ const globals = {
     // ],
 
     cache: {
-        zenodoImages: 0,
-        zenodeoImages: 0,
-        zenodeoTreatments: 0
+        //zenodoImages: 0,
+        images: {
+            total: 0,
+            yearly: false
+        },
+        treatments: {
+            total: 0,
+            yearly: false
+        }
     },
 
     // various querystring defaults
@@ -393,7 +399,8 @@ const globals = {
         'August', 'September', 'October', 'November', 'December'
     ],
 
-    termFreqChart: null
+    termFreqChart: null,
+    imageCountChart: null
 };
 
 export { globals }

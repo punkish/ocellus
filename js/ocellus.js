@@ -7,6 +7,7 @@ import { toggleSearch, toggleResource } from './listeners.js';
 import { loadBookmarkedWebSite, loadBlankWebSite, updateUrl } from './main.js';
 import { getResource } from './querier.js';
 import { init as initAs } from './adv-search.js';
+import { showTooltip, hideTooltip } from './listeners.js';
 
 // set loglevel to 'INFO' on local development machine and to 'ERROR' on prod
 const loglevel = window.location.hostname === 'localhost' 
@@ -234,4 +235,4 @@ const initializeFancySearch = (searchType) => {
     }
 }
 
-export { init }
+export { init, showTooltip, hideTooltip }

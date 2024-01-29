@@ -1,8 +1,6 @@
 import { $, $$ } from './base.js';
-import { getCountOfResource, getResource } from './querier.js';
-
-// const $ = (selector) => document.querySelector(selector);
-// const $$ = (selector) => document.querySelectorAll(selector);
+import { getResource, getYearlyCountOfResource } from './querier.js';
+import { renderImageCount } from './renderers.js';
 
 // Javascript: Ordinal suffix for numbers
 // https://stackoverflow.com/a/15810761
@@ -111,8 +109,10 @@ const submitForm = () => {
 }
 
 const updatePlaceHolder = async (resource) => {
-    const count = await getCountOfResource(resource);
-    $('#help-msg').innerText = `search ${count} ${resource}`;
+    //const count = await getCountOfResource(resource);
+    //$('#help-msg').innerText = `search ${count} ${resource}`;
+    const counts = await getYearlyCountOfResource(resource);
+    renderImageCount(resource, counts);
 }
 
 /**
@@ -229,8 +229,7 @@ const form2qs = () => {
             'treatmentTitle',
             'authorityName',
             'articleTitle',
-            'journalTitle',
-            'biome'
+            'journalTitle'
         ];
 
         textInputs.forEach(i => processTextInputs(i));
@@ -245,7 +244,8 @@ const form2qs = () => {
         }
 
         const checkboxInputs = [
-            'status'
+            'status',
+            'refreshCache'
         ];
 
         checkboxInputs.forEach(i => processCheckboxIinputs(i));
@@ -257,7 +257,7 @@ const form2qs = () => {
 
             if (opVal) {
 
-                if (fldName === 'journalYear') {
+                if (fldName === 'journalYear' || fldName === 'biome') {
                     sp.append(fldName, opVal);
                 }
                 else {
@@ -313,7 +313,8 @@ const form2qs = () => {
         const selectInputs = [
             'journalYear',
             'publicationDate',
-            'checkinTime'
+            'checkinTime',
+            'biome'
         ];
 
         for (const i of selectInputs) {
@@ -343,6 +344,7 @@ const updateUrl = (qs) => {
 }
 
 export { 
-    $, $$, nth, niceNumbers, smoke, 
-    submitForm, updatePlaceHolder, form2qs, updateUrl 
+    nth, niceNumbers, smoke, 
+    submitForm, updatePlaceHolder, 
+    form2qs, updateUrl 
 }
