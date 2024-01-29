@@ -1,29 +1,21 @@
-/* .sparkline {
-    fill: none;
-  }
-  
-  .sparkline--red {
-    stroke: #dc2b33;
-  } */
-
-  .chart {
+.chart {
     display: inline-block;
     margin-right: 0;
     transition: all 0.3s ease;
-  }
+}
   
-  .sparkBox {
-/*     background-color: #eee; */
-    padding-left: 10px;
+.sparkBox {
+    padding: 0 10px;
     cursor: pointer;
     font-family: sans-serif;
     font-size: 10px;
-  }
-  .sparkBox:hover .chart, .sparkBox:focus .chart {
+    display: inline-block;
+}
+.sparkBox:hover .chart, .sparkBox:focus .chart {
     transform: scale(4) translate(10px, -20px);
-  }
+}
   
-  .bar {
+.bar {
     position: relative;
     fill: #000;
     /* height: 21px; */
@@ -31,35 +23,29 @@
     cursor: pointer;
     font-family: Helvetica, sans-serif;
     display: inline-block;
-  }
+}
   
-  .chart:hover .bar,
-  .chart:focus .bar {
+.chart:hover .bar,
+.chart:focus .bar {
     fill: #aaa;
-  }
-  
-  .bar:hover,
-  .bar:focus {
-    fill: #ff4136 !important;
-  }
-  .bar:hover text,
-  .bar:focus text {
-    fill: #ff4136;
-  }
-  
-/*   figcaption {
-    font-weight: bold;
-    margin-bottom: 20px;
-  } */
-  
-  span {
-    color: #ff4136;
-  }
+}
 
-  #tooltip {
+.bar:hover,
+.bar:focus {
+    fill: #ff4136 !important;
+}
+.bar:hover text,
+.bar:focus text {
+    fill: #ff4136;
+}
+#sparkBox span {
+    color: #ff4136;
+}
+
+#tooltip {
     background: cornsilk;
     border: 1px solid black;
     border-radius: 5px;
     padding: 5px;
     z-index: 10;
-  }
+}
