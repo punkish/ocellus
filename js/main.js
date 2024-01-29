@@ -55,7 +55,8 @@ const qs2form = (qs) => {
             if (globals.params.notValidQ.includes(key)) {
 
                 if (key === 'resource') {
-                    log.info(`setting form to query resource ${val}`)
+                    log.info(`setting form to query resource ${val}`);
+                    updatePlaceHolder(val);
                     Array.from($$('input[name=resource]'))
                         .filter(i => i.value === val)[0].checked = "true";
                 }
