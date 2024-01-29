@@ -371,7 +371,7 @@ const renderImageCount = (resource, counts) => {
 
     const str = (i, className, height, sparkHeight, barWidth, year, count) => {
         return `<g class="${className}" transform="translate(${i * barWidth},0)">
-            <rect height="${height}" y="${sparkHeight - height}" width="${barWidth}" onmousemove="showTooltip(evt, '${year}: ${count}');" onmouseout="hideTooltip();"></rect>
+            <rect height="${height}" y="${sparkHeight - height}" width="${barWidth}" onmousemove="showTooltip(evt, '${year}: ${count} ${resource}');" onmouseout="hideTooltip();"></rect>
         </g>`;
     }
 
