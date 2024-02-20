@@ -367,7 +367,7 @@ const renderTermFreq = (term, termFreq) => {
 // }
 
 // https://css-tricks.com/how-to-make-charts-with-svg/
-const renderImageCount = (resource, counts) => {
+const renderImageCount = (resource, imageCount, speciesCount) => {
 
     const str = (i, className, height, sparkHeight, barWidth, year, count) => {
         return `<g class="${className}" transform="translate(${i * barWidth},0)">
@@ -375,29 +375,29 @@ const renderImageCount = (resource, counts) => {
         </g>`;
     }
 
-    const totalCount = counts.total;
-    const yearlyCounts = counts.yearly;
+    const totalCount = imageCount.total;
+    const yearlyCount = imageCount.yearly;
 
     const barWidth = 3;
     const className = 'bar';
-    const numOfRects = yearlyCounts.length;
+    const numOfRects = yearlyCount.length;
     const sparkWidth = barWidth * numOfRects;
     const sparkHeight = 40;
-    const maxNum = Math.max(...yearlyCounts);
+    const maxNum = Math.max(...yearlyCount);
     const heightRatio = sparkHeight / totalCount;
     //const totalImages = numImg.reduce((partialSum, a) => partialSum + a, 0);
 
     let html = `<svg id="svgSpark" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="chart" height="${sparkHeight}" width="${sparkWidth}" aria-labelledby="title" role="img">`;
 
     for (let i = 0; i < numOfRects; i++) {
-        const year = yearlyCounts[i].year;
-        const count = yearlyCounts[i].count;
+        const year = yearlyCount[i].year;
+        const count = yearlyCount[i].count;
         const height = count * heightRatio;
         html += str(i, className, height, sparkHeight, barWidth, year, count);
     }
 
     html += '</svg>';
-    html += `<span>~${Math.ceil(totalCount / 1000)}K</span> ${resource} extracted over the years`;
+    html += `<span>~${Math.ceil(totalCount / 1000)}K</span> ${resource} extracted from <span>~${Math.ceil(speciesCount / 1000)}K</span> species over the years`;
     
     const svg = document.querySelector('#sparkBox');
     //console.log(html)
