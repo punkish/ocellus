@@ -367,7 +367,7 @@ const renderTermFreq = (term, termFreq) => {
 // }
 
 // https://css-tricks.com/how-to-make-charts-with-svg/
-const renderImageCount = (resource, imageCount, speciesCount) => {
+const renderYearlyCounts = (resource, yearlyCounts, speciesCount) => {
 
     const str = (i, className, height, sparkHeight, barWidth, year, count) => {
         return `<g class="${className}" transform="translate(${i * barWidth},0)">
@@ -375,8 +375,8 @@ const renderImageCount = (resource, imageCount, speciesCount) => {
         </g>`;
     }
 
-    const totalCount = imageCount.total;
-    const yearlyCount = imageCount.yearly;
+    const totalCount = yearlyCounts.total;
+    const yearlyCount = yearlyCounts.yearly;
 
     const barWidth = 3;
     const className = 'bar';
@@ -397,7 +397,7 @@ const renderImageCount = (resource, imageCount, speciesCount) => {
     }
 
     html += '</svg>';
-    html += `<span>~${Math.ceil(totalCount / 1000)}K</span> ${resource} extracted from <span>~${Math.ceil(speciesCount / 1000)}K</span> species over the years`;
+    html += `<span>~${Math.ceil(totalCount / 1000)}K</span> ${resource} from <span>~${Math.ceil(speciesCount / 1000)}K</span> species extracted over the years`;
     
     const svg = document.querySelector('#sparkBox');
     //console.log(html)
@@ -792,7 +792,7 @@ const termFreqWithEcharts = (ctx, width, height, series, term, termFreq) => {
 export {
     makeFigure,
     renderPage,
-    renderImageCount,
+    renderYearlyCounts
     // showTooltip,
     // hideTooltip
 }

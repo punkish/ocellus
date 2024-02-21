@@ -3,42 +3,31 @@ import { globals } from './globals.js';
 import { makeFigure, renderPage } from './renderers.js';
 import { toggleWarn } from './listeners.js';
 
-const getCountOfResource = async (resource) => {
-    if (!globals.cache[resource]) {
-        const url = `${globals.server}/${resource}?cols=`;
-        const response = await fetch(url);
+const getCountOfResource = async (resource, yearlyCounts) => {
     
-        // if HTTP-status is 200-299
-        if (response.ok) {
-            const json = await response.json();
-            const count = json.item.result.count;
-            globals.cache[resource] = count;
-        }
-    
-        // throw an error
-        else {
-            alert("HTTP-Error: " + response.status);
-        }
-    }
-
-    return globals.cache[resource];
-}
-
-const getYearlyCountOfResource = async (resource) => {
     if (!globals.cache[resource].total) {
-        const url = `${globals.server}/${resource}?cols=&yearlyCounts=true`;
+        let url = `${globals.server}/${resource}?cols=`;
+
+        if (yearlyCounts) {
+            url += '&yearlyCounts=true';
+        }
+
         const response = await fetch(url);
     
         // if HTTP-status is 200-299
         if (response.ok) {
             const json = await response.json();
             globals.cache[resource].total = json.item.result.count;
-            globals.cache[resource].yearly = json.item.result.yearlyCounts.map(i => {
-                return { 
-                    year: i.year, 
-                    count: i.num_of_records
-                } 
-        });
+
+            if (yearlyCounts) {
+                globals.cache[resource].yearly = json.item.result.yearlyCounts
+                    .map(i => {
+                        return { 
+                            year: i.year, 
+                            count: i.num_of_records
+                        } 
+                    });
+            }
         }
     
         // throw an error
@@ -47,7 +36,9 @@ const getYearlyCountOfResource = async (resource) => {
         }
     }
 
-    return globals.cache[resource];
+    return yearlyCounts 
+        ? globals.cache[resource]
+        : globals.cache[resource].total;
 }
 
 const getResource = async (qs) => {
@@ -67,8 +58,8 @@ const getResource = async (qs) => {
     // what are we getting, images or treatments?
     const resource = sp.get('resource');
     sp.delete('resource');
-   // let termFreq = false;
     let term;
+    
     if (sp.has('q')) {
         term = sp.get('q');
     }
@@ -332,6 +323,5 @@ const getTreatmentsFromZenodeo = () => {
 
 export {
     getCountOfResource,
-    getResource,
-    getYearlyCountOfResource
+    getResource
 }

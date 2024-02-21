@@ -21,6 +21,10 @@ const globals = {
         treatments: {
             total: 0,
             yearly: false
+        },
+        species: {
+            total: 0,
+            yearly: false
         }
     },
 
