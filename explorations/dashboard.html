@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title>ocellus^4 dashboard</title>
+
+    <link rel="icon" type="image/png" href="../img/ocellus.png">
+    <link rel="stylesheet" href="../css/uglyduck.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Lora">
+    <style>
+        
+        span {
+            color: red;
+        }
+        div.chart,
+        div.msg {
+            float: left;
+            border: 0px solid red;
+            text-align: center;
+            vertical-align: bottom;
+            height: 230px;
+            
+        }
+
+        div.chart {
+            font-size: 15px;
+            width: 200px;
+        }
+
+        div.msg {
+            font-size: 35px;
+            font-style: italic;
+            line-height: 425px;
+            padding: 5px;
+        }
+    
+    </style>
+  </head>
+  <body>
+    
+    <header>
+        <h1>Dashboard</h1>
+    </header>
+ 
+    <main>
+        <section id="dashboard" style="width: 960px; height: 300px;">
+            <div id="resource"></div>
+            <div id="species"></div>
+            <div id="articles"></div>
+            <div id="journals"></div>
+        </section>
+
+        <section id="dashboard1" style="width: 960px; height: 300px;">
+            
+        </section>
+    </main>
+
+    <footer aria-label="This half-fish is based on the original of a Blunt-Nosed Minnow, Pimephales notatus (Rafinesque) ♂ from the Internet Archive, and has no known copyright restrictions." data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>
+        
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    
+    <script type="module">
+        const globals = {};
+
+        function renderTreeMap() {
+            const dashboard = document.getElementById('dashboard1');
+            const ctx = document.createElement('div');
+            ctx.style.display = 'block';
+            ctx.style.width = '960px';
+            ctx.style.height = '400px';
+            dashboard.appendChild(ctx);
+            const options = {
+                visualMap: {
+                    type: 'continuous',
+                    min: 0,
+                    max: 900000,
+                    inRange: {
+                        color: ['#2F93C8', '#AEC48F', '#FFDB5C', '#F98862']
+                    }
+                },
+                series: [
+                    {
+                        type: 'sunburst',
+                        radius: [0, '100%'],
+                        label: {
+                            rotate: 'radial'
+                        },
+                        data: [
+                            {
+                                name: 'Treatments',
+                                value: 821437,
+                                children: [
+                                    {
+                                        "name": "",
+                                        "value": 26481
+                                    },
+                                    {
+                                        "name": "Alveolata",
+                                        "value": 29
+                                    },
+                                    {
+                                        "name": "Amoebozoa",
+                                        "value": 1
+                                    },
+                                    {
+                                        "name": "Animal",
+                                        "value": 4
+                                    },
+                                    {
+                                        "name": "Animalia",
+                                        "value": 699360,
+                                        "children": [
+                                            {
+                                                "name": "",
+                                                "value": 2550
+                                            },
+                                            {
+                                                "name": "Acanthocephala",
+                                                "value": 314
+                                            },
+                                            {
+                                                "name": "Amoebozoa",
+                                                "value": 2
+                                            },
+                                            {
+                                                "name": "Annelida",
+                                                "value": 13373
+                                            },
+                                            {
+                                                "name": "Anthocerotophyta",
+                                                "value": 40
+                                            },
+                                            {
+                                                "name": "Arthopoda",
+                                                "value": 3
+                                            },
+                                            {
+                                                "name": "Arthropoda",
+                                                "value": 537206
+                                            },
+                                            {
+                                                "name": "Arthropodo",
+                                                "value": 25
+                                            },
+                                            {
+                                                "name": "Ascomycota",
+                                                "value": 149
+                                            },
+                                            {
+                                                "name": "Athropoda",
+                                                "value": 1
+                                            },
+                                            {
+                                                "name": "Bacillariophyta",
+                                                "value": 10
+                                            },
+                                            {
+                                                "name": "Bacteria",
+                                                "value": 17
+                                            },
+                                            {
+                                                "name": "Basidiomycota",
+                                                "value": 36
+                                            },
+                                            {
+                                                "name": "Brachiopoda",
+                                                "value": 639
+                                            },
+                                            {
+                                                "name": "Bryophyta",
+                                                "value": 62
+                                            },
+                                            {
+                                                "name": "Bryozoa",
+                                                "value": 2961
+                                            },
+                                            {
+                                                "name": "Cephalorhyncha",
+                                                "value": 55
+                                            },
+                                            {
+                                                "name": "Cercozoa",
+                                                "value": 1
+                                            },
+                                            {
+                                                "name": "Chaetognatha",
+                                                "value": 40
+                                            },
+                                            {
+                                                "name": "Chlorophyta",
+                                                "value": 14
+                                            },
+                                            {
+                                                "name": "Choanozoa",
+                                                "value": 5
+                                            },
+                                            {
+                                                "name": "Chordata",
+                                                "value": 86107
+                                            },
+                                            {
+                                                "name": "Ciliophora",
+                                                "value": 18
+                                            },
+                                            {
+                                                "name": "Cnidaria",
+                                                "value": 7662
+                                            },
+                                            {
+                                                "name": "Coelenterata",
+                                                "value": 8
+                                            },
+                                            {
+                                                "name": "Ctenophora",
+                                                "value": 56
+                                            },
+                                            {
+                                                "name": "Dicyemida",
+                                                "value": 20
+                                            },
+                                            {
+                                                "name": "Echinodermata",
+                                                "value": 4926
+                                            },
+                                            {
+                                                "name": "Echiura",
+                                                "value": 44
+                                            },
+                                            {
+                                                "name": "Ectoprocta",
+                                                "value": 1
+                                            },
+                                            {
+                                                "name": "Entomophthoromycota",
+                                                "value": 1
+                                            },
+                                            {
+                                                "name": "Firmicutes",
+                                                "value": 2
+                                            },
+                                            {
+                                                "name": "Foraminifera",
+                                                "value": 8
+                                            },
+                                            {
+                                                "name": "Gastrotricha",
+                                                "value": 331
+                                            },
+                                            {
+                                                "name": "Gnathostomulida",
+                                                "value": 10
+                                            },
+                                            {
+                                                "name": "Haptophyta",
+                                                "value": 6
+                                            },
+                                            {
+                                                "name": "Hemichordata",
+                                                "value": 80
+                                            },
+                                            {
+                                                "name": "Kamptozoa",
+                                                "value": 17
+                                            },
+                                            {
+                                                "name": "Kinorhyncha",
+                                                "value": 65
+                                            },
+                                            {
+                                                "name": "Loricifera",
+                                                "value": 12
+                                            },
+                                            {
+                                                "name": "Magnoliopsida",
+                                                "value": 3
+                                            },
+                                            {
+                                                "name": "Marchantiophyta",
+                                                "value": 7
+                                            },
+                                            {
+                                                "name": "Mollusca",
+                                                "value": 24653
+                                            },
+                                            {
+                                                "name": "Mycetozoa",
+                                                "value": 17
+                                            },
+                                            {
+                                                "name": "Myriapoda",
+                                                "value": 1
+                                            },
+                                            {
+                                                "name": "Myxozoa",
+                                                "value": 38
+                                            },
+                                            {
+                                                "name": "Myzostomida",
+                                                "value": 1
+                                            },
+                                            {
+                                                "name": "Nematoda",
+                                                "value": 5574
+                                            },
+                                            {
+                                                "name": "Nematomorpha",
+                                                "value": 133
+                                            },
+                                            {
+                                                "name": "Nemertea",
+                                                "value": 250
+                                            },
+                                            {
+                                                "name": "Ochrophyta",
+                                                "value": 9
+                                            },
+                                            {
+                                                "name": "Onychophora",
+                                                "value": 11
+                                            },
+                                            {
+                                                "name": "Phoronida",
+                                                "value": 3
+                                            },
+                                            {
+                                                "name": "Platyhelminthes",
+                                                "value": 4874
+                                            },
+                                            {
+                                                "name": "Porifera",
+                                                "value": 4214
+                                            },
+                                            {
+                                                "name": "Priapulida",
+                                                "value": 3
+                                            },
+                                            {
+                                                "name": "Problematica",
+                                                "value": 1
+                                            },
+                                            {
+                                                "name": "Protozoa",
+                                                "value": 2
+                                            },
+                                            {
+                                                "name": "Radiozoa",
+                                                "value": 2
+                                            },
+                                            {
+                                                "name": "Rhodophyta",
+                                                "value": 5
+                                            },
+                                            {
+                                                "name": "Rotifera",
+                                                "value": 228
+                                            },
+                                            {
+                                                "name": "Schizopoda",
+                                                "value": 3
+                                            },
+                                            {
+                                                "name": "Sipuncula",
+                                                "value": 211
+                                            },
+                                            {
+                                                "name": "Streptophyta",
+                                                "value": 1
+                                            },
+                                            {
+                                                "name": "Tardigrada",
+                                                "value": 1466
+                                            },
+                                            {
+                                                "name": "Tracheophyta",
+                                                "value": 612
+                                            },
+                                            {
+                                                "name": "Xenacoelomorpha",
+                                                "value": 159
+                                            },
+                                            {
+                                                "name": "Zygomycota",
+                                                "value": 2
+                                            }
+                                            ]
+                                    },
+                                    {
+                                        "name": "Animallia",
+                                        "value": 1
+                                    },
+                                    {
+                                        "name": "Archaea",
+                                        "value": 6
+                                    },
+                                    {
+                                        "name": "Bacteria",
+                                        "value": 2369
+                                    },
+                                    {
+                                        "name": "Chromalveolata",
+                                        "value": 5
+                                    },
+                                    {
+                                        "name": "Chromista",
+                                        "value": 3770
+                                    },
+                                    {
+                                        "name": "Eukaryota",
+                                        "value": 6
+                                    },
+                                    {
+                                        "name": "Fungi",
+                                        "value": 10174
+                                    },
+                                    {
+                                        "name": "Metazoa",
+                                        "value": 29
+                                    },
+                                    {
+                                        "name": "Pantae",
+                                        "value": 1
+                                    },
+                                    {
+                                        "name": "Plantae",
+                                        "value": 77719,
+                                        "children": [
+                                            {
+                                                "name": "",
+                                                "value": 351
+                                            },
+                                            {
+                                                "name": "Angiospermae",
+                                                "value": 300
+                                            },
+                                            {
+                                                "name": "Annelida",
+                                                "value": 2
+                                            },
+                                            {
+                                                "name": "Anthocerotophyta",
+                                                "value": 10
+                                            },
+                                            {
+                                                "name": "Anthophyta",
+                                                "value": 2
+                                            },
+                                            {
+                                                "name": "Arthropoda",
+                                                "value": 205
+                                            },
+                                            {
+                                                "name": "Ascomycota",
+                                                "value": 13
+                                            },
+                                            {
+                                                "name": "Bacillariophyta",
+                                                "value": 132
+                                            },
+                                            {
+                                                "name": "Basidiomycota",
+                                                "value": 24
+                                            },
+                                            {
+                                                "name": "Bryophyta",
+                                                "value": 1503
+                                            },
+                                            {
+                                                "name": "Charophyta",
+                                                "value": 116
+                                            },
+                                            {
+                                                "name": "Chlorophyta",
+                                                "value": 294
+                                            },
+                                            {
+                                                "name": "Chordata",
+                                                "value": 12
+                                            },
+                                            {
+                                                "name": "Ciliophora",
+                                                "value": 6
+                                            },
+                                            {
+                                                "name": "Cnidaria",
+                                                "value": 6
+                                            },
+                                            {
+                                                "name": "Coniferophyta",
+                                                "value": 5
+                                            },
+                                            {
+                                                "name": "Equisetophyta",
+                                                "value": 1
+                                            },
+                                            {
+                                                "name": "Ginkgoophyta",
+                                                "value": 1
+                                            },
+                                            {
+                                                "name": "Gymnospermae",
+                                                "value": 11
+                                            },
+                                            {
+                                                "name": "Heterokontophyta",
+                                                "value": 4
+                                            },
+                                            {
+                                                "name": "Liliopsida",
+                                                "value": 14
+                                            },
+                                            {
+                                                "name": "Lycophyta",
+                                                "value": 9
+                                            },
+                                            {
+                                                "name": "Lycopodiophyta",
+                                                "value": 32
+                                            },
+                                            {
+                                                "name": "Magnoliophyta",
+                                                "value": 1420
+                                            },
+                                            {
+                                                "name": "Magnoliopsida",
+                                                "value": 151
+                                            },
+                                            {
+                                                "name": "Magnolipsida",
+                                                "value": 4
+                                            },
+                                            {
+                                                "name": "Marchantiophyta",
+                                                "value": 1226
+                                            },
+                                            {
+                                                "name": "Mollusca",
+                                                "value": 25
+                                            },
+                                            {
+                                                "name": "Monilophyta",
+                                                "value": 24
+                                            },
+                                            {
+                                                "name": "Monilophytes",
+                                                "value": 21
+                                            },
+                                            {
+                                                "name": "Nematoda",
+                                                "value": 1
+                                            },
+                                            {
+                                                "name": "Ochrophyta",
+                                                "value": 88
+                                            },
+                                            {
+                                                "name": "Phaeophyta",
+                                                "value": 33
+                                            },
+                                            {
+                                                "name": "Pinophyta",
+                                                "value": 1
+                                            },
+                                            {
+                                                "name": "Plantae",
+                                                "value": 2
+                                            },
+                                            {
+                                                "name": "Platyhelminthes",
+                                                "value": 4
+                                            },
+                                            {
+                                                "name": "Polypodiophyta",
+                                                "value": 10
+                                            },
+                                            {
+                                                "name": "Polypodiopsida",
+                                                "value": 3
+                                            },
+                                            {
+                                                "name": "Porifera",
+                                                "value": 6
+                                            },
+                                            {
+                                                "name": "Pteridophyta",
+                                                "value": 57
+                                            },
+                                            {
+                                                "name": "Rhodophyta",
+                                                "value": 380
+                                            },
+                                            {
+                                                "name": "Spermatophyta",
+                                                "value": 24
+                                            },
+                                            {
+                                                "name": "Streptophyta",
+                                                "value": 7
+                                            },
+                                            {
+                                                "name": "Tracheophyta",
+                                                "value": 71175
+                                            },
+                                            {
+                                                "name": "Xanthophyta",
+                                                "value": 4
+                                            }
+                                            ]
+                                    },
+                                    {
+                                        "name": "Protista",
+                                        "value": 9
+                                    },
+                                    {
+                                        "name": "Protozoa",
+                                        "value": 1457
+                                    },
+                                    {
+                                        "name": "Rhizaria",
+                                        "value": 4
+                                    },
+                                    {
+                                        "name": "Viridiplantae",
+                                        "value": 5
+                                    },
+                                    {
+                                        "name": "Viruses",
+                                        "value": 7
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            globals[`treatments_treemap`] = echarts.init(ctx);
+            globals[`treatments_treemap`].setOption(options);
+        }
+        
+        function renderYearlyCounts(data, resource, msg) {
+            const dashboard = document.getElementById('dashboard');
+            const el = document.createElement('div');
+            dashboard.appendChild(el);
+            
+            el.classList.add('chart');
+            const ctx = document.createElement('div');
+            ctx.style.display = 'block';
+            ctx.style.width = '200px';
+            ctx.style.height = '200px';
+            el.appendChild(ctx);
+            const options = getOptions(data, resource);
+            globals[`${resource}_chart`] = echarts.init(ctx);
+            globals[`${resource}_chart`].setOption(options);
+
+            const total = document.createElement('div');
+            el.appendChild(total);
+
+            const r = resource.toLowerCase();
+            const sum = data.reduce((acc, obj) => {
+                return acc + obj[r]
+            }, 0);
+            let str = `<span>${sum}</span> ${r}`;
+            
+            if (resource === 'Treatments') {
+                const sum = data.reduce((acc, obj) => {
+                    return acc + obj.images
+                }, 0);
+
+                str += ` and <span>${sum}</span> images`
+            }
+
+
+            total.innerHTML = str;
+
+            if (msg) {
+                const msgEl = document.createElement('div');
+                msgEl.classList.add('msg');
+                dashboard.appendChild(msgEl);
+                msgEl.innerHTML = msg;
+            }
+
+
+        }
+
+        const data = [
+            {
+                "year": 2000,
+                "treatments": 436,
+                "images": 245,
+                "species": 981,
+                "articles": 432,
+                "journals": 125
+            },
+            {
+                "year": 2001,
+                "treatments": 329,
+                "images": 247,
+                "species": 701,
+                "articles": 376,
+                "journals": 990
+            },
+            {
+                "year": 2002,
+                "treatments": 133,
+                "images": 286,
+                "species": 256,
+                "articles": 343,
+                "journals": 764
+            },
+            {
+                "year": 2003,
+                "treatments": 897,
+                "images": 889,
+                "species": 373,
+                "articles": 183,
+                "journals": 358
+            },
+            {
+                "year": 2004,
+                "treatments": 501,
+                "images": 570,
+                "species": 272,
+                "articles": 370,
+                "journals": 389
+            },
+            {
+                "year": 2005,
+                "treatments": 723,
+                "images": 604,
+                "species": 131,
+                "articles": 808,
+                "journals": 768
+            },
+            {
+                "year": 2006,
+                "treatments": 250,
+                "images": 758,
+                "species": 818,
+                "articles": 950,
+                "journals": 646
+            },
+            {
+                "year": 2007,
+                "treatments": 424,
+                "images": 516,
+                "species": 331,
+                "articles": 266,
+                "journals": 698
+            },
+            {
+                "year": 2008,
+                "treatments": 743,
+                "images": 859,
+                "species": 774,
+                "articles": 744,
+                "journals": 153
+            },
+            {
+                "year": 2009,
+                "treatments": 734,
+                "images": 537,
+                "species": 746,
+                "articles": 454,
+                "journals": 265
+            },
+            {
+                "year": 2010,
+                "treatments": 610,
+                "images": 355,
+                "species": 717,
+                "articles": 288,
+                "journals": 350
+            }
+        ];
+
+        // const range = (start, stop, step) =>
+        //     Array.from(
+        //         { length: (stop - start) / step + 1 }, 
+        //         (_, i) => start + i * step
+        //     );
+
+        function getData(data, resource, from, to) {
+            // return Array.from(
+            //     { length },
+            //     () => Math.floor(Math.random() * 100)
+            // );
+
+            if (!from) {
+                from = 2000;
+            }
+
+            if (!to) {
+                to = 2010;
+            }
+
+            if (resource === 'years') {
+                const step = 1;
+                const length = ((to - from) / step) + 1;
+
+                return Array.from(
+                    { length }, 
+                    (_, i) => from + (i * 1)
+                )
+            }
+            else {
+                return data.map((e) => e[resource.toLowerCase()])
+            }
+        }
+
+        function getOptions(data, resource) {
+            const series = [];
+            series.push({
+                name: resource,
+                type: 'bar',
+                emphasis: {
+                    focus: 'series'
+                },
+                data: getData(data, resource)
+            });
+            
+            if (resource === 'Treatments') {
+                series.push({
+                    name: 'Images',
+                    type: 'bar',
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: getData(data, 'images')
+                });
+            }
+
+            const options = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                //legend: false,
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: getData(data, 'years')
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        axisLabel: {
+                            formatter: function (value, index) {
+                                const niceVals = {
+                                    '1000'    : '1K',
+                                    '10000'   : '10K',
+                                    '100000'  : '100K',
+                                    '1000000' : '1M',
+                                    '10000000': '10M'
+                                }
+
+                                return value < 1000 ? value : niceVals[value];
+                            }
+                        }
+                    }
+                ],
+                series
+            };
+
+            return options;
+        }
+        
+        renderYearlyCounts(data, 'Treatments');
+        renderYearlyCounts(data, 'Species');
+        renderYearlyCounts(data, 'Articles');
+        renderYearlyCounts(data, 'Journals');
+        renderTreeMap();
+    </script>
+  </body>
+</html>

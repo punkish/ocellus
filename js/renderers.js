@@ -397,10 +397,9 @@ const renderYearlyCounts = (resource, yearlyCounts, speciesCount) => {
     }
 
     html += '</svg>';
-    html += `<span>~${Math.ceil(totalCount / 1000)}K</span> ${resource} from <span>~${Math.ceil(speciesCount / 1000)}K</span> species extracted over the years`;
+    html += `<a href="#"><span>~${Math.ceil(totalCount / 1000)}K</span> ${resource} from <span>~${Math.ceil(speciesCount / 1000)}K</span> species extracted over the years &Rarr;</a>`;
     
     const svg = document.querySelector('#sparkBox');
-    //console.log(html)
     svg.innerHTML = html;
 }
 // const termFreqWithDygraphs = (ctx, width, height, series, term, termFreq) => {
@@ -735,25 +734,35 @@ const termFreqWithEcharts = (ctx, width, height, series, term, termFreq) => {
             },
             axisLabel: {
                 formatter: function (value, index) {
-                    let val = value;
-
-                    if (value === 1000) {
-                        val = '1K';
-                    }
-                    else if (value === 10000) {
-                        val = '10K';
-                    }
-                    else if (value === 100000) {
-                        val = '100K';
-                    }
-                    else if (value === 1000000) {
-                        val = '1M';
-                    }
-                    else if (value === 10000000) {
-                        val = '10M';
+                    const niceVals = {
+                        '1000'    : '1K',
+                        '10000'   : '10K',
+                        '100000'  : '100K',
+                        '1000000' : '1M',
+                        '10000000': '10M'
                     }
 
-                    return val;
+                    return value < 1000 ? value : niceVals[value];
+
+                    // let val = value;
+
+                    // if (value === 1000) {
+                    //     val = '1K';
+                    // }
+                    // else if (value === 10000) {
+                    //     val = '10K';
+                    // }
+                    // else if (value === 100000) {
+                    //     val = '100K';
+                    // }
+                    // else if (value === 1000000) {
+                    //     val = '1M';
+                    // }
+                    // else if (value === 10000000) {
+                    //     val = '10M';
+                    // }
+
+                    // return val;
                 }
             }
         },
