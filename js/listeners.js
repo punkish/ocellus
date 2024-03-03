@@ -1,6 +1,8 @@
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
 import { submitForm, updatePlaceHolder } from './utils.js';
+import { getCountOfResource } from './querier.js';
+import { renderDashboard } from './renderers.js';
 
 const addListeners = () => {
     log.info('- addListeners()');
@@ -392,6 +394,22 @@ function hideTooltip() {
     tooltip.style.display = "none";
 }
 
+async function showDashboard() {
+    const treatmentsCount = await getCountOfResource('treatments', true);
+    const imagesCount = await getCountOfResource('images', true);
+    const speciesCount = await getCountOfResource('species', true);
+    const journalsCount = await getCountOfResource('journals', true);
+    const materialCitationsCount = await getCountOfResource('materialcitations', true);
+    
+    renderDashboard({
+        treatmentsCount,
+        imagesCount, 
+        materialCitationsCount,
+        speciesCount, 
+        journalsCount
+    });
+}
+
 export { 
     addListeners, 
     addListenersToFigDetails,
@@ -403,5 +421,7 @@ export {
     toggleAdvSearch,
     toggleDateSelector,
     showTooltip,
-    hideTooltip
+    hideTooltip,
+    showDashboard,
+    toggleModal
 };

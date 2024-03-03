@@ -25,6 +25,18 @@ const globals = {
         species: {
             total: 0,
             yearly: false
+        },
+        articles: {
+            total: 0,
+            yearly: false
+        },
+        journals: {
+            total: 0,
+            yearly: false
+        },
+        materialcitations: {
+            total: 0,
+            yearly: false
         }
     },
 

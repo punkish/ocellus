@@ -1,3 +1,5 @@
+/* Mobile first queries */
+
 /* position form in the center of div */
 /* https://stackoverflow.com/a/31386275 */
 form {
@@ -70,7 +72,6 @@ input.ns-val-input:focus {
     padding: 0;
     border: none;
 }
-
 #refreshCache-2,
 #refreshCache {
     width: 16px;
@@ -83,19 +84,16 @@ input.ns-val-input:focus {
     outline: none;
     cursor: pointer;
 }
-
 #refreshCache-2:checked,
 #refreshCache:checked {
     background-color: red;
 }
-
 #refreshCache-2::before,
 #refreshCache-2::after,
 #refreshCache::before,
 #refreshCache::after {
     --pop-bg-color: red;
 }
-
 #clear-q {
     width: 18px;
     height: 18px;
@@ -253,3 +251,40 @@ input[disabled] {
     right: 50px;
     top: 5px;
 }
+
+/* Larger than mobile */
+@media only screen and (min-width: 400px) {}
+
+/* Larger than phablet */
+@media (min-width: 550px) {
+
+    /* show the advanced search button */
+    div.r {
+        visibility: visible;
+    }
+}
+
+/* Larger than tablet */
+@media (min-width: 800px) {}
+
+/* Larger than desktop */
+@media (min-width: 1100px) {
+    form {
+        width: 960px;
+        display: inline-block
+    }
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 1400px) {}
+
+/* Larger than Desktop HD */
+@media (min-width: 1920px) {}
+
+/* Larger than Desktop HD */
+@media (min-width: 2300px) {}
+
+/* Larger than Desktop HD */
+@media (min-width: 2500px) {}
+
+@media (min-width: 3000px) {}

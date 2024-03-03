@@ -14,6 +14,77 @@ const destination = './docs';
 
 // remove old css and js
 async function cleanup() {
+    console.log('cleaing up old files');
+
+    const dest = [
+        `${destination}/js/0/ocellus-*.js`, 
+        `${destination}/css/0/ocellus-*.css`
+    ];
+
+    const opts = { read: false };
+
+    return src(dest, opts).pipe( rm() );
+}
+
+// generate the html
+async function html() {
+    console.log('writing html');
+    
+    return src(`${source}/index0.html`)
+        .pipe(inject.replace('%date%', d))
+        .pipe(inject.replace('%dsecs%', dsecs))
+        .pipe(inject.replace('./js/0/ocellus.js', `./js/0/ocellus-${dsecs}.js`))
+        .pipe(htmlReplace({
+            'css': `./css/0/ocellus-${dsecs}.css`
+        }))
+        .pipe(dest(destination))
+}
+
+// for css
+async function css() {
+    console.log('processing css');
+
+    return src([
+            `${source}/css/0/i-base.css`,
+            `${source}/css/0/i-header.css`,
+            `${source}/css/0/i-form.css`,
+            `${source}/css/0/i-grid.css`,
+            `${source}/css/0/i-throbber.css`,
+            `${source}/css/0/i-pager.css`,
+            `${source}/css/0/i-map.css`,
+            `${source}/css/0/i-treatmentDetails.css`,
+            `${source}/css/0/i-media-queries.css`
+        ])
+        .pipe(cleanCSS({compatibility: 'ie8'}))
+        .pipe(concat(`ocellus-${dsecs}.css`))
+        .pipe(dest(`${destination}/css/0`))
+}
+
+// rollup js
+async function js() {
+    console.log('rolling up the js');
+    
+    const bundle = await rollup({
+        input: `${source}/js/0/ocellus.js`
+    });
+
+    return bundle.write({
+        file: `${destination}/js/0/ocellus-${dsecs}.js`,
+        format: "esm",
+        plugins: [
+            terser({
+                format: {
+                    preamble: `/* generated: ${d} */`
+                }
+            })
+        ]
+    });
+}
+
+/************ for index2 */ 
+
+// remove old css and js
+async function cleanup2() {
     console.log('cleaing up old files for new index');
 
     const dest = [
@@ -27,7 +98,7 @@ async function cleanup() {
 }
 
 // generate the html
-async function html() {
+async function html2() {
     console.log('writing html for new index');
     
     return src(`${source}/index.html`)
@@ -41,7 +112,7 @@ async function html() {
 }
 
 // for css
-async function css() {
+async function css2() {
     console.log('processing css for new index');
 
     return src([
@@ -60,6 +131,7 @@ async function css() {
             `${source}/css/pager.css`,
             `${source}/css/map.css`,
             `${source}/css/treatmentDetails.css`,
+            `${source}/css/media-queries.css`,
             `${source}/libs/fancySearch/fancySearch.css`,
             `${source}/css/sparkline.css`
         ])
@@ -69,7 +141,7 @@ async function css() {
 }
 
 // rollup js
-async function js() {
+async function js2() {
     console.log('rolling up the js for new index');
     
     const bundle = await rollup({
@@ -89,9 +161,6 @@ async function js() {
     });
 }
 
-exports.default = parallel(
-    series(
-        cleanup, 
-        parallel(css, js, html)
-    )
-);
+const one = series(cleanup, parallel(css, js, html));
+const two = series(cleanup2, parallel(css2, js2, html2))
+exports.default = parallel(two);

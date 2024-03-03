@@ -17,17 +17,58 @@ const getCountOfResource = async (resource, yearlyCounts) => {
         // if HTTP-status is 200-299
         if (response.ok) {
             const json = await response.json();
-            globals.cache[resource].total = json.item.result.count;
 
             if (yearlyCounts) {
-                globals.cache[resource].yearly = json.item.result.yearlyCounts
-                    .map(i => {
-                        return { 
-                            year: i.year, 
-                            count: i.num_of_records
-                        } 
-                    });
+
+                const yc = json.item.result.yearlyCounts;
+
+                // if (resource === 'treatments') {
+                //     const t = yc.treatments;
+                //     globals.cache.treatments.yearly = t
+                //         .map(i => {
+                //             return { 
+                //                 year: i.year, 
+                //                 count: i.num_of_records
+                //             } 
+                //         });
+
+                //     globals.cache.treatments.total = json.item.result.count;
+
+                //     const a = yc.articles;
+                //     globals.cache.articles.yearly = a
+                //         .map(i => {
+                //             return { 
+                //                 year: i.year, 
+                //                 count: i.num_of_records
+                //             } 
+                //         });
+
+                //     globals.cache.articles.total = 1000;
+
+                //     return { 
+                //         treatments: globals.cache.treatments,
+                //         articles: globals.cache.articles
+                //     }
+                // }
+                // else {
+                    
+                    globals.cache[resource].yearly = yc
+                        .map(i => {
+                            return { 
+                                year: i.year, 
+                                count: i.num_of_records
+                            } 
+                        });
+
+                    globals.cache[resource].total = json.item.result.count;
+                    return globals.cache[resource]
+                //}
+                
             }
+            else {
+                globals.cache[resource].total = json.item.result.count;
+            }
+
         }
     
         // throw an error
@@ -36,9 +77,21 @@ const getCountOfResource = async (resource, yearlyCounts) => {
         }
     }
 
-    return yearlyCounts 
-        ? globals.cache[resource]
-        : globals.cache[resource].total;
+    if (yearlyCounts) {
+        if (resource === 'treatments') {
+            return { 
+                treatments: globals.cache.treatments,
+                articles: globals.cache.articles
+            }
+        }
+        else {
+            return globals.cache[resource]
+        }
+    }
+    else {
+        return globals.cache[resource].total;
+    }
+    
 }
 
 const getResource = async (qs) => {

@@ -1,0 +1,63 @@
+/* Mobile first queries */
+#dashboard {
+    /*     text-align: center; */
+    padding: 10px;
+}
+#charts {
+    padding: 5px;
+    position: relative;
+    border: 0px solid blue;
+    text-align: center;
+    height: 250px;
+}
+#charts div.chart {
+    vertical-align: top;
+    border: 0px solid red;  
+    padding: 0px;
+}
+
+#charts div.viz {
+    border: 0px solid grey;
+}
+
+#dashboard div.caption {
+    font-family: sans-serif;
+    font-size: 12px;
+}
+#dashboard div.caption span {
+    color: red;
+}
+
+
+/* Larger than mobile */
+@media only screen and (min-width: 400px) {}
+
+/* Larger than phablet */
+@media (min-width: 550px) {}
+
+/* Larger than tablet */
+@media (min-width: 800px) {}
+
+/* Larger than desktop */
+@media (min-width: 1100px) {
+    #charts div.chart {
+        display: inline-block;
+    }
+    #charts div.caption {
+        max-width: 255px;
+    }
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 1400px) {}
+
+/* Larger than Desktop HD */
+@media (min-width: 1920px) {}
+
+/* Larger than Desktop HD */
+@media (min-width: 2300px) {}
+
+/* Larger than Desktop HD */
+@media (min-width: 2500px) {}
+
+@media (min-width: 3000px) {}

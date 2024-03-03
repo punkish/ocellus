@@ -9,7 +9,7 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Wed Feb 21 2024 22:27:22 GMT+0100 (Central European Standard Time)">
+    <meta name="date" content="Sun Mar 03 2024 17:14:43 GMT+0100 (Central European Standard Time)">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4</title>
@@ -17,7 +17,7 @@
     <link rel="icon" type="image/png" href="img/ocellus.png">
 
     <link rel="stylesheet" href="css/uglyduck.css">
-    <link rel="stylesheet" href="./css/ocellus-1708550842636.css">
+    <link rel="stylesheet" href="./css/ocellus-1709482483044.css">
     <link rel="stylesheet" href="libs/JavaScript-autoComplete/auto-complete.css">
     <link rel="stylesheet" href="libs/pop-pop/pop-pop.min.css">
     
@@ -313,6 +313,15 @@
             </div>
         </section>
 
+        <section id="dashboard" class="modal hidden noblock">
+            <a href="#" class="close modalToggle">close</a>
+            <div id="charts"></div>
+            <!-- <div id="chartResource"></div>
+            <div id="chartSpecies"></div>
+            <div id="chartArticles"></div>
+            <div id="chartJournals"></div> -->
+        </section>
+
         <section id="about" class="modal hidden noblock">
             <a href="#" class="close modalToggle">close</a>
     
@@ -372,7 +381,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
     
     <script type="module">
-        import { init, showTooltip, hideTooltip } from './js/ocellus-1708550842636.js';
+        import { init, showTooltip, hideTooltip } from './js/ocellus-1709482483044.js';
         window.onload = () => init();
         window.showTooltip = showTooltip;
         window.hideTooltip = hideTooltip;

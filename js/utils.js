@@ -110,7 +110,7 @@ const submitForm = () => {
 
 const updatePlaceHolder = async (resource) => {
     const yearlyCounts = await getCountOfResource(resource, true);
-    const speciesCount = await getCountOfResource('species');
+    const speciesCount = await getCountOfResource('species', true);
     renderYearlyCounts(resource, yearlyCounts, speciesCount);
 }
 
