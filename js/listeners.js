@@ -395,19 +395,21 @@ function hideTooltip() {
 }
 
 async function showDashboard() {
-    const treatmentsCount = await getCountOfResource('treatments', true);
-    const imagesCount = await getCountOfResource('images', true);
-    const speciesCount = await getCountOfResource('species', true);
-    const journalsCount = await getCountOfResource('journals', true);
-    const materialCitationsCount = await getCountOfResource('materialcitations', true);
-
-    renderDashboard({
-        treatmentsCount,
-        imagesCount, 
-        materialCitationsCount,
-        speciesCount, 
-        journalsCount
-    });
+    if (globals.cache.treatments.yearly === false) {
+        const treatmentsCount = await getCountOfResource('treatments', true);
+        const imagesCount = await getCountOfResource('images', true);
+        const speciesCount = await getCountOfResource('species', true);
+        const journalsCount = await getCountOfResource('journals', true);
+        const materialCitationsCount = await getCountOfResource('materialcitations', true);
+    
+        renderDashboard({
+            treatmentsCount,
+            imagesCount, 
+            materialCitationsCount,
+            speciesCount, 
+            journalsCount
+        });
+    }
 }
 
 function lightUpTheBox() {
