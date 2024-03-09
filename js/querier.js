@@ -19,51 +19,18 @@ const getCountOfResource = async (resource, yearlyCounts) => {
             const json = await response.json();
 
             if (yearlyCounts) {
+                const res = json.item.result.yearlyCounts;
 
-                const yc = json.item.result.yearlyCounts;
+                globals.cache[resource].yearly = res
+                    .map(i => {
+                        return { 
+                            year: i.year, 
+                            count: i.num_of_records
+                        } 
+                    });
 
-                // if (resource === 'treatments') {
-                //     const t = yc.treatments;
-                //     globals.cache.treatments.yearly = t
-                //         .map(i => {
-                //             return { 
-                //                 year: i.year, 
-                //                 count: i.num_of_records
-                //             } 
-                //         });
-
-                //     globals.cache.treatments.total = json.item.result.count;
-
-                //     const a = yc.articles;
-                //     globals.cache.articles.yearly = a
-                //         .map(i => {
-                //             return { 
-                //                 year: i.year, 
-                //                 count: i.num_of_records
-                //             } 
-                //         });
-
-                //     globals.cache.articles.total = 1000;
-
-                //     return { 
-                //         treatments: globals.cache.treatments,
-                //         articles: globals.cache.articles
-                //     }
-                // }
-                // else {
-                    
-                    globals.cache[resource].yearly = yc
-                        .map(i => {
-                            return { 
-                                year: i.year, 
-                                count: i.num_of_records
-                            } 
-                        });
-
-                    globals.cache[resource].total = json.item.result.count;
-                    return globals.cache[resource]
-                //}
-                
+                globals.cache[resource].total = json.item.result.count;
+                return globals.cache[resource];
             }
             else {
                 globals.cache[resource].total = json.item.result.count;
@@ -78,15 +45,16 @@ const getCountOfResource = async (resource, yearlyCounts) => {
     }
 
     if (yearlyCounts) {
-        if (resource === 'treatments') {
-            return { 
-                treatments: globals.cache.treatments,
-                articles: globals.cache.articles
-            }
-        }
-        else {
-            return globals.cache[resource]
-        }
+        return globals.cache[resource];
+        // if (resource === 'treatments') {
+        //     return { 
+        //         treatments: globals.cache.treatments,
+        //         articles: globals.cache.articles
+        //     }
+        // }
+        // else {
+        //     return globals.cache[resource]
+        // }
     }
     else {
         return globals.cache[resource].total;
@@ -299,16 +267,19 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                     if (r.httpUri.indexOf('zenodo') > -1) {
                         if (r.httpUri.indexOf('.svg') > -1) {
                             record.uri = '/img/kein-preview.png';
+                            record.fullImage = '/img/kein-preview.png';
                         }
                         else {
                             record.uri = `${globals.zenodoUri}/${id}/thumb${figureSize}`;
+                            record.fullImage = `${globals.zenodoUri}/${id}/thumb1200`;
                         }
                     }
 
                     // but some are on Pensoft, so use the uri directly
                     else {
                         record.uri = r.httpUri;
-                    }
+                        record.fullImage = r.httpUri;
+                    } 
                     
                     record.captionText = r.captionText;
                     record.treatmentDOI = r.treatmentDOI;

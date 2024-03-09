@@ -400,13 +400,21 @@ async function showDashboard() {
     const speciesCount = await getCountOfResource('species', true);
     const journalsCount = await getCountOfResource('journals', true);
     const materialCitationsCount = await getCountOfResource('materialcitations', true);
-    
+
     renderDashboard({
         treatmentsCount,
         imagesCount, 
         materialCitationsCount,
         speciesCount, 
         journalsCount
+    });
+}
+
+function lightUpTheBox() {
+    new SimpleLightbox({
+        elements: 'figure',
+        loadingCaption: '<img src="../../img/bug.gif">',
+        //captionAttribute: 'details'
     });
 }
 
@@ -423,5 +431,6 @@ export {
     showTooltip,
     hideTooltip,
     showDashboard,
-    toggleModal
+    toggleModal,
+    lightUpTheBox
 };

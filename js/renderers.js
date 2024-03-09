@@ -1,6 +1,6 @@
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
-import { toggleAdvSearch, showDashboard, toggleModal } from './listeners.js';
+import { toggleAdvSearch, showDashboard, toggleModal, lightUpTheBox } from './listeners.js';
 import { qs2form } from './main.js';
 
 import { 
@@ -62,56 +62,40 @@ const makeTreatment = ({ figureSize, rec }) => {
 }
 
 const makeImage = ({ figureSize, rec }) => {
-    const img = `<img src="img/bug.gif" width="${rec.figureSize}" data-src="${rec.uri}" class="lazyload" data-recid="${rec.treatmentId}" onerror="this.onerror=null; setTimeout(() => { this.src='${rec.uri}' }, 1000);">`;
-
     const zenodoLink = rec.zenodoRec
-        ? `Zenodo ID: <a href="${globals.zenodoUri}/${rec.zenodoRec}" target="_blank">more on Zenodo</a>`
+        ? `<img src="img/zenodo-gradient-35.png" width="35" height="14"> <a href="${globals.zenodoUri}/${rec.zenodoRec}" target="_blank">more on Zenodo</a>`
         : '';
 
     //let treatmentReveal = '';
-    let treatmentLink = '';
-
-    if (rec.treatmentId) {
-        //treatmentReveal = `<div class="treatmentId reveal" data-reveal="${rec.treatmentId}">T</div>`;
-        treatmentLink = `<a href="${globals.tbUri}/${rec.treatmentId}" target="_blank">more on TreatmentBank</a>`;
-    }
-
-    let content = '';
-
-    if (treatmentLink) {
-        content = `<a href="${globals.tbUri}/${rec.treatmentId}" target="_blank">${img}</a>`;
-    }
-    else if (zenodoLink) {
-        content = `<a href="${globals.zenodoUri}/${rec.zenodoRec}" target="_blank">${img}</a>`;
-    }
+    //treatmentReveal = `<div class="treatmentId reveal" data-reveal="${rec.treatmentId}">T</div>`;
+    const treatmentLink = `<img src="img/treatmentBankLogo.png" width="35" height="14"> <a href="${globals.tbUri}/${rec.treatmentId}" target="_blank">more on TreatmentBank</a>`;
 
     const figcaptionClass = figureSize === 250 
         ? 'visible' 
         : 'noblock';
 
-    const figureClass = `figure-${figureSize} ` + (rec.treatmentId 
-        ? 'tb' 
-        : '');
+    const figureClass = `figure-${figureSize} ` + (rec.treatmentId ? 'tb' : '');
 
-    const lenTitle = 30;
-    const titleAbbrev = rec.treatmentTitle.length > lenTitle
-        ? `${rec.treatmentTitle.substring(0, lenTitle)}…`
-        : rec.treatmentTitle;
+    // <div class="switches"><div class="close"></div></div>
+    const onerrorCb = `this.onerror=null; setTimeout(() => { this.src='${rec.uri}' }, 1000);`;
 
     return `<figure class="${figureClass}">
-    <div class="switches">
-        <div class="close"></div>
-    </div>
-    ${content}
+    <a class="zen" href="${rec.fullImage}">
+        <img src="img/bug.gif" width="${rec.figureSize}" data-src="${rec.uri}" 
+            class="lazyload" data-recid="${rec.treatmentId}" 
+            onerror="${onerrorCb}">
+    </a>
     <figcaption class="${figcaptionClass}">
         <details>
-            <summary class="figTitle" data-title="${rec.treatmentTitle}">${titleAbbrev}</summary>
+            <summary class="figTitle" data-title="${rec.treatmentTitle}">
+                ${rec.treatmentTitle}
+            </summary>
             <p>${rec.captionText}</p>
             ${treatmentLink}<br>
             ${zenodoLink}
         </details>
     </figcaption>
-</figure>`
+</figure>`;
 }
 
 const makeFigure = ({ resource, figureSize, rec }) => {
@@ -158,6 +142,8 @@ const renderPage = (resultsObj) => {
         toggleAdvSearch();
         qs2form(qs);
     }
+
+    lightUpTheBox();
 
 }
 
@@ -668,7 +654,7 @@ const renderYearlyCounts = (resource, yearlyCounts, speciesCount) => {
 const termFreqWithEcharts = (ctx, width, height, series, term, termFreq) => {
     const options = {
         title: {
-            text: `occurrence of '${term}' in text by year`,
+            text: `occurrence of “${term}” in the text by year`,
             left: 'center'
         },
         tooltip: {
@@ -703,37 +689,7 @@ const termFreqWithEcharts = (ctx, width, height, series, term, termFreq) => {
                 show: true
             },
             axisLabel: {
-                formatter: function (value, index) {
-                    const niceVals = {
-                        '1000'    : '1K',
-                        '10000'   : '10K',
-                        '100000'  : '100K',
-                        '1000000' : '1M',
-                        '10000000': '10M'
-                    }
-
-                    return value < 1000 ? value : niceVals[value];
-
-                    // let val = value;
-
-                    // if (value === 1000) {
-                    //     val = '1K';
-                    // }
-                    // else if (value === 10000) {
-                    //     val = '10K';
-                    // }
-                    // else if (value === 100000) {
-                    //     val = '100K';
-                    // }
-                    // else if (value === 1000000) {
-                    //     val = '1M';
-                    // }
-                    // else if (value === 10000000) {
-                    //     val = '10M';
-                    // }
-
-                    // return val;
-                }
+                formatter: xAxisFormatter
             }
         },
         series: [
@@ -844,6 +800,29 @@ function renderYearlyCountsDb(data, resource) {
     caption.innerHTML = str;
 }
 
+function xAxisFormatter (value, index) {
+    if (value < 1000) {
+        return value;
+    }
+
+    let val;
+
+    if (value >= 1000 && value < 10000) {
+        val = `${value / 1000}K`;
+    }
+    else if (value >= 10000 && value < 100000) {
+        val = `${value / 10000}K`;
+    }
+    else if (value >= 100000 && value < 1000000) {
+        val = `${value / 100000}K`;
+    }
+    else if (value >= 1000000 && value < 10000000) {
+        val = `${value / 1000000}M`;
+    }
+
+    return val;
+}
+
 function getBarOptions(data, resource) {
     
     const series = [];
@@ -915,28 +894,7 @@ function getBarOptions(data, resource) {
             {
                 type: 'value',
                 axisLabel: {
-                    formatter: function (value, index) {
-                        if (value < 1000) {
-                            return value;
-                        }
-
-                        let val;
-
-                        if (value >= 1000 && value < 10000) {
-                            val = `${value / 1000}K`;
-                        }
-                        else if (value >= 10000 && value < 100000) {
-                            val = `${value / 10000}K`;
-                        }
-                        else if (value >= 100000 && value < 1000000) {
-                            val = `${value / 100000}K`;
-                        }
-                        else if (value >= 1000000 && value < 10000000) {
-                            val = `${value / 1000000}M`;
-                        }
-
-                        return val;
-                    }
+                    formatter: xAxisFormatter
                 }
             }
         ],

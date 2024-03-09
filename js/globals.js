@@ -26,10 +26,10 @@ const globals = {
             total: 0,
             yearly: false
         },
-        articles: {
-            total: 0,
-            yearly: false
-        },
+        // articles: {
+        //     total: 0,
+        //     yearly: false
+        // },
         journals: {
             total: 0,
             yearly: false

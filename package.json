@@ -15,5 +15,10 @@
     "rollup-plugin-css-only": "^3.1.0",
     "rollup-plugin-terser": "^7.0.2",
     "yargs": "^17.3.1"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4",
+    "simple-lightbox": "^2.1.0",
+    "simplelightbox": "^2.14.2"
   }
 }
