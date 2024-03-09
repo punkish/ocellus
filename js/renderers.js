@@ -512,14 +512,8 @@ function xAxisFormatter (value, index) {
 
     let val;
 
-    if (value >= 1000 && value < 10000) {
+    if (value >= 1000 && value < 1000000) {
         val = `${value / 1000}K`;
-    }
-    else if (value >= 10000 && value < 100000) {
-        val = `${value / 10000}K`;
-    }
-    else if (value >= 100000 && value < 1000000) {
-        val = `${value / 100000}K`;
     }
     else if (value >= 1000000 && value < 10000000) {
         val = `${value / 1000000}M`;
