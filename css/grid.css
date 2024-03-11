@@ -95,7 +95,7 @@ figure {
 /* figure.tb {
     
 } */
-figure img {
+figure img.lazyloaded {
     width: 100%;
 }
 figure a:hover {
