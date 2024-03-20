@@ -46,6 +46,9 @@ div.advanced-search input[name="as-status"] {
     outline: none;
     cursor: pointer;
 }
+div.advanced-search input[name="as-status"]:checked {
+    background-color: green;
+}
 div.advanced-search td.footer {
     text-align: right;
 }
