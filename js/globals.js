@@ -178,6 +178,7 @@ const globals = {
             'validGeo',
             'eco_name',
             'biome',
+            'biome_id'
             // 'realm'
         ],
 

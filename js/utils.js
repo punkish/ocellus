@@ -198,14 +198,6 @@ const form2qs = () => {
     else {
         log.info('- form2qs(): advanced search');
 
-        const processCommonInputs = (fldName) => {
-            const fld = $(`input[name=${fldName}]`);
-
-            if (fld.checked || fld.checked === 'true') {
-                sp.append(fldName, fld.value);
-            }
-        }
-
         const commonInputs = [
             'page',
             'size',
@@ -213,15 +205,13 @@ const form2qs = () => {
             'refreshCache'
         ];
 
-        commonInputs.forEach(i => processCommonInputs(i));
+        commonInputs.forEach((fldName) => {
+            const fld = $(`input[name=${fldName}]`);
 
-        const processTextInputs = (fldName) => {
-            const fld = $(`input[name="as-${fldName}"]`);
-
-            if (fld.value) {
+            if (fld.checked || fld.checked === 'true') {
                 sp.append(fldName, fld.value);
             }
-        }
+        });
 
         const textInputs = [
             'q',
@@ -231,23 +221,35 @@ const form2qs = () => {
             'journalTitle'
         ];
 
-        textInputs.forEach(i => processTextInputs(i));
+        textInputs.forEach((fldName) => {
+            const fld = $(`input[name="as-${fldName}"]`);
+
+            if (fld.value) {
+                sp.append(fldName, fld.value);
+            }
+        });
         
-        const processCheckboxIinputs = (fldName) => {
+        const checkboxInputs = [
+            'status',
+            'refreshCache'
+        ];
+
+        checkboxInputs.forEach((fldName) => {
             const fld = $(`input[name="as-${fldName}"]`);
 
             if (fld.checked || fld.checked === 'true') {
                 sp.append(fldName, fld.value);
             }
             
-        }
+        });
 
-        const checkboxInputs = [
-            'status',
-            'refreshCache'
+        const selectInputs = [
+            'journalYear',
+            'publicationDate',
+            'checkinTime',
+            'biome',
+            //'biome_id'
         ];
-
-        checkboxInputs.forEach(i => processCheckboxIinputs(i));
 
         const processSelectInputs = (fldName) => {
             const op = $(`select[name="as-${fldName}"]`);
@@ -256,7 +258,10 @@ const form2qs = () => {
 
             if (opVal) {
 
-                if (fldName === 'journalYear' || fldName === 'biome') {
+                if (fldName === 'journalYear') {
+                    sp.append(fldName, opVal);
+                }
+                else if (fldName === 'biome') {
                     sp.append(fldName, opVal);
                 }
                 else {
@@ -291,6 +296,7 @@ const form2qs = () => {
                     }
                     else {
                         const inp = $(`input[name="as-${fldName}From`);
+                        console.log(fldName)
                         const val = inp.value;
 
                         if (val) {
@@ -308,13 +314,6 @@ const form2qs = () => {
 
             return true;
         }
-
-        const selectInputs = [
-            'journalYear',
-            'publicationDate',
-            'checkinTime',
-            'biome'
-        ];
 
         for (const i of selectInputs) {
             const res = processSelectInputs(i);
