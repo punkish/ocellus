@@ -17,3 +17,99 @@ div.leg {
 div.leg hr {
     margin: 0;
 }
+
+div.caption {
+    font-size: 10pt;
+}
+div.caption span {
+    color: red;
+}
+#charts-container summary {
+    visibility: hidden;
+}
+#charts {
+    display: none;
+}
+details.charts {
+    max-width: 960px;
+    box-sizing: border-box;
+    margin: 0 auto 20px auto;
+    background: white;
+}
+details.charts summary {
+    border: 1px solid lightgrey;
+    border-radius: 5px 5px 0 0;
+    outline: none;
+    padding: 0.5rem;
+    display: block;
+    background: white;
+    color: smoke;
+    padding-left: 2rem;
+    position: relative;
+    cursor: pointer;
+    font-family: serif;
+    font-size: 10pt;
+}
+#yearlyCounts,
+#termFreq {
+    display: none;
+    visibility: hidden;
+}
+details.charts summary span {
+    color: red;
+}
+details.charts summary::-webkit-details-marker {
+    display: none;
+}
+#charts {
+    border: 1px solid lightgrey;
+    border-top: none;
+    padding-bottom: 20px
+}
+details.charts[open] > summary:before {
+    transform: rotate(90deg);
+}
+details.charts summary:before {
+    content: "";
+    border-width: 0.4rem;
+    border-style: solid;
+    border-color: transparent transparent transparent #444;
+    position: absolute;
+    top: 0.7rem;
+    left: 1rem;
+    transform: rotate(0);
+    transform-origin: 0.2rem 50%;
+    transition: 0.25s transform ease;
+}
+
+/* Larger than mobile */
+@media only screen and (min-width: 400px) {}
+
+/* Larger than phablet */
+@media (min-width: 550px) {}
+
+/* Larger than tablet */
+@media (min-width: 800px) {
+    #charts-container,
+    #charts {
+        display: block;
+        visibility: hidden;
+    }
+}
+
+/* Larger than desktop */
+@media (min-width: 1100px) {}
+
+/* Larger than Desktop HD */
+@media (min-width: 1400px) {}
+
+/* Larger than Desktop HD */
+@media (min-width: 1920px) {}
+
+/* Larger than Desktop HD */
+@media (min-width: 2300px) {}
+
+/* Larger than Desktop HD */
+@media (min-width: 2500px) {}
+
+@media (min-width: 3000px) {}

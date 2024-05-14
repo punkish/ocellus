@@ -13,30 +13,9 @@ const globals = {
     // ],
 
     cache: {
-        //zenodoImages: 0,
-        images: {
-            total: 0,
-            yearly: false
-        },
-        treatments: {
-            total: 0,
-            yearly: false
-        },
-        species: {
-            total: 0,
-            yearly: false
-        },
-        // articles: {
-        //     total: 0,
-        //     yearly: false
-        // },
-        journals: {
-            total: 0,
-            yearly: false
-        },
-        materialcitations: {
-            total: 0,
-            yearly: false
+        yearlyCounts: {
+            yearlyCounts: false,
+            totals: false
         }
     },
 
@@ -113,11 +92,10 @@ const globals = {
         size: 30
     },
 
-    /*
-    * resource are what are fetched from remote and displayed
-    * pseudoresources are modals that are already embeddeded 
-    * in index.html and are shown or hidden on demand
-    */
+    // resource are what are fetched from remote and displayed
+    // pseudoresources are modals that are already embeddeded 
+    // in index.html and are shown or hidden on demand
+    // 
     resources       : ['treatments', 'citations', 'images'],
     pseudoResources : ['about', 'ip', 'contact', 'privacy'],
 
@@ -416,8 +394,11 @@ const globals = {
         'August', 'September', 'October', 'November', 'December'
     ],
 
-    termFreqChart: null,
-    imageCountChart: null
+    charts: {
+        termFreq: null,
+        yearlyCounts: null
+    }
+    
 };
 
 export { globals }

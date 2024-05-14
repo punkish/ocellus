@@ -2,6 +2,8 @@ import { $, $$ } from './base.js';
 import { globals } from './globals.js';
 import { toggleAdvSearch, showDashboard, toggleModal, lightUpTheBox } from './listeners.js';
 import { qs2form } from './main.js';
+import { renderYearlyCounts } from './renderers-charts.js';
+import { renderTermFreq } from './renderer-termFreq.js';
 
 import { 
     //addListenersToFigcaptions, 
@@ -105,11 +107,21 @@ const makeFigure = ({ resource, figureSize, rec }) => {
         : makeTreatment(obj);
 }
 
-const renderPage = (resultsObj) => {
-    const { 
-        figureSize, figures, qs, count, term, 
-        termFreq, prev, next, stored, ttl, cacheHit 
-    } = resultsObj;
+const renderPage = ({
+    resource, 
+    figureSize, 
+    figures, 
+    qs, 
+    count, 
+    term, 
+    termFreq, 
+    yearlyCounts, 
+    prev, 
+    next, 
+    stored, 
+    ttl, 
+    cacheHit 
+}) => {
 
     log.info(`- renderPage()
     - figureSize: ${figureSize}px
@@ -121,19 +133,46 @@ const renderPage = (resultsObj) => {
 
     $('#grid-images').classList.add(`columns-${figureSize}`);
 
-    renderSearchCriteria(qs, count, stored, ttl, cacheHit);
     renderFigures(figures, qs, prev, next);
     $('#throbber').classList.add('nothrob');
+
+    if (globals.charts.termFreq) {
+        globals.charts.termFreq.dispose();
+        $('#termFreq').style.visibility = 'hidden';
+    }
 
     // draw the termFreq chart *only* if values exists
     if (termFreq && termFreq.length) {
         renderTermFreq(term, termFreq);
+        $('#termFreq').style.visibility = 'visible';
     }
-    else if (globals.termFreqChart) {
-        globals.termFreqChart.dispose();
-        document.getElementById('graphdiv').style.display = 'none';
+    
+    // retrieve searchCriteria string and cacheHit emoji to be used in the 
+    // yearlyCounts chart
+    const { searchCriteriaStr, cacheHitExplosion } = renderSearchCriteria(
+        qs, count, stored, ttl, cacheHit
+    );
+
+    if (globals.charts.yearlyCounts) {
+        globals.charts.yearlyCounts.dispose();
+        $('#yearlyCounts').style.visibility = 'hidden';
     }
 
+    if (yearlyCounts) {
+        renderYearlyCounts({ 
+            yearlyCounts: yearlyCounts.yearlyCounts, 
+            totals: yearlyCounts.totals,
+            searchCriteriaStr,
+            cacheHitExplosion
+        });
+        $('#yearlyCounts').style.visibility = 'visible';
+    }
+
+    if (termFreq || yearlyCounts) {
+        $('#charts-container summary').style.visibility = 'visible';
+        $('#charts').style.visibility = 'visible';
+    }
+    
     // hide advanced search panel
     const advSearchIsActive = $('input[name=searchtype]').checked;
     
@@ -144,7 +183,6 @@ const renderPage = (resultsObj) => {
     }
 
     lightUpTheBox();
-
 }
 
 const renderFigures = (figures, qs, prev, next) => {
@@ -246,16 +284,19 @@ const renderSearchCriteria = (qs, count, stored, ttl, cacheHit) => {
     //const aboutCount = count - (count % 5);
     str = `<span class="crit-count">${count}</span> ${resource} found where ${str}`;
 
-    let cacheHitMsg = '';
+    let cacheHitExplosion;
 
     if (cacheHit) {
         const storedDate = new Date(stored);
         const expires = new Date(stored + ttl) - new Date();
-        cacheHitMsg = `cache hit, stored ${formatDate(storedDate)}, expires in ${formatTime(expires)}`;
-        str += `<span aria-label="${cacheHitMsg}" data-html="true" data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>💥</span>`;
+        const cacheHitMsg = `cache hit, stored ${formatDate(storedDate)}, expires in ${formatTime(expires)}`;
+        cacheHitExplosion = `<span aria-label="${cacheHitMsg}" data-html="true" data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>💥</span>`;
     }
     
-    $('#search-criteria').innerHTML = str;
+    return { 
+        searchCriteriaStr: str, 
+        cacheHitExplosion 
+    };
 }
 
 // Javascript show milliseconds as days:hours:mins without seconds
@@ -292,384 +333,70 @@ const formatDate = (d) => {
     return `${dd} ${globals.months[mm]}, ${yyyy} ${hh}:${mn}:${ss}`;
 }
 
-const renderTermFreq = (term, termFreq) => {
-    const ctx = document.getElementById('graphdiv');
-    ctx.style.display = 'block';
-
-    let width = 960;
-
-    // How to find the width of a div using vanilla JavaScript?
-    // https://stackoverflow.com/a/4787561/183692
-    if (ctx.offsetWidth < width) {
-        width = ctx.offsetWidth
-    }
-    
-    const height = 200;
-    const series = {
-        x: "journal year",
-        y1: "all",
-        y2: "with images"
-    }
-
-    termFreqWithEcharts(ctx, width, height, series, term, termFreq);
-}
-
-
-const svgFrag = (i, className, height, sparkHeight, barWidth, year, count) => {
-    return `<g class="${className}" transform="translate(${i * barWidth},0)">
-        <rect height="${height}" y="${sparkHeight - height}" width="${barWidth}" onmousemove="showTooltip(evt, '${year}: ${count} ${resource}');" onmouseout="hideTooltip();"></rect>
-    </g>`;
-}
-
 // https://css-tricks.com/how-to-make-charts-with-svg/
-const renderYearlyCounts = (resource, yearlyCounts, speciesCount) => {
-    const totalCount = yearlyCounts.total;
-    const yearlyCount = yearlyCounts.yearly;
-    const speciesTotal = speciesCount.total;
-
-    // const barWidth = 3;
-    // const className = 'bar';
-    // const numOfRects = yearlyCount.length;
-    // const sparkWidth = barWidth * numOfRects;
-    // const sparkHeight = 40;
-    // const maxNum = Math.max(...yearlyCount);
-    // const heightRatio = sparkHeight / totalCount;
-    // //const totalImages = numImg.reduce((partialSum, a) => partialSum + a, 0);
-
-    // let spark = `<svg id="svgSpark" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="chart" height="${sparkHeight}" width="${sparkWidth}" aria-labelledby="title" role="img">`;
-
-    // for (let i = 0; i < numOfRects; i++) {
-    //     const year = yearlyCount[i].year;
-    //     const count = yearlyCount[i].count;
-    //     const height = count * heightRatio;
-    //     spark += svgFrag(i, className, height, sparkHeight, barWidth, year, count);
-    // }
-
-    // spark += '</svg>';
-    const html = `<a href="#dashboard" class="modalToggle"><span>~${Math.ceil(totalCount / 1000)}K</span> ${resource} from <span>~${Math.ceil(speciesTotal / 1000)}K</span> species extracted over the years &Rarr;</a>`;
-    
-    const svg = document.querySelector('#sparkBox');
-    svg.innerHTML = html;
-    
-    const dashboardLink = svg.querySelector('a');
-    showDashboard();
-    dashboardLink.addEventListener('click', toggleModal);
-}
-
-const termFreqWithEcharts = (ctx, width, height, series, term, termFreq) => {
-    const options = {
-        title: {
-            text: `occurrence of “${term}” in the text by year`,
-            left: 'center'
-        },
-        tooltip: {
-            trigger: 'axis',
-            formatter: '<div class="leg">year {b}<hr>{a0}: {c0}<br/>{a1}: {c1}</div>'
-        },
-        legend: {
-            left: 55,
-            top: 60,
-            orient: 'vertical',
-            borderWidth: 1,
-            borderRadius: 5,
-            borderColor: '#444',
-            backgroundColor: '#fff'
-        },
-        xAxis: {
-            type: 'category',
-            //name: series.x,
-            splitLine: { show: false },
-            data: termFreq.map(e => e.journalYear)
-        },
-        grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-        },
-        yAxis: {
-            type: 'log',
-            //name: 'y',
-            minorSplitLine: {
-                show: true
-            },
-            axisLabel: {
-                formatter: xAxisFormatter
-            }
-        },
-        series: [
-            {
-                name: series.y1,
-                type: 'line',
-                data: termFreq.map(e => e.total == 0 ? null : e.total),
-                color: '#f00',
-                lineStyle: {
-                    color: '#f00',
-                    width: 1
-                }
-            },
-            {
-                name: series.y2,
-                type: 'line',
-                data: termFreq.map(e => e.withImages == 0 ? null : e.withImages),
-                color: '#00f',
-                lineStyle: {
-                    color: '#00f',
-                    width: 1
-                }
-            }
-        ]
-    };
-
-    ctx.style.width = `${width}px`;
-    ctx.style.height = `${height}px`;
-    // const myChart = echarts.init(ctx);
-    // myChart.setOption(options); 
-    globals.termFreqChart = echarts.init(ctx);
-    globals.termFreqChart.setOption(options);
-}
-
-/*
-┌───────────────────────────────────────────────────────────────────────────┐
-│                                                                           │
-│  close                         DASHBOARD                                  │
-│  ──────                                                                   │
-│ ┌─── charts ────────────────────────────────────────────────────────────┐ │
-│ │ ┌─── chart────────────┐┌─────────────────────┐┌─────────────────────┐ │ │
-│ │ │┌── viz ────────────┐││┌───────────────────┐││┌───────────────────┐│ │ │
-│ │ ││                   ││││                   ││││                   ││ │ │
-│ │ ││                   ││││                   ││││                   ││ │ │
-│ │ ││                   ││││                   ││││                   ││ │ │
-│ │ │└───────────────────┘││└───────────────────┘││└───────────────────┘│ │ │
-│ │ │┌── caption ────────┐││┌───────────────────┐││┌───────────────────┐│ │ │
-│ │ ││                   ││││                   ││││                   ││ │ │
-│ │ │└───────────────────┘││└───────────────────┘││└───────────────────┘│ │ │
-│ │ └─────────────────────┘└─────────────────────┘└─────────────────────┘ │ │
-│ └───────────────────────────────────────────────────────────────────────┘ │
-└───────────────────────────────────────────────────────────────────────────┘
-*/
-function renderYearlyCountsDb(data, resource) {
-    const charts = document.getElementById('charts');
-    let chartsWidth = 960;
-
-    // How to find the width of a div using vanilla JavaScript?
-    // https://stackoverflow.com/a/4787561/183692
-    const main = document.getElementsByTagName('main');;
-    if (main.offsetWidth < chartsWidth) {
-        chartsWidth = main.offsetWidth
-    }
-
-    const chartsPadding = 5;
-
-    const chart = document.createElement('div');
-    charts.appendChild(chart);
-    chart.classList.add('chart');
-
-    const viz = document.createElement('div');
-    // viz.style.display = 'block';
-
-    let vizWidth = Math.floor((chartsWidth - (2 * chartsPadding)) / 3);
-    
-    if (vizWidth > 255) {
-        vizWidth = 255;
-    }
-
-    viz.style.width = `${vizWidth}px`;
-    viz.style.height = '200px';
-    viz.classList.add('viz');
-    
-    chart.appendChild(viz);
-
-    const options = getBarOptions(data, resource);
-    globals[`${resource}_chart`] = echarts.init(viz);
-    globals[`${resource}_chart`].setOption(options);
-
-    const caption = document.createElement('div');
-    chart.appendChild(caption);
-    caption.classList.add('caption');
-
-    //const r = resource.toLowerCase();
-    let str = '';
-    
-    if (resource === 'Treatments') {
-        const treatmentsTotal = data.treatmentsCount.total;
-        const imagesTotal = data.imagesCount.total;
-        const materialCitationsTotal = data.materialCitationsCount.total;
-        str += `<span>${treatmentsTotal}</span> treatments, <span>${materialCitationsTotal}</span> material citations and <span>${imagesTotal}</span> images`;
-    }
-    else {
-        const resourceTotal = data.total;
-        str += `<span>${resourceTotal}</span> ${resource}`;
-    }
-
-    caption.innerHTML = str;
-}
-
-function xAxisFormatter (value, index) {
-    if (value < 1000) {
-        return value;
-    }
-
-    let val;
-
-    if (value >= 1000 && value < 1000000) {
-        val = `${value / 1000}K`;
-    }
-    else if (value >= 1000000 && value < 10000000) {
-        val = `${value / 1000000}M`;
-    }
-
-    return val;
-}
-
-function getBarOptions(data, resource) {
-    
-    const series = [];
-    const years = []
-    
-    if (resource === 'Treatments') {
-        series.push({
-            name: 'Treatments',
-            type: 'bar',
-            emphasis: {
-                focus: 'series'
-            },
-            data: data.treatmentsCount.yearly.map(d => d.count)
-        });
-
-        series.push({
-            name: 'Images',
-            type: 'bar',
-            emphasis: {
-                focus: 'series'
-            },
-            data: data.imagesCount.yearly.map(d => d.count)
-        });
-
-        series.push({
-            name: 'Material Citations',
-            type: 'bar',
-            emphasis: {
-                focus: 'series'
-            },
-            data: data.materialCitationsCount.yearly.map(d => d.count)
-        });
-
-        data.treatmentsCount.yearly.forEach(d => years.push(d.year));
-    }
-    else {
-        series.push({
-            name: resource,
-            type: 'bar',
-            emphasis: {
-                focus: 'series'
-            },
-            data: data.yearly.map(d => d.count)
-        });
-
-        data.yearly.forEach(d => years.push(d.year))
-    }
-
-    const options = {
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                type: 'shadow'
-            }
-        },
-        grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-        },
-        xAxis: [
-            {
-                type: 'category',
-                data: years
-            }
-        ],
-        yAxis: [
-            {
-                type: 'value',
-                axisLabel: {
-                    formatter: xAxisFormatter
-                }
-            }
-        ],
-        series
-    };
-
-    if (resource === 'Treatments') {
-        options.legend = {
-            left: 55,
-            top: 60,
-            orient: 'vertical',
-            borderWidth: 1,
-            borderRadius: 5,
-            borderColor: '#444',
-            backgroundColor: '#fff'
-        };
-    }
-
-    return options;
-}
-
-function renderDashboard(obj) {
+const renderYearlyCountsSparkline = (resource, yearlyCounts) => {
     const {
-        treatmentsCount,
-        imagesCount, 
-        materialCitationsCount,
-        speciesCount, 
-        journalsCount
-    } = obj;
+        images,
+        treatments,
+        species,
+        journals  
+    } = yearlyCounts.totals;
 
-    treatmentsCount.yearly.forEach(t => {
-        const tyear = t.year;
+    const yc = yearlyCounts.yearlyCounts;
 
-        const indImg = imagesCount.yearly.findIndex(i => i.year === tyear);
-        
-        if (indImg === -1) {
-            imagesCount.yearly.push({
-                year: tyear,
-                num_of_records: 0
-            })
-        }
+    const totalCount = resource === 'images'
+        ? images
+        : treatments;
 
-        const indMtc = materialCitationsCount.yearly.findIndex(i => i.year === tyear);
-        
-        if (indMtc === -1) {
-            materialCitationsCount.yearly.push({
-                year: tyear,
-                num_of_records: 0
-            })
-        }
-    });
-    
-    imagesCount.yearly.sort((a, b) => {
-        return a.year - b.year
-    });
+    const barWidth = 3;
+    const className = 'bar';
+    const numOfRects = yc.length;
+    const sparkWidth = barWidth * numOfRects;
+    const sparkHeight = 40;
+    const maxNum = Math.max(...yc);
+    const heightRatio = sparkHeight / totalCount;
+    //const totalImages = numImg.reduce((partialSum, a) => partialSum + a, 0);
 
-    materialCitationsCount.yearly.sort((a, b) => {
-        return a.year - b.year
-    });
+    function svgFrag(i, className, height, sparkHeight, barWidth, year, count) {
+        return `<g class="${className}" transform="translate(${i * barWidth},0)">
+            <rect height="${height}" y="${sparkHeight - height}" width="${barWidth}" onmousemove="showTooltip(evt, '${year}: ${count} ${resource}');" onmouseout="hideTooltip();"></rect>
+        </g>`;
+    }
 
-    renderYearlyCountsDb({ 
-        treatmentsCount, 
-        imagesCount,
-        materialCitationsCount
-    }, 'Treatments');
+    let spark = `<svg id="svgSpark" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="chart" height="${sparkHeight}" width="${sparkWidth}" aria-labelledby="title" role="img">`;
 
-    renderYearlyCountsDb(speciesCount, 'Species');
-    //renderYearlyCountsDb(articlesCount, 'Articles');
-    renderYearlyCountsDb(journalsCount, 'Journals');
+    for (let i = 0; i < numOfRects; i++) {
+        const year = yc[i].year;
+        const count = yc[i][`num_of_${resource}`];
+        const height = count * heightRatio;
+        spark += svgFrag(i, className, height, sparkHeight, barWidth, year, count);
+    }
+
+    spark += '</svg>';
+
+    const svg = document.querySelector('#sparkBox');
+    let html = spark;
+    //html += '<a href="#dashboard" class="modalToggle">';
+
+    if (resource === 'images') {
+        html += `<span>~${Math.ceil(totalCount / 1000)}K</span> ${resource}, <span>~${Math.ceil(treatments / 1000)}K</span> treatments, `;
+    }
+    else {
+        html += `<span>~${Math.ceil(totalCount / 1000)}K</span> ${resource}, <span>~${Math.ceil(images / 1000)}K</span> images, `;
+    }
+
+    html += `<span>~${Math.ceil(species / 1000)}K</span> species from <span>~${Math.ceil(journals / 1000)}K</span> journals`;
+
+    //html += '</a>';
+
+    svg.innerHTML = html;
 }
 
 export {
     makeFigure,
     renderPage,
-    renderYearlyCounts,
-    renderDashboard
+    renderYearlyCountsSparkline,
+    //renderDashboard
     // showTooltip,
     // hideTooltip
 }

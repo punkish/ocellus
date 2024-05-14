@@ -2,7 +2,7 @@ import { $, $$ } from './base.js';
 import { globals } from './globals.js';
 import { submitForm, updatePlaceHolder } from './utils.js';
 import { getCountOfResource } from './querier.js';
-import { renderDashboard } from './renderers.js';
+import { renderDashboard } from './renderers-charts.js';
 
 const addListeners = () => {
     log.info('- addListeners()');
@@ -17,24 +17,24 @@ const addListeners = () => {
     $$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
     $$('.reveal').forEach(el => el.addEventListener('click', reveal));
 
-    const examples = $$('.example-insert');
-    examples.forEach(el => el.addEventListener('click', insertExample));
+    $$('.example-insert')
+        .forEach(el => el.addEventListener('click', insertExample));
 
-    const switches = $$("input[name=searchType");
-    switches.forEach(el => el.addEventListener('click', toggleSearch));
+    $$("input[name=searchType")
+        .forEach(el => el.addEventListener('click', toggleSearch));
 
-    // const switches2 = $$("input[name=searchType2");
-    // switches2.forEach(el => el.addEventListener('click', toggleAdvSearch));
-    const searchToggle = $('#button-1');
-    searchToggle.addEventListener('click', toggleAdvSearch);
+    // $$("input[name=searchType2")
+    //    .forEach(el => el.addEventListener('click', toggleAdvSearch));
 
-    const resources = $$('.resource input');
-    resources.forEach(el => el.addEventListener('click', toggleResource));
+    $('#button-1').addEventListener('click', toggleAdvSearch);
 
-    const pdo = $('select[name="as-publicationDate"]');
-    const cio = $('select[name="as-checkinTime"]');
-    pdo.addEventListener('change', toggleDateSelector);
-    cio.addEventListener('change', toggleDateSelector);
+    $$('.resource input')
+        .forEach(el => el.addEventListener('click', toggleResource));
+
+    $('select[name="as-publicationDate"]')
+        .addEventListener('change', toggleDateSelector);
+    $('select[name="as-checkinTime"]')
+        .addEventListener('change', toggleDateSelector);
 
     $$('input[type=date').forEach(el => el.addEventListener(
         'change', resetDatePickerWarning
@@ -42,17 +42,21 @@ const addListeners = () => {
 }
 
 const toggleExamples = (e) => {
-    if ($('.examples').classList.contains('hidden')) {
-        $('.examples').classList.remove('hidden');
+    const cl = $('.examples').classList;
+
+    if (cl.contains('hidden')) {
+        cl.remove('hidden');
     }
     else {
-        $('.examples').classList.add('hidden');
+        cl.add('hidden');
     }
 }
 
 const resetDatePickerWarning = (e) => {
-    if (e.target.classList.contains('required')) {
-        e.target.classList.remove('required');
+    const cl = e.target.classList;
+
+    if (cl.contains('required')) {
+        cl.remove('required');
     }
 }
 
@@ -160,8 +164,8 @@ const toggleResource = (e) => {
     // value
     const resource = Array.from($$('input[name=resource]'))
         .filter(i => i.checked)[0];
-    
-    updatePlaceHolder(resource.value);
+
+        updatePlaceHolder(resource.value);
 }
 
 // https://gomakethings.com/only-allowing-one-open-dropdown-at-a-time-with-the-details-element/
@@ -396,11 +400,11 @@ function hideTooltip() {
 
 async function showDashboard() {
     if (globals.cache.treatments.yearly === false) {
-        const treatmentsCount = await getCountOfResource('treatments', true);
-        const imagesCount = await getCountOfResource('images', true);
-        const speciesCount = await getCountOfResource('species', true);
-        const journalsCount = await getCountOfResource('journals', true);
-        const materialCitationsCount = await getCountOfResource('materialcitations', true);
+        // const treatmentsCount = await getCountOfResource('treatments', true);
+        // const imagesCount = await getCountOfResource('images', true);
+        // const speciesCount = await getCountOfResource('species', true);
+        // const journalsCount = await getCountOfResource('journals', true);
+        // const materialCitationsCount = await getCountOfResource('materialcitations', true);
     
         renderDashboard({
             treatmentsCount,

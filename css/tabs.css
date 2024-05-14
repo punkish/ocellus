@@ -1,0 +1,46 @@
+/* https://css-tricks.com/functional-css-tabs-revisited/ */
+#charts {
+    visibility: hidden;
+}
+.tabs {
+    position: relative;
+    min-height: 300px; /* This part sucks */
+    clear: both;
+    margin: 25px 0;
+  }
+  .tab {
+    float: left;
+    margin-left: 5px;
+  }
+  .tab label {
+    background: #eee; 
+    padding: 10px; 
+    border: 1px solid #ccc; 
+    margin-left: -1px; 
+    position: relative;
+    left: 1px; 
+    border-radius: 5px 5px;
+    font-family: sans-serif;
+    font-size: 10px;
+  }
+  .tab [type=radio] {
+    display: none;   
+  }
+  .content {
+    position: absolute;
+    top: 28px;
+    left: 0;
+    background: white;
+    right: 0;
+    bottom: 0;
+    padding: 20px;
+    border: 1px solid #ccc; 
+  }
+  [type=radio]:checked ~ label {
+    background: white;
+    border-bottom: 1px solid white;
+    z-index: 2;
+  }
+  [type=radio]:checked ~ label ~ .content {
+    z-index: 1;
+  }

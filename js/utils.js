@@ -1,6 +1,8 @@
 import { $, $$ } from './base.js';
 import { getResource, getCountOfResource } from './querier.js';
-import { renderYearlyCounts } from './renderers.js';
+import { renderYearlyCountsSparkline } from './renderers.js';
+import { renderDashboard } from './renderers-charts.js';
+import { globals } from './globals.js';
 
 // Javascript: Ordinal suffix for numbers
 // https://stackoverflow.com/a/15810761
@@ -109,9 +111,21 @@ const submitForm = () => {
 }
 
 const updatePlaceHolder = async (resource) => {
-    const yearlyCounts = await getCountOfResource(resource, true);
-    const speciesCount = await getCountOfResource('species', true);
-    renderYearlyCounts(resource, yearlyCounts, speciesCount);
+    const getYearlyCounts = true;
+    const yearlyCounts = await getCountOfResource(resource, getYearlyCounts);
+    renderYearlyCountsSparkline(resource, yearlyCounts);
+    //renderDashboard(yearlyCounts);
+    
+    // renderDashboard(yearlyCounts.yc);
+    // const dashboardLink = svg.querySelector('a');
+    // //showDashboard();
+    // dashboardLink.addEventListener('click', toggleModal);
+    // const speciesCount = await getCountOfResource('species', true);
+    // renderYearlyCounts(
+    //     resource, 
+    //     yearlyCounts, 
+    //     speciesCount
+    // );
 }
 
 /**

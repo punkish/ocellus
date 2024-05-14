@@ -163,13 +163,13 @@ figcaption div.figTitle {
 figcaption div.open {
     height: 100%;
 }
-details {
+#grid-images details {
     border: 1px solid lightgray;
     border-radius: 4px;
     padding: 0.5em 0.5em 0;
 }
 
-summary {
+#grid-images details summary {
     font-weight: bold;
     margin: -0.5em -0.5em 0;
     padding: 0.5em;
@@ -184,11 +184,11 @@ summary {
     white-space: nowrap;
 }
 
-details[open] {
+#grid-images details[open] {
     padding: 0.5em;
 }
 
-details[open] summary {
+#grid-images details[open] summary {
     border-bottom: 1px solid #aaa;
     margin-bottom: 0.5em;
 }
@@ -365,6 +365,12 @@ div.close:hover:before {
 #search-criteria {
     margin-bottom: 1rem;
     padding: 1rem;
+    top: -10px;
+    position: absolute;
+    left: 40%;
+    z-index: 999;
+    font-size: 10px;
+    font-family: sans-serif;
 }
 #pager {
     /* border-top: 1px solid silver; */
@@ -376,11 +382,11 @@ div.close:hover:before {
 #pager a {
     margin: 1rem;
 }
-.crit-count,
+/* .crit-count,
 .crit-key,
 .crit-val {
     font-weight: 800;
-}
+} */
 
 /* Larger than mobile */
 @media only screen and (min-width: 400px) {

@@ -3,39 +3,46 @@ import { globals } from './globals.js';
 import { makeFigure, renderPage } from './renderers.js';
 import { toggleWarn } from './listeners.js';
 
-const getCountOfResource = async (resource, yearlyCounts) => {
+const getCountOfResource = async (resource, getYearlyCounts) => {
     
-    if (!globals.cache[resource].total) {
+    if (!globals.cache.yearlyCounts.yearlyCounts) {
         let url = `${globals.server}/${resource}?cols=`;
 
-        if (yearlyCounts) {
+        if (getYearlyCounts) {
             url += '&yearlyCounts=true';
         }
-
+        
         const response = await fetch(url);
-    
+        
         // if HTTP-status is 200-299
         if (response.ok) {
             const json = await response.json();
+            const count = json.item.result.count;
 
-            if (yearlyCounts) {
-                const res = json.item.result.yearlyCounts;
+            if (getYearlyCounts) {
+                const yearlyCounts = json.item.result.yearlyCounts;
 
-                globals.cache[resource].yearly = res
-                    .map(i => {
-                        return { 
-                            year: i.year, 
-                            count: i.num_of_records
-                        } 
-                    });
+                const totals = yearlyCounts.reduce(( totals, cur ) => {
+                    totals.images += cur.num_of_images;
+                    totals.treatments += cur.num_of_treatments;
+                    //totals.materialCitations += cur.num_of_materialCitations;
+                    totals.species += cur.num_of_species;
+                    totals.journals += cur.num_of_journals;
+                    return totals;
+                }, {
+                    images: 0,
+                    treatments: 0,
+                   // materialCitations: 0,
+                    species: 0,
+                    journals: 0
+                });
 
-                globals.cache[resource].total = json.item.result.count;
-                return globals.cache[resource];
+                globals.cache.yearlyCounts.yearlyCounts = yearlyCounts;
+                globals.cache.yearlyCounts.totals = totals;
             }
             else {
-                globals.cache[resource].total = json.item.result.count;
+                globals.cache.yearlyCounts.totals[resource] = count;
             }
-
         }
     
         // throw an error
@@ -44,22 +51,9 @@ const getCountOfResource = async (resource, yearlyCounts) => {
         }
     }
 
-    if (yearlyCounts) {
-        return globals.cache[resource];
-        // if (resource === 'treatments') {
-        //     return { 
-        //         treatments: globals.cache.treatments,
-        //         articles: globals.cache.articles
-        //     }
-        // }
-        // else {
-        //     return globals.cache[resource]
-        // }
-    }
-    else {
-        return globals.cache[resource].total;
-    }
-    
+    // console.log(resource, getYearlyCounts)
+    // console.log(globals.cache.yearlyCounts)
+    return globals.cache.yearlyCounts;    
 }
 
 const getResource = async (qs) => {
@@ -107,7 +101,6 @@ const getResource = async (qs) => {
                 //
                 // where 'phylogeny' is a "key" with 
                 // no val, so we will use that as 'q'
-
                 sp.set('q', key); 
                 sp.delete(key);
                 term = key;
@@ -116,10 +109,8 @@ const getResource = async (qs) => {
 
         // remove invalid Zenodeo keys
         else {
-            //console.log(`${key} is not valid`)
             toggleWarn(`"${key}" is not a valid param`);
             allParamsValid = false;
-            //sp.delete(key);
         }
     });
 
@@ -138,6 +129,8 @@ const getResource = async (qs) => {
     if (term) {
         queryString += `&termFreq=true`;
     }
+
+    queryString += `&yearlyCounts=true`;
 
     const queries = [];    
     queries.push(getResults({ resource, queryString, figureSize }));
@@ -166,6 +159,7 @@ const getResource = async (qs) => {
                     res.recs.push(...r.recs);
                     res.count += r.count;
                     res.termFreq = r.termFreq;
+                    res.yearlyCounts = r.yearlyCounts;
                     res.cacheHit = r.cacheHit;
                     res.stored = r.stored;
                     res.ttl = r.ttl;
@@ -183,6 +177,7 @@ const getResource = async (qs) => {
             }));
 
             const resultsObj = {
+                resource,
                 figureSize,
                 figures,
                 qs, 
@@ -197,6 +192,13 @@ const getResource = async (qs) => {
             if (results.termFreq) {
                 resultsObj.termFreq = results.termFreq;
                 resultsObj.term = term;
+            }
+
+            if (results.yearlyCounts) {
+                resultsObj.yearlyCounts = results.yearlyCounts;
+            }
+            else {
+                console.log('nooooo yearlyCOuns')
             }
 
             renderPage(resultsObj);
@@ -217,11 +219,34 @@ const getResults = async ({ resource, queryString, figureSize }) => {
         const json = await response.json();
         const records = json.item.result.records;
 
+        const yearlyCounts = {};
+
+        if (json.item.result.yearlyCounts) {
+            const yc = json.item.result.yearlyCounts;
+
+            const totals = yc.reduce(( totals, cur ) => {
+                totals.images += cur.num_of_images;
+                totals.treatments += cur.num_of_treatments;
+                totals.species += cur.num_of_species;
+                totals.journals += cur.num_of_journals;
+                return totals;
+            }, {
+                images: 0,
+                treatments: 0,
+                species: 0,
+                journals: 0
+            });
+
+            yearlyCounts.yearlyCounts = yc;
+            yearlyCounts.totals = totals;
+        }
+
         const results = {
             resource,
             count: 0,
             recs: [],
             termFreq: json.item.result.termFreq,
+            yearlyCounts,
             prev: '',
             next: '',
             stored: json.stored,
@@ -235,23 +260,6 @@ const getResults = async ({ resource, queryString, figureSize }) => {
             records.forEach(r => {
                 const record = {};
 
-                // if (source === 'images') {
-
-                //     // there is no treatmentId associated with 
-                //     // Zenodo images
-                //     record.treatmentId = r.treatmentId;
-                //     //record.title = r.metadata.title;
-                //     record.title = r.treatmentTitle;
-                //     record.zenodoRec = r.zenodoDep;
-
-                //     // set a default thumbnail in case preview  
-                //     // is not available on Zenodo
-                //     record.uri = 'thumbs' in r.links 
-                //         ? r.links.thumbs[figureSize]
-                //         : '/img/kein-preview.png';
-
-                //     record.caption = r.metadata.description;
-                // }
                 if (resource === 'images') {
                     record.treatmentId = r.treatmentId;
                     record.treatmentTitle = r.treatmentTitle;
@@ -263,7 +271,7 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                     const id = r.httpUri.split('/')[4];
 
                     // if the figure is on zenodo, show their thumbnails unless 
-                    // it is an svg, in which case, show it directly
+                    // it is an svg, in which case, apologize with "no preview"
                     if (r.httpUri.indexOf('zenodo') > -1) {
                         if (r.httpUri.indexOf('.svg') > -1) {
                             record.uri = '/img/kein-preview.png';
@@ -291,30 +299,7 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                     record.treatmentTitle = r.treatmentTitle;
                     record.zenodoRec = r.zenodoDep;
                     record.figureSize = figureSize;
-                    //record.publicationDate = r.publicationDate;
                     record.journalTitle = r.journalTitle;
-
-                    // Most figures are on Zenodo, so adjust their url 
-                    // accordingly
-                    //const id = r.httpUri.split('/')[4];
-
-                    // if the figure is on zenodo, show their thumbnails unless 
-                    // it is an svg, in which case, show it directly
-                    // if (r.httpUri.indexOf('zenodo') > -1) {
-                    //     if (r.httpUri.indexOf('.svg') > -1) {
-                    //         record.uri = '/img/kein-preview.png';
-                    //     }
-                    //     else {
-                    //         record.uri = `${globals.zenodoUri}/${id}/thumb${figureSize}`;
-                    //     }
-                    // }
-
-                    // but some are on Pensoft, so use the uri directly
-                    // else {
-                    //     record.uri = r.httpUri;
-                    // }
-                    
-                    //record.captionText = r.captionText;
                     record.treatmentDOI = r.treatmentDOI;
                     record.articleTitle = r.articleTitle;
                     record.articleAuthor = r.articleAuthor;

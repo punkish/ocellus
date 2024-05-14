@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="css/quicksearch.css">
     <link rel="stylesheet" href="css/toggleSwitch.css">
     <link rel="stylesheet" href="css/cssToggle.css">
+    <!-- <link rel="stylesheet" href="css/tabs.css"> -->
     <link rel="stylesheet" href="css/grid.css">
     <link rel="stylesheet" href="css/charts.css">
     <link rel="stylesheet" href="css/dashboard.css">
@@ -70,7 +71,7 @@
             <input class="query" id="size" name="size" type="hidden" value="30">
 
             <div id="tooltip" display="none" style="position: absolute; display: none;"></div>
-            <div id="sparkBox" class="sparkBox"></div>
+            <div id="sparkBox" class="sparkBox" style="height: 30px;"></div>
             
             <div id="normalSearch" class="search-container">
                 <div id="ns-container">
@@ -338,10 +339,17 @@
 
     <main>
         <section id="images">
-            <div id="graphdiv" class="column-1 box"></div>
-            <div class="column-2 box">
-                <div id="search-criteria"></div>
+            <details id="charts-container" class="charts" open>
+                <summary></summary>
+                <div id="charts" class="charts-content">
+                    <div id="yearlyCounts" class="chart"></div> 
+                    <div id="termFreq" class="chart"></div> 
+                </div>
+            </details>
+            
 
+            <div class="column-2 box">
+                <!-- <div id="search-criteria"></div> -->
                 <!-- this is where the images go -->
                 <div id="grid-images"></div>
                 <div id="pager"></div>
@@ -350,11 +358,7 @@
 
         <section id="dashboard" class="modal hidden noblock">
             <a href="#" class="close modalToggle">close</a>
-            <div id="charts"></div>
-            <!-- <div id="chartResource"></div>
-            <div id="chartSpecies"></div>
-            <div id="chartArticles"></div>
-            <div id="chartJournals"></div> -->
+            <div id="dashboardCharts"></div>
         </section>
 
         <section id="about" class="modal hidden noblock">
@@ -414,6 +418,7 @@
 
     <!-- build:js -->
     <!-- endbuild -->
+    <script src="./js/accordion.js"></script>
     <script src="../../libs/simple-lightbox/simpleLightbox.js"></script>
     <script src="libs/picolog/picolog.min.js"></script>
     <script src="libs/lazysizes.min.js"></script>
