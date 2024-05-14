@@ -1,8 +1,9 @@
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
 import { submitForm, updatePlaceHolder } from './utils.js';
-import { getCountOfResource } from './querier.js';
+// import { getCountOfResource } from './querier.js';
 import { renderDashboard } from './renderers-charts.js';
+import { Accordion } from './accordion.js';
 
 const addListeners = () => {
     log.info('- addListeners()');
@@ -39,6 +40,10 @@ const addListeners = () => {
     $$('input[type=date').forEach(el => el.addEventListener(
         'change', resetDatePickerWarning
     ));
+
+    $$('#charts-container').forEach((el) => {
+        new Accordion(el);
+    });
 }
 
 const toggleExamples = (e) => {

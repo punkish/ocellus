@@ -182,7 +182,10 @@ const renderPage = ({
         qs2form(qs);
     }
 
-    lightUpTheBox();
+    if (resource === 'images') {
+        lightUpTheBox();
+    }
+    
 }
 
 const renderFigures = (figures, qs, prev, next) => {

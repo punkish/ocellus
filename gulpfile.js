@@ -6,6 +6,7 @@ const concat = require('gulp-concat');
 const { rollup } = require('rollup');
 const { terser } = require('rollup-plugin-terser');
 const rm = require('gulp-rm');
+const cleanhtml = require('gulp-cleanhtml');
 
 const d = new Date();
 const dsecs = d.getTime();
@@ -14,7 +15,7 @@ const destination = './docs';
 
 // remove old css and js
 async function cleanup() {
-    console.log('cleaing up old files for new index');
+    console.log('cleaing up old js and css for new versions');
 
     const dest = [
         `${destination}/js/ocellus-*.js`, 
@@ -25,6 +26,7 @@ async function cleanup() {
 
     return src(dest, opts).pipe( rm() );
 }
+
 
 // generate the html
 async function html() {
@@ -37,6 +39,7 @@ async function html() {
         .pipe(htmlReplace({
             'css': `./css/ocellus-${dsecs}.css`
         }))
+        .pipe(cleanhtml())
         .pipe(dest(destination))
 }
 
@@ -45,12 +48,14 @@ async function css() {
     console.log('processing css for new index');
 
     return src([
+            `${source}/css/uglyduck.css`,
             `${source}/css/base.css`,
             `${source}/css/header.css`,
             `${source}/css/form.css`,
             `${source}/css/adv-search.css`,
             `${source}/css/examples.css`,
             `${source}/css/quicksearch.css`,
+            //`${source}/css/searchSwitcher.css`,
             `${source}/css/toggleSwitch.css`,
             `${source}/css/cssToggle.css`,
             `${source}/css/grid.css`,
@@ -59,6 +64,10 @@ async function css() {
             `${source}/css/throbber.css`,
             `${source}/css/pager.css`,
             `${source}/css/map.css`,
+            //`${source}/css/tabs-new.css`,
+            //`${source}/css/tabs.css`,
+            //`${source}/css/toggleSwitch.css`,
+            //`${source}/css/tristate-toggle.css`,
             `${source}/css/treatmentDetails.css`,
             `${source}/libs/fancySearch/fancySearch.css`,
             `${source}/css/sparkline.css`,

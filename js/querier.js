@@ -197,9 +197,6 @@ const getResource = async (qs) => {
             if (results.yearlyCounts) {
                 resultsObj.yearlyCounts = results.yearlyCounts;
             }
-            else {
-                console.log('nooooo yearlyCOuns')
-            }
 
             renderPage(resultsObj);
         });

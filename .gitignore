@@ -26,7 +26,6 @@
 *.sql
 *.sqlite
 *.xml
-scratch/
 
 # OS generated files #
 ######################
@@ -35,13 +34,13 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
-# node_modules #
+# node_modules, caches and other directories #
 ################
 node_modules/
-
-# query cache #
-################
 cache/
+scratch/
+bak/
+explorations/
 
 # specific config files #
 #########################

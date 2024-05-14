@@ -42,12 +42,12 @@ details.charts summary {
     outline: none;
     padding: 0.5rem;
     display: block;
-    background: white;
+    background: #f5f5f5;
     color: smoke;
     padding-left: 2rem;
     position: relative;
     cursor: pointer;
-    font-family: serif;
+    font-family: "Georgia", serif;
     font-size: 10pt;
 }
 #yearlyCounts,
@@ -64,7 +64,8 @@ details.charts summary::-webkit-details-marker {
 #charts {
     border: 1px solid lightgrey;
     border-top: none;
-    padding-bottom: 20px
+    padding-bottom: 20px;
+    background-color: white;
 }
 details.charts[open] > summary:before {
     transform: rotate(90deg);
@@ -72,7 +73,7 @@ details.charts[open] > summary:before {
 details.charts summary:before {
     content: "";
     border-width: 0.4rem;
-    border-style: solid;
+    /* border-style: solid; */
     border-color: transparent transparent transparent #444;
     position: absolute;
     top: 0.7rem;
