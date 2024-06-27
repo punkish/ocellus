@@ -91,12 +91,7 @@ function renderDashboard(obj) {
     // renderYearlyCountsDb(journalsCount, 'Journals');
 }
 
-const renderYearlyCounts = ({
-    yearlyCounts,
-    totals,
-    searchCriteriaStr,
-    cacheHitExplosion
-}) => {
+const renderYearlyCounts = ({ yearlyCounts, totals }) => {
     const chart = getChartContainer(document.querySelector('#yearlyCounts'));
     chart.innerHTML = '';
     
@@ -130,15 +125,9 @@ const renderYearlyCounts = ({
     }
 
     str += ` <span>${speciesTotals}</span> species from <span>${journalsTotals}</span> journals over <span>${num_of_years}</span> years`;
-    
-    if (cacheHitExplosion) {
-        searchCriteriaStr += cacheHitExplosion;
-    }
-
-    $('details.charts summary').innerHTML = searchCriteriaStr;
 
     const caption = document.createElement('div');
-    caption.style.width = `100%`;
+    caption.style.width = '100%';
     caption.classList.add('caption');
     chart.appendChild(caption);
     caption.innerHTML = str;

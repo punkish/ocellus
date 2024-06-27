@@ -130,8 +130,11 @@ const getResource = async (qs) => {
         queryString += `&termFreq=true`;
     }
 
-    queryString += `&yearlyCounts=true`;
-
+    // get yearlyCounts, but only if the query is not for a treatmentId
+    if (!sp.has('treatmentId')) {
+        queryString += `&yearlyCounts=true`;
+    }
+    
     const queries = [];    
     queries.push(getResults({ resource, queryString, figureSize }));
 
@@ -216,9 +219,10 @@ const getResults = async ({ resource, queryString, figureSize }) => {
         const json = await response.json();
         const records = json.item.result.records;
 
-        const yearlyCounts = {};
+        let yearlyCounts = undefined;
 
         if (json.item.result.yearlyCounts) {
+            yearlyCounts = {};
             const yc = json.item.result.yearlyCounts;
 
             const totals = yc.reduce(( totals, cur ) => {

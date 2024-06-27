@@ -18,12 +18,13 @@ div.leg hr {
     margin: 0;
 }
 
-div.caption {
+div.caption,
+details.charts summary {
+    color: grey;
     font-size: 10pt;
+    font-family: sans-serif;
 }
-div.caption span {
-    color: red;
-}
+
 #charts-container summary {
     visibility: hidden;
 }
@@ -47,16 +48,15 @@ details.charts summary {
     padding-left: 2rem;
     position: relative;
     cursor: pointer;
-    font-family: "Georgia", serif;
-    font-size: 10pt;
 }
 #yearlyCounts,
 #termFreq {
     display: none;
     visibility: hidden;
 }
+div.caption span,
 details.charts summary span {
-    color: red;
+    color: black;
 }
 details.charts summary::-webkit-details-marker {
     display: none;
@@ -73,8 +73,8 @@ details.charts[open] > summary:before {
 details.charts summary:before {
     content: "";
     border-width: 0.4rem;
-    /* border-style: solid; */
-    border-color: transparent transparent transparent #444;
+    border-style: solid;
+    border-color: transparent transparent transparent #ccc;
     position: absolute;
     top: 0.7rem;
     left: 1rem;

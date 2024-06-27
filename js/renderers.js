@@ -1,10 +1,15 @@
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
-import { toggleAdvSearch, showDashboard, toggleModal, lightUpTheBox } from './listeners.js';
+import { 
+    toggleAdvSearch, 
+    // showDashboard, 
+    // toggleModal, 
+    lightUpTheBox 
+} from './listeners.js';
 import { qs2form } from './main.js';
 import { renderYearlyCounts } from './renderers-charts.js';
 import { renderTermFreq } from './renderer-termFreq.js';
-
+import { niceNumbers } from './utils.js';
 import { 
     //addListenersToFigcaptions, 
     addListenersToFigDetails,
@@ -146,10 +151,8 @@ const renderPage = ({
         renderTermFreq(term, termFreq);
         $('#termFreq').style.visibility = 'visible';
     }
-    
-    // retrieve searchCriteria string and cacheHit emoji to be used in the 
-    // yearlyCounts chart
-    const { searchCriteriaStr, cacheHitExplosion } = renderSearchCriteria(
+
+    renderSearchCriteria(
         qs, count, stored, ttl, cacheHit
     );
 
@@ -161,15 +164,13 @@ const renderPage = ({
     if (yearlyCounts) {
         renderYearlyCounts({ 
             yearlyCounts: yearlyCounts.yearlyCounts, 
-            totals: yearlyCounts.totals,
-            searchCriteriaStr,
-            cacheHitExplosion
+            totals: yearlyCounts.totals
         });
+
         $('#yearlyCounts').style.visibility = 'visible';
     }
 
     if (termFreq || yearlyCounts) {
-        $('#charts-container summary').style.visibility = 'visible';
         $('#charts').style.visibility = 'visible';
     }
     
@@ -228,64 +229,54 @@ const renderSearchCriteria = (qs, count, stored, ttl, cacheHit) => {
     log.info(`  - count: ${count}`);
 
     const searchParams = new URLSearchParams(qs);
-    const resource = searchParams.get('resource');
-    const page = searchParams.get('page');
-    const size = searchParams.get('size');
-    const from = ((page - 1) * size) + 1;
-    let to = parseInt(from) + parseInt(size - 1);
-
-    if (to > count) {
-        to = count;
-    }
+    let resource = searchParams.get('resource');
 
     if (!count) {
         count = 'sorry, no';
+    }
+
+    if (count === 1) {
+        resource = resource.slice(0, -1);
+        count = niceNumbers(count);
     }
 
     const criteria = [];
     globals.params.notValidSearchCriteria.forEach(p => searchParams.delete(p));
     
     searchParams.forEach((v, k) => {
-        let c;
-
+        let criterion;
         const match = v.match(/(?<operator>\w+)\((?<term>[\w\s]+)\)/);
 
         if (match) {
             const { operator, term } = match.groups;
-            c = `<span class="crit-key">${k}</span> ${operator.replace(/_/,' ')} <span class="crit-val">${term}</span>`;
+            criterion = `<span class="crit-key">${k}</span> ${operator.replace(/_/,' ')} <span class="crit-val">${term}</span>`;
         }
         else {
             if (k === 'q') {
-                c = `<span class="crit-key">${v}</span> is in the text`;
+                criterion = `<span class="crit-key">${v}</span> is in the text`;
             }
             else {
-                c = `<span class="crit-key">${k}</span> is <span class="crit-val">${v}</span>`;
+                criterion = `<span class="crit-key">${k}</span> is <span class="crit-val">${v}</span>`;
             }
         }
 
-        criteria.push(c);
+        criteria.push(criterion);
     })
 
-    let str;
+    let searchCriteriaStr;
     const len = criteria.length;
 
     if (len === 1) {
-        str = criteria[0];
+        searchCriteriaStr = criteria[0];
     }
     else if (len === 2) {
-        str = `${criteria[0]} and ${criteria[1]}`;
+        searchCriteriaStr = `${criteria[0]} and ${criteria[1]}`;
     }
     else {
-        str = `${criteria.slice(0, len - 2).join(', ')}, and ${criteria[len - 1]}`;
+        searchCriteriaStr = `${criteria.slice(0, len - 2).join(', ')}, and ${criteria[len - 1]}`;
     }
 
-    /*
-    **1107** records found where **hake** is in the text… **19** unique images from the first **30** records are shown below.
-    **1107** records found where **hake** is in the text… **27** unique images from records **31–60**  are shown below.
-    */
-    //… <span class="crit-count">${globals.results.figures.length}</span> unique images from records ${from}–${to} are shown below
-    //const aboutCount = count - (count % 5);
-    str = `<span class="crit-count">${count}</span> ${resource} found where ${str}`;
+    searchCriteriaStr = `<span class="crit-count">${count}</span> ${resource} found where ${searchCriteriaStr}`;
 
     let cacheHitExplosion;
 
@@ -295,11 +286,13 @@ const renderSearchCriteria = (qs, count, stored, ttl, cacheHit) => {
         const cacheHitMsg = `cache hit, stored ${formatDate(storedDate)}, expires in ${formatTime(expires)}`;
         cacheHitExplosion = `<span aria-label="${cacheHitMsg}" data-html="true" data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>💥</span>`;
     }
-    
-    return { 
-        searchCriteriaStr: str, 
-        cacheHitExplosion 
-    };
+
+    if (cacheHitExplosion) {
+        searchCriteriaStr += cacheHitExplosion;
+    }
+
+    $('details.charts summary').innerHTML = searchCriteriaStr;
+    $('#charts-container summary').style.visibility = 'visible';
 }
 
 // Javascript show milliseconds as days:hours:mins without seconds
