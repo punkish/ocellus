@@ -115,16 +115,14 @@ const renderYearlyCounts = ({ yearlyCounts, totals }) => {
     const yrs = chartOptions.xAxis[0].data;
     const num_of_years = yrs[yrs.length - 1] - yrs[0];
 
-    let str = '';
-    
-    if (resource === 'Treatments') {
-        str += `with <span>${imagesTotal}</span> images, and`;
-    }
-    else if (resource === 'Images') {
-        str += `in <span>${treatmentsTotal}</span> treatments of`;
-    }
-
-    str += ` <span>${speciesTotals}</span> species from <span>${journalsTotals}</span> journals over <span>${num_of_years}</span> years`;
+    const str = createCaptionStr({ 
+        resource,
+        imagesTotal, 
+        treatmentsTotal, 
+        speciesTotals,
+        journalsTotals,
+        num_of_years
+    });
 
     const caption = document.createElement('div');
     caption.style.width = '100%';
@@ -133,7 +131,7 @@ const renderYearlyCounts = ({ yearlyCounts, totals }) => {
     caption.innerHTML = str;
 }
 
-
+/*
 function createDashboardChart({
     resource,
     chartsContainer, 
@@ -141,7 +139,7 @@ function createDashboardChart({
     options,
     width,
     padding,
-    searchCriteriaStr,
+    //searchCriteriaStr,
     cacheHitExplosion
 }) {
     const chart = document.createElement('div');
@@ -182,23 +180,36 @@ function createDashboardChart({
     const years = options.xAxis[0].data;
     const num_of_years = years[years.length - 1] - years[0];
 
-    let str = '';
-    
-    if (resource === 'Treatments') {
-        str += `<span>${treatmentsTotal}</span> treatments, <span>${imagesTotal}</span> images, `;
-    }
-    else if (resource === 'Images') {
-        str += `${searchCriteriaStr} in <span>${treatmentsTotal}</span> treatments of `;
-    }
-
-    str += `<span>${speciesTotals}</span> species from <span>${journalsTotals}</span> journals over <span>${num_of_years}</span> years ${cacheHitExplosion}`;
-
-    // else {
-    //     const resourceTotal = totals[resource.toLowerCase()];
-    //     str += `<span>${resourceTotal}</span> ${resource}`;
-    // }
+    const str = createCaptionStr({ 
+        resource,
+        imagesTotal, 
+        treatmentsTotal, 
+        speciesTotals,
+        journalsTotals,
+        num_of_years,
+        cacheHitExplosion,
+        chart: 'dashboard'
+    });
 
     caption.innerHTML = str;
+}
+*/
+
+function createCaptionStr({
+    resource,
+    imagesTotal, 
+    treatmentsTotal, 
+    speciesTotals,
+    journalsTotals,
+    num_of_years
+}) {
+    let str = resource === 'Treatments'
+        ? `with <span>${imagesTotal}</span> images, and`
+        : `in <span>${treatmentsTotal}</span> treatments of`;
+
+    str += ` <span>${speciesTotals}</span> species from <span>${journalsTotals}</span> journals over <span>${num_of_years}</span> years`;
+
+    return str;
 }
 
 /**
