@@ -390,17 +390,17 @@ function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
     $('#charts-container summary').style.visibility = 'visible';
 }
 
-// Javascript show milliseconds as days:hours:mins without seconds
+// Convert milliseconds to days:hours:mins without seconds
 // https://stackoverflow.com/a/8528531/183692
-const formatTime = (t) => {
-    const cd = 24 * 60 * 60 * 1000;
-    const ch = 60 * 60 * 1000;
-    let d = Math.floor(t / cd);
-    let h = Math.floor( (t - d * cd) / ch);
-    let m = Math.round( (t - d * cd - h * ch) / 60000);
+const formatTime = (ms) => {
+    const ms_in_h = 60 * 60 * 1000;
+    const ms_in_d = 24 * ms_in_h;
+    let d = Math.floor(ms / ms_in_d);
+    let h = Math.floor( (ms - (d * ms_in_d)) / ms_in_h);
+    let m = Math.round( (ms - (d * ms_in_d) - (h * ms_in_h)) / 60000);
     const pad = (n) => n < 10 ? '0' + n : n;
 
-    if (m === 60){
+    if (m === 60) {
         h++;
         m = 0;
     }
@@ -470,7 +470,7 @@ const renderYearlyCountsSparkline = (resource, yearlyCounts) => {
     //html += '<a href="#dashboard" class="modalToggle">';
 
     if (resource === 'images') {
-        html += `<span>~${Math.ceil(totalCount / 1000)}K</span> ${resource}, <span>~${Math.ceil(treatments / 1000)}K</span> treatments, `;
+        html += ` <span>~${Math.ceil(totalCount / 1000)}K</span> ${resource}, <span>~${Math.ceil(treatments / 1000)}K</span> treatments, `;
     }
     else {
         html += `<span>~${Math.ceil(totalCount / 1000)}K</span> ${resource}, <span>~${Math.ceil(images / 1000)}K</span> images, `;

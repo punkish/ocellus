@@ -36,7 +36,7 @@
 └─────────────────────────────────────────────────────────────────────────┘
 */
 function getChartContainer(chart) {
-    const main = document.getElementsByTagName('form')[0];
+    const chartContainer = document.getElementById('charts');
     const padding = 50;
     let width = 960;
     const height = 200;
@@ -44,8 +44,8 @@ function getChartContainer(chart) {
     // How to find the width of a div using vanilla JavaScript?
     // https://stackoverflow.com/a/4787561/183692
     //
-    if (main.offsetWidth < width) {
-        width = main.offsetWidth - (2 * padding);
+    if (chartContainer.offsetWidth < width) {
+        width = chartContainer.offsetWidth - (2 * padding);
     }
 
     chart.style.display = 'block';

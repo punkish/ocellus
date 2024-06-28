@@ -100,7 +100,7 @@ const renderYearlyCounts = ({ yearlyCounts, totals }) => {
     const chartOptions = getOptions('Treatments', years, series);
 
     const viz = document.createElement('div');
-    viz.style.width = `100%`;
+    viz.style.width = '100%';
     viz.style.height = '200px';
     viz.classList.add('viz');
     chart.appendChild(viz);

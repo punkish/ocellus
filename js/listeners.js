@@ -27,7 +27,7 @@ const addListeners = () => {
     // $$("input[name=searchType2")
     //    .forEach(el => el.addEventListener('click', toggleAdvSearch));
 
-    $('#button-1').addEventListener('click', toggleAdvSearch);
+    $('#advSearch').addEventListener('click', toggleAdvSearch);
 
     $$('.resource input')
         .forEach(el => el.addEventListener('click', toggleResource));
@@ -355,8 +355,12 @@ const reveal = (e) => {
     //$('#brand').innerHTML = 'MAP • IMAGES • TREATMENTS';
     const t = e.target.innerText;
     e.target.innerText = e.target.dataset.reveal;
-    setTimeout(() => { e.target.innerHTML = t }, 2000);
-
+    $('#brand').classList.add('smallbrand');
+    setTimeout(() => { 
+        e.target.innerHTML = t; 
+        $('#brand').classList.remove('smallbrand');
+    }, 2000);
+    
     e.stopPropagation();
     e.preventDefault();
 }

@@ -1,95 +1,29 @@
-/* Mobile first queries */
-
 header {
     text-align: center;
-    /* border-bottom: 1px solid silver; */
-/*     padding: 0 10px 10px 10px; */
     position: relative;
     display: block;
 }
-
-header a {
-    text-decoration: none;
-    color: black !important;
-    font-weight: 200;
-    font-size: 18px !important;
-}
-
-header div.subtitle {
-    margin-bottom: 1rem;
-    display: none;
-}
-
-header h1 {
+header .title h1 {
     margin: 0 0 -10px 0;
 }
-
-header a:hover {
-    background-color: unset;
-    padding: 0;
-    border: none;
-    border-radius: 0;
+header .title h1 a {
+    text-decoration: none;
+    color: black !important;
+    font-weight: 100;
+    font-size: 24px;
 }
-.subtitle a {
-    font-size: 12px !important;
-    color: blue !important;
-    text-decoration: underline;
-}
-
 #brand {
-    font-size: 18px;
+    color: grey;
+    font-size: 15px;
     position: absolute;
     font-family: sans-serif;
-/*     left: calc(50% + 50px); */
-    left: calc(50% + 43px);
+    left: calc(50% + 40px);
     top: 10px;
     cursor: pointer;
 }
-
-#brand:hover {
-    color: lightgrey;
+.smallbrand {
+    font-size: 8px !important;
 }
-
-header small {
-    text-transform: uppercase;
-    font-size: 10px;
-    font-family: sans-serif;
+header .subtitle {
+    display: none;
 }
-
-/* Larger than mobile */
-@media only screen and (min-width: 400px) {}
-
-/* Larger than phablet */
-@media (min-width: 550px) {    
-    header h1 a {
-        font-size: 27px !important;
-    }
-    
-    #brand {
-        left: calc(50% + 43px);
-    }
-
-    header div.subtitle {
-        display: block;
-    }
-}
-
-/* Larger than tablet */
-@media (min-width: 800px) {}
-
-/* Larger than desktop */
-@media (min-width: 1100px) {}
-
-/* Larger than Desktop HD */
-@media (min-width: 1400px) {}
-
-/* Larger than Desktop HD */
-@media (min-width: 1920px) {}
-
-/* Larger than Desktop HD */
-@media (min-width: 2300px) {}
-
-/* Larger than Desktop HD */
-@media (min-width: 2500px) {}
-
-@media (min-width: 3000px) {}

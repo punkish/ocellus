@@ -82,38 +82,3 @@ table.help td,
 table.help th {
     border: 1px solid grey;
 }
-
-/* Larger than mobile */
-@media only screen and (min-width: 400px) {}
-
-/* Larger than phablet */
-@media (min-width: 550px) {
-    .modal {
-        max-width: unset;
-    }
-}
-
-/* Larger than tablet */
-@media (min-width: 800px) {}
-
-/* Larger than desktop */
-@media (min-width: 1100px) {
-    .modal {
-        max-width: 960px;
-        left: calc(50% - 480px);
-    }
-}
-
-/* Larger than Desktop HD */
-@media (min-width: 1400px) {}
-
-/* Larger than Desktop HD */
-@media (min-width: 1920px) {}
-
-/* Larger than Desktop HD */
-@media (min-width: 2300px) {}
-
-/* Larger than Desktop HD */
-@media (min-width: 2500px) {}
-
-@media (min-width: 3000px) {}

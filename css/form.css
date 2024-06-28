@@ -6,7 +6,6 @@ form {
     position: relative;
     text-align: left;
     font-family: sans-serif;
-    max-width: 960px;
     margin: 0 auto;
 }
 #ns-container {
@@ -248,45 +247,3 @@ input[disabled] {
     background-color: red;
     color: white;
 }
-#button-1 {
-    float: right;
-    right: 50px;
-    top: 5px;
-}
-
-/* Larger than mobile */
-@media only screen and (min-width: 400px) {}
-
-/* Larger than phablet */
-@media (min-width: 550px) {
-
-    /* show the advanced search button */
-    div.r {
-        visibility: visible;
-    }
-}
-
-/* Larger than tablet */
-@media (min-width: 800px) {}
-
-/* Larger than desktop */
-@media (min-width: 1100px) {
-    form {
-        width: 960px;
-        display: inline-block
-    }
-}
-
-/* Larger than Desktop HD */
-@media (min-width: 1400px) {}
-
-/* Larger than Desktop HD */
-@media (min-width: 1920px) {}
-
-/* Larger than Desktop HD */
-@media (min-width: 2300px) {}
-
-/* Larger than Desktop HD */
-@media (min-width: 2500px) {}
-
-@media (min-width: 3000px) {}

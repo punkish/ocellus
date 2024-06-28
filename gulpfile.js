@@ -72,7 +72,8 @@ async function css() {
             `${source}/libs/fancySearch/fancySearch.css`,
             `${source}/css/sparkline.css`,
             `${source}/css/simpleLightbox.css`,
-            `${source}/css/simpleLightbox-modifiers.css`
+            `${source}/css/simpleLightbox-modifiers.css`,
+            `${source}/css/media-queries.css`
         ])
         .pipe(cleanCSS({compatibility: 'ie8'}))
         .pipe(concat(`ocellus-${dsecs}.css`))
