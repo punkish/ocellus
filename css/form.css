@@ -6,6 +6,8 @@ form {
     position: relative;
     text-align: left;
     font-family: sans-serif;
+    max-width: 960px;
+    margin: 0 auto;
 }
 #ns-container {
     --ns-container-min-height: 36px;
