@@ -242,21 +242,48 @@ const renderSearchCriteria = (qs, count, stored, ttl, cacheHit) => {
 
     const criteria = [];
     globals.params.notValidSearchCriteria.forEach(p => searchParams.delete(p));
-    
+    const tag1o = '<span class="crit-key">';
+    const tag2o = '<span class="crit-val">';
+    const tag3o = '<span class="crit-count">';
+    const tagc = '</span>';
+    let criterionIsDate = false;
+    const dateKeys = {
+        checkinTime    : 'checked in', 
+        updateTime     : 'updated', 
+        publicationDate: 'published'
+    };
+
     searchParams.forEach((v, k) => {
         let criterion;
-        const match = v.match(/(?<operator>\w+)\((?<term>[\w\s]+)\)/);
+        criterionIsDate = true;
 
-        if (match) {
-            const { operator, term } = match.groups;
-            criterion = `<span class="crit-key">${k}</span> ${operator.replace(/_/,' ')} <span class="crit-val">${term}</span>`;
+        if (Object.keys(dateKeys).includes(k)) {
+            const match = v.match(/(?<operator1>eq|since|until)?\((?<date>[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}|yesterday)\)|(?<operator2>between)?\((?<from>[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}|yesterday)\s*and\s*(?<to>[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}|yesterday)\)/);
+
+            if (match) {
+                criterion = `${tag1o}${dateKeys[k]}${tagc}`;
+
+                if (match.groups.operator1) {
+                    criterion += ` ${tag2o}${match.groups.date}${tagc}`;
+                }
+                else if (match.groups.operator2) {
+                    criterion += ` ${tag2o}between ${match.groups.from} and ${match.groups.to}${tagc}`;
+                }
+            }
         }
         else {
-            if (k === 'q') {
-                criterion = `<span class="crit-key">${v}</span> is in the text`;
+            const match = v.match(/(?<operator>\w+)\((?<term>[\w\s]+)\)/);
+
+            if (match) {
+                const { operator, term } = match.groups;
+                
+                criterion = `${tag1o}${k}${tagc}${operator.replace(/_/,' ')} ${tag2o}${term}${tagc}`;
             }
             else {
-                criterion = `<span class="crit-key">${k}</span> is <span class="crit-val">${v}</span>`;
+                criterion  = `${tag1o}${v}${tagc}`;
+                criterion += k === 'q'
+                    ? ` is in the text`
+                    : ` is ${tag2o}${v}${tagc}`;
             }
         }
 
@@ -276,19 +303,17 @@ const renderSearchCriteria = (qs, count, stored, ttl, cacheHit) => {
         searchCriteriaStr = `${criteria.slice(0, len - 2).join(', ')}, and ${criteria[len - 1]}`;
     }
 
-    searchCriteriaStr = `<span class="crit-count">${count}</span> ${resource} found where ${searchCriteriaStr}`;
-
-    let cacheHitExplosion;
+    if (criterionIsDate) {
+        searchCriteriaStr = `${tag3o}${count}${tagc} ${resource} were ${searchCriteriaStr}`;
+    }
+    else {
+        searchCriteriaStr = `${tag3o}${count}${tagc} ${resource} found where ${searchCriteriaStr}`;
+    }
 
     if (cacheHit) {
         const storedDate = new Date(stored);
         const expires = new Date(stored + ttl) - new Date();
-        const cacheHitMsg = `cache hit, stored ${formatDate(storedDate)}, expires in ${formatTime(expires)}`;
-        cacheHitExplosion = `<span aria-label="${cacheHitMsg}" data-html="true" data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>💥</span>`;
-    }
-
-    if (cacheHitExplosion) {
-        searchCriteriaStr += cacheHitExplosion;
+        searchCriteriaStr += `<span aria-label="cache hit, stored ${formatDate(storedDate)}, expires in ${formatTime(expires)}" data-html="true" data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>💥</span>`;
     }
 
     $('details.charts summary').innerHTML = searchCriteriaStr;

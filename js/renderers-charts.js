@@ -207,7 +207,11 @@ function createCaptionStr({
         ? `with <span>${imagesTotal}</span> images, and`
         : `in <span>${treatmentsTotal}</span> treatments of`;
 
-    str += ` <span>${speciesTotals}</span> species from <span>${journalsTotals}</span> journals over <span>${num_of_years}</span> years`;
+    str += ` <span>${speciesTotals}</span> species from <span>${journalsTotals}</span> journals`;
+
+    if (num_of_years) {
+        str += ` over <span>${num_of_years}</span> years`;
+    }
 
     return str;
 }
