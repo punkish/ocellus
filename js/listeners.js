@@ -44,6 +44,28 @@ const addListeners = () => {
     $$('#charts-container').forEach((el) => {
         new Accordion(el);
     });
+
+    document.addEventListener('keydown', focusOnSearch);
+}
+
+// https://justincypret.com/blog/adding-a-keyboard-shortcut-for-global-search
+function focusOnSearch(event) {
+    if (event.key === '/') {
+        if (/^(?:input|textarea|select|button)$/i.test(event.target.tagName)) {
+            return;
+        }
+        
+        const searchInput = $('#q');
+        
+        // Select the text in the input field
+        searchInput.setSelectionRange(0, searchInput.value.length);
+        
+        // Focus on the search input
+        searchInput.focus();
+        
+        // Prevent the default action of the '/' key
+        event.preventDefault();
+    }
 }
 
 const toggleExamples = (e) => {
