@@ -223,29 +223,43 @@ const renderPager = (qs, prev, next) => {
     addListenersToPagerLinks();
 }
 
-const renderSearchCriteria = (qs, count, stored, ttl, cacheHit) => {
-    log.info('- renderSearchCriteria(qs, count)');
-    log.info(`  - qs: ${qs}`);
-    log.info(`  - count: ${count}`);
+function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
 
+    // object = ${count} ${resource}s
+    // ser    = was|were || has|have
+    // estar  = checked in|published|updated
+
+    // dates only
+    // ----------
+    // eq     : ${q} was|were (checked in|published|updated) on ${d}
+    // until  : ${q} was|were (checked in|published|updated) until ${d}
+    // since  : ${q} has|have been (checked in|published|updated) since ${d}
+    // between: ${q} was|were (checked in|published|updated) between ${f} and ${t}
+
+    // fts only
+    // --------
+    // ${c} ${r}s found with ${term} in text
+
+    // other
+    // -----
+    // ${c} ${r}s found where ${key} is ${val}
+
+    // dates and fts
+    // ${q} was|were (checked in|published|updated) on ${d} with ${term} in text
+    
+    // First we process count and resource
     const searchParams = new URLSearchParams(qs);
     let resource = searchParams.get('resource');
 
-    if (!count) {
-        count = 'sorry, no';
-    }
-
-    if (count === 1) {
-        resource = resource.slice(0, -1);
-        count = niceNumbers(count);
-    }
-
-    const criteria = [];
+    // String for search criteria
+    const str = [];
+    const dateCriteria = [];
+    const nonDateCriteria = [];
     globals.params.notValidSearchCriteria.forEach(p => searchParams.delete(p));
     const tag1o = '<span class="crit-key">';
     const tag2o = '<span class="crit-val">';
     const tag3o = '<span class="crit-count">';
-    const tagc = '</span>';
+    const tagc  = '</span>';
     let criterionIsDate = false;
     const dateKeys = {
         checkinTime    : 'checked in', 
@@ -253,25 +267,65 @@ const renderSearchCriteria = (qs, count, stored, ttl, cacheHit) => {
         publicationDate: 'published'
     };
 
+    if (!count) {
+        count = 'Sorry, no';
+    }
+    else if (count < 10) {
+        count = niceNumbers(count);
+    }
+
+    str.push(`${tag3o}${count}${tagc}`);
+
+    if (count === 1) {
+
+        // Singularize resource
+        resource = resource.slice(0, -1);
+    }
+
+    str.push(resource);
+
     searchParams.forEach((v, k) => {
         let criterion;
-        criterionIsDate = true;
 
         if (Object.keys(dateKeys).includes(k)) {
+            criterionIsDate = true;
             const match = v.match(/(?<operator1>eq|since|until)?\((?<date>[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}|yesterday)\)|(?<operator2>between)?\((?<from>[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}|yesterday)\s*and\s*(?<to>[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}|yesterday)\)/);
 
             if (match) {
+                
                 criterion = `${tag1o}${dateKeys[k]}${tagc}`;
 
                 if (match.groups.operator1) {
+
+                    let verb;
+
+                    if (match.groups.operator1 === 'since') {
+                        verb = count === 1 ? 'has been' : 'have been';
+                    }
+                    else {
+                        verb = count === 1 ? 'was' : 'were';
+                    }
+
+                    str.push(verb);
+
+                    if (match.groups.operator1 === 'eq') {
+                        criterion += ' on';
+                    }
+                    else {
+                        criterion += ` ${match.groups.operator1}`;
+                    }
+
                     criterion += ` ${tag2o}${match.groups.date}${tagc}`;
                 }
                 else if (match.groups.operator2) {
-                    criterion += ` ${tag2o}between ${match.groups.from} and ${match.groups.to}${tagc}`;
+                    criterion += ` ${tag2o}between${tagc} ${tag2o}${match.groups.from}${tagc} and ${tag2o}${match.groups.to}${tagc}`;
                 }
+
+                dateCriteria.push(criterion);
             }
         }
         else {
+            criterionIsDate = false;
             const match = v.match(/(?<operator>\w+)\((?<term>[\w\s]+)\)/);
 
             if (match) {
@@ -280,43 +334,59 @@ const renderSearchCriteria = (qs, count, stored, ttl, cacheHit) => {
                 criterion = `${tag1o}${k}${tagc}${operator.replace(/_/,' ')} ${tag2o}${term}${tagc}`;
             }
             else {
-                criterion  = `${tag1o}${v}${tagc}`;
-                criterion += k === 'q'
-                    ? ` is in the text`
-                    : ` is ${tag2o}${v}${tagc}`;
+                if (k === 'q') {
+                    criterion = `${tag1o}${v}${tagc} is in the text`;
+                }
+                else if (k === 'captionText') {
+                    criterion = `${tag1o}${v}${tagc} is in ${tag1o}caption text${tagc}`;
+                }
+                else {
+                    criterion  = `${tag1o}${k}${tagc} is ${tag2o}${v}${tagc}`;
+                }
             }
+
+            nonDateCriteria.push(criterion);
         }
 
-        criteria.push(criterion);
-    })
+    });
 
-    let searchCriteriaStr;
+    const criteria = [];
+
+    if (dateCriteria.length) {
+        criteria.push(...dateCriteria);
+    }
+    else {
+        criteria.push('found');
+    }
+
+    if (nonDateCriteria.length) {
+        criteria.push('where');
+    }
+
+    criteria.push(...nonDateCriteria);
+
+    let criteriaStr;
     const len = criteria.length;
 
     if (len === 1) {
-        searchCriteriaStr = criteria[0];
+        criteriaStr = criteria[0];
     }
     else if (len === 2) {
-        searchCriteriaStr = `${criteria[0]} and ${criteria[1]}`;
+        criteriaStr = `${criteria[0]} and ${criteria[1]}`;
     }
     else {
-        searchCriteriaStr = `${criteria.slice(0, len - 2).join(', ')}, and ${criteria[len - 1]}`;
+        criteriaStr = `${criteria.slice(0, len - 2).join(', ')}, and ${criteria[len - 1]}`;
     }
 
-    if (criterionIsDate) {
-        searchCriteriaStr = `${tag3o}${count}${tagc} ${resource} were ${searchCriteriaStr}`;
-    }
-    else {
-        searchCriteriaStr = `${tag3o}${count}${tagc} ${resource} found where ${searchCriteriaStr}`;
-    }
+    str.push(...criteria);
 
     if (cacheHit) {
         const storedDate = new Date(stored);
         const expires = new Date(stored + ttl) - new Date();
-        searchCriteriaStr += `<span aria-label="cache hit, stored ${formatDate(storedDate)}, expires in ${formatTime(expires)}" data-html="true" data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>💥</span>`;
+        str.push(`<span aria-label="cache hit, stored ${formatDate(storedDate)}, expires in ${formatTime(expires)}" data-html="true" data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>💥</span>`);
     }
 
-    $('details.charts summary').innerHTML = searchCriteriaStr;
+    $('details.charts summary').innerHTML = str.join(' ');
     $('#charts-container summary').style.visibility = 'visible';
 }
 

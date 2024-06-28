@@ -11,7 +11,7 @@ const addListeners = () => {
     $('#refreshCache').addEventListener('click', toggleRefreshCache);
     $('#ns-go').addEventListener('click', go);
     $('#as-go').addEventListener('click', asGo);
-    $('#q').addEventListener('focus', cue);
+    $('#q').addEventListener('focus', resetPrompt);
     $('#search-help').addEventListener('click', toggleExamples);
     $('div.examples').addEventListener('toggle', controlDetails, true);
 
@@ -234,7 +234,8 @@ const go = (e) => {
     const q = $('#q').value;
 
     if (q === '') {
-        cue(e);
+        promptForSearchTerm();
+        setTimeout(resetPrompt, 4000);
     }
     else {
         $('#q').classList.remove('red-placeholder');
@@ -277,18 +278,19 @@ const toggleModal = (e) => {
     }
 }
 
-const cue = (e) => {
-    $('#q').placeholder = 'search for something';
-    $('#q').classList.remove('red-placeholder');
-    e.stopPropagation();
-    e.preventDefault();
+const promptForSearchTerm = () => {
+    $('#q').placeholder = "c'mon, type something";
+    $('#q').classList.add('red-placeholder');
+    // e.stopPropagation();
+    // e.preventDefault();
 }
 
-const clearCue = (e)=> {
-    $('#q').value = '';
+const resetPrompt = (e)=> {
+    $('#q').placeholder = 'search for something';
+    $('#q').classList.remove('red-placeholder');
     $('#refreshCache').checked = false;
-    e.stopPropagation();
-    e.preventDefault();
+    // e.stopPropagation();
+    // e.preventDefault();
 }
 
 /**
