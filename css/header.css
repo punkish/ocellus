@@ -37,11 +37,11 @@ header a:hover {
 }
 
 #brand {
-    font-size: 12px;
+    font-size: 18px;
     position: absolute;
     font-family: sans-serif;
 /*     left: calc(50% + 50px); */
-    left: calc(50% + 25px);
+    left: calc(50% + 43px);
     top: 10px;
     cursor: pointer;
 }
@@ -66,7 +66,7 @@ header small {
     }
     
     #brand {
-        left: calc(50% + 50px);
+        left: calc(50% + 43px);
     }
 
     header div.subtitle {
