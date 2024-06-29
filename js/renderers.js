@@ -356,11 +356,11 @@ function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
         criteria.push(...dateCriteria);
     }
     else {
-        criteria.push('found');
+        str.push('found');
     }
-
+    
     if (nonDateCriteria.length) {
-        criteria.push('where');
+        str.push('where');
     }
 
     criteria.push(...nonDateCriteria);
@@ -378,7 +378,7 @@ function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
         criteriaStr = `${criteria.slice(0, len - 2).join(', ')}, and ${criteria[len - 1]}`;
     }
 
-    str.push(...criteria);
+    str.push(criteriaStr);
 
     if (cacheHit) {
         const storedDate = new Date(stored);

@@ -29,7 +29,7 @@ details.charts summary {
     outline: none;
     padding: 0.5rem;
     display: block;
-    padding-left: 2rem;
+    /* padding-left: 2rem; */
     position: relative;
     color: grey;
     font-size: 10pt;
