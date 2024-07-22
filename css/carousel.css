@@ -1,0 +1,75 @@
+.slidr,
+.carouselbox {
+  font-family: helvetica,sans-serif;
+  width: 250px;
+  position: relative;
+  margin-bottom: 10px;
+  border: 1px solid #444;
+  overflow: hidden;
+}
+.content {
+  margin: 0;
+  padding: 0;
+  height: auto;
+  /* min-height: 400px; */
+}
+.content .slide {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  z-index: 2;
+  /* min-height: 250px; */
+  height: auto;
+}
+.content .map {
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.active {
+  /* min-height: 250px; */
+  height: auto;
+}
+.carouselbox button {
+  border: none;
+  visibility: hidden;
+  cursor: pointer;
+}
+.active button {
+  visibility: visible;
+} 
+.offscreen {
+  position: absolute;
+  left: -2000px;
+}
+
+.active .buttons {
+  padding: 5px 0;
+  background: #eee;
+  text-align: center;
+  z-index: 10;
+  position: relative;
+  border-bottom: 1px solid lightgrey;
+}
+.active .slide {
+  position: absolute;
+  top: 30px;
+  left: 400px;
+/*   top: 250px; */
+
+/*   opacity: 0; */
+/*   transform: scale(0); */
+  transform: translate(100%);
+  transition: 1s;
+}
+.active .slide.current {
+  top: 30px;
+  left: 0px;
+/*   opacity: 1; */
+/*   transform: scale(1); */
+  transform: translate(0%);
+  transition: 1s;
+}

@@ -14,7 +14,8 @@ import {
     //addListenersToFigcaptions, 
     addListenersToFigDetails,
     addListenersToFigureTypes, 
-    addListenersToPagerLinks 
+    addListenersToPagerLinks,
+    addListenersToMapCarouselLink
 } from './listeners.js';
 
 const makeTreatment = ({ figureSize, rec }) => {
@@ -81,16 +82,21 @@ const makeImage = ({ figureSize, rec }) => {
         ? 'visible' 
         : 'noblock';
 
-    const figureClass = `figure-${figureSize} ` + (rec.treatmentId ? 'tb' : '');
+    const figureClass = `figure-${figureSize}` + (rec.treatmentId ? ' tb' : '');
 
     // <div class="switches"><div class="close"></div></div>
     const onerrorCb = `this.onerror=null; setTimeout(() => { this.src='${rec.uri}' }, 1000);`;
+    let foo = '';
+    if (rec.latitude) {
+        foo = `this.parentNode.parentNode.parentNode.parentNode.style.height=this.height+150+'px'`;
+    }
 
     return `<figure class="${figureClass}">
     <a class="zen" href="${rec.fullImage}">
         <img src="img/bug.gif" width="${rec.figureSize}" data-src="${rec.uri}" 
             class="lazyload" data-recid="${rec.treatmentId}" 
-            onerror="${onerrorCb}">
+            onerror="${onerrorCb}"
+            onload="${foo}">
     </a>
     <figcaption class="${figcaptionClass}">
         <details>
@@ -112,10 +118,43 @@ const makeFigure = ({ resource, figureSize, rec }) => {
         : makeTreatment(obj);
 }
 
+function makeSlider({ resource, figureSize, rec }) {
+    const figure = makeFigure({ resource, figureSize, rec });
+    const uniqId = resource === 'images'
+        ? `${rec.treatments_id}-${rec.images_id}`
+        : rec.treatments_id;
+
+    if (rec.latitude && rec.longitude) {
+        return `
+        <div class="carouselbox">
+            <div class="buttons">
+                <button class="prev">◀ <span class="offscreen">Previous</span></button>
+                <button class="next map" 
+                    data-latitude="${rec.latitude}" 
+                    data-longitude="${rec.longitude}" 
+                    data-id="${uniqId}"><span class="offscreen">Next</span> ▶</button>
+            </div>
+            <div class="content">
+                <div class="slide">
+                    ${figure}
+                </div>
+                <div id="map-${uniqId}" class="map slide"></div>
+            </div>
+        </div>`
+    }
+    else {
+        return `
+        <div class="slidr">
+            ${figure}
+        </div>`
+    }
+    
+}
+
 const renderPage = ({
     resource, 
     figureSize, 
-    figures, 
+    slides, 
     qs, 
     count, 
     term, 
@@ -130,7 +169,7 @@ const renderPage = ({
 
     log.info(`- renderPage()
     - figureSize: ${figureSize}px
-    - figures: ${figures.length} figures
+    - figures: ${slides.length} slides
     - qs: ${qs}
     - count: ${count}
     - prev: ${prev}
@@ -138,7 +177,7 @@ const renderPage = ({
 
     $('#grid-images').classList.add(`columns-${figureSize}`);
 
-    renderFigures(figures, qs, prev, next);
+    renderSlides(slides, qs, prev, next);
     $('#throbber').classList.add('nothrob');
 
     if (globals.charts.termFreq) {
@@ -189,14 +228,15 @@ const renderPage = ({
     
 }
 
-const renderFigures = (figures, qs, prev, next) => {
-    log.info('- renderFigures()');
+const renderSlides = (slides, qs, prev, next) => {
+    log.info('- renderSlides()');
 
-    if (figures.length) {
-        $('#grid-images').innerHTML = figures.join('');
+    if (slides.length) {
+        $('#grid-images').innerHTML = slides.join('');
         renderPager(qs, prev, next);
         addListenersToFigDetails();
         addListenersToFigureTypes();
+        addListenersToMapCarouselLink();
     }
     else {
 
@@ -484,7 +524,8 @@ const renderYearlyCountsSparkline = (resource, yearlyCounts) => {
 }
 
 export {
-    makeFigure,
+    makeSlider,
+    //makeFigure,
     renderPage,
     renderYearlyCountsSparkline,
     //renderDashboard

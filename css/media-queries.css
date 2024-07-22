@@ -10,6 +10,12 @@
 
 /* Larger than phablet */
 @media (min-width: 550px) {
+    header .title {
+        display: block;
+    }
+    #throbber {
+        margin-bottom: 2rem;
+    }
     header h1 a {
         font-size: 27px !important;
     }

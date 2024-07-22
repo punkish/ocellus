@@ -195,7 +195,8 @@ const globals = {
             'refreshCache',
             'page',
             'size',
-            'cols'
+            'cols',
+            'groupby'
         ],
 
         // the following are the valid query params for Zenodeo
@@ -255,14 +256,18 @@ const globals = {
 
         images: [ 
             'treatmentId', 'treatmentTitle', 'zenodoDep', 'treatmentDOI', 
-            'articleTitle', 'articleAuthor', 'httpUri', 'caption'
+            'articleTitle', 'articleAuthor', 'httpUri', 'caption', 'latitude',
+            'longitude'
         ],
 
         treatments: [ 
             'treatmentId', 'treatmentTitle', 'zenodoDep', 'treatmentDOI', 
-            'articleTitle', 'articleAuthor', 'journalTitle'
+            'articleTitle', 'articleAuthor', 'journalTitle', 'latitude',
+            'longitude'
         ]
     },
+
+    maps: {},
 
     // // the following params don't go in the q field
     // notq: ['resource', 'page', 'size', 'grid', 'refreshCache', 'cols'],

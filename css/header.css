@@ -3,6 +3,9 @@ header {
     position: relative;
     display: block;
 }
+header .title {
+    display: none;
+}
 header .title h1 {
     margin: 0 0 -10px 0;
 }

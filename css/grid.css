@@ -82,7 +82,7 @@ table {
 figure {
     position: relative;
     height: auto;
-    border: 1px solid #444;
+    border: 0px solid #444;
     padding: 0;
     opacity: 1;
 
@@ -91,10 +91,10 @@ figure {
     overflow: hidden; /* fix for Firefox */
     break-inside: avoid-column;
     -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid; 
 }
-/* figure.tb {
-    
-} */
 figure img.lazyloaded {
     width: 100%;
 }
@@ -152,11 +152,9 @@ figcaption {
     text-align: left;
     cursor: pointer;
 }
-
 figcaption div.closed {
     height: 0;
 }
-
 figcaption div.figTitle {
     font-weight: 800;
 }
@@ -168,7 +166,6 @@ figcaption div.open {
     border-radius: 4px;
     padding: 0.5em 0.5em 0;
 }
-
 #grid-images details summary {
     font-weight: bold;
     margin: -0.5em -0.5em 0;
@@ -183,16 +180,15 @@ figcaption div.open {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-
 #grid-images details[open] {
     padding: 0.5em;
+    height: 120px;
+    overflow: auto;
 }
-
 #grid-images details[open] summary {
     border-bottom: 1px solid #aaa;
     margin-bottom: 0.5em;
 }
-
 /* treatments figures */
 p.treatmentTitle {
     font-weight: bold;

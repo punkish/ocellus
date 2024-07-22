@@ -1,6 +1,6 @@
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
-import { makeFigure, renderPage } from './renderers.js';
+import { makeSlider, renderPage } from './renderers.js';
 import { toggleWarn } from './listeners.js';
 
 const getCountOfResource = async (resource, getYearlyCounts) => {
@@ -120,9 +120,9 @@ const getResource = async (qs) => {
 
     // let's define the cols to retrieve from Zenodeo
     const cols = resource === 'images'
-        ?   globals.params.images.join('&cols=')
-        :   globals.params.treatments.join('&cols=')
-    
+        ?   `${globals.params.images.join('&cols=')}&groupby=images.id`
+        :   `${globals.params.treatments.join('&cols=')}&groupby=treatments.id`;
+
     // cols.map(c => `cols=${c}`).join('&')
     let queryString = `${sp.toString()}&cols=${cols}`;
 
@@ -173,7 +173,7 @@ const getResource = async (qs) => {
             return res;
         })
         .then(results => {
-            const figures = results.recs.map(rec => makeFigure({
+            const slides = results.recs.map(rec => makeSlider({
                 resource, 
                 figureSize,
                 rec
@@ -182,7 +182,7 @@ const getResource = async (qs) => {
             const resultsObj = {
                 resource,
                 figureSize,
-                figures,
+                slides,
                 qs, 
                 count: results.count, 
                 prev: results.prev, 
@@ -263,6 +263,8 @@ const getResults = async ({ resource, queryString, figureSize }) => {
 
                 if (resource === 'images') {
                     record.treatmentId = r.treatmentId;
+                    record.treatments_id = r.treatments_id;
+                    record.images_id = r.images_id;
                     record.treatmentTitle = r.treatmentTitle;
                     record.zenodoRec = r.zenodoDep;
                     record.figureSize = figureSize;
@@ -294,9 +296,12 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                     record.treatmentDOI = r.treatmentDOI;
                     record.articleTitle = r.articleTitle;
                     record.articleAuthor = r.articleAuthor;
+                    record.latitude = r.latitude;
+                    record.longitude = r.longitude;
                 }
                 else if (resource === 'treatments') {
                     record.treatmentId = r.treatmentId;
+                    record.treatments_id = r.treatments_id;
                     record.treatmentTitle = r.treatmentTitle;
                     record.zenodoRec = r.zenodoDep;
                     record.figureSize = figureSize;
@@ -304,6 +309,8 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                     record.treatmentDOI = r.treatmentDOI;
                     record.articleTitle = r.articleTitle;
                     record.articleAuthor = r.articleAuthor;
+                    record.latitude = r.latitude;
+                    record.longitude = r.longitude;
                 }
 
                 results.recs.push(record);

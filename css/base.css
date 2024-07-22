@@ -17,12 +17,12 @@ a,
 a:visited {
     color:blue;
 }
-a:hover {
+/* a:hover {
     background-color: lightgrey;
     padding: 2px 5px;
     border: 1px solid lightgray;
     border-radius: 2px;
-}
+} */
 main {
     flex: 1 1 auto;
     position: relative;
