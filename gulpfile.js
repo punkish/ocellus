@@ -59,6 +59,7 @@ async function css() {
             `${source}/css/toggleSwitch.css`,
             `${source}/css/cssToggle.css`,
             `${source}/css/grid.css`,
+            `${source}/css/carousel.css`,
             `${source}/css/charts.css`,
             `${source}/css/dashboard.css`,
             `${source}/css/throbber.css`,
