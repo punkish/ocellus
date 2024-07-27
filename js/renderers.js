@@ -516,7 +516,7 @@ const renderYearlyCountsSparkline = (resource, yearlyCounts) => {
         html += `<span>~${Math.ceil(totalCount / 1000)}K</span> ${resource}, <span>~${Math.ceil(images / 1000)}K</span> images, `;
     }
 
-    html += `<span>~${Math.ceil(species / 1000)}K</span> species from <span>~${Math.ceil(journals / 1000)}K</span> journals`;
+    html += `<span>~${Math.ceil(species / 1000)}K</span> species, <span>~${Math.ceil(journals / 1000)}K</span> journals`;
 
     //html += '</a>';
 

@@ -1,7 +1,7 @@
 .slidr,
 .carouselbox {
   font-family: helvetica,sans-serif;
-  width: 250px;
+  width: var(--image-size);
   position: relative;
   margin-bottom: 10px;
   border: 1px solid #444;

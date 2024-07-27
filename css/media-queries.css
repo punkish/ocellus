@@ -66,6 +66,9 @@
         text-transform: uppercase;
         font-size: 10px;
     }
+    #sparkBox .chart {
+        display: inline-block;
+    }
     #charts-container,
     #charts {
         display: block;
