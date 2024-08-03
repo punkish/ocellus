@@ -87,7 +87,7 @@ const makeImage = ({ figureSize, rec }) => {
     // <div class="switches"><div class="close"></div></div>
     const onerrorCb = `this.onerror=null; setTimeout(() => { this.src='${rec.uri}' }, 1000);`;
     let foo = '';
-    if (rec.latitude) {
+    if (rec.loc || rec.convexHull) {
         foo = `this.parentNode.parentNode.parentNode.parentNode.style.height=this.height+150+'px'`;
     }
 
@@ -124,15 +124,19 @@ function makeSlider({ resource, figureSize, rec }) {
         ? `${rec.treatments_id}-${rec.images_id}`
         : rec.treatments_id;
 
-    if (rec.latitude && rec.longitude) {
+    if (rec.loc || rec.convexHull) {
         return `
         <div class="carouselbox">
             <div class="buttons">
-                <button class="prev">◀ <span class="offscreen">Previous</span></button>
+                <!-- <button class="prev">
+                    ◀ <span class="offscreen">Previous</span>
+                </button> -->
                 <button class="next map" 
-                    data-latitude="${rec.latitude}" 
-                    data-longitude="${rec.longitude}" 
-                    data-id="${uniqId}"><span class="offscreen">Next</span> ▶</button>
+                    data-loc=${JSON.stringify(rec.loc)} 
+                    data-convexhull=${JSON.stringify(rec.convexHull)} 
+                    data-id="${uniqId}">
+                        <span class="offscreen">Next</span> <img src="img/icon-carousel-img.svg">
+                </button>
             </div>
             <div class="content">
                 <div class="slide">

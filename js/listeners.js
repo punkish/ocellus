@@ -445,10 +445,17 @@ function carousel(box) {
     next.addEventListener('click', function(ev) {
         navigate(1);
         drawMap(ev);
+        
+        if (ev.target.src.indexOf('-img.svg') > -1) {
+            ev.target.src = 'img/icon-carousel-loc.svg';
+        }
+        else {
+            ev.target.src = 'img/icon-carousel-img.svg';
+        }
     });
-    prev.addEventListener('click', function(ev) {
-        navigate(-1);
-    });
+    // prev.addEventListener('click', function(ev) {
+    //     navigate(-1);
+    // });
 
     // show the first element 
     // (when direction is 0 counter doesn't change)
@@ -457,16 +464,57 @@ function carousel(box) {
 
 function drawMap(event) {
     const tgt = event.currentTarget;
-    const point = [tgt.dataset.latitude, tgt.dataset.longitude];
     const map = globals.maps[tgt.dataset.id];
+    //const point = [tgt.dataset.latitude, tgt.dataset.longitude];
+    
     if (!map) {
-        const map = L.map(`map-${tgt.dataset.id}`).setView(point, 10);
+        const map = L.map(`map-${tgt.dataset.id}`);
+        //.setView(point, 10);
         globals.maps[tgt.dataset.id] = map;
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        const mapSource = 'http://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+        // const mapSource = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+        L.tileLayer(mapSource, {
             maxZoom: 19,
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
-        const marker = L.marker(point).addTo(map);
+
+        const mcIcon = L.icon({
+            iconUrl: 'img/treatment.svg',
+            iconSize: [10, 10],
+            iconAnchor: [5, 5],
+            // popupAnchor: [-3, -76],
+            // shadowUrl: 'my-icon-shadow.png',
+            // shadowSize: [68, 95],
+            // shadowAnchor: [22, 94]
+        })
+
+        let centroid;
+
+        if (tgt.dataset.loc !== 'undefined') {
+            const loc = JSON.parse(tgt.dataset.loc);
+            
+            const points = loc
+                .map(point => [point.latitude, point.longitude]);
+
+            points.forEach((point, index) => {
+                if (index === 0) {
+                    centroid = point;
+                }
+
+                L.marker(point, {icon: mcIcon}).addTo(map);
+            })
+
+            map.setView(centroid, 10);
+        }
+        else if (tgt.dataset.convexhull) {
+            const convexhull = JSON.parse(tgt.dataset.convexhull);
+            const polygon = L.polygon(convexhull, {color: '#9BC134', weight: 1}).addTo(map);
+            convexhull.forEach((point, index) => {
+                L.marker(point, {icon: mcIcon}).addTo(map);
+            });
+            map.fitBounds(polygon.getBounds());
+        }
     }
 }
 

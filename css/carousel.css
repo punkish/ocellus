@@ -30,7 +30,7 @@
   height: 100%;
 }
 .active {
-  /* min-height: 250px; */
+  min-height: 250px;
   height: auto;
 }
 .carouselbox button {
@@ -40,7 +40,7 @@
 }
 .active button {
   visibility: visible;
-} 
+}
 .offscreen {
   position: absolute;
   left: -2000px;
