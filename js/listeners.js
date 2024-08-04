@@ -447,10 +447,10 @@ function carousel(box) {
         drawMap(ev);
         
         if (ev.target.src.indexOf('-img.svg') > -1) {
-            ev.target.src = 'img/icon-carousel-loc.svg';
+            ev.target.src = 'img/icon-carousel-image-loc.svg';
         }
         else {
-            ev.target.src = 'img/icon-carousel-img.svg';
+            ev.target.src = 'img/icon-carousel-image-img.svg';
         }
     });
     // prev.addEventListener('click', function(ev) {

@@ -135,7 +135,7 @@ function makeSlider({ resource, figureSize, rec }) {
                     data-loc=${JSON.stringify(rec.loc)} 
                     data-convexhull=${JSON.stringify(rec.convexHull)} 
                     data-id="${uniqId}">
-                        <span class="offscreen">Next</span> <img src="img/icon-carousel-img.svg">
+                        <span class="offscreen">Next</span> <img src="img/icon-carousel-image-img.svg">
                 </button>
             </div>
             <div class="content">
