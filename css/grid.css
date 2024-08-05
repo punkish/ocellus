@@ -24,6 +24,10 @@ table {
     column-gap: var(--column-gap);
     -moz-column-gap: var(--column-gap);
     -webkit-column-gap: var(--column-gap);
+
+    page-break-inside: avoid;
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
 }
 
 .columns-100 {
@@ -75,7 +79,7 @@ table {
 /* the following prevents the first figure in the 
  * column to have a margin at the top, a left-over
  * of the last figure in the previous column */
-.columns figure:last-child {
+.columns-250 div.carouselbox:last-child {
     margin: 0;
 }
 
@@ -85,15 +89,6 @@ figure {
     border: 0px solid #444;
     padding: 0;
     opacity: 1;
-
-    /* avoid figures splitting across columns */
-    /* see https://stackoverflow.com/a/17415553/183692 */
-    overflow: hidden; /* fix for Firefox */
-    break-inside: avoid-column;
-    -webkit-column-break-inside: avoid;
-    page-break-inside: avoid;
-    break-inside: avoid;
-    -webkit-column-break-inside: avoid; 
 }
 figure img.lazyloaded {
     width: 100%;

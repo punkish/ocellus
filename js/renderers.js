@@ -131,7 +131,7 @@ function makeSlider({ resource, figureSize, rec }) {
                 <!-- <button class="prev">
                     ◀ <span class="offscreen">Previous</span>
                 </button> -->
-                <button class="next map" 
+                <button class="next" 
                     data-loc=${JSON.stringify(rec.loc)} 
                     data-convexhull=${JSON.stringify(rec.convexHull)} 
                     data-id="${uniqId}">
