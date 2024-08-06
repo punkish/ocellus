@@ -80,14 +80,24 @@
                         <div id="ns" class="ns">
 
                             <!-- 
-                            resource is what we want to retrieve and display. 
-                            resource is either "images" or "treatments" 
+                                resource is what we want to retrieve and 
+                                display. resource is either "images" or 
+                                "treatments" 
                             -->
-                            <div class="switch resource regular pill green" aria-label="toggle resource" data-pop="right" data-pop-no-shadow="true" data-pop-arrow="true">
+                            <!-- <div class="switch resource regular pill green" aria-label="toggle resource" data-pop="right" data-pop-no-shadow="true" data-pop-arrow="true">
                                 <input class="query" type="radio" id="switchResource-1" name="resource" value="images" autocomplete="off" checked="true">
                                 <label for="switchResource-1"></label>
                                 <input class="query" type="radio" id="switchResource-2" name="resource" value="treatments" autocomplete="off">
                                 <label for="switchResource-2"></label>
+                            </div> -->
+
+                            <div class="toggle-container">
+                                <label id="toggle4" class="toggle">
+                                    <input class="toggle-checkbox" type="checkbox">
+                                    <div class="toggle-switch"></div>
+                                    <!-- <span class="toggle-label-off">simple search</span>
+                                    <span class="toggle-label-on">advanced search</span> -->
+                                </label>
                             </div>
 
                             <input id="q" name="q" type="text" placeholder="search for something" class="query ns-val-input">
@@ -132,10 +142,18 @@
                     <label for="switchAdvSearch-2"></label>
                 </div> -->
 
-                <div class="button r hidden" id="advSearch" aria-label="toggle advanced search" data-pop="left" data-pop-no-shadow data-pop-arrow>
+                <!-- <div class="button r hidden" id="advSearch" aria-label="toggle advanced search" data-pop="left" data-pop-no-shadow data-pop-arrow>
                     <input name="searchtype" type="checkbox" class="checkbox" value="simple">
                     <div class="knobs"></div>
                     <div class="layer"></div>
+                </div> -->
+                <div class="toggle-container">
+                    <label id="toggle2" class="toggle">
+                        <input class="toggle-checkbox" type="checkbox">
+                        <div class="toggle-switch"></div>
+                        <!-- <span class="toggle-label-off">simple search</span>
+                        <span class="toggle-label-on">advanced search</span> -->
+                    </label>
                 </div>
             </div>
 
