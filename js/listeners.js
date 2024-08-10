@@ -5,7 +5,6 @@ import { submitForm, updatePlaceHolder, qs2form, form2qs } from './utils.js';
 import { renderDashboard } from './renderers-charts.js';
 import { Accordion } from './accordion.js';
 import { getResource } from './querier.js';
-// import { qs2form } from './utils2.js';
 
 const addListeners = () => {
     log.info('- addListeners()');
@@ -51,7 +50,7 @@ const addListeners = () => {
 
     document.addEventListener('keydown', focusOnSearch);
 
-    $$('#quicksearch a').forEach((el) => el.addEventListener('click', quickSearch));
+    $$('a.quicksearch').forEach((el) => el.addEventListener('click', quickSearch));
 }
 
 function quickSearch(event) {
@@ -59,8 +58,10 @@ function quickSearch(event) {
         ? 'treatments'
         : 'images';
 
+    const state = {};
+    const title = '';
     const url = `${event.target.parentNode.href}&resource=${resource}`;
-    history.pushState({}, '', url);
+    history.pushState(state, title, url);
     const loc = new URL(location);
     let qs;
 

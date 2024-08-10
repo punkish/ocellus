@@ -340,17 +340,17 @@ const getResults = async ({ resource, queryString, figureSize }) => {
     }
 }
 
-const getImagesFromZenodeo = () => {
+// const getImagesFromZenodeo = () => {
 
-}
+// }
 
-const getImagesFromZenodo = () => {
+// const getImagesFromZenodo = () => {
 
-}
+// }
 
-const getTreatmentsFromZenodeo = () => {
+// const getTreatmentsFromZenodeo = () => {
 
-}
+// }
 
 export {
     getCountOfResource,

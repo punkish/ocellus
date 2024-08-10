@@ -1,8 +1,72 @@
 import { $, $$ } from './base.js';
 import { getResource, getCountOfResource } from './querier.js';
 import { renderYearlyCountsSparkline } from './renderers.js';
-import { renderDashboard } from './renderers-charts.js';
+// import { renderDashboard } from './renderers-charts.js';
 import { globals } from './globals.js';
+
+/**
+ * convert queryString to form inputs. Right now qs2form() fills 
+ * only the normal search form. TODO: be able to fill fancy search
+ * form as well.
+ */
+const qs2form = (qs) => {
+    log.info(`- qs2form(qs)
+    - qs: ${qs}`);
+
+    const sp = new URLSearchParams(qs);
+    console.log(sp)
+    // we don't want 'refreshCache' in bookmarked queries
+    sp.delete('refreshCache');
+
+    // temp array to store values for input field 'q'
+    const q = [];
+
+    sp.forEach((val, key) => {
+        log.info(`val: ${val}, key: ${key}`);
+
+        // for keys that won't go into 'q'
+        if (globals.params.notValidQ.includes(key)) {
+
+            if (key === 'resource') {
+                log.info(`setting form to query resource ${val}`);
+                updatePlaceHolder(val);
+
+                if (val === 'treatments') {
+                    log.info('setting toggle-resource to true');
+                    $('input[name=resource]').checked = true;
+                }
+                else {
+                    log.info('setting toggle-resource to false');
+                    $('input[name=resource]').checked = false;
+                }
+                
+            }
+            else {
+                log.info(`setting input name ${key} to ${val}`);
+                $(`input[name=${key}]`).value = val;
+            }
+
+        }
+
+        // all the keys that will go into 'q'
+        else {
+
+            // default value
+            let value = key;
+
+            if (val) {
+                value = key === 'q' 
+                    ? decodeURIComponent(val) 
+                    : `${key}=${val}`;
+            }
+
+            q.push(value);
+        }
+        
+    });
+
+    $('#q').value = q.join('&');
+}
 
 // Javascript: Ordinal suffix for numbers
 // https://stackoverflow.com/a/15810761
@@ -94,9 +158,8 @@ const smoke = function (e) {
     intervalId = setInterval(hide, 50)
 }
 
-/**
- * case 2: click on [go] button gets query results and renders the page
- */
+// click on [go] button gets query results and renders the page
+// 
 const submitForm = () => {
     log.info('submitForm()');
     const qs = form2qs();
@@ -296,7 +359,10 @@ const form2qs = () => {
                         const valTo = to.value;
 
                         if (valFrom && valTo) {
-                            sp.append(fldName, `between(${valFrom} and ${valTo})`);
+                            sp.append(
+                                fldName, 
+                                `between(${valFrom} and ${valTo})`
+                            );
                         }
                         else {
                             let submitFlag = true;
@@ -359,77 +425,13 @@ const form2qs = () => {
 
 const updateUrl = (qs) => {
     log.info('- updateUrl(qs)');
-    //const qs = sp.toString();
-    history.pushState('', null, `?${qs}`);
+    const state = {};
+    const title = '';
+    const url = `?${qs}`;
+    history.pushState(state, title, url);
 }
 
-/**
- * convert queryString to form inputs. Right now qs2form() fills 
- * only the normal search form. TODO: be able to fill fancy search
- * form as well.
- */
-const qs2form = (qs) => {
-    log.info(`- qs2form(qs)
-    - qs: ${qs}`);
 
-    const sp = new URLSearchParams(qs);
-    console.log(sp)
-    // we don't want 'refreshCache' in bookmarked queries
-    sp.delete('refreshCache');
-
-    // temp array to store values for input field 'q'
-    const q = [];
-
-    sp.forEach((val, key) => {
-        log.info(`val: ${val}, key: ${key}`)
-        // include only keys that are valid for Zenodeo
-        //if (globals.params.validZenodeo.includes(key)) {
-
-            // for keys that won't go into 'q'
-            if (globals.params.notValidQ.includes(key)) {
-
-                if (key === 'resource') {
-                    log.info(`setting form to query resource ${val}`);
-                    updatePlaceHolder(val);
-
-                    if (val === 'treatments') {
-                        log.info('setting toggle-resource to true');
-                        $('input[name=resource]').checked = true;
-                    }
-                    else {
-                        log.info('setting toggle-resource to false');
-                        $('input[name=resource]').checked = false;
-                    }
-                    
-                }
-                else {
-                    log.info(`setting input name ${key} to ${val}`);
-                    $(`input[name=${key}]`).value = val;
-                }
-
-            }
-
-            // all the keys that will go into 'q'
-            else {
-
-                // default value
-                let value = key;
-    
-                if (val) {
-                    value = key === 'q' 
-                        ? decodeURIComponent(val) 
-                        : `${key}=${val}`;
-                }
-    
-                q.push(value);
-            }
-
-        //}
-        
-    });
-
-    $('#q').value = q.join('&');
-}
 
 export { 
     nth, 

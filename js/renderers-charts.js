@@ -1,7 +1,7 @@
-import { $, $$ } from './base.js';
+// import { $, $$ } from './base.js';
 import { getChartContainer, yAxisFormatter } from './chart-utils.js';
 import { globals } from './globals.js';
-import { toggleModal } from './listeners.js';
+// import { toggleModal } from './listeners.js';
 
 function renderDashboard(obj) {
     const { yearlyCounts, totals } = obj;

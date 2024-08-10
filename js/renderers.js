@@ -1,21 +1,17 @@
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
-import { 
-    toggleAdvSearch, 
-    // showDashboard, 
-    // toggleModal, 
-    lightUpTheBox 
-} from './listeners.js';
-import { qs2form } from './main.js';
+// import { qs2form } from './main.js';
 import { renderYearlyCounts } from './renderers-charts.js';
 import { renderTermFreq } from './renderer-termFreq.js';
-import { niceNumbers } from './utils.js';
+import { niceNumbers, qs2form } from './utils.js';
 import { 
     //addListenersToFigcaptions, 
     addListenersToFigDetails,
     addListenersToFigureTypes, 
     addListenersToPagerLinks,
-    addListenersToMapCarouselLink
+    addListenersToMapCarouselLink,
+    toggleAdvSearch,
+    lightUpTheBox
 } from './listeners.js';
 
 const makeTreatment = ({ figureSize, rec }) => {
