@@ -24,8 +24,6 @@
     <link rel="stylesheet" href="css/adv-search.css">
     <link rel="stylesheet" href="css/examples.css">
     <link rel="stylesheet" href="css/quicksearch.css">
-    <link rel="stylesheet" href="css/toggleSwitch.css">
-    <link rel="stylesheet" href="css/cssToggle.css">
     <link rel="stylesheet" href="css/toggles.css">
     <link rel="stylesheet" href="css/grid.css">
     <link rel="stylesheet" href="css/carousel.css">
@@ -35,7 +33,6 @@
     <link rel="stylesheet" href="css/pager.css">
     <link rel="stylesheet" href="css/map.css">
     <link rel="stylesheet" href="css/treatmentDetails.css">
-    <link rel="stylesheet" href="libs/fancySearch/fancySearch.css">
     <link rel="stylesheet" href="css/sparkline.css">
     <link rel="stylesheet" href="css/simpleLightbox.css">
     <link rel="stylesheet" href="css/simpleLightbox-modifiers.css">
@@ -45,13 +42,6 @@
     <link rel="stylesheet" href="libs/JavaScript-autoComplete/auto-complete.css">
     <link rel="stylesheet" href="libs/pop-pop/pop-pop.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-
-    <!--
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css">
-    -->
-
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Lora">
   </head>
   <body>
@@ -75,7 +65,6 @@
             
             <div id="normalSearch" class="search-container">
                 <div id="ns-container">
-                    <!-- <div id="ns-help">search images</div> -->
                     <div id="ns-widget">
                         <div id="ns" class="ns">
 
@@ -83,14 +72,22 @@
                             resource is what we want to retrieve and display. 
                             resource is either "images" or "treatments" 
                             -->
-                            <div class="switch resource regular pill green" aria-label="toggle resource" data-pop="right" data-pop-no-shadow="true" data-pop-arrow="true">
-                                <input class="query" type="radio" id="switchResource-1" name="resource" value="images" autocomplete="off" checked="true">
-                                <label for="switchResource-1"></label>
-                                <input class="query" type="radio" id="switchResource-2" name="resource" value="treatments" autocomplete="off">
-                                <label for="switchResource-2"></label>
+                            <div id="toggle-resource" class="toggle-container"
+                                aria-label="toggle image vs treatments search" data-pop="top" data-pop-no-shadow 
+                                data-pop-arrow data-pop-multiline>
+
+                                <label id="toggle4" class="toggle">
+                                    <input name="resource" 
+                                    class="toggle-checkbox query" 
+                                    type="checkbox" 
+                                    value="treatments">
+
+                                    <div class="toggle-switch"></div>
+                                </label>
+
                             </div>
 
-                            <input id="q" name="q" type="text" placeholder="search for something" class="query ns-val-input">
+                            <input id="q" name="q" type="text" placeholder="search images" class="query ns-val-input">
 
                             <div id="ns-input-controls">
                                 <input name="refreshCache" id="refreshCache" type="checkbox" value="true" class="query unchecked" aria-label="This will refresh the cache. You probably don't want to do this." data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>
@@ -103,72 +100,64 @@
                 </div>
             </div>
 
-            <div id="fancySearch" class="search-container hidden">
+            <!-- <div id="fancySearch" class="search-container hidden">
                 <div id="fs-container"></div>
-            </div>
+            </div> -->
 
             <div id="bottom-menu">
                 <div id="quicksearch">                    
-                    <a href="?resource=images&family=Formicidae" aria-label="find ants" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-ant.svg"></a> 
-                    <a href="?resource=images&class=Actinopterygii" aria-label="find fishes" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-fish.svg"></a>
-                    <a href="?resource=images&class=Arachnida" aria-label="find spiders" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-spider.svg"></a>
-                    <a href="?resource=images&class=Malacostraca" aria-label="find shrimp, crabs and other crustacea" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-shrimp.svg"></a>
-                    <a href="?resource=images&order=Coleoptera" aria-label="find beetles" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-beetle.svg"></a>
+                    <a href="?family=Formicidae" aria-label="find ants" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-ant.svg"></a> 
+                    <a href="?class=Actinopterygii" aria-label="find fishes" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-fish.svg"></a>
+                    <a href="?class=Arachnida" aria-label="find spiders" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-spider.svg"></a>
+                    <a href="?class=Malacostraca" aria-label="find shrimp, crabs and other crustacea" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-shrimp.svg"></a>
+                    <a href="?order=Coleoptera" aria-label="find beetles" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-beetle.svg"></a>
                     <a id="search-help" href="#" aria-label="more examples" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-more-examples.svg"></a>
                     <div class="warn hidden"></div>
                 </div>
 
-                <!-- <div class="switch search small slider green" aria-label="toggle search type" data-pop="left" data-pop-no-shadow data-pop-arrow>
-                    <input type="radio" id="switchSearch-1" name="searchType" value="ns" checked="true" data-checked="true">
-                    <label for="switchSearch-1"></label>
-                    <input type="radio" id="switchSearch-2" name="searchType" value="fs" data-checked="false">
-                    <label for="switchSearch-2"></label>
-                </div> -->
+                <div id="toggle-search" class="toggle-container"
+                    aria-label="toggle between simple and advanced search" data-pop="left" data-pop-no-shadow data-pop-arrow>
+                    <label id="toggle5" class="toggle">
 
-                <!-- <div class="switch search small slider red" aria-label="toggle advanced search" data-pop="left" data-pop-no-shadow data-pop-arrow>
-                    <input type="radio" id="switchAdvSearch-1" name="searchType2" value="ss" checked="true" data-checked="true">
-                    <label for="switchAdvSearch-1"></label>
-                    <input type="radio" id="switchAdvSearch-2" name="searchType2" value="as" data-checked="false">
-                    <label for="switchAdvSearch-2"></label>
-                </div> -->
+                        <input name="searchtype" class="toggle-checkbox" 
+                            type="checkbox" value="advSearch">
 
-                <div class="button r hidden" id="advSearch" aria-label="toggle advanced search" data-pop="left" data-pop-no-shadow data-pop-arrow>
-                    <input name="searchtype" type="checkbox" class="checkbox" value="simple">
-                    <div class="knobs"></div>
-                    <div class="layer"></div>
+                        <div class="toggle-switch"></div>
+                    </label>
                 </div>
+
             </div>
 
             <div class="examples hidden">
                 <p>Click on the link to try the search<br><em><b>Note:</b> These extended syntax queries are currently only possible against treatments.</em></p>
     
                 <details open>
-                    <summary>images from the article with the given DOI (either of the two below will work)</summary>
+                    <summary>from the article with the given DOI (either of the two below will work)</summary>
                     <button class="example-insert">10.11646/zootaxa.5284.3.7</button><br>
                     <button class="example-insert">articleDOI=10.11646/zootaxa.5284.3.7</button>
                 </details>
                 <details open>
-                    <summary><img src="img/icon_fts_all.svg" width="30" align="top"> images from treatments with the given term anywhere in the text (a fulltext search against the entire treatment)</summary>
+                    <summary><img src="img/icon_fts_all.svg" width="30" align="top">from treatments with the given term anywhere in the text (a fulltext search against the entire treatment)</summary>
                     <button class="example-insert">phylogeny</button><br>
                 </details>
                 <details open>
-                    <summary><img src="img/icon_fts_caption.svg" width="30" align="top"> images with the given term anywhere in the text of the image caption (a fulltext search against just the image caption)</summary>
+                    <summary><img src="img/icon_fts_caption.svg" width="30" align="top">with the given term anywhere in the text of the image caption (a fulltext search against just the image caption)</summary>
                     <button class="example-insert">captionText=phylogeny</button><br>
                 </details>
                 <details>
-                    <summary>all images from articles published in the European Journal of Taxonomy</summary>
+                    <summary>from the articles published in the European Journal of Taxonomy</summary>
                     <button class="example-insert">journalTitle=eq(European Journal of Taxonomy)</button>
                 </details>
                 <details>
-                    <summary>all images from article whose title starts with "Morphology and taxonomic assessment"</summary>
+                    <summary>from the article whose title starts with "Morphology and taxonomic assessment"</summary>
                     <button class="example-insert">articleTitle=starts_with(Morphology and taxonomic assessment)</button>
                 </details>
                 <details>
-                    <summary>all images from treatments with materialCitations found within 10 kms of a given lat/lng</summary>
+                    <summary>from the treatments with materialCitations found within 10 kms of a given lat/lng</summary>
                     <button class="example-insert">geolocation=within(radius:10, units:'kilometers', lat:40.21, lng:-120.33)</button>
                 </details>
                 <details>
-                    <summary>all fishes in articles published since 2021-12-21</summary>
+                    <summary>in the articles published since 2021-12-21</summary>
                     <button class="example-insert">class=Actinopterygii&publicationDate=since(2021-12-21)</button>
                 </details>
                 <details>
@@ -176,7 +165,7 @@
                     <button class="example-insert">shrimp&publicationDate=since(2020-12-21)</button>
                 </details>
                 <details>
-                    <summary>images from treatments checked in since yesterday</summary>
+                    <summary>from treatments checked in since yesterday</summary>
                     <button class="example-insert">checkinTime=since(yesterday)</button>
                 </details>
                 <details>
@@ -184,7 +173,7 @@
                     <button class="example-insert">tyrannosaurus&authorityName=Osborn</button>
                 </details>
                 <details>
-                    <summary>images from treatments from family 'Agamidae'</summary>
+                    <summary>from treatments from family 'Agamidae'</summary>
                     <button class="example-insert">family=Agamidae</button>
                 </details>
                 <details>
@@ -409,15 +398,9 @@
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-    <!--
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
-    <script src="https://unpkg.com/h3-js@3.7.2/dist/h3-js.umd.js"></script>
-    -->
-
     <!-- build:js -->
     <!-- endbuild -->
-    <script src="../../libs/simple-lightbox/simpleLightbox.js"></script>
+    <script src="libs/simple-lightbox/simpleLightbox.js"></script>
     <script src="libs/picolog/picolog.min.js"></script>
     <script src="libs/lazysizes.min.js"></script>
     <script src="libs/JavaScript-autoComplete/auto-complete.js"></script>

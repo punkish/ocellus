@@ -70,7 +70,7 @@
 } */
 .active .slide {
   position: absolute;
-  top: 30px;
+  top: 25px;
   left: 400px;
 /*   top: 250px; */
 
@@ -80,7 +80,7 @@
   transition: 1s;
 }
 .active .slide.current {
-  top: 33px;
+  top: 25px;
   left: 0px;
 /*   opacity: 1; */
 /*   transform: scale(1); */

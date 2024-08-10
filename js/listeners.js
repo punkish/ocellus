@@ -1,9 +1,11 @@
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
-import { submitForm, updatePlaceHolder } from './utils.js';
+import { submitForm, updatePlaceHolder, qs2form, form2qs } from './utils.js';
 // import { getCountOfResource } from './querier.js';
 import { renderDashboard } from './renderers-charts.js';
 import { Accordion } from './accordion.js';
+import { getResource } from './querier.js';
+// import { qs2form } from './utils2.js';
 
 const addListeners = () => {
     log.info('- addListeners()');
@@ -21,16 +23,18 @@ const addListeners = () => {
     $$('.example-insert')
         .forEach(el => el.addEventListener('click', insertExample));
 
-    $$("input[name=searchType")
-        .forEach(el => el.addEventListener('click', toggleSearch));
+    // $$("input[name=searchType")
+    //     .forEach(el => el.addEventListener('click', toggleSearch));
 
     // $$("input[name=searchType2")
     //    .forEach(el => el.addEventListener('click', toggleAdvSearch));
 
-    $('#advSearch').addEventListener('click', toggleAdvSearch);
+    // $('#advSearch').addEventListener('click', toggleAdvSearch);
+    $('input[name=searchtype').addEventListener('click', toggleAdvSearch);
+    $('input[name=resource').addEventListener('click', toggleResource);
 
-    $$('.resource input')
-        .forEach(el => el.addEventListener('click', toggleResource));
+    // $$('.resource input')
+    //     .forEach(el => el.addEventListener('click', toggleResource));
 
     $('select[name="as-publicationDate"]')
         .addEventListener('change', toggleDateSelector);
@@ -46,6 +50,29 @@ const addListeners = () => {
     });
 
     document.addEventListener('keydown', focusOnSearch);
+
+    $$('#quicksearch a').forEach((el) => el.addEventListener('click', quickSearch));
+}
+
+function quickSearch(event) {
+    const resource = $('input[name=resource]').checked
+        ? 'treatments'
+        : 'images';
+
+    const url = `${event.target.parentNode.href}&resource=${resource}`;
+    history.pushState({}, '', url);
+    const loc = new URL(location);
+    let qs;
+
+    if (loc.search) {
+        qs = loc.search.substring(1);
+    }
+
+    qs2form(qs);
+    const queryString = form2qs();
+    getResource(queryString);
+    event.preventDefault();
+    event.stopPropagation();
 }
 
 // https://justincypret.com/blog/adding-a-keyboard-shortcut-for-global-search
@@ -113,7 +140,7 @@ const toggleAdvSearch = (e) => {
         $('input[name="as-q"]').focus();
     }
     else {
-        $('#q').placeholder = 'search for something';
+        $('#q').placeholder = globals.defaultPlaceholder;
         $('#q').disabled = false;
         $('#refreshCache').disabled = false;
         $('#clear-q').disabled = false;
@@ -185,14 +212,17 @@ const toggleSearch = (e) => {
 }
 
 const toggleResource = (e) => {
+    const resource = $('input[name=resource]').checked
+        ? $('input[name=resource]').value
+        : 'images';
 
     // find the value of the checked source button inside 
     // the container div (cd) and set the source to that
     // value
-    const resource = Array.from($$('input[name=resource]'))
-        .filter(i => i.checked)[0];
+    // const resource = Array.from($$('input[name=resource]'))
+    //     .filter(i => i.checked)[0];
 
-        updatePlaceHolder(resource.value);
+        updatePlaceHolder(resource);
 }
 
 // https://gomakethings.com/only-allowing-one-open-dropdown-at-a-time-with-the-details-element/
@@ -286,7 +316,7 @@ const promptForSearchTerm = () => {
 }
 
 const resetPrompt = (e)=> {
-    $('#q').placeholder = 'search for something';
+    $('#q').placeholder = globals.defaultPlaceholder;
     $('#q').classList.remove('red-placeholder');
     $('#refreshCache').checked = false;
     // e.stopPropagation();
@@ -297,24 +327,24 @@ const resetPrompt = (e)=> {
  * @function setSource
  * @summary activate the source of the images
  */
-const setSource = (e) => {
-    const sources = $$('input[name=resource');
-    let source = 'all';
-    sources.forEach(s => {
-        if (s.checked) {
-            source = s.value;
-        }
-    })
+// const setSource = (e) => {
+//     const sources = $$('input[name=resource');
+//     let source = 'all';
+//     sources.forEach(s => {
+//         if (s.checked) {
+//             source = s.value;
+//         }
+//     })
 
-    let placeholder = 'search all images';
-    if (source === 'Zenodo') {
-        placeholder = 'search images from Zenodo';
-    }
-    else if (source === 'treatments') {
-        placeholder = 'search images from treatments';
-    }
-    $('#q').placeholder = placeholder;
-}
+//     let placeholder = 'search all images';
+//     if (source === 'Zenodo') {
+//         placeholder = 'search images from Zenodo';
+//     }
+//     else if (source === 'treatments') {
+//         placeholder = 'search images from treatments';
+//     }
+//     $('#q').placeholder = placeholder;
+// }
 
 /**
  * @function setView
@@ -417,7 +447,7 @@ function carousel(box) {
         // hide the old current list item 
         current.classList.remove('current');
         
-        // calculate th new position
+        // calculate the new position
         counter = counter + direction;
 
         // if the previous one was chosen
@@ -446,16 +476,16 @@ function carousel(box) {
         navigate(1);
         drawMap(ev);
         
-        if (ev.target.src.indexOf('-img.svg') > -1) {
-            ev.target.src = 'img/icon-carousel-image-loc.svg';
-        }
-        else {
-            ev.target.src = 'img/icon-carousel-image-img.svg';
-        }
+        // if (ev.target.src.indexOf('-img.svg') > -1) {
+        //     ev.target.src = 'img/icon-carousel-image-loc.svg';
+        // }
+        // else {
+        //     ev.target.src = 'img/icon-carousel-image-img.svg';
+        // }
     });
-    // prev.addEventListener('click', function(ev) {
-    //     navigate(-1);
-    // });
+    prev.addEventListener('click', function(ev) {
+        navigate(-1);
+    });
 
     // show the first element 
     // (when direction is 0 counter doesn't change)

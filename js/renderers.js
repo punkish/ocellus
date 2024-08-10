@@ -127,17 +127,19 @@ function makeSlider({ resource, figureSize, rec }) {
     if (rec.loc || rec.convexHull) {
         return `
         <div class="carouselbox">
+
             <div class="buttons">
-                <!-- <button class="prev">
+                <button class="prev">
                     ◀ <span class="offscreen">Previous</span>
-                </button> -->
+                </button>
                 <button class="next" 
                     data-loc=${JSON.stringify(rec.loc)} 
                     data-convexhull=${JSON.stringify(rec.convexHull)} 
                     data-id="${uniqId}">
-                        <span class="offscreen">Next</span> <img src="img/icon-carousel-image-img.svg">
+                    <span class="offscreen">Next</span> ▶︎
                 </button>
-            </div>
+            </div> 
+
             <div class="content">
                 <div class="slide">
                     ${figure}
@@ -482,6 +484,8 @@ const renderYearlyCountsSparkline = (resource, yearlyCounts) => {
     const totalCount = resource === 'images'
         ? images
         : treatments;
+
+    $('#q').placeholder = `search ${resource}`;
 
     const barWidth = 3;
     const className = 'bar';

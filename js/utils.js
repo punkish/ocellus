@@ -114,18 +114,7 @@ const updatePlaceHolder = async (resource) => {
     const getYearlyCounts = true;
     const yearlyCounts = await getCountOfResource(resource, getYearlyCounts);
     renderYearlyCountsSparkline(resource, yearlyCounts);
-    //renderDashboard(yearlyCounts);
-    
-    // renderDashboard(yearlyCounts.yc);
-    // const dashboardLink = svg.querySelector('a');
-    // //showDashboard();
-    // dashboardLink.addEventListener('click', toggleModal);
-    // const speciesCount = await getCountOfResource('species', true);
-    // renderYearlyCounts(
-    //     resource, 
-    //     yearlyCounts, 
-    //     speciesCount
-    // );
+    $('#q').placeholder = `search ${resource}`;
 }
 
 /**
@@ -142,8 +131,6 @@ const updatePlaceHolder = async (resource) => {
  * 
  */
 const form2qs = () => {
-    log.info('- form2qs()');
-
     const sp = new URLSearchParams();
     //const arr = Array.from($$('form input.query'));
     //const r = / & /g;
@@ -159,55 +146,71 @@ const form2qs = () => {
         log.info('- form2qs(): simple search');
 
         Array.from($$('form input.query'))
-        .filter(i => i.value)
-        .forEach(i => {
-            
-            let key = i.name;
-            let val = i.value;
+            .filter(i => i.value)
+            .forEach(i => {
+                
+                let key = i.name;
+                let val = i.value;
 
-            if (i.name === 'q') {
+                if (i.name === 'q') {
 
-                // see discussion at
-                // https://stackoverflow.com/q/77613064/183692
-                const formVal = i.value.replaceAll(/ & /g, '%20%26%20');
-                const spTmp = new URLSearchParams(formVal);
+                    // see discussion at
+                    // https://stackoverflow.com/q/77613064/183692
+                    const formVal = i.value.replaceAll(/ & /g, '%20%26%20');
+                    const spTmp = new URLSearchParams(formVal);
 
-                spTmp.forEach((v, k) => {
-                    if (v === '') {
+                    spTmp.forEach((v, k) => {
+                        if (v === '') {
 
-                        // check if the input looks like a DOI
-                        const match = val.match(/(^10\.[0-9]{4,}.*)/);
-                        if (match && match[1]) {
-                            key = 'articleDOI';
-                            val = match[1];
+                            // check if the input looks like a DOI
+                            const match = val.match(/(^10\.[0-9]{4,}.*)/);
+                            if (match && match[1]) {
+                                key = 'articleDOI';
+                                val = match[1];
+                            }
+                            else {
+                                key = 'q';
+                                val = k;
+                            }
+                            
                         }
                         else {
-                            key = 'q';
-                            val = k;
+                            key = k;
+                            val = v;
                         }
+
+                        sp.append(key, val);
+                    });
+                }
+                else {
+            
+                    if ((i.type === 'radio' || i.type === 'checkbox')) {
+
+                        if (i.name === 'resource') {
+                            // console.log(i);
+                            // console.log(i.checked)
+
+                            if (i.checked || i.checked === 'true') {
+                                sp.append(key, val);
+                            }
+                            else {
+                                sp.append(key, 'images');
+                            }
+                        }
+                        else {
+                            if (i.checked || i.checked === 'true') {
+                                sp.append(key, val);
+                            }
+                        }
+                        
                         
                     }
                     else {
-                        key = k;
-                        val = v;
-                    }
-
-                    sp.append(key, val);
-                });
-            }
-            else {
-        
-                if ((i.type === 'radio' || i.type === 'checkbox')) {
-                    if (i.checked || i.checked === 'true') {
                         sp.append(key, val);
                     }
-                }
-                else {
-                    sp.append(key, val);
-                }
 
-            }
-        });
+                }
+            });
     }
     else {
         log.info('- form2qs(): advanced search');
@@ -222,9 +225,14 @@ const form2qs = () => {
         commonInputs.forEach((fldName) => {
             const fld = $(`input[name=${fldName}]`);
 
+            if (fldName === 'resource') {
+                console.log(fld)
+            }
+
             if (fld.checked || fld.checked === 'true') {
                 sp.append(fldName, fld.value);
             }
+            
         });
 
         const textInputs = [
@@ -355,8 +363,81 @@ const updateUrl = (qs) => {
     history.pushState('', null, `?${qs}`);
 }
 
+/**
+ * convert queryString to form inputs. Right now qs2form() fills 
+ * only the normal search form. TODO: be able to fill fancy search
+ * form as well.
+ */
+const qs2form = (qs) => {
+    log.info(`- qs2form(qs)
+    - qs: ${qs}`);
+
+    const sp = new URLSearchParams(qs);
+    console.log(sp)
+    // we don't want 'refreshCache' in bookmarked queries
+    sp.delete('refreshCache');
+
+    // temp array to store values for input field 'q'
+    const q = [];
+
+    sp.forEach((val, key) => {
+        log.info(`val: ${val}, key: ${key}`)
+        // include only keys that are valid for Zenodeo
+        //if (globals.params.validZenodeo.includes(key)) {
+
+            // for keys that won't go into 'q'
+            if (globals.params.notValidQ.includes(key)) {
+
+                if (key === 'resource') {
+                    log.info(`setting form to query resource ${val}`);
+                    updatePlaceHolder(val);
+
+                    if (val === 'treatments') {
+                        log.info('setting toggle-resource to true');
+                        $('input[name=resource]').checked = true;
+                    }
+                    else {
+                        log.info('setting toggle-resource to false');
+                        $('input[name=resource]').checked = false;
+                    }
+                    
+                }
+                else {
+                    log.info(`setting input name ${key} to ${val}`);
+                    $(`input[name=${key}]`).value = val;
+                }
+
+            }
+
+            // all the keys that will go into 'q'
+            else {
+
+                // default value
+                let value = key;
+    
+                if (val) {
+                    value = key === 'q' 
+                        ? decodeURIComponent(val) 
+                        : `${key}=${val}`;
+                }
+    
+                q.push(value);
+            }
+
+        //}
+        
+    });
+
+    $('#q').value = q.join('&');
+}
+
 export { 
-    nth, niceNumbers, smoke, 
-    submitForm, updatePlaceHolder, 
-    form2qs, updateUrl 
+    nth, 
+    niceNumbers, 
+    smoke, 
+    submitForm, 
+    updatePlaceHolder, 
+    qs2form,
+    form2qs, 
+    updateUrl 
 }

@@ -32,6 +32,8 @@ const globals = {
         tiny: 50
     },
 
+    defaultPlaceholder: 'search images',
+
     //view : 'images',
     // views : {
     //     images: {

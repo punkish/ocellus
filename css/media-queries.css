@@ -66,6 +66,9 @@
         text-transform: uppercase;
         font-size: 10px;
     }
+    form {
+        max-width: 790px;
+    }
     #sparkBox .chart {
         display: inline-block;
     }
@@ -144,9 +147,6 @@
     }
     .columns-250 {
         --column-count: 5 !important;
-    }
-    form {
-        max-width: 1390px;
     }
     details.charts {
         max-width: 1330px;

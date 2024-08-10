@@ -1,8 +1,9 @@
-import { $, $$ } from './base.js';
-import { updatePlaceHolder, form2qs, updateUrl } from './utils.js';
-import { globals } from './globals.js';
+// import { $, $$ } from './base.js';
+import { updatePlaceHolder, qs2form, form2qs, updateUrl } from './utils.js';
+// import { globals } from './globals.js';
 import { addListeners } from './listeners.js';
 import { getResource } from './querier.js';
+// import { qs2form } from './utils2.js';
 
 /**
  * case 1: blank canvas shows the default Ocellus page
@@ -27,65 +28,6 @@ const loadBookmarkedWebSite = (qs) => {
     // are also included properly in the qs
     qs = form2qs();
     getResource(qs);
-}
-
-/**
- * convert queryString to form inputs. Right now qs2form() fills 
- * only the normal search form. TODO: be able to fill fancy search
- * form as well.
- */
-const qs2form = (qs) => {
-    log.info(`- qs2form(qs)
-    - qs: ${qs}`);
-
-    const sp = new URLSearchParams(qs);
-
-    // we don't want 'refreshCache' in bookmarked queries
-    sp.delete('refreshCache');
-
-    // temp array to store values for input field 'q'
-    const q = [];
-
-    sp.forEach((val, key) => {
-        log.info(`val: ${val}, key: ${key}`)
-        // include only keys that are valid for Zenodeo
-        //if (globals.params.validZenodeo.includes(key)) {
-
-            // for keys that won't go into 'q'
-            if (globals.params.notValidQ.includes(key)) {
-
-                if (key === 'resource') {
-                    log.info(`setting form to query resource ${val}`);
-                    updatePlaceHolder(val);
-                    Array.from($$('input[name=resource]'))
-                        .filter(i => i.value === val)[0].checked = "true";
-                }
-                else {
-                    $(`input[name=${key}]`).value = val;
-                }
-
-            }
-
-            // all the keys that will go into 'q'
-            else {
-
-                // default value
-                let value = key;
-    
-                if (val) {
-                    value = key === 'q' 
-                        ? decodeURIComponent(val) 
-                        : `${key}=${val}`;
-                }
-    
-                q.push(value);
-            }
-
-        //}
-        
-    });
-
-    $('#q').value = q.join('&');
 }
 
 export { 
