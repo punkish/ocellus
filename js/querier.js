@@ -120,8 +120,8 @@ const getResource = async (qs) => {
 
     // let's define the cols to retrieve from Zenodeo
     const cols = resource === 'images'
-        ?   `${globals.params.images.join('&cols=')}`
-        :   `${globals.params.treatments.join('&cols=')}`;
+        ? `${globals.params.images.join('&cols=')}`
+        : `${globals.params.treatments.join('&cols=')}`;
 
     // cols.map(c => `cols=${c}`).join('&')
     let queryString = `${sp.toString()}&cols=${cols}`;
@@ -323,8 +323,18 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                     record.articleAuthor = r.articleAuthor;
                     record.latitude = r.latitude;
                     record.longitude = r.longitude;
-                    // record.loc = r.loc;
-                    // record.convexHull = r.convexHull;
+                    record.loc = r.loc;
+
+                    // Flip the points lon,lat to lat,lon because the 
+                    // convexHull returned from turfjs has points as lon,lat
+                    // while leafletjs expects them as lat,lon
+                    if (r.convexHull) {
+                        record.convexHull = r.convexHull[0]
+                            .map(([lon, lat]) => [lat, lon]);
+                    }
+                    else {
+                        record.convexHull = undefined;
+                    }
                 }
 
                 results.recs.push(record);
