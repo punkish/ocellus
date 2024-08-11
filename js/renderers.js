@@ -1,9 +1,8 @@
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
-// import { qs2form } from './main.js';
 import { renderYearlyCounts } from './renderers-charts.js';
 import { renderTermFreq } from './renderer-termFreq.js';
-import { niceNumbers, qs2form } from './utils.js';
+import { niceNumbers, qs2form, formatDate, formatTime } from './utils.js';
 import { 
     //addListenersToFigcaptions, 
     addListenersToFigDetails,
@@ -81,18 +80,17 @@ const makeImage = ({ figureSize, rec }) => {
     const figureClass = `figure-${figureSize}` + (rec.treatmentId ? ' tb' : '');
 
     // <div class="switches"><div class="close"></div></div>
-    const onerrorCb = `this.onerror=null; setTimeout(() => { this.src='${rec.uri}' }, 1000);`;
-    let foo = '';
-    if (rec.loc || rec.convexHull) {
-        foo = `this.parentNode.parentNode.parentNode.parentNode.style.height=this.height+150+'px'`;
-    }
+    const retryGetImage = `this.onerror=null; setTimeout(() => { this.src='${rec.uri}' }, 1000);`;
+    const resizeBox = (rec.loc || rec.convexHull)
+        ? `this.parentNode.parentNode.parentNode.parentNode.style.height=this.height+150+'px'`
+        : '';
 
     return `<figure class="${figureClass}">
     <a class="zen" href="${rec.fullImage}">
         <img src="img/bug.gif" width="${rec.figureSize}" data-src="${rec.uri}" 
             class="lazyload" data-recid="${rec.treatmentId}" 
-            onerror="${onerrorCb}"
-            onload="${foo}">
+            onerror="${retryGetImage}"
+            onload="${resizeBox}">
     </a>
     <figcaption class="${figcaptionClass}">
         <details>
@@ -107,15 +105,11 @@ const makeImage = ({ figureSize, rec }) => {
 </figure>`;
 }
 
-const makeFigure = ({ resource, figureSize, rec }) => {
-    const obj = { figureSize, rec };
-    return resource === 'images'
-        ? makeImage(obj)
-        : makeTreatment(obj);
-}
-
 function makeSlider({ resource, figureSize, rec }) {
-    const figure = makeFigure({ resource, figureSize, rec });
+    const figure = resource === 'images'
+        ? makeImage({ figureSize, rec })
+        : makeTreatment({ figureSize, rec });
+
     const uniqId = resource === 'images'
         ? `${rec.treatments_id}-${rec.images_id}`
         : rec.treatments_id;
@@ -432,40 +426,6 @@ function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
     $('#charts-container summary').style.visibility = 'visible';
 }
 
-// Convert milliseconds to days:hours:mins without seconds
-// https://stackoverflow.com/a/8528531/183692
-const formatTime = (ms) => {
-    const ms_in_h = 60 * 60 * 1000;
-    const ms_in_d = 24 * ms_in_h;
-    let d = Math.floor(ms / ms_in_d);
-    let h = Math.floor( (ms - (d * ms_in_d)) / ms_in_h);
-    let m = Math.round( (ms - (d * ms_in_d) - (h * ms_in_h)) / 60000);
-    const pad = (n) => n < 10 ? '0' + n : n;
-
-    if (m === 60) {
-        h++;
-        m = 0;
-    }
-
-    if (h === 24) {
-        d++;
-        h = 0;
-    }
-
-    return `${d} days ${pad(h)} hours ${pad(m)} mins`;
-}
-
-const formatDate = (d) => {
-    const yyyy = d.getFullYear();
-    const mm = d.getMonth();
-    const dd = d.getDate();
-    const hh = d.getHours();
-    const mn = d.getMinutes();
-    const ss = d.getSeconds();
-
-    return `${dd} ${globals.months[mm]}, ${yyyy} ${hh}:${mn}:${ss}`;
-}
-
 // https://css-tricks.com/how-to-make-charts-with-svg/
 const renderYearlyCountsSparkline = (resource, yearlyCounts) => {
     const {
@@ -529,10 +489,6 @@ const renderYearlyCountsSparkline = (resource, yearlyCounts) => {
 
 export {
     makeSlider,
-    //makeFigure,
     renderPage,
-    renderYearlyCountsSparkline,
-    //renderDashboard
-    // showTooltip,
-    // hideTooltip
+    renderYearlyCountsSparkline
 }

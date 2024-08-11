@@ -431,7 +431,39 @@ const updateUrl = (qs) => {
     history.pushState(state, title, url);
 }
 
+// Convert milliseconds to days:hours:mins without seconds
+// https://stackoverflow.com/a/8528531/183692
+const formatTime = (ms) => {
+    const ms_in_h = 60 * 60 * 1000;
+    const ms_in_d = 24 * ms_in_h;
+    let d = Math.floor(ms / ms_in_d);
+    let h = Math.floor( (ms - (d * ms_in_d)) / ms_in_h);
+    let m = Math.round( (ms - (d * ms_in_d) - (h * ms_in_h)) / 60000);
+    const pad = (n) => n < 10 ? '0' + n : n;
 
+    if (m === 60) {
+        h++;
+        m = 0;
+    }
+
+    if (h === 24) {
+        d++;
+        h = 0;
+    }
+
+    return `${d} days ${pad(h)} hours ${pad(m)} mins`;
+}
+
+const formatDate = (d) => {
+    const yyyy = d.getFullYear();
+    const mm = d.getMonth();
+    const dd = d.getDate();
+    const hh = d.getHours();
+    const mn = d.getMinutes();
+    const ss = d.getSeconds();
+
+    return `${dd} ${globals.months[mm]}, ${yyyy} ${hh}:${mn}:${ss}`;
+}
 
 export { 
     nth, 
@@ -441,5 +473,7 @@ export {
     updatePlaceHolder, 
     qs2form,
     form2qs, 
-    updateUrl 
+    updateUrl,
+    formatTime,
+    formatDate
 }
