@@ -42,7 +42,6 @@ scratch/
 bak/
 explorations/
 .parcel-cache
-dist/
 
 # specific config files #
 #########################
