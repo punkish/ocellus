@@ -5,6 +5,7 @@ import { submitForm, updatePlaceHolder, qs2form, form2qs } from './utils.js';
 import { renderDashboard } from './renderers-charts.js';
 import { Accordion } from './accordion.js';
 import { getResource } from './querier.js';
+import { geoSearchWidget } from './adv-search.js';
 
 const addListeners = () => {
     log.info('- addListeners()');
@@ -51,6 +52,8 @@ const addListeners = () => {
     document.addEventListener('keydown', focusOnSearch);
 
     $$('a.quicksearch').forEach((el) => el.addEventListener('click', quickSearch));
+
+    //$('#geoSearchWidget').addEventListener('click', geoSearchWidget);
 }
 
 function quickSearch(event) {
@@ -139,6 +142,7 @@ const toggleAdvSearch = (e) => {
         $('#refreshCache').disabled = true;
         $('#clear-q').disabled = true;
         $('input[name="as-q"]').focus();
+        geoSearchWidget();
     }
     else {
         $('#q').placeholder = globals.defaultPlaceholder;

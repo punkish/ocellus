@@ -45,6 +45,12 @@ div.caption span,
 details.charts summary span {
     color: black;
 }
+span.crit-key {
+    font-weight: 800;
+}
+span.crit-val {
+    font-weight: 800;
+}
 details.charts summary::-webkit-details-marker {
     display: none;
 }

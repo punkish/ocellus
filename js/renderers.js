@@ -174,6 +174,7 @@ const renderPage = ({
     $('#grid-images').classList.add(`columns-${figureSize}`);
 
     renderSlides(slides, qs, prev, next);
+    renderPager(qs, prev, next);
     $('#throbber').classList.add('nothrob');
 
     if (globals.charts.termFreq) {
@@ -229,7 +230,7 @@ const renderSlides = (slides, qs, prev, next) => {
 
     if (slides.length) {
         $('#grid-images').innerHTML = slides.join('');
-        renderPager(qs, prev, next);
+        // renderPager(qs, prev, next);
         addListenersToFigDetails();
         addListenersToFigureTypes();
         addListenersToMapCarouselLink();
@@ -241,9 +242,9 @@ const renderSlides = (slides, qs, prev, next) => {
     }
 }
 
-const renderTreatments = () => {
+// const renderTreatments = () => {
 
-}
+// }
 
 const renderPager = (qs, prev, next) => {
     log.info('- renderPager()');
@@ -260,6 +261,7 @@ const renderPager = (qs, prev, next) => {
 }
 
 function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
+    log.info('- renderSearchCriteria()');
 
     // object = ${count} ${resource}s
     // ser    = was|were || has|have
@@ -314,7 +316,8 @@ function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
 
     if (count === 1) {
 
-        // Singularize resource
+        // Singularize resource converting 'treatments' to 'treatment' and 
+        // 'images' to 'image'
         resource = resource.slice(0, -1);
     }
 
@@ -363,7 +366,7 @@ function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
         else {
             criterionIsDate = false;
             const match = v.match(/(?<operator>\w+)\((?<term>[\w\s]+)\)/);
-
+            
             if (match) {
                 const { operator, term } = match.groups;
                 
@@ -375,6 +378,31 @@ function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
                 }
                 else if (k === 'captionText') {
                     criterion = `${tag1o}${v}${tagc} is in ${tag1o}caption text${tagc}`;
+                }
+                else if (k === 'geolocation') {
+                    const pattern = `(?<operator>within)\\((radius:\s*(?<radius>([+-]?([0-9]+)(.[0-9]+)?)),\s*units:\s*['"](?<units>kilometers|miles)['"],\s*lat:\s*(?<lat>([+-]?([0-9]+)(.[0-9]+)?)),\s*lng:\s*(?<lng>([+-]?([0-9]+)(.[0-9]+)?))|min_lat:\s*(?<min_lat>([+-]?([0-9]+)(.[0-9]+)?)),min_lng:\s*(?<min_lng>([+-]?([0-9]+)(.[0-9]+)?)),max_lat:\s*(?<max_lat>([+-]?([0-9]+)(.[0-9]+)?)),max_lng:\s*(?<max_lng>([+-]?([0-9]+)(.[0-9]+)?)))\\)`;
+                    const re = new RegExp(pattern);
+                    const m = v.match(re);
+                    
+                    if (m) {
+                        let { operator, radius, units, lat, lng, min_lat, min_lng, max_lat, max_lng } = m.groups;
+                        
+                        if (radius) {
+                            lng = Number(lng).toFixed(2);
+                            lat = Number(lat).toFixed(2);
+
+                            criterion = `${tag1o}location${tagc} is within ${tag2o}${radius}${tagc} ${tag2o}${units}${tagc} of ${tag2o}[${lng}, ${lat}]${tagc}`;
+                        }
+                        else {
+                            min_lng = Number(min_lng).toFixed(2);
+                            min_lat = Number(min_lat).toFixed(2);
+                            max_lng = Number(max_lng).toFixed(2);
+                            max_lat = Number(max_lat).toFixed(2);
+                            
+                            criterion = `${tag1o}location${tagc} is within a box with ${tag1o}lower left corner${tagc} at ${tag2o}[${min_lng}, ${min_lat}]${tagc} and ${tag1o}upper right corner${tagc} at ${tag2o}[${max_lng}, ${max_lat}]${tagc}`;
+                        }
+                    }
+                    
                 }
                 else {
                     criterion  = `${tag1o}${k}${tagc} is ${tag2o}${v}${tagc}`;

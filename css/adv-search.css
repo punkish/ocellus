@@ -32,6 +32,8 @@ div.advanced-search input[type=date] {
 div.advanced-search td.h {
     width: 120px;
     text-align: right;
+    vertical-align: top;
+    font-weight: bold;
 }
 div.advanced-search input[type='date'] {
     width: 130px !important;
@@ -51,5 +53,5 @@ div.advanced-search input[name="as-status"]:checked {
     background-color: green;
 }
 div.advanced-search td.footer {
-    text-align: right;
+    text-align: left;
 }

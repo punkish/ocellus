@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "leaflet": "^1.9.4",
+    "leaflet-draw": "^1.0.4",
     "simple-lightbox": "^2.1.0",
     "simplelightbox": "^2.14.2"
   }

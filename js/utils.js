@@ -14,7 +14,7 @@ const qs2form = (qs) => {
     - qs: ${qs}`);
 
     const sp = new URLSearchParams(qs);
-    console.log(sp)
+    
     // we don't want 'refreshCache' in bookmarked queries
     sp.delete('refreshCache');
 
@@ -275,7 +275,7 @@ const form2qs = () => {
                 }
             });
     }
-    else {
+    else if (typeOfSearch === 'as') {
         log.info('- form2qs(): advanced search');
 
         const commonInputs = [
@@ -289,12 +289,19 @@ const form2qs = () => {
             const fld = $(`input[name=${fldName}]`);
 
             if (fldName === 'resource') {
-                console.log(fld)
+                if (fld.checked || fld.checked === 'true') {
+                    sp.append(fldName, fld.value);
+                }
+                else {
+                    sp.append(fldName, 'images');
+                }
             }
-
-            if (fld.checked || fld.checked === 'true') {
-                sp.append(fldName, fld.value);
+            else {
+                if (fld.checked || fld.checked === 'true') {
+                    sp.append(fldName, fld.value);
+                }
             }
+            
             
         });
 
@@ -411,14 +418,28 @@ const form2qs = () => {
                 break;
             }
         }
+
+        const geolocInputs = [
+            'geolocation'
+        ];
+
+        geolocInputs.forEach(fldName => {
+            const fld = $(`input[name="as-${fldName}"]`);
+
+            if (fld.value) {
+                sp.append(fldName, fld.value);
+            }
+        })
         
     }
 
     if (submitFlag) {
         const qs = sp.toString();
+        console.log(qs)
         return qs;
     }
     else {
+        console.log('false')
         return false;
     }
 }

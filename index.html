@@ -39,6 +39,7 @@
     <link rel="stylesheet" href="css/media-queries.css">
     <!-- endbuild -->
     
+    <link rel="stylesheet" href="node_modules/leaflet-draw/dist/leaflet.draw.css">
     <link rel="stylesheet" href="libs/JavaScript-autoComplete/auto-complete.css">
     <link rel="stylesheet" href="libs/pop-pop/pop-pop.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
@@ -328,7 +329,16 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="4" class="footer">
+                        <td class="h">geolocation</td>
+                        <td colspan="3">
+                            <div id="mapSearch" style="width: 400px; height: 300px;"></div>
+                            <div id="coords"></div>
+                            <input type="hidden" name="as-geolocation" value="">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td colspan="3" class="footer">
                             <input name="as-refreshCache" id="refreshCache-2" type="checkbox" value="true" class="unchecked" aria-label="This will refresh the cache. You probably don't want to do this." data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>
                             <button id="as-go" name="as-go" type="submit" class="as-button-primary">search</button>
                         </td>
@@ -421,6 +431,7 @@
     <script src="libs/lazysizes.min.js"></script>
     <script src="libs/JavaScript-autoComplete/auto-complete.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <script src="node_modules/leaflet-draw/dist/leaflet.draw.js"></script>
     
     <script type="module">
         import { init, showTooltip, hideTooltip } from './js/ocellus.js';
