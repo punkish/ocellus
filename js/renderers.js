@@ -391,7 +391,7 @@ function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
                             lng = Number(lng).toFixed(2);
                             lat = Number(lat).toFixed(2);
 
-                            criterion = `${tag1o}location${tagc} is within ${tag2o}${radius}${tagc} ${tag2o}${units}${tagc} of ${tag2o}[${lng}, ${lat}]${tagc}`;
+                            criterion = `${tag1o}location${tagc} is within ${tag2o}${radius}${tagc} ${tag2o}${units}${tagc} of ${tag2o}lat ${lat}${tagc} and ${tag2o}lng ${lng}${tagc}`;
                         }
                         else {
                             min_lng = Number(min_lng).toFixed(2);
@@ -399,7 +399,7 @@ function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
                             max_lng = Number(max_lng).toFixed(2);
                             max_lat = Number(max_lat).toFixed(2);
                             
-                            criterion = `${tag1o}location${tagc} is within a box with ${tag1o}lower left corner${tagc} at ${tag2o}[${min_lng}, ${min_lat}]${tagc} and ${tag1o}upper right corner${tagc} at ${tag2o}[${max_lng}, ${max_lat}]${tagc}`;
+                            criterion = `${tag1o}location${tagc} is within a box with ${tag1o}lower left corner${tagc} at ${tag2o}lat ${min_lat}, lng ${min_lng}${tagc} and ${tag1o}upper right corner${tagc} at ${tag2o}lat ${max_lat}, lng ${max_lng}${tagc}`;
                         }
                     }
                     
