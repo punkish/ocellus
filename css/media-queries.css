@@ -21,7 +21,8 @@
     }
 
     #mapSearch {
-        --map-width: 600px;
+        /* --map-width: 600px; */
+        min-height: 480px;
     }
 }
 
@@ -71,9 +72,11 @@
         max-width: 760px;
     }
 
-    /* #mapSearch {
-        --map-width: 500px;
-    } */
+    
+    #mapSearch {
+        /* --map-width: 500px; */
+        min-height: 480px;
+    }
 }
 
 /* Larger than tablet */
@@ -139,10 +142,11 @@
         max-width: 760px;
     }
 
-    /* #mapSearch {
-        width: 720px;
-        height: 540px;
-    } */
+    #mapSearch {
+        /* width: 720px;
+        height: 540px; */
+        min-height: 540px;
+    }
 }
 
 /* Larger than desktop */
@@ -175,8 +179,9 @@
     }
 
     #mapSearch {
-        width: 850px;
-        height: 637px;
+        /* width: 850px;
+        height: 637px; */
+        min-height: 600px;
     }
 }
 
