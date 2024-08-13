@@ -114,13 +114,13 @@ function geoSearchWidget(event) {
             const coords = layer.toGeoJSON().geometry.coordinates;
             const [ll, ul, ur, lr, or] = coords[0];
 
+            // write the coords to a div for display
             const min_lat = ll[1].toFixed(2);
             const min_lng = ll[0].toFixed(2);
             const max_lat = ur[1].toFixed(2);
             const max_lng = ur[0].toFixed(2);
-
-            // write the coords to a div for display
-            coordsContainer.innerHTML = `lower left: lat ${min_lat}, lng ${min_lng}, upper right: lat ${max_lat}, lng ${max_lng}`;
+            
+            coordsContainer.innerHTML = `lower left: lat ${min_lat}, lng: ${min_lng}; upper right: lat ${max_lat}, lng ${max_lng}`;
 
             // save the coords to hidden input fields for query
             asGeolocation.value = `within(min_lat:${min_lat},min_lng:${min_lng},max_lat:${max_lat},max_lng:${max_lng})`;
