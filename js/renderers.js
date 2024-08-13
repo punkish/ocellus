@@ -456,7 +456,7 @@ function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
 
 // https://css-tricks.com/how-to-make-charts-with-svg/
 const renderYearlyCountsSparkline = (resource, yearlyCounts) => {
-    const {
+    let {
         images,
         treatments,
         species,
@@ -465,7 +465,7 @@ const renderYearlyCountsSparkline = (resource, yearlyCounts) => {
 
     const yc = yearlyCounts.yearlyCounts;
 
-    const totalCount = resource === 'images'
+    let totalCount = resource === 'images'
         ? images
         : treatments;
 
@@ -501,14 +501,20 @@ const renderYearlyCountsSparkline = (resource, yearlyCounts) => {
     let html = spark;
     //html += '<a href="#dashboard" class="modalToggle">';
 
+    totalCount = Math.round(totalCount / 1000, 0);
+    treatments = Math.round(treatments / 1000, 0);
+    images = Math.round(images / 1000, 0);
+    species = Math.round(species / 1000, 0);
+    journals = Math.round(journals / 1000, 0);
+
     if (resource === 'images') {
-        html += ` <span>~${Math.ceil(totalCount / 1000)}K</span> ${resource}, <span>~${Math.ceil(treatments / 1000)}K</span> treatments, `;
+        html += ` <span>~${totalCount}K</span> ${resource}, <span>~${treatments}K</span> treatments, `;
     }
     else {
-        html += `<span>~${Math.ceil(totalCount / 1000)}K</span> ${resource}, <span>~${Math.ceil(images / 1000)}K</span> images, `;
+        html += `<span>~${totalCount}K</span> ${resource}, <span>~${images}K</span> images, `;
     }
 
-    html += `<span>~${Math.ceil(species / 1000)}K</span> species, <span>~${Math.ceil(journals / 1000)}K</span> journals`;
+    html += `<span>~${species}K</span> species, <span>~${journals}K</span> journals`;
 
     //html += '</a>';
 

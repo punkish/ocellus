@@ -218,7 +218,7 @@ const toggleSearch = (e) => {
 
 const toggleResource = (e) => {
     const resource = $('input[name=resource]').checked
-        ? $('input[name=resource]').value
+        ? 'treatments'
         : 'images';
 
     // find the value of the checked source button inside 
@@ -226,8 +226,7 @@ const toggleResource = (e) => {
     // value
     // const resource = Array.from($$('input[name=resource]'))
     //     .filter(i => i.checked)[0];
-
-        updatePlaceHolder(resource);
+    updatePlaceHolder(resource);
 }
 
 // https://gomakethings.com/only-allowing-one-open-dropdown-at-a-time-with-the-details-element/

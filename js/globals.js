@@ -13,7 +13,11 @@ const globals = {
     // ],
 
     cache: {
-        yearlyCounts: {
+        images: {
+            yearlyCounts: false,
+            totals: false
+        },
+        treatments: {
             yearlyCounts: false,
             totals: false
         }

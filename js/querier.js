@@ -5,7 +5,7 @@ import { toggleWarn } from './listeners.js';
 
 const getCountOfResource = async (resource, getYearlyCounts) => {
     
-    if (!globals.cache.yearlyCounts.yearlyCounts) {
+    if (!globals.cache[resource].yearlyCounts) {
         let url = `${globals.server}/${resource}?cols=`;
 
         if (getYearlyCounts) {
@@ -25,23 +25,21 @@ const getCountOfResource = async (resource, getYearlyCounts) => {
                 const totals = yearlyCounts.reduce(( totals, cur ) => {
                     totals.images += cur.num_of_images;
                     totals.treatments += cur.num_of_treatments;
-                    //totals.materialCitations += cur.num_of_materialCitations;
                     totals.species += cur.num_of_species;
                     totals.journals += cur.num_of_journals;
                     return totals;
                 }, {
                     images: 0,
                     treatments: 0,
-                   // materialCitations: 0,
                     species: 0,
                     journals: 0
                 });
 
-                globals.cache.yearlyCounts.yearlyCounts = yearlyCounts;
-                globals.cache.yearlyCounts.totals = totals;
+                globals.cache[resource].yearlyCounts = yearlyCounts;
+                globals.cache[resource].totals = totals;
             }
             else {
-                globals.cache.yearlyCounts.totals[resource] = count;
+                globals.cache[resource].totals[resource] = count;
             }
         }
     
@@ -51,9 +49,7 @@ const getCountOfResource = async (resource, getYearlyCounts) => {
         }
     }
 
-    // console.log(resource, getYearlyCounts)
-    // console.log(globals.cache.yearlyCounts)
-    return globals.cache.yearlyCounts;    
+    return globals.cache[resource];    
 }
 
 const getResource = async (qs) => {
