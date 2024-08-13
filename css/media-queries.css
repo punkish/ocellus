@@ -21,8 +21,7 @@
     }
 
     #mapSearch {
-        width: 500px;
-        height: 375px;
+        --map-width: 600px;
     }
 }
 
@@ -73,8 +72,7 @@
     }
 
     /* #mapSearch {
-        width: 500px;
-        height: 375px;
+        --map-width: 500px;
     } */
 }
 
@@ -138,12 +136,12 @@
     }
 
     div.advanced-search {
-        max-width: 860px;
+        max-width: 760px;
     }
 
     /* #mapSearch {
-        width: 500px;
-        height: 375px;
+        width: 720px;
+        height: 540px;
     } */
 }
 
@@ -177,8 +175,8 @@
     }
 
     #mapSearch {
-        width: 680px;
-        height: 375px;
+        width: 850px;
+        height: 637px;
     }
 }
 

@@ -4,7 +4,7 @@ div.advanced-search {
     border: 1px solid lightgrey;
     border-radius: 10px;
 /*     font-size: 10px; */
-    padding: 10px;
+    padding: 20px;
 /*     display: inline-block; */
 }
 /* div.as_cell {
@@ -57,7 +57,7 @@ div.advanced-search input[name="as-status"]:checked {
 } */
 
 /* responsive form */
-.flex-outer {
+/* .flex-outer {
     padding: 0;
 }
 
@@ -72,12 +72,12 @@ div.advanced-search input[name="as-status"]:checked {
     max-width: 220px;
     font-weight: bold;
     /* text-align: right;
-    padding-right: 20px; */
+    padding-right: 20px;
 }
 
 .flex-outer > li > label + .fullwidth {
     flex: 1 0 220px;
-}
+} */
 
 input[name="as-refreshCache"] {
     margin-right: 10px;
@@ -93,10 +93,23 @@ input[name="as-refreshCache"] {
 }
 
 #mapSearch {
-    width: 280px;
-    height: 230px;
+    --map-width: 100%;
 }
 
+#mapSearch {
+    width: var(--map-width);
+    height: calc( 0.75 * var(--map-width) + 30px );
+    min-height: 230px;
+}
+
+select[name*="as-"],
+input[name*="as-"] {
+    margin: 0.5rem 0.5rem 0.5rem 0;
+}
+
+select[name="as-biome"] {
+    width: 100%;
+}
 /* .flex-outer li button {
     margin-left: auto;
     padding: 8px 16px;
