@@ -8,9 +8,7 @@
     }
 
     #mapSearch {
-        /* --map-width: 500px; */
-        /* width: 600px;
-        height: 450px; */
+        --map-width: 600px;
     }
 }
 
@@ -60,11 +58,9 @@
         max-width: 760px;
     }
 
-    #mapSearch {
-        /* --map-width: 500px; */
-        /* width: 600px;
-        height: 450px; */
-    }
+    /* #mapSearch {
+        --map-width: 500px;
+    } */
 }
 
 /* Larger than tablet */
@@ -130,10 +126,10 @@
         max-width: 760px;
     }
 
-    #mapSearch {
+    /* #mapSearch {
         width: 720px;
         height: 540px;
-    }
+    } */
 }
 
 /* Larger than desktop */

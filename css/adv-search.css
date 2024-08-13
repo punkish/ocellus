@@ -84,10 +84,13 @@ input[name="as-refreshCache"] {
 }
 
 #mapSearch {
-    --map-width: 370px;
-    width: 370px;
-    /* height: calc( 0.75 * var(--map-width) ); */
-    height: 277px;
+    --map-width: 100%;
+}
+
+#mapSearch {
+    width: var(--map-width);
+    height: calc( 0.75 * var(--map-width) + 30px );
+    min-height: 230px;
 }
 
 select[name*="as-"],
@@ -95,7 +98,9 @@ input[name*="as-"] {
     margin: 0.5rem 0.5rem 0.5rem 0;
 }
 
-
+select[name="as-biome"] {
+    width: 100%;
+}
 /* .flex-outer li button {
     margin-left: auto;
     padding: 8px 16px;
