@@ -1,5 +1,5 @@
 div.advanced-search {
-    width: 80%;
+    width: 100%;
     margin: auto;
     border: 1px solid lightgrey;
     border-radius: 10px;
@@ -10,15 +10,15 @@ div.advanced-search {
 /* div.as_cell {
     float: left;
 } */
-div.advanced-search tr {
+/* div.advanced-search tr {
     border: none;
     outline: none;
 }
 div.advanced-search td {
-/*     border: 1px solid red; */
+    border: 1px solid red;
     font-size: 10px;
     padding: 5px;
-}
+} */
 div.advanced-search input[type=text]:focus {
     border-bottom: blue 2px solid !important;
 }
@@ -29,12 +29,12 @@ div.advanced-search input[type=date] {
     border-bottom: 1px solid grey;
     width: 100%;
 }
-div.advanced-search td.h {
+/* div.advanced-search td.h {
     width: 120px;
     text-align: right;
     vertical-align: top;
     font-weight: bold;
-}
+} */
 div.advanced-search input[type='date'] {
     width: 130px !important;
 }
@@ -52,6 +52,49 @@ div.advanced-search input[name="as-status"] {
 div.advanced-search input[name="as-status"]:checked {
     background-color: green;
 }
-div.advanced-search td.footer {
+/* div.advanced-search td.footer {
     text-align: left;
+} */
+
+/* responsive form */
+.flex-outer {
+    padding: 0;
 }
+
+.flex-outer li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.flex-outer > li > label {
+    flex: 1 0 120px;
+    max-width: 220px;
+    text-align: right;
+    font-weight: bold;
+    padding-right: 20px;
+}
+
+.flex-outer > li > label + .fullwidth {
+    flex: 1 0 220px;
+}
+
+input[name="as-refreshCache"] {
+    margin-right: 10px;
+}
+
+#mapSearch {
+    width: 400px;
+    height: 300px;
+}
+
+/* .flex-outer li button {
+    margin-left: auto;
+    padding: 8px 16px;
+    border: none;
+    background: #333;
+    color: #f2f2f2;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    border-radius: 2px;
+} */

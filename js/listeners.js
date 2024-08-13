@@ -561,8 +561,12 @@ function addListenersToMapCarouselLink() {
 }
 
 const toggleDateSelector = (e) => {
+    const srcName = e.target.name;
+    
     if (e.target.value === 'between') {
-        const tos = e.target.parentNode.querySelectorAll('.hidden');
+        
+        //const tos = e.target.parentNode.querySelectorAll('.hidden');
+        const tos = $$(`#${srcName}-range .hidden`);
 
         tos.forEach(t => {
             if (t.classList.contains('hidden')) {
@@ -572,7 +576,8 @@ const toggleDateSelector = (e) => {
         })
     }
     else {
-        const tos = e.target.parentNode.querySelectorAll('.vis');
+        //const tos = e.target.parentNode.querySelectorAll('.vis');
+        const tos = $$(`#${srcName}-range .vis`);
 
         tos.forEach(t => {
             t.classList.add('hidden');
