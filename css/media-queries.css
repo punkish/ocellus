@@ -8,8 +8,9 @@
     }
 
     #mapSearch {
-        width: 500px;
-        height: 375px;
+        /* --map-width: 500px; */
+        /* width: 600px;
+        height: 450px; */
     }
 }
 
@@ -59,10 +60,11 @@
         max-width: 760px;
     }
 
-    /* #mapSearch {
-        width: 500px;
-        height: 375px;
-    } */
+    #mapSearch {
+        /* --map-width: 500px; */
+        /* width: 600px;
+        height: 450px; */
+    }
 }
 
 /* Larger than tablet */
@@ -125,13 +127,13 @@
     }
 
     div.advanced-search {
-        max-width: 860px;
+        max-width: 760px;
     }
 
-    /* #mapSearch {
-        width: 500px;
-        height: 375px;
-    } */
+    #mapSearch {
+        width: 720px;
+        height: 540px;
+    }
 }
 
 /* Larger than desktop */
@@ -164,8 +166,8 @@
     }
 
     #mapSearch {
-        width: 680px;
-        height: 375px;
+        width: 850px;
+        height: 637px;
     }
 }
 

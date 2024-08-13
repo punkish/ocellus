@@ -204,38 +204,160 @@
             </div>
 
             <div id="as-container" class="advanced-search noblock">
-                <ul class="flex-outer">
-                    <li>
+                <input name="as-q" id="as-q" type="text" class="fullwidth" placeholder="Search Full Text">
+
+                <input name="as-treatmentTitle" id="as-treatmentTitle" type="text" class="fullwidth" placeholder="Treatment Title">
+
+                <input name="as-authorityName" id="as-authorityName" type="text" class="fullwidth" placeholder="Authority">
+
+                <input name="as-articleTitle" id="as-articleTitle" type="text" class="fullwidth" placeholder="Article Title">
+
+                <label for="as-status">New Species</label>
+                <input name="as-status" id="as-status" type="checkbox" value="sp. nov.">
+
+                <input name="as-journalTitle" id="as-journalTitle" type="text" class="fullwidth" placeholder="Journal Title">
+
+                <select name="as-journalYear" id="as-journalYear" class="fullwidth">
+                    <option value="">Journal Year…</option>
+                    <option value="1995">Journal year is 1995</option>
+                    <option value="1996">Journal year is 1996</option>
+                    <option value="1997">Journal year is 1997</option>
+                    <option value="1998">Journal year is 1998</option>
+                    <option value="1999">Journal year is 1999</option>
+                    <option value="2000">Journal year is 2000</option>
+                    <option value="2001">Journal year is 2001</option>
+                    <option value="2002">Journal year is 2002</option>
+                    <option value="2003">Journal year is 2003</option>
+                    <option value="2004">Journal year is 2004</option>
+                    <option value="2005">Journal year is 2005</option>
+                    <option value="2006">Journal year is 2006</option>
+                    <option value="2007">Journal year is 2007</option>
+                    <option value="2008">Journal year is 2008</option>
+                    <option value="2009">Journal year is 2009</option>
+                    <option value="2010">Journal year is 2010</option>
+                    <option value="2011">Journal year is 2011</option>
+                    <option value="2012">Journal year is 2012</option>
+                    <option value="2013">Journal year is 2013</option>
+                    <option value="2014">Journal year is 2014</option>
+                    <option value="2015">Journal year is 2015</option>
+                    <option value="2016">Journal year is 2016</option>
+                    <option value="2017">Journal year is 2017</option>
+                    <option value="2018">Journal year is 2018</option>
+                    <option value="2019">Journal year is 2019</option>
+                    <option value="2020">Journal year is 2020</option>
+                    <option value="2021">Journal year is 2021</option>
+                    <option value="2022">Journal year is 2022</option>
+                    <option value="2023">Journal year is 2023</option>
+                    <option value="2024">Journal year is 2024</option>
+                </select>
+
+                <fieldset id="publicationDateContainer">
+                    <legend>Publication Date</legend>
+                    <select name="as-publicationDate" id="as-publicationDate" class="fullwidth">
+                        <option value="">Duration…</option>
+                        <option value="since">Published since</option>
+                        <option value="until">Published until</option>
+                        <option value="between">Published between</option>
+                    </select>
+
+                    <div id="as-publicationDate-range">
+                        <input name="as-publicationDateFrom" id="as-publicationDateFrom" type="date">
+                        <span class="hidden">and</span> 
+                        <input class="hidden" name="as-publicationDateTo" id="as-publicationDateTo" type="date">
+                    </div>
+                </fieldset>
+
+                <fieldset id="checkinTimeContainer">
+                    <legend>Check-in Time</legend>
+                    <select name="as-checkinTime" id="as-checkinTime" class="fullwidth">
+                        <option value="">Duration…</option>
+                        <option value="since">Checked-in since</option>
+                        <option value="until">Checked-in until</option>
+                        <option value="between">Checked-in between</option>
+                    </select>
+
+                    <div id="as-checkinTime-range">
+                        <input name="as-checkinTimeFrom" id="as-checkinTimeFrom" type="date">
+                        <span class="hidden">and</span> 
+                        <input class="hidden" name="as-checkinTimeTo" id="as-checkinTimeTo" type="date">
+                    </div>
+                </fieldset>
+
+                <select name="as-biome" id="as-biome" class="fullwidth">
+                    <option value="">Biome…</option>
+                    <option value="Boreal Forests or Taiga">Biome is Boreal Forests or Taiga</option>
+                    <option value="Deserts and Xeric Shrublands">Biome is Deserts and Xeric Shrublands</option>
+                    <option value="Flooded Grasslands and Savannas">Biome is Flooded Grasslands and Savannas</option>
+                    <option value="Mangroves">Biome is Mangroves</option>
+                    <option value="Mediterranean Forests, Woodlands and Scrub">Biome is Mediterranean Forests, Woodlands and Scrub</option>
+                    <option value="Montane Grasslands and Shrublands">Biome is Montane Grasslands and Shrublands</option>
+                    <!-- <option value="15">N/A</option> -->
+                    <option value="Temperate Broadleaf and Mixed Forests">Biome is Temperate Broadleaf and Mixed Forests</option>
+                    <option value="Temperate Conifer Forests">Biome is Temperate Conifer Forests</option>
+                    <!-- <option title="synonyms: Pampas, Veld, Savanna">Temperate Grasslands, Savannas and Shrublands</option>
+                    <option title="synonyms: Temperate Grasslands, Savannas & Shrublands" disabled>&nbsp;&nbsp;&nbsp;&nbsp;- Pampas</option>
+                    <option title="synonyms: Temperate Grasslands, Savannas & Shrublands" disabled>&nbsp;&nbsp;&nbsp;&nbsp;- Veld</option>
+                    <option title="synonyms: Temperate Grasslands, Savannas & Shrublands" disabled>&nbsp;&nbsp;&nbsp;&nbsp;- Savanna</option> -->
+                    
+                    <optgroup label="Temperate Grasslands, Savannas & Shrublands">
+                        <option value="Temperate Grasslands, Savannas & Shrublands">Temperate Grasslands, Savannas & Shrublands</option>
+                        <option value="Temperate Grasslands, Savannas & Shrublands">Pampas</option>
+                        <option value="Temperate Grasslands, Savannas & Shrublands">Veld</option>
+                        <option value="Temperate Grasslands, Savannas & Shrublands">Savanna</option>
+                    </optgroup> 
+                    
+                    <option value="Tropical and Subtropical Coniferous Forests">Biome is Tropical and Subtropical Coniferous Forests</option>
+                    <option value="Tropical and Subtropical Dry Broadleaf Forests">Biome is Tropical and Subtropical Dry Broadleaf Forests</option>
+                    <option value="Tropical and Subtropical Grasslands, Savannas and Shrublands">Biome is Tropical and Subtropical Grasslands, Savannas and Shrublands</option>
+                    <option value="Tropical and Subtropical Moist Broadleaf Forests">Biome is Tropical and Subtropical Moist Broadleaf Forests</option>
+                    <option value="Tundra">Biome is Tundra</option>
+                </select>
+
+                <div id="mapSearchContainer">
+                    <label for="as-geolocation">Geolocation</label>
+                    <input type="hidden" name="as-geolocation" id="as-geolocation" value="">
+                    <div id="mapSearch"></div>
+                    <div id="coords" style="display: block; height: 20px;"></div>
+                </div>
+
+                <div id="submitButtonContainer">
+                    <input name="as-refreshCache" id="refreshCache-2" type="checkbox" value="true" class="unchecked" aria-label="This will refresh the cache. You probably don't want to do this." data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>
+                    <button id="as-go" name="as-go" type="submit" class="as-button-primary">search</button>
+                </div>
+            
+
+                <!-- <ul class="flex-outer"> -->
+                    <!-- <li>
                         <label for="as-q">Search Full Text</label>
                         <input name="as-q" id="as-q" type="text" class="fullwidth">
-                    </li>
+                    </li> -->
 
-                    <li>
+                    <!-- <li>
                         <label for="as-treatmentTitle">Treatment Title</label>
                         <input name="as-treatmentTitle" id="as-treatmentTitle" type="text" class="fullwidth">
-                    </li>
+                    </li> -->
 
-                    <li>
+                    <!-- <li>
                         <label for="as-authorityName">Authority</label>
                         <input name="as-authorityName" id="as-authorityName" type="text" class="fullwidth">
-                    </li>
+                    </li> -->
 
-                    <li>
+                    <!-- <li>
                         <label for="as-articleTitle">Article Title</label>
                         <input name="as-articleTitle" id="as-articleTitle" type="text" class="fullwidth">
-                    </li>
+                    </li> -->
 
-                    <li>
+                    <!-- <li>
                         <label for="as-status">New Species</label>
                         <input name="as-status" id="as-status" type="checkbox" value="sp. nov.">
-                    </li>
+                    </li> -->
 
-                    <li>
+                    <!-- <li>
                         <label for="as-journalTitle">Journal Title</label>
                         <input name="as-journalTitle" id="as-journalTitle" type="text" class="fullwidth">
-                    </li>
+                    </li> -->
 
-                    <li>
+                    <!-- <li>
                         <label for="as-journalYear">Journal Year</label>
                         <select name="as-journalYear" id="as-journalYear" class="fullwidth">
                             <option value="">choose year…</option>
@@ -270,9 +392,9 @@
                             <option>2023</option>
                             <option>2024</option>
                         </select>
-                    </li>
+                    </li> -->
 
-                    <li>
+                    <!-- <li>
                         <label for="as-publicationDate" aria-label="When the article was published." data-pop="left" data-pop-no-shadow data-pop-arrow data-pop-multiline>Publication Date</label>
                         <select name="as-publicationDate" id="as-publicationDate" class="fullwidth">
                             <option value="">choose duration…</option>
@@ -280,18 +402,16 @@
                             <option value="until">until</option>
                             <option value="between">between</option>
                         </select>
-                    </li>
+                    </li> -->
 
-                    <li id="as-publicationDate-range">
-
-                        <!-- empty label field to align inputs to the right -->
+                    <!-- <li id="as-publicationDate-range">
                         <label></label>
                         <input name="as-publicationDateFrom" id="as-publicationDateFrom" type="date">
                         <span class="hidden">and</span> 
                         <input class="hidden" name="as-publicationDateTo" id="as-publicationDateTo" type="date">
-                    </li>
+                    </li> -->
 
-                    <li>
+                    <!-- <li>
                         <label for="as-checkinTime" aria-label="When the article was checked into the Treatment Bank database." data-pop="left" data-pop-no-shadow data-pop-arrow data-pop-multiline>Check-in Time</label>
                         <select name="as-checkinTime" id="as-checkinTime" class="fullwidth">
                             <option value="">choose duration…</option>
@@ -299,18 +419,16 @@
                             <option value="until">until</option>
                             <option value="between">between</option>
                         </select>
-                    </li>
+                    </li> -->
 
-                    <li id="as-checkinTime-range">
-
-                        <!-- empty label field to align inputs to the right -->
+                    <!-- <li id="as-checkinTime-range">
                         <label></label>
                         <input name="as-checkinTimeFrom" id="as-checkinTimeFrom" type="date">
                         <span class="hidden">and</span> 
                         <input class="hidden" name="as-checkinTimeTo" id="as-checkinTimeTo" type="date">
-                    </li>
+                    </li> -->
 
-                    <li>
+                    <!-- <li>
                         <label for="as-biome">Biome</label>
                         <select name="as-biome" id="as-biome" class="fullwidth">
                             <option value="">choose biome…</option>
@@ -320,30 +438,21 @@
                             <option>Mangroves</option>
                             <option>Mediterranean Forests, Woodlands and Scrub</option>
                             <option>Montane Grasslands and Shrublands</option>
-                            <!-- <option value="15">N/A</option> -->
                             <option>Temperate Broadleaf and Mixed Forests</option>
                             <option>Temperate Conifer Forests</option>
                             <option title="synonyms: Pampas, Veld, Savanna">Temperate Grasslands, Savannas and Shrublands</option>
                             <option title="synonyms: Temperate Grasslands, Savannas & Shrublands" disabled>&nbsp;&nbsp;&nbsp;&nbsp;- Pampas</option>
                             <option title="synonyms: Temperate Grasslands, Savannas & Shrublands" disabled>&nbsp;&nbsp;&nbsp;&nbsp;- Veld</option>
                             <option title="synonyms: Temperate Grasslands, Savannas & Shrublands" disabled>&nbsp;&nbsp;&nbsp;&nbsp;- Savanna</option>
-                            <!-- 
-                            <optgroup label="Temperate Grasslands, Savannas & Shrublands">
-                                <option value="5">Temperate Grasslands, Savannas & Shrublands</option>
-                                <option value="5">Pampas</option>
-                                <option value="5">Veld</option>
-                                <option value="5">Savanna</option>
-                            </optgroup> 
-                            -->
                             <option>Tropical and Subtropical Coniferous Forests</option>
                             <option>Tropical and Subtropical Dry Broadleaf Forests</option>
                             <option>Tropical and Subtropical Grasslands, Savannas and Shrublands</option>
                             <option>Tropical and Subtropical Moist Broadleaf Forests</option>
                             <option>Tundra</option>
                         </select>
-                    </li>
+                    </li> -->
 
-                    <li>
+                    <!-- <li>
                         <label for="as-geolocation">Geolocation</label>
                         <input type="hidden" name="as-geolocation" id="as-geolocation" value="">
                         <div id="mapSearch"></div>
@@ -352,16 +461,14 @@
                     <li>
                         <label></label>
                         <div id="coords" style="display: block; height: 20px;"></div>
-                    </li>
+                    </li> -->
 
-                    <li>
-
-                        <!-- empty label to align the following inputs -->
+                    <!-- <li>
                         <label></label>
                         <input name="as-refreshCache" id="refreshCache-2" type="checkbox" value="true" class="unchecked" aria-label="This will refresh the cache. You probably don't want to do this." data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>
                         <button id="as-go" name="as-go" type="submit" class="as-button-primary">search</button>
-                    </li>
-                </ul>
+                    </li> -->
+                <!-- </ul> -->
 
                 <!-- <table>
                     <tr>
