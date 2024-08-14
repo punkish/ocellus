@@ -39,7 +39,7 @@ async function html() {
         .pipe(htmlReplace({
             'css': `./css/ocellus-${dsecs}.css`
         }))
-        .pipe(cleanhtml())
+        //.pipe(cleanhtml())
         .pipe(dest(destination))
 }
 
