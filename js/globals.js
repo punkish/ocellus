@@ -20,7 +20,9 @@ const globals = {
         treatments: {
             yearlyCounts: false,
             totals: false
-        }
+        },
+        journals: null,
+        collectionCodes: null
     },
 
     // various querystring defaults
@@ -143,8 +145,10 @@ const globals = {
             'zenodoDep',
             'authorityName',
             // 'articleAuthor',
+            'collectionCode',
             'status',
             'journalTitle',
+            'journals_id',
             'journalYear',
             'kingdom',
             'phylum',
@@ -258,8 +262,12 @@ const globals = {
             'submit',
             'source',
             'grid'
-        ],
+        ]
 
+        
+    },
+
+    cols: {
         images: [ 
             'treatmentId', 'treatmentTitle', 'zenodoDep', 'treatmentDOI', 
             'articleTitle', 'articleAuthor', 'httpUri', 'caption', 'latitude',

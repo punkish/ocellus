@@ -1,5 +1,5 @@
 import { $, $$ } from './base.js';
-// import { globals } from './globals.js';
+import { globals } from './globals.js';
 // import { toggleDateSelector } from './listeners.js';
 
 function geoSearchWidget(event) {
@@ -155,6 +155,72 @@ function geoSearchWidget(event) {
     });
 }
 
+async function getCollectionCodes() {
+    if (globals.cache.collectionCodes) {
+        return globals.cache.collectionCodes;
+    }
+    else {
+        const url = `${globals.server}/collectioncodes?cols=collectionCode&cols=name&size=4300`;
+        const response = await fetch(url);
+    
+        // if HTTP-status is 200-299
+        if (response.ok) {
+            const json = await response.json();
+            const records = json.item.result.records;
+    
+            if (records) {
+                globals.cache.collectionCodes = records.map(r => {
+                    return {
+                        collectionCode: r.collectionCode,
+                        name: r.name
+                    }
+                });
+
+                return globals.cache.collectionCodes;
+            }
+        }
+    
+        // throw an error
+        else {
+            alert("HTTP-Error: " + response.status);
+        }
+    }
+    
+}
+
+async function getJournalTitles() {
+    if (globals.cache.journals) {
+        return globals.cache.journals;
+    }
+    else {
+        const url = `${globals.server}/journals?size=1100&sortby=journalTitle:asc`;
+        const response = await fetch(url);
+    
+        // if HTTP-status is 200-299
+        if (response.ok) {
+            const json = await response.json();
+            const records = json.item.result.records;
+    
+            if (records) {
+                globals.cache.journals = records.map(r => {
+                    return {
+                        journals_id: r.journals_id,
+                        journalTitle: r.journalTitle
+                    }
+                });
+
+                return globals.cache.journals;
+            }
+        }
+    
+        // throw an error
+        else {
+            alert("HTTP-Error: " + response.status);
+        }
+    }
+    
+}
+
 const init = () => {
 
     // const biomeAc = new autoComplete({
@@ -264,4 +330,4 @@ const init = () => {
 //     delay: 150
 // });
 
-export { init, geoSearchWidget }
+export { init, geoSearchWidget, getJournalTitles, getCollectionCodes }

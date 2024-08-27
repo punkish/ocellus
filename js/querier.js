@@ -116,8 +116,8 @@ const getResource = async (qs) => {
 
     // let's define the cols to retrieve from Zenodeo
     const cols = resource === 'images'
-        ? `${globals.params.images.join('&cols=')}`
-        : `${globals.params.treatments.join('&cols=')}`;
+        ? `${globals.cols.images.join('&cols=')}`
+        : `${globals.cols.treatments.join('&cols=')}`;
 
     // cols.map(c => `cols=${c}`).join('&')
     let queryString = `${sp.toString()}&cols=${cols}`;
@@ -277,14 +277,22 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                             record.fullImage = '/img/kein-preview.png';
                         }
                         else {
-                            record.uri = `${globals.zenodoUri}/${id}/thumb${figureSize}`;
-                            record.fullImage = `${globals.zenodoUri}/${id}/thumb1200`;
+
+                            // record.uri = `${globals.zenodoUri}/${id}/thumb${figureSize}`;
+                            // https://zenodo.org/api/iiif/record:6758444:figure.png/full/250,/0/default.png
+                            record.uri = `https://zenodo.org/api/iiif/record:${id}:figure.png/full/250,/0/default.jpg`;
+                            record.img = `${globals.zenodoUri}/${id}/thumb${figureSize}`;
+
+                            // record.fullImage = `${globals.zenodoUri}/${id}/thumb1200`;
+                            // https://zenodo.org/api/iiif/record:6758444:figure.png/full/1200,/0/default.png
+                            record.fullImage = `https://zenodo.org/api/iiif/record:${id}:figure.png/full/^1200,/0/default.jpg`;
+                            record.fullImg = `${globals.zenodoUri}/${id}/thumb1200`;
                         }
                     }
 
                     // but some are on Pensoft, so use the uri directly
                     else {
-                        record.uri = r.httpUri;
+                        record.uri = `${r.httpUri}/singlefigAOF/`;
                         record.fullImage = r.httpUri;
                     } 
                     

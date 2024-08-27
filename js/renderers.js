@@ -85,12 +85,32 @@ const makeImage = ({ figureSize, rec }) => {
         ? `this.parentNode.parentNode.parentNode.parentNode.style.height=this.height+150+'px'`
         : '';
 
+    // <picture>
+    // <source srcset="${rec.uri}" 
+    //     data-src="${rec.uri}" 
+    //     class="lazyload" 
+    //     data-recid="${rec.treatmentId}" 
+    //     onerror="${retryGetImage}" 
+    //     onload="${resizeBox}" 
+    //     media="(orientation: portrait)" />
+    // <img src="img/bug.gif" width="${rec.figureSize}" 
+    //     data-src="${rec.uri}" 
+    //     class="lazyload" 
+    //     data-recid="${rec.treatmentId}" 
+    //     onerror="${retryGetImage}"
+    //     onload="${resizeBox}">
+    // </picture>
+
     return `<figure class="${figureClass}">
     <a class="zen" href="${rec.fullImage}">
-        <img src="img/bug.gif" width="${rec.figureSize}" data-src="${rec.uri}" 
-            class="lazyload" data-recid="${rec.treatmentId}" 
-            onerror="${retryGetImage}"
-            onload="${resizeBox}">
+
+            <img src="img/bug.gif" width="${rec.figureSize}" 
+                data-src="${rec.uri}" 
+                class="lazyload" 
+                data-recid="${rec.treatmentId}" 
+                onerror="${retryGetImage}"
+                onload="${resizeBox}">
+        
     </a>
     <figcaption class="${figcaptionClass}">
         <details>
@@ -260,6 +280,12 @@ const renderPager = (qs, prev, next) => {
     addListenersToPagerLinks();
 }
 
+// Regex to split camel case
+// https://stackoverflow.com/a/54112355/183692
+function SplitCamelCaseWithAbbreviations(s){
+    return s.split(/([A-Z][a-z]+)/).filter(function(e){return e}).map(e => e.toLowerCase()).join(' ');
+ }
+
 function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
     log.info('- renderSearchCriteria()');
 
@@ -405,6 +431,7 @@ function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
                     
                 }
                 else {
+                    k = SplitCamelCaseWithAbbreviations(k);
                     criterion  = `${tag1o}${k}${tagc} is ${tag2o}${v}${tagc}`;
                 }
             }

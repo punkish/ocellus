@@ -11,21 +11,48 @@ var autoComplete = (function(){
         if (!document.querySelector) return;
 
         // helpers
-        function hasClass(el, className){ return el.classList ? el.classList.contains(className) : new RegExp('\\b'+ className+'\\b').test(el.className); }
+        function hasClass(el, className){ 
+            return el.classList 
+                ? el.classList.contains(className) 
+                : new RegExp('\\b'+ className+'\\b').test(el.className); 
+        }
 
         function addEvent(el, type, handler){
-            if (el.attachEvent) el.attachEvent('on'+type, handler); else el.addEventListener(type, handler);
+            if (el.attachEvent) {
+                el.attachEvent('on'+type, handler); 
+            }
+            else {
+                el.addEventListener(type, handler);
+            }
         }
+
         function removeEvent(el, type, handler){
             // if (el.removeEventListener) not working in IE11
-            if (el.detachEvent) el.detachEvent('on'+type, handler); else el.removeEventListener(type, handler);
+            if (el.detachEvent) {
+                el.detachEvent('on'+type, handler); 
+            }
+            else {
+                el.removeEventListener(type, handler);
+            }
         }
+
         function live(elClass, event, cb, context){
-            addEvent(context || document, event, function(e){
-                var found, el = e.target || e.srcElement;
-                while (el && !(found = hasClass(el, elClass))) el = el.parentElement;
-                if (found) cb.call(el, e);
-            });
+            addEvent(
+                context || document, 
+                event, 
+                function(e){
+                    let found;
+                    let el = e.target || e.srcElement;
+
+                    while (el && !(found = hasClass(el, elClass))) {
+                        el = el.parentElement;
+                    }
+
+                    if (found) {
+                        cb.call(el, e);
+                    }
+                }
+            );
         }
 
         var o = {
@@ -45,10 +72,18 @@ var autoComplete = (function(){
             },
             onSelect: function(e, term, item){}
         };
-        for (var k in options) { if (options.hasOwnProperty(k)) o[k] = options[k]; }
+
+        for (var k in options) { 
+            if (options.hasOwnProperty(k)) {
+                o[k] = options[k]; 
+            }
+        }
 
         // init
-        var elems = typeof o.selector == 'object' ? [o.selector] : document.querySelectorAll(o.selector);
+        var elems = typeof o.selector == 'object' 
+            ? [o.selector] 
+            : document.querySelectorAll(o.selector);
+
         for (var i=0; i<elems.length; i++) {
             var that = elems[i];
 
@@ -66,6 +101,7 @@ var autoComplete = (function(){
                 that.sc.style.left = Math.round(rect.left + (window.pageXOffset || document.documentElement.scrollLeft) + o.offsetLeft) + 'px';
                 that.sc.style.top = Math.round(rect.bottom + (window.pageYOffset || document.documentElement.scrollTop) + o.offsetTop) + 'px';
                 that.sc.style.width = Math.round(rect.right - rect.left) + 'px'; // outerWidth
+
                 if (!resize) {
                     that.sc.style.display = 'block';
                     if (!that.sc.maxHeight) { that.sc.maxHeight = parseInt((window.getComputedStyle ? getComputedStyle(that.sc, null) : that.sc.currentStyle).maxHeight); }
@@ -81,6 +117,7 @@ var autoComplete = (function(){
                         }
                 }
             }
+            
             addEvent(window, 'resize', that.updateSC);
             document.body.appendChild(that.sc);
 

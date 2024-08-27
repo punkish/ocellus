@@ -310,7 +310,9 @@ const form2qs = () => {
             'treatmentTitle',
             'authorityName',
             'articleTitle',
-            'journalTitle'
+            'journalTitle',
+            'journals_id',
+            'collectionCode'
         ];
 
         textInputs.forEach((fldName) => {
