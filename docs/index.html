@@ -9,7 +9,7 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Wed Aug 14 2024 23:33:02 GMT+0200 (Central European Summer Time)">
+    <meta name="date" content="Tue Aug 27 2024 14:07:01 GMT+0200 (Central European Summer Time)">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4</title>
@@ -29,7 +29,7 @@
     <meta name="msapplication-config" content="/favicons/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
 
-    <link rel="stylesheet" href="./css/ocellus-1723671182458.css">
+    <link rel="stylesheet" href="./css/ocellus-1724760421401.css">
     
     <link rel="stylesheet" href="libs/leaflet-draw/dist/leaflet.draw.css">
     <link rel="stylesheet" href="libs/JavaScript-autoComplete/auto-complete.css">
@@ -207,7 +207,13 @@
                 <label for="as-status">New Species</label>
                 <input name="as-status" id="as-status" type="checkbox" value="sp. nov.">
 
+                <!-- collectionCode/collectionName filled by autocomplete -->
+                <!-- <input name="as-collectionName" id="as-collectionName" type="text" class="fullwidth" placeholder="Collection Name"> -->
+                <input name="as-collectionCode" id="as-collectionCode" type="text" class="fullwidth" placeholder="Collection Code">
+
+                <!-- journalTitle/journals_id filled by autocomplete -->
                 <input name="as-journalTitle" id="as-journalTitle" type="text" class="fullwidth" placeholder="Journal Title">
+                <input name="as-journals_id" id="as-journals_id" type="text">
 
                 <select name="as-journalYear" id="as-journalYear" class="fullwidth">
                     <option value="">Journal Year…</option>
@@ -247,6 +253,7 @@
                     <legend>Publication Date</legend>
                     <select name="as-publicationDate" id="as-publicationDate" class="fullwidth">
                         <option value="">Duration…</option>
+                        <option value="eq">Published on</option>
                         <option value="since">Published since</option>
                         <option value="until">Published until</option>
                         <option value="between">Published between</option>
@@ -263,6 +270,7 @@
                     <legend>Check-in Time</legend>
                     <select name="as-checkinTime" id="as-checkinTime" class="fullwidth">
                         <option value="">Duration…</option>
+                        <option value="eq">Checked-in on</option>
                         <option value="since">Checked-in since</option>
                         <option value="until">Checked-in until</option>
                         <option value="between">Checked-in between</option>
@@ -404,7 +412,116 @@
     <script src="libs/leaflet-draw/dist/leaflet.draw.js"></script>
     
     <script type="module">
-        import { init, showTooltip, hideTooltip } from './js/ocellus-1723671182458.js';
+        import { 
+            getJournalTitles, 
+            getCollectionCodes 
+        } from './js/adv-search.js';
+
+        function journalTitleAc() {
+            const ac = new autoComplete({
+                selector: 'input[name="as-journalTitle"]',
+                minChars: 2,
+                source: async function(term, suggest) {
+                    term = term.toLowerCase();
+                    const choices = await getJournalTitles();
+                    const matches = [];
+
+                    for (let i=0; i < choices.length; i++) {
+                        if (~choices[i].journalTitle.toLowerCase().indexOf(term)) {
+                            matches.push({
+                                journals_id: choices[i].journals_id,
+                                journalTitle: choices[i].journalTitle
+                            });
+                        }
+
+                        // if (~choices[i][val].toLowerCase().indexOf(term)) {
+                        //     matches.push({
+                        //         key: choices[i][key],
+                        //         val: choices[i][val]
+                        //     });
+                        // }
+                    }
+                    
+                    suggest(matches);
+                },
+                renderItem: function (item, search){
+                    
+                    // escape special characters
+                    search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                    const re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+                    const disp = item.journalTitle.replace(re, "<b>$1</b>");
+                    return `<div class="autocomplete-suggestion" data-id="${item.journals_id}" data-val="${item.journalTitle}">${disp}</div>`;
+                },
+                onSelect: function(e, term, item){
+                    document.querySelector(keySelector).value = item.getAttribute('data-id');
+                }
+            });
+        }
+
+        function collectionCodeAc() {
+            const ac = new autoComplete({
+                selector: 'input[name="as-collectionCode"]',
+                minChars: 2,
+                source: async function(term, suggest) {
+                    term = term.toLowerCase();
+                    const choices = await getCollectionCodes();
+                    const matches = [];
+
+                    for (let i=0; i < choices.length; i++) {
+                        
+                        if (~choices[i].collectionCode.toLowerCase().indexOf(term)) {
+                            matches.push({
+                                collectionCode: choices[i].collectionCode,
+                                name: choices[i].name
+                            });
+                        }
+
+                    }
+                    
+                    suggest(matches);
+                },
+                renderItem: function (item, search){
+                    
+                    // escape special characters
+                    search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                    const re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+                    let disp = item.collectionCode.replace(re, "<b>$1</b>");
+
+                    if (item.name) {
+                        disp += ` (${item.name})`;
+                    }
+
+                    return `<div class="autocomplete-suggestion" data-id="${item.collectionCode}">${disp}</div>`;
+                },
+                onSelect: function(e, term, item){
+                    document.querySelector('input[name="as-collectionCode"]').value = item.getAttribute('data-id');
+                }
+                
+            });
+        }
+
+        // pixabayAc({
+        //     selector: 'input[name="as-journalTitle"]',
+        //     keySelector: 'input[name="as-journals_id"]',
+        //     cb: getJournalTitles,
+        //     key: 'journals_id',
+        //     val: 'journalTitle'
+        // });
+
+        // pixabayAc({
+        //     selector: 'input[name="as-collectionCode"]',
+        //     //keySelector: 'input[name="as-journals_id"]',
+        //     cb: getCollectionCodes,
+        //     key: 'collectionCode',
+        //     //val: 'journalTitle'
+        // });
+
+        journalTitleAc();
+        collectionCodeAc();
+    </script>
+
+    <script type="module">
+        import { init, showTooltip, hideTooltip } from './js/ocellus-1724760421401.js';
         window.onload = () => init();
         window.showTooltip = showTooltip;
         window.hideTooltip = hideTooltip;
