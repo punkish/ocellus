@@ -23,7 +23,7 @@ function geoSearchWidget(event) {
 
     // redraw the map if the browser window is resized
     //map.invalidateSize(true);
-    drawHeatMap(map);
+    //drawHeatMap(map);
     //drawBinsGeoJson(map);
     
     drawControlLayer(map);
