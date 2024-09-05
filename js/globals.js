@@ -22,7 +22,8 @@ const globals = {
             totals: false
         },
         journals: null,
-        collectionCodes: null
+        collectionCodes: null,
+        bins: {}
     },
 
     // various querystring defaults

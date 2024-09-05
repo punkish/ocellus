@@ -5,13 +5,16 @@ import { globals } from './globals.js';
 function geoSearchWidget(event) {
 
     // initialize map with drawControl
-    const map = L.map('mapSearch').setView([0, 0], 1);
+    const initialMapCenter = [0, 0];
+    const initialZoom = 2;
+    const map = L.map('mapSearch').setView(initialMapCenter, initialZoom);
 
-    // turn off the flag emoji
+    // turn off the Ukrainian flag emoji
     map.attributionControl.setPrefix('');
 
     // set map source
-    const mapSource = 'http://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+    let mapSource = 'http://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+    //mapSource = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
     L.tileLayer(mapSource, {
         maxZoom: 19,
@@ -20,11 +23,36 @@ function geoSearchWidget(event) {
 
     // redraw the map if the browser window is resized
     //map.invalidateSize(true);
+    drawHeatMap(map);
+    //drawBinsGeoJson(map);
+    
+    drawControlLayer(map);
+}
+
+// lower left: lat -76.41, lng: -165.94; upper right: lat 72.32, lng 165.23
+
+async function drawHeatMap(map) {
+    const points = await getMaterialCitations();
+    const heatOptions = {
+        gradient: {
+            0.4: 'blue',
+            0.6: 'cyan',
+            0.7: 'lime',
+            0.8: 'yellow',
+            1.0: 'red'
+        },
+        radius: 15
+    }
+
+    const heatMap = L.heatLayer(points, heatOptions).addTo(map);
+}
+
+function drawControlLayer(map) {
 
     // the featureGroup stores the user-drawn features
     const editableLayers = new L.FeatureGroup();
     map.addLayer(editableLayers);
-    
+
     // const MyCustomMarker = L.Icon.extend({
     //     options: {
     //         shadowUrl: null,
@@ -33,7 +61,7 @@ function geoSearchWidget(event) {
     //         iconUrl: 'link/to/image.png'
     //     }
     // });
-    
+
     const drawControlOptions = {
         position: 'topleft',
         draw: {
@@ -92,14 +120,14 @@ function geoSearchWidget(event) {
             //remove: false
         }
     };
-    
+
     const drawControl = new L.Control.Draw(drawControlOptions);
     map.addControl(drawControl);
-    
+
     map.on(L.Draw.Event.CREATED, function (e) {
         const type = e.layerType;
         const layer = e.layer;
-    
+
         // if (type === 'marker') {
         //     layer.bindPopup('A popup!');
         // }
@@ -141,7 +169,7 @@ function geoSearchWidget(event) {
             
             asGeolocation.value = `within(radius:${radius},units:'kilometers',lat:${lat},lng:${lng})`;
         }
-    
+
         editableLayers.addLayer(layer);
     });
 
@@ -219,6 +247,235 @@ async function getJournalTitles() {
         }
     }
     
+}
+
+async function getMaterialCitations() {
+    
+        const url = `${globals.server}/materialcitations?validGeo=true&cols=latitude&cols=longitude&size=520000`;
+        const response = await fetch(url);
+    
+        // if HTTP-status is 200-299
+        if (response.ok) {
+            const res = await response.json();
+            return res.item
+                .result
+                .records.map(m => [ m.latitude, m.longitude ]);
+        }
+    
+        // throw an error
+        else {
+            alert("HTTP-Error: " + response.status);
+        }
+    
+}
+
+async function getBins(binLevel) {
+    if (globals.cache.bins[binLevel]) {
+        return globals.cache.bins[binLevel];
+    }
+    else {
+        const url = `${globals.server}/bins/${binLevel}`;
+        const response = await fetch(url);
+    
+        // if HTTP-status is 200-299
+        if (response.ok) {
+            globals.cache.bins[binLevel] = await response.json();
+            return globals.cache.bins[binLevel];
+        }
+    
+        // throw an error
+        else {
+            alert("HTTP-Error: " + response.status);
+        }
+    }
+}
+
+function getInterval(val, interval, min) {
+
+}
+
+function equalFrequencyBins(arr, m) {
+    const a = arr.length; 
+    const n = Math.floor(a / m);
+
+    for (let i = 0; i < m; i++) {
+        const arr1 = [];
+
+        for (let j = i * n, k = (i + 1) * n; j < k; j++) {
+            if (j >= a) {
+                break;
+            }
+
+            arr1.push([arr[j]]);
+        } 
+            
+        print(arr1);
+    }
+}
+
+const h3BoundsToPolygon = (lngLatH3Bounds) => {
+    lngLatH3Bounds.push(lngLatH3Bounds[0]); // "close" the polygon
+    return lngLatH3Bounds;
+};
+
+async function drawBins(map) {
+    // if (hexLayer) {
+    //     hexLayer.remove();
+    // }
+
+    const hexLayer = L.layerGroup().addTo(map);
+
+    // const zoom = map.getZoom();
+    // this.currentH3Res = getH3ResForMapZoom(zoom);
+    // const { _southWest: sw, _northEast: ne} = map.getBounds();
+
+    // const boundsPolygon =[
+    //     [ sw.lat, sw.lng ],
+    //     [ ne.lat, sw.lng ],
+    //     [ ne.lat, ne.lng ],
+    //     [ sw.lat, ne.lng ],
+    //     [ sw.lat, sw.lng ],
+    // ];
+
+    // const h3s = h3.polygonToCells(boundsPolygon, this.currentH3Res);
+
+    const bins = await getBins(2);
+
+    for (const [ h3id, numOfTreatments ] of Object.entries(bins)) {
+
+        const polygonLayer = L.layerGroup()
+            .addTo(hexLayer);
+
+        //const isSelected = h3id === this.searchH3Id;
+
+        //const style = isSelected ? { fillColor: "orange" } : {};
+
+        const h3Bounds = h3.cellToBoundary(h3id);
+        //const averageEdgeLength = this.computeAverageEdgeLengthInMeters(h3Bounds);
+        const cellArea = h3.cellArea(h3id, "m2");
+
+        const tooltipText = `
+        Cell ID: <b>${ h3id }</b>
+        <br />
+        Num of Treatments: <b>${ numOfTreatments }</b>
+        <br />
+        Cell area (m^2): <b>${ cellArea.toLocaleString() }</b>
+        `;
+
+        const style = {
+            "color": "#444",
+            "weight": 0,
+            "opacity": 1
+        }
+
+        const h3Polygon = L.polygon(h3BoundsToPolygon(h3Bounds), style)
+            //.on('click', () => copyToClipboard(h3id))
+            .bindTooltip(tooltipText)
+            .addTo(polygonLayer);
+
+        // less SVG, otherwise perf is bad
+        if (
+            Math.random() > 0.8 
+            //|| isSelected
+        ) {
+            var svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svgElement.setAttribute('xmlns', "http://www.w3.org/2000/svg");
+            svgElement.setAttribute('viewBox', "0 0 200 200");
+            svgElement.innerHTML = `<text x="20" y="70" class="h3Text">${h3id}</text>`;
+            var svgElementBounds = h3Polygon.getBounds();
+            L.svgOverlay(svgElement, svgElementBounds).addTo(polygonLayer);
+        }
+    }
+}
+
+async function drawBinsGeoJson(map) {
+    const bins = await getBins(2);
+    const counts = Object.values(bins);
+    const max = Math.max(...counts);
+    const min = Math.min(...counts);
+    const range = max - min;
+    const numOfIntervals = 8;
+    const interval = Math.round(range / numOfIntervals); 
+
+    const grid = [];
+
+    for (const [ cellId, numOfTreatments ] of Object.entries(bins)) {
+        grid.push({
+            "type": "Feature",
+            "properties": {
+                cellId,
+                numOfTreatments,
+                "interval": Math.floor(numOfTreatments / interval)
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [h3.cellToBoundary(cellId, true)]
+            }
+        })
+    }
+
+    L.geoJSON(grid, {
+        style: function(feature) {
+            const style = {
+                "color": "#444",
+                "weight": 1,
+                "opacity": 1
+            }
+
+            if (feature.properties.interval === 7) {
+                style.fillColor = "#b10026";
+            }
+            else if (feature.properties.interval === 6) {
+                style.fillColor = "#e31a1c";
+            }
+            else if (feature.properties.interval === 5) {
+                style.fillColor = "#fc4e2a";
+            }
+            else if (feature.properties.interval === 4) {
+                style.fillColor = "#fd8d3c";
+            }
+            else if (feature.properties.interval === 3) {
+                style.fillColor = "#feb24c";
+            }
+            else if (feature.properties.interval === 2) {
+                style.fillColor = "#fed976";
+            }
+            else if (feature.properties.interval === 1) {
+                style.fillColor = "#ffeda0";
+            }
+            else {
+                style.fillColor = "#ffffcc";
+            }
+
+            return style;
+        },
+        onEachFeature: function(feature, layer) {
+            const cellId = feature.properties.cellId;
+            const numOfTreatments = feature.properties.numOfTreatments;
+            const cellArea = h3.cellArea(cellId, "m2");
+            const tooltipText = `Cell ID: <b>${ cellId }</b>
+            <br />
+            Num of Treatments: <b>${ numOfTreatments }</b>
+            <br />
+            Cell area (m^2): <b>${ cellArea.toLocaleString() }</b>`;
+            layer.setTooltipContent(tooltipText);
+
+            layer.on('mouseover', function(e) {
+              layer.setStyle({
+                weight: 4,
+                color: 'yellow'
+              });
+            });
+
+            layer.on('mouseout', function(e) {
+              layer.setStyle({
+                weight: 1,
+                color: '#444'
+              });
+            });
+
+          }
+        }).addTo(map);
 }
 
 const init = () => {
@@ -330,4 +587,10 @@ const init = () => {
 //     delay: 150
 // });
 
-export { init, geoSearchWidget, getJournalTitles, getCollectionCodes }
+export { 
+    init, 
+    geoSearchWidget, 
+    getJournalTitles, 
+    getCollectionCodes, 
+    //getBins 
+}
