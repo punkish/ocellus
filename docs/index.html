@@ -9,7 +9,7 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Tue Aug 27 2024 14:19:00 GMT+0200 (Central European Summer Time)">
+    <meta name="date" content="Thu Sep 05 2024 20:51:47 GMT+0200 (Central European Summer Time)">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4</title>
@@ -29,7 +29,7 @@
     <meta name="msapplication-config" content="/favicons/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
 
-    <link rel="stylesheet" href="./css/ocellus-1724761140026.css">
+    <link rel="stylesheet" href="./css/ocellus-1725562307892.css">
     
     <link rel="stylesheet" href="libs/leaflet-draw/dist/leaflet.draw.css">
     <link rel="stylesheet" href="libs/JavaScript-autoComplete/auto-complete.css">
@@ -407,6 +407,7 @@
     </footer>
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="libs/leaflet-heat/leaflet-heat.js"></script>
 
     <script src="libs/simple-lightbox/simpleLightbox.js"></script>
     <script src="libs/picolog/picolog.min.js"></script>
@@ -414,11 +415,13 @@
     <script src="libs/JavaScript-autoComplete/auto-complete.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
     <script src="libs/leaflet-draw/dist/leaflet.draw.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/h3-js@4.1.0/dist/browser/h3-js.min.js"></script> -->
+    <script src="https://unpkg.com/h3-js"></script>
     
     <script type="module">
         import { 
             getJournalTitles, 
-            getCollectionCodes 
+            getCollectionCodes
         } from './js/adv-search.js';
 
         function journalTitleAc() {
@@ -525,7 +528,7 @@
     </script>
 
     <script type="module">
-        import { init, showTooltip, hideTooltip } from './js/ocellus-1724761140026.js';
+        import { init, showTooltip, hideTooltip } from './js/ocellus-1725562307892.js';
         window.onload = () => init();
         window.showTooltip = showTooltip;
         window.hideTooltip = hideTooltip;
