@@ -47,10 +47,10 @@ async function drawHeatMap(map) {
     const heatMap = L.heatLayer(points, heatOptions).addTo(map);
 }
 
-function drawControlLayer(map) {
+function drawControlLayer(map, layers) {
 
     // the featureGroup stores the user-drawn features
-    const editableLayers = new L.FeatureGroup();
+    layers.editableLayers = new L.FeatureGroup();
     map.addLayer(editableLayers);
 
     // const MyCustomMarker = L.Icon.extend({
