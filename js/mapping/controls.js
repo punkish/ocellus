@@ -1,4 +1,5 @@
-import { addLayer } from "./utils";
+import { addLayer } from "./utils.js";
+import { $, $$ } from "../base.js";
 
 function drawControlLayer(map, mapLayers) {
 

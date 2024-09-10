@@ -1,7 +1,7 @@
-import { drawControlLayer } from "./controls";
-import { drawH3 } from "./h3";
-import { drawTreatments } from "./treatments";
-import { addLayer, removeLayer } from "./utils";
+import { drawControlLayer } from "./controls.js";
+import { drawH3 } from "./h3.js";
+import { drawTreatments } from "./treatments.js";
+import { addLayer, removeLayer } from "./utils.js";
 
 function initializeMap() {
     const initialMapCenter = [0, 0];
@@ -22,9 +22,9 @@ function initializeMap() {
 
     const mapLayers = {
         baselayer: L.tileLayer(mapSource, baseLayerOpts).addTo(map),
-        drawControls: null,
-        h3: null,
-        treatments: null
+        // drawControls: null,
+        // h3: null,
+        // treatments: null
     }
 
     drawControlLayer(map, mapLayers);
@@ -33,46 +33,20 @@ function initializeMap() {
     map.on('moveend', function(e) {
         switchTreatments2H3(map, mapLayers);
     });
+
+    // map.on('locationfound', onLocationFound);
+    // map.on('locationerror', (e) => { alert(e.message) });
 }
 
-function switchTreatments2H3(map, layers) {
+function switchTreatments2H3(map, mapLayers) {
     const zoom = map.getZoom();
-    removeLayer(layers.h3);
-
+    
     if (zoom <= 5) {
-        
-        // this will make H3 for the first time and add it to the map
-        // it will also make H3Info and add it to the map
-        drawH3(map, layers.h3);
+        drawH3(map, mapLayers);
     }
     else {
-        drawTreatments(map, layers.treatments);
+        drawTreatments(map, mapLayers);
     }
-}
-
-export { initializeMap }
-
-
-function highlightFeature(e) {
-    const layer = e.target;
-
-    layer.setStyle({
-        weight: 5,
-        color: '#666',
-        dashArray: '',
-        fillOpacity: 0.8
-    });
-
-    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-        layer.bringToFront();
-    }
-
-    O.map.layers.H3info.update(layer.feature.properties);
-}
-
-function resetHighlight(e) {
-    O.map.layers.H3.resetStyle(e.target);
-    O.map.layers.H3info.update();
 }
 
 function onLocationFound(e) {
@@ -87,6 +61,4 @@ function onLocationFound(e) {
     L.circle(e.latlng, radius).addTo(map);
 }
 
-function onLocationError(e) {
-    alert(e.message);
-}
+export { initializeMap }

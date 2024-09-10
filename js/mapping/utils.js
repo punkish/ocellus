@@ -4,10 +4,14 @@ function addLayer(map, layer) {
     }
 }
 
-function removeLayer(map, layer) {
-    if (map.hasLayer(layer)) {
-        map.removeLayer(layer);
+function removeLayer(map, mapLayers, layerName) {
+
+    if (layerName in mapLayers) {
+        if (map.hasLayer(mapLayers[layerName])) {
+            map.removeLayer(mapLayers[layerName]);
+        }
     }
+    
 }
 
 export {

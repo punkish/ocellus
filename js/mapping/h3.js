@@ -1,3 +1,6 @@
+import { globals } from "../globals.js";
+import { addLayer, removeLayer } from "./utils.js";
+
 async function getH3(resolution)  {
     const response = await fetch(`${globals.server}/bins/${resolution}`);
 
@@ -6,37 +9,27 @@ async function getH3(resolution)  {
         const grid = { "type": "FeatureCollection", "features": [] };
         const blackList = ['81033ffffffffff', '83f293fffffffff'];
         const json = await response.json();
+        blackList.forEach(b => delete json[b]);
 
-        for (let [h3id, numOfTreatments] of Object.entries(json)) {
+        for (const [h3id, numOfTreatments] of Object.entries(json)) {
+            const area = Math.round(h3.cellArea(h3id, h3.UNITS.km2));
+            const coords = h3.cellToBoundary(h3id); // lat, lng
+            const coordinates = coords.map(c => [c[1], c[0]]); // lng, lat
 
-            if (!blackList.includes(h3id)) {
-                const area = Math.round(
-                    h3.cellArea(i, h3.UNITS.m2) / 1000000
-                );
-
-                const hexagon = {
-                    "type": "Feature",
-                    "properties": { 
-                        numOfTreatments,
-                        area,
-                        density: Math.round(numOfTreatments / area)
-                    },
-                    "geometry": {
-                        "type": "Polygon",
-                        "coordinates": []
-                    }
+            const hexagon = {
+                "type": "Feature",
+                "properties": { 
+                    numOfTreatments,
+                    area,
+                    "density": numOfTreatments / area
+                },
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [ coordinates ]
                 }
-    
-                hexagon.geometry.coordinates.push([]);
-                const coords = h3.h3ToGeoBoundary(h3id); // lat, lng
-                
-                coords.forEach((c) => {
-                    hexagon.geometry.coordinates[0].push([c[1], c[0]]);
-                })
-
-                grid.features.push(hexagon);
             }
 
+            grid.features.push(hexagon);
         }
 
         fixTransmeridian(grid);
@@ -49,50 +42,145 @@ async function getH3(resolution)  {
     }
 }
 
-async function drawH3(map, h3Layer) {
-    const grid = await getH3(2);
-    const min = 0;
-    const max = 6600;
+async function drawH3(map, mapLayers) {
 
-    const style = function(feature) {
-        return { 
-            fillColor: getH3Color(feature.properties.density, min, max)
-                .fillColor,
-            color: 'grey',
-            weight: 1,
-            fillOpacity: 0.6
-        };
+    if ('treatments' in mapLayers) {
+        removeLayer(map, mapLayers, 'treatments');
     }
 
-    const h3Layer = L.geoJSON(
-        grid, 
-        {
-            style, 
-            onEachFeature: (feature, layer) => {
-                layer.on({
-                    mouseover: highlightFeature,
-                    mouseout: (e) => {
-                        h3Layer.resetStyle(e.target);
-                        //layers.H3info.update();
-                    },
-                    //click: zoomToFeature
-                });
+    if ('h3' in mapLayers) {
+        addLayer(map, mapLayers.h3);
+    }
+    else {
+        const grid = await getH3(3);
+        const densities = grid.features.map(feature => feature.properties.density);
+        let max = Math.max(...densities);
+        let min = Math.min(...densities);
+        const c = 1 / min;
+        max = Math.ceil(max * c);
+        min = Math.floor(min * c);
+        const classes = getH3Classes(min, max);
+
+        const style = function(feature) {
+            let fillColor = '#f5f5f5';
+            let fillOpacity = 0;
+            const num = feature.properties.density * c;
+
+            if (num > 0) {
+                fillColor = getFillColor(num, classes);
+                fillOpacity = 0.2;
             }
+                
+            return { 
+                fillColor,
+                color: 'grey',
+                weight: 1,
+                fillOpacity
+            };
         }
-    );
-    map.addLayer(h3Layer);
-    // makeH3Info();
-    // makeH3Legend(min, max);
+    
+        removeLayer(map, mapLayers, 'h3');
+        mapLayers.h3 = L.geoJSON(
+            grid, 
+            {
+                style, 
+                onEachFeature: (feature, layer) => {
+                    layer.on({
+                        mouseover: (e) => { 
+                            highlightBin({ mapLayers, bin: e.target }) 
+                        },
+                        mouseout: (e) => { 
+                            resetBin({ mapLayers, bin: e.target }) 
+                        },
+                        //click: zoomToFeature
+                    });
+                }
+            }
+        );
+        
+        addLayer(map, mapLayers.h3);
+        makeH3Info(map, mapLayers);
+        makeH3Legend(map, mapLayers, classes);
+    }
+
 }
 
-function getH3Color(num, min, max) {
-    const classes = getH3Classes(min, max);
+function highlightBin({ mapLayers, bin }) {
+    // const bin = e.target;
+                        
+    // bin.setStyle({
+    //     weight: 2,
+    //     color: '#666',
+    //     dashArray: '',
+    //     fillOpacity: 0.1
+    // });
 
+    // if (
+    //     !L.Browser.ie && 
+    //     !L.Browser.opera && 
+    //     !L.Browser.edge
+    // ) {
+    //     bin.bringToFront();
+    // }
+
+    mapLayers.h3info.update(bin.feature.properties);
+}
+
+function resetBin({ mapLayers, bin }) {
+    //mapLayers.h3.resetStyle(bin);
+    mapLayers.h3info.update();
+}
+
+function getFillColor(num, classes) {
     for (let i = 0, j = classes.length; i < j; i++) {
         if (num >= classes[i].from && num < classes[i].to) {
-            return classes[i];
+            return classes[i].fillColor;
         }
     }
+}
+
+function makeH3Info(map, mapLayers) {
+    mapLayers.h3info = L.control();
+
+    // create a div with a class "info"
+    mapLayers.h3info.onAdd = function (map) {
+        this._div = L.DomUtil.create('div', 'info'); 
+        this.update();
+        return this._div;
+    };
+
+    // this updates the control based on feature properties passed
+    mapLayers.h3info.update = function (props) {
+        this._div.innerHTML = props 
+            ? `${props.numOfTreatments} treatments in ${props.area} km<sup>2</sup>` 
+            : 'Hover over a bin to see num of treatments';
+
+        //this._div.innerHTML = `<b>Treatments<sup>*</sup></b><br><small><b>*</b><i>one treatment may be represented by more than one point</i></small><br>${str}`;
+        
+    };
+
+    mapLayers.h3info.addTo(map);
+}
+
+function makeH3Legend(map, mapLayers, classes) {
+    mapLayers.h3legend = L.control({ position: 'bottomright' });
+
+    mapLayers.h3legend.onAdd = function() {
+        const div = L.DomUtil.create('div', 'info legend');
+    
+        // loop through our density intervals and generate a label with a 
+        // colored square for each interval
+        div.innerHTML = classes.map((c, i) => {
+            return `<div class="interval">
+                <div class="interval_color_tile interval_color_${i}"></div> 
+                <div class="interval_text">${c.from}–${c.to}</div>
+            </div>`
+        }).join('');
+    
+        return div;
+    };
+    
+    mapLayers.h3legend.addTo(map);
 }
 
 function getH3Classes(min, max) {
@@ -115,7 +203,11 @@ function getH3Classes(min, max) {
     for (let from = min; from < max; from = from + interval) {
         const to = from + interval;
         const fillColor = H3ColorRamp[i];
-        classes.push({from, to, fillColor});
+        classes.push({
+            from: Math.round(from), 
+            to: Math.round(to), 
+            fillColor
+        });
         i++;
     }
 
