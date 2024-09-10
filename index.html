@@ -448,12 +448,19 @@
     
     <!-- <script src="https://cdn.jsdelivr.net/npm/h3-js@4.1.0/dist/browser/h3-js.min.js"></script> -->
     <script src="https://unpkg.com/h3-js"></script>
-    
+
     <script type="module">
         import { 
+            init, 
+            showTooltip, 
+            hideTooltip, 
             getJournalTitles, 
-            getCollectionCodes
-        } from './js/adv-search.js';
+            getCollectionCodes 
+        } from './js/ocellus.js';
+
+        window.onload = () => init();
+        window.showTooltip = showTooltip;
+        window.hideTooltip = hideTooltip;
 
         function journalTitleAc() {
             const ac = new autoComplete({
@@ -538,31 +545,8 @@
             });
         }
 
-        // pixabayAc({
-        //     selector: 'input[name="as-journalTitle"]',
-        //     keySelector: 'input[name="as-journals_id"]',
-        //     cb: getJournalTitles,
-        //     key: 'journals_id',
-        //     val: 'journalTitle'
-        // });
-
-        // pixabayAc({
-        //     selector: 'input[name="as-collectionCode"]',
-        //     //keySelector: 'input[name="as-journals_id"]',
-        //     cb: getCollectionCodes,
-        //     key: 'collectionCode',
-        //     //val: 'journalTitle'
-        // });
-
         journalTitleAc();
         collectionCodeAc();
-    </script>
-
-    <script type="module">
-        import { init, showTooltip, hideTooltip } from './js/ocellus.js';
-        window.onload = () => init();
-        window.showTooltip = showTooltip;
-        window.hideTooltip = hideTooltip;
 
         const SimpleLightbox = window.SimpleLightbox;
     </script>
