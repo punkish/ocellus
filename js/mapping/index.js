@@ -12,7 +12,7 @@ function initializeMap() {
     map.attributionControl.setPrefix('');
 
     // set map source
-    let mapSource = 'http://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+    let mapSource = 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}';
     //mapSource = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
     
     const baseLayerOpts = {
