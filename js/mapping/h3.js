@@ -55,11 +55,41 @@ async function drawH3(map, mapLayers) {
         const grid = await getH3(3);
         const densities = grid.features.map(feature => feature.properties.density);
         let max = Math.max(...densities);
-        let min = Math.min(...densities);
+        let min = Math.min(...densities); 
         const c = 1 / min;
         max = Math.ceil(max * c);
         min = Math.floor(min * c);
-        const classes = getH3Classes(min, max);
+
+        //const classes = getH3Classes(min, max);
+        const colorRamp = [
+            '#ffffcc',
+            '#ffeda0',
+            '#fed976',
+            '#feb24c',
+            '#fd8d3c',
+            '#fc4e2a',
+            '#e31a1c',
+            '#b10026',
+        ];
+        const classes = binIt({ 
+            data: densities, 
+            scaleFactor: c,
+            colorRamp, 
+            typeOfBins: 'equalFreq' 
+        });
+
+        /*
+        [
+            { from: 0, to: 1, fillColor: '#ffffcc', num: 3 },
+            { from: 2, to: 4, fillColor: '#ffeda0', num: 3 },
+            { from: 5, to: 6, fillColor: '#fed976', num: 3 },
+            { from: 7, to: 8, fillColor: '#feb24c', num: 3 },
+            { from: 8, to: 10, fillColor: '#fd8d3c', num: 3 },
+            { from: 11, to: 13, fillColor: '#fc4e2a', num: 3 },
+            { from: 13, to: 57, fillColor: '#e31a1c', num: 3 },
+            { from: 99, to: 100, fillColor: '#b10026', num: 3 }
+        ]
+        */
 
         const style = function(feature) {
             let fillColor = '#f5f5f5';
@@ -68,13 +98,13 @@ async function drawH3(map, mapLayers) {
 
             if (num > 0) {
                 fillColor = getFillColor(num, classes);
-                fillOpacity = 0.2;
+                fillOpacity = 1;
             }
                 
             return { 
                 fillColor,
                 color: 'grey',
-                weight: 1,
+                weight: 0,
                 fillOpacity
             };
         }
@@ -211,6 +241,94 @@ function getH3Classes(min, max) {
         i++;
     }
 
+    return classes;
+}
+
+function binIt({ data, scaleFactor, colorRamp, typeOfBins }) {
+    const numOfBins = colorRamp.length;
+    const classes = [];
+
+    if (typeOfBins === 'equalWidth') {
+        const densities = Object.values(data);
+        const total = densities.reduce((a, b) => a + b);
+        const max = Math.max(...densities) + 1;
+        const min = Math.min(...densities); 
+        const range = max - min;
+        const interval = range / numOfBins;
+        let i = 0;
+    
+        for (let from = min; from < max; from = from + interval) {
+            const to = from + interval;
+            const fillColor = colorRamp[i];
+            classes.push({
+                from: Math.round(from), 
+                to: Math.round(to), 
+                fillColor,
+                num: 0
+            });
+            i++;
+        }
+
+        classes.forEach(c => {
+            c.num = Object.values(data)
+                .filter(d => d >= c.from && d < c.to)
+                .length;
+        })
+        
+    }
+    else if (typeOfBins === 'equalFreq') {
+
+        // Number of data points (616701)
+        const numOfData = Object.keys(data).length;
+
+        // Number of data points per class interval (1777)
+        const numPerClass = Math.round(numOfData / numOfBins);
+
+        // We want to order the data points by value. But since data is an 
+        // object, we convert it to an array so we can sort it. The keys are 
+        // mapped to 'id' and the values are mapped to 'num'. So we go from
+        //
+        // { 'dsatwsdf': 2340, 'fdsgsas5': 43 }
+        // to
+        // [
+        //      { id: 'dsatwsdf', num: 2340 },
+        //      { id: 'fdsgsas5', num: 43 }
+        // ]
+        // and then sorted to
+        // [
+        //      { id: 'fdsgsas5', num: 43 },
+        //      { id: 'dsatwsdf', num: 2340 }
+        // ]
+        const tmp = [];
+
+        for (const [key, val] of Object.entries(data)) {
+            tmp.push({ id: key, num: Math.round(val * scaleFactor) });
+        }
+
+        const orderedData = tmp.sort((a, b) => a.num - b.num);
+        // const nums = tmp.map(t => t.num);
+        // const max = Math.max(...nums) + 1;
+        // const min = Math.min(...nums); 
+        // const total = nums.reduce((a, b) => a + b);
+
+        // console.log(`min: ${min}, max: ${max}, total: ${total}, numPerClass: ${numPerClass}, numOfBins: ${numOfBins}`);
+
+        for (let i = 0; i < numOfBins; i++) {
+            const a = i * numPerClass;
+            const b = a + numPerClass;
+            const tmp = orderedData.slice(a, b);
+            const from = tmp[0].num;
+            const to = tmp[ tmp.length - 1 ].num;
+            classes[i] = {
+                from,
+                to,
+                fillColor: colorRamp[i],
+                num: tmp.length
+            }
+        }
+    }
+    
+    //console.log(classes);
     return classes;
 }
 
