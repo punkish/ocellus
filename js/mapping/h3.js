@@ -54,11 +54,14 @@ async function drawH3(map, mapLayers) {
     else {
         const grid = await getH3(3);
         const densities = grid.features.map(feature => feature.properties.density);
-        let max = Math.max(...densities);
-        let min = Math.min(...densities); 
+        //let max = Math.max(...densities);
+        const min = Math.min(...densities); 
+
+        // Since densities are very small numbers, and min is less than 1,
+        // we scale both min and max to be more than 1
         const c = 1 / min;
-        max = Math.ceil(max * c);
-        min = Math.floor(min * c);
+        // max = Math.ceil(max * c);
+        // min = Math.floor(min * c);
 
         //const classes = getH3Classes(min, max);
         const colorRamp = [
@@ -130,7 +133,7 @@ async function drawH3(map, mapLayers) {
         
         addLayer(map, mapLayers.h3);
         makeH3Info(map, mapLayers);
-        makeH3Legend(map, mapLayers, classes);
+        //makeH3Legend(map, mapLayers, classes);
     }
 
 }
