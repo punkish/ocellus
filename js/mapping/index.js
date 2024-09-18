@@ -14,7 +14,7 @@ function initializeMap() {
 
     // set map source
     let baseLayer = 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}';
-    baseLayer = 'http://maps.zenodeo.org/countries-coastline-1m/{z}/{x}/{y}';
+    baseLayer = 'https://maps.zenodeo.org/countries-coastline-1m/{z}/{x}/{y}';
     
     const baseLayerOpts = {
         maxZoom,
