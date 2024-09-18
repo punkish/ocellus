@@ -27,6 +27,7 @@ async function getTreatments(bounds) {
 }
 
 async function drawTreatments(map, mapLayers) {
+    console.log('drawing treatments')
 
     if ('h3' in mapLayers) {
         removeLayer(map, mapLayers, 'h3');
@@ -39,7 +40,7 @@ async function drawTreatments(map, mapLayers) {
         const bounds = map.getBounds();
         const treatments = await getTreatments(bounds);
 
-        removeLayer(map, mapLayers, 'treatments');
+        //removeLayer(map, mapLayers, 'treatments');
         mapLayers.treatments = L.markerClusterGroup();
 
         const icon = L.icon({ 
@@ -67,8 +68,6 @@ async function drawTreatments(map, mapLayers) {
             mapLayers.treatments.addLayer(marker);
         });
 
-        //map.removeLayer();
-        //O.map.addLayerTreatments();
         addLayer(map, mapLayers.treatments);
     }
 

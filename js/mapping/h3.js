@@ -101,7 +101,7 @@ async function drawH3(map, mapLayers) {
 
             if (num > 0) {
                 fillColor = getFillColor(num, classes);
-                fillOpacity = 1;
+                fillOpacity = 0.7;
             }
                 
             return { 
