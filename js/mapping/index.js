@@ -3,22 +3,25 @@ import { drawH3 } from "./h3.js";
 import { drawTreatments } from "./treatments.js";
 //import { addLayer, removeLayer } from "./utils.js";
 
-function initializeMap() {
-    const initialMapCenter = [0, 0];
-    const initialZoom = 2;
-    const maxZoom = 10;
-    const map = L.map('mapSearch').setView(initialMapCenter, initialZoom);
-
-    // turn off the Ukrainian flag emoji
-    map.attributionControl.setPrefix('');
-
-    // set map source
-    let baseLayer = 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}';
-    baseLayer = 'https://maps.zenodeo.org/countries-coastline-1m/{z}/{x}/{y}';
-    
+function getBaseLayer({ origin, map }) {
     const baseLayerOpts = {
-        maxZoom,
-        vectorTileLayerStyles: {
+        minZoom: 1,
+        maxZoom: 17,
+        zoomOffset: -1,
+        tileSize: 512
+    }
+
+    let baseLayer;
+
+    if (origin === 'arcgis') {
+        baseLayerOpts.attribution = '&copy; ESRI';
+        baseLayer = L.tileLayer(
+            'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', 
+            baseLayerOpts
+        ).addTo(map);
+    }
+    else if (origin === 'geodeo') {
+        baseLayerOpts.vectorTileLayerStyles = {
             
             // A plain set of L.Path options.
             geojsonLayer: {
@@ -29,11 +32,34 @@ function initializeMap() {
                 fill: true
             }
         }
-    };
+
+        baseLayer = L.vectorGrid.protobuf(
+            'https://maps.zenodeo.org/countries-coastline-1m/{z}/{x}/{y}', 
+            baseLayerOpts
+        ).addTo(map);
+    }
+    else if (origin === 'gbif') {
+        baseLayerOpts.attribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> / &copy; <a href="https://www.openmaptiles.org/copyright">OpenMapTiles</a>';
+        const pixel_ratio = parseInt(window.devicePixelRatio) || 1;
+        baseLayer = L.tileLayer(
+            'https://tile.gbif.org/3857/omt/{z}/{x}/{y}@{r}x.png?style=gbif-natural'.replace('{r}', pixel_ratio), 
+            baseLayerOpts
+        ).addTo(map);
+    }
+
+    return baseLayer
+}
+
+function initializeMap() {
+    const initialMapCenter = [0, 0];
+    const initialZoom = 2;
+    const map = L.map('mapSearch').setView(initialMapCenter, initialZoom);
+
+    // turn off the Ukrainian flag emoji
+    map.attributionControl.setPrefix('');
 
     const mapLayers = {
-        //baselayer: L.tileLayer(mapSource, baseLayerOpts).addTo(map),
-        baselayer: L.vectorGrid.protobuf(baseLayer, baseLayerOpts).addTo(map)
+        baseLayer: getBaseLayer({ origin: 'gbif', map })
         // drawControls: null,
         // h3: null,
         // treatments: null
