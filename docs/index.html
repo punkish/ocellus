@@ -9,7 +9,7 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Fri Sep 27 2024 23:29:32 GMT+0200 (Central European Summer Time)">
+    <meta name="date" content="Fri Sep 27 2024 23:51:09 GMT+0200 (Central European Summer Time)">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4</title>
@@ -29,15 +29,22 @@
     <meta name="msapplication-config" content="/favicons/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
 
-    <link rel="stylesheet" href="./css/ocellus-1727472572632.css">
+    <link rel="stylesheet" href="./css/ocellus-1727473869402.css">
     
     <link rel="stylesheet" href="libs/JavaScript-autoComplete/auto-complete.css">
+
     <link rel="stylesheet" href="libs/pop-pop/pop-pop.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" /> -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    
     <link rel="stylesheet" href="libs/leaflet-draw/dist/leaflet.draw.css">
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.1.0/dist/MarkerCluster.css" />
-	<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.1.0/dist/MarkerCluster.Default.css" />
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.1.0/dist/MarkerCluster.css" /> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.1.0/dist/MarkerCluster.css" />
+
+	<!-- <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.1.0/dist/MarkerCluster.Default.css" /> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.1.0/dist/MarkerCluster.Default.css" />
 	
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Lora">
@@ -413,11 +420,16 @@
         <img src="img/fish.png">
     </footer>
     
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
     <!-- <script src="libs/leaflet-heat/leaflet-heat.js"></script> -->
-    <script src="https://unpkg.com/leaflet.markercluster@1.1.0/dist/leaflet.markercluster-src.js"></script>
+    <!-- <script src="https://unpkg.com/leaflet.markercluster@1.1.0/dist/leaflet.markercluster-src.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.1.0/dist/leaflet.markercluster-src.js"></script>
+
     <script src="libs/leaflet-draw/dist/leaflet.draw.js"></script>
-    <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
+    <!-- <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
 
     <script src="libs/simple-lightbox/simpleLightbox.js"></script>
     <script src="libs/picolog/picolog.min.js"></script>
@@ -427,6 +439,7 @@
 
     <!-- <script src="https://cdn.jsdelivr.net/npm/h3-js@4.1.0/dist/browser/h3-js.min.js"></script> -->
     <script src="https://unpkg.com/h3-js"></script>
+    
 
     <script type="module">
         import { 
@@ -438,7 +451,7 @@
             journalTitleAc,
             collectionCodeAc,
             //initializeMap
-        } from './js/ocellus-1727472572632.js';
+        } from './js/ocellus-1727473869402.js';
 
         window.onload = () => init();
         window.showTooltip = showTooltip;
