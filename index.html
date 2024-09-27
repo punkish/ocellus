@@ -362,6 +362,8 @@
     <div id="throbber" class="nothrob"></div>
 
     <main>
+        <section id="map"></section>
+
         <section id="images">
             <details id="charts-container" class="charts" open>
                 <summary></summary>
@@ -433,7 +435,7 @@
     </footer>
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="libs/leaflet-heat/leaflet-heat.js"></script>
+    <!-- <script src="libs/leaflet-heat/leaflet-heat.js"></script> -->
     <script src="https://unpkg.com/leaflet.markercluster@1.1.0/dist/leaflet.markercluster-src.js"></script>
     <script src="libs/leaflet-draw/dist/leaflet.draw.js"></script>
     <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
@@ -446,7 +448,6 @@
     <script src="libs/JavaScript-autoComplete/auto-complete.js"></script>
     <script src="libs/echarts/echarts.min.js"></script>
 
-    
     <!-- <script src="https://cdn.jsdelivr.net/npm/h3-js@4.1.0/dist/browser/h3-js.min.js"></script> -->
     <script src="https://unpkg.com/h3-js"></script>
 
@@ -456,95 +457,15 @@
             showTooltip, 
             hideTooltip, 
             getJournalTitles, 
-            getCollectionCodes 
+            getCollectionCodes,
+            journalTitleAc,
+            collectionCodeAc,
+            //initializeMap
         } from './js/ocellus.js';
 
         window.onload = () => init();
         window.showTooltip = showTooltip;
         window.hideTooltip = hideTooltip;
-
-        function journalTitleAc() {
-            const ac = new autoComplete({
-                selector: 'input[name="as-journalTitle"]',
-                minChars: 2,
-                source: async function(term, suggest) {
-                    term = term.toLowerCase();
-                    const choices = await getJournalTitles();
-                    const matches = [];
-
-                    for (let i=0; i < choices.length; i++) {
-                        if (~choices[i].journalTitle.toLowerCase().indexOf(term)) {
-                            matches.push({
-                                journals_id: choices[i].journals_id,
-                                journalTitle: choices[i].journalTitle
-                            });
-                        }
-
-                        // if (~choices[i][val].toLowerCase().indexOf(term)) {
-                        //     matches.push({
-                        //         key: choices[i][key],
-                        //         val: choices[i][val]
-                        //     });
-                        // }
-                    }
-                    
-                    suggest(matches);
-                },
-                renderItem: function (item, search){
-                    
-                    // escape special characters
-                    search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-                    const re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-                    const disp = item.journalTitle.replace(re, "<b>$1</b>");
-                    return `<div class="autocomplete-suggestion" data-id="${item.journals_id}" data-val="${item.journalTitle}">${disp}</div>`;
-                },
-                onSelect: function(e, term, item){
-                    document.querySelector(keySelector).value = item.getAttribute('data-id');
-                }
-            });
-        }
-
-        function collectionCodeAc() {
-            const ac = new autoComplete({
-                selector: 'input[name="as-collectionCode"]',
-                minChars: 2,
-                source: async function(term, suggest) {
-                    term = term.toLowerCase();
-                    const choices = await getCollectionCodes();
-                    const matches = [];
-
-                    for (let i=0; i < choices.length; i++) {
-                        
-                        if (~choices[i].collectionCode.toLowerCase().indexOf(term)) {
-                            matches.push({
-                                collectionCode: choices[i].collectionCode,
-                                name: choices[i].name
-                            });
-                        }
-
-                    }
-                    
-                    suggest(matches);
-                },
-                renderItem: function (item, search){
-                    
-                    // escape special characters
-                    search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-                    const re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-                    let disp = item.collectionCode.replace(re, "<b>$1</b>");
-
-                    if (item.name) {
-                        disp += ` (${item.name})`;
-                    }
-
-                    return `<div class="autocomplete-suggestion" data-id="${item.collectionCode}">${disp}</div>`;
-                },
-                onSelect: function(e, term, item){
-                    document.querySelector('input[name="as-collectionCode"]').value = item.getAttribute('data-id');
-                }
-                
-            });
-        }
 
         journalTitleAc();
         collectionCodeAc();

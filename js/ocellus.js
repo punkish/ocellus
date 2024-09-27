@@ -3,7 +3,13 @@
 import { updatePlaceHolder, qs2form, form2qs } from './utils.js';
 import { getResource } from './querier.js';
 import { addListeners, showTooltip, hideTooltip } from './listeners.js';
-import { getJournalTitles, getCollectionCodes } from './adv-search.js';
+import { 
+    getJournalTitles, 
+    getCollectionCodes, 
+    journalTitleAc,
+    collectionCodeAc
+} from './adv-search.js';
+//import { initializeMap } from './mapping/index.js';
 
 // set loglevel to 'INFO' on local development machine and to 'ERROR' on prod
 log.level = log[setLoglevel(window.location.hostname)];
@@ -33,4 +39,13 @@ function init() {
     addListeners();
 }
 
-export { init, showTooltip, hideTooltip, getJournalTitles, getCollectionCodes }
+export { 
+    init, 
+    showTooltip, 
+    hideTooltip, 
+    getJournalTitles, 
+    getCollectionCodes, 
+    journalTitleAc,
+    collectionCodeAc,
+    //initializeMap
+}

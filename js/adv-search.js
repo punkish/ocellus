@@ -2,32 +2,32 @@ import { $, $$ } from './base.js';
 import { globals } from './globals.js';
 // import { toggleDateSelector } from './listeners.js';
 
-function geoSearchWidget(event) {
+// function geoSearchWidget(event) {
 
-    // initialize map with drawControl
-    const initialMapCenter = [0, 0];
-    const initialZoom = 2;
-    const map = L.map('mapSearch').setView(initialMapCenter, initialZoom);
+//     // initialize map with drawControl
+//     const initialMapCenter = [0, 0];
+//     const initialZoom = 2;
+//     const map = L.map('mapSearch').setView(initialMapCenter, initialZoom);
 
-    // turn off the Ukrainian flag emoji
-    map.attributionControl.setPrefix('');
+//     // turn off the Ukrainian flag emoji
+//     map.attributionControl.setPrefix('');
 
-    // set map source
-    let mapSource = 'http://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}';
-    //mapSource = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+//     // set map source
+//     let mapSource = 'http://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+//     //mapSource = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-    L.tileLayer(mapSource, {
-        maxZoom: 19,
-        //attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
+//     L.tileLayer(mapSource, {
+//         maxZoom: 19,
+//         //attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+//     }).addTo(map);
 
-    // redraw the map if the browser window is resized
-    //map.invalidateSize(true);
-    //drawHeatMap(map);
-    //drawBinsGeoJson(map);
+//     // redraw the map if the browser window is resized
+//     //map.invalidateSize(true);
+//     //drawHeatMap(map);
+//     //drawBinsGeoJson(map);
     
-    drawControlLayer(map);
-}
+//     drawControlLayer(map);
+// }
 
 // lower left: lat -76.41, lng: -165.94; upper right: lat 72.32, lng 165.23
 
@@ -587,10 +587,95 @@ const init = () => {
 //     delay: 150
 // });
 
+function journalTitleAc() {
+    const ac = new autoComplete({
+        selector: 'input[name="as-journalTitle"]',
+        minChars: 2,
+        source: async function(term, suggest) {
+            term = term.toLowerCase();
+            const choices = await getJournalTitles();
+            const matches = [];
+
+            for (let i=0; i < choices.length; i++) {
+                if (~choices[i].journalTitle.toLowerCase().indexOf(term)) {
+                    matches.push({
+                        journals_id: choices[i].journals_id,
+                        journalTitle: choices[i].journalTitle
+                    });
+                }
+
+                // if (~choices[i][val].toLowerCase().indexOf(term)) {
+                //     matches.push({
+                //         key: choices[i][key],
+                //         val: choices[i][val]
+                //     });
+                // }
+            }
+            
+            suggest(matches);
+        },
+        renderItem: function (item, search){
+            
+            // escape special characters
+            search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+            const re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+            const disp = item.journalTitle.replace(re, "<b>$1</b>");
+            return `<div class="autocomplete-suggestion" data-id="${item.journals_id}" data-val="${item.journalTitle}">${disp}</div>`;
+        },
+        onSelect: function(e, term, item){
+            document.querySelector(keySelector).value = item.getAttribute('data-id');
+        }
+    });
+}
+
+function collectionCodeAc() {
+    const ac = new autoComplete({
+        selector: 'input[name="as-collectionCode"]',
+        minChars: 2,
+        source: async function(term, suggest) {
+            term = term.toLowerCase();
+            const choices = await getCollectionCodes();
+            const matches = [];
+
+            for (let i=0; i < choices.length; i++) {
+                
+                if (~choices[i].collectionCode.toLowerCase().indexOf(term)) {
+                    matches.push({
+                        collectionCode: choices[i].collectionCode,
+                        name: choices[i].name
+                    });
+                }
+
+            }
+            
+            suggest(matches);
+        },
+        renderItem: function (item, search){
+            
+            // escape special characters
+            search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+            const re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+            let disp = item.collectionCode.replace(re, "<b>$1</b>");
+
+            if (item.name) {
+                disp += ` (${item.name})`;
+            }
+
+            return `<div class="autocomplete-suggestion" data-id="${item.collectionCode}">${disp}</div>`;
+        },
+        onSelect: function(e, term, item){
+            document.querySelector('input[name="as-collectionCode"]').value = item.getAttribute('data-id');
+        }
+        
+    });
+}
+
 export { 
     init, 
-    geoSearchWidget, 
+    //geoSearchWidget, 
     getJournalTitles, 
     getCollectionCodes, 
+    journalTitleAc,
+    collectionCodeAc
     //getBins 
 }

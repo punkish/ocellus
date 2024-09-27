@@ -5,7 +5,6 @@ import { submitForm, updatePlaceHolder, qs2form, form2qs } from './utils.js';
 import { renderDashboard } from './renderers-charts.js';
 import { Accordion } from './accordion.js';
 import { getResource } from './querier.js';
-//import { geoSearchWidget } from './adv-search.js';
 import { initializeMap } from './mapping/index.js';
 
 const addListeners = () => {
@@ -19,18 +18,12 @@ const addListeners = () => {
     $('div.examples').addEventListener('toggle', controlDetails, true);
 
     $$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
-    $$('.reveal').forEach(el => el.addEventListener('click', reveal));
+    //$$('.reveal').forEach(el => el.addEventListener('click', reveal));
+    $('#brand').addEventListener('click', reveal);
 
     $$('.example-insert')
         .forEach(el => el.addEventListener('click', insertExample));
 
-    // $$("input[name=searchType")
-    //     .forEach(el => el.addEventListener('click', toggleSearch));
-
-    // $$("input[name=searchType2")
-    //    .forEach(el => el.addEventListener('click', toggleAdvSearch));
-
-    // $('#advSearch').addEventListener('click', toggleAdvSearch);
     $('input[name=searchtype').addEventListener('click', toggleAdvSearch);
     $('input[name=resource').addEventListener('click', toggleResource);
 
@@ -143,8 +136,11 @@ const toggleAdvSearch = (e) => {
         $('#refreshCache').disabled = true;
         $('#clear-q').disabled = true;
         $('input[name="as-q"]').focus();
-        //geoSearchWidget();
-        initializeMap();
+        initializeMap({
+            mapContainer: 'mapSearch',
+            baseLayerSource: 'gbif',
+            drawControl: true
+        });
     }
     else {
         $('#q').placeholder = globals.defaultPlaceholder;
@@ -389,16 +385,30 @@ const resetPrompt = (e)=> {
 
 const reveal = (e) => {
     //$('#brand').innerHTML = 'MAP • IMAGES • TREATMENTS';
-    const t = e.target.innerText;
-    e.target.innerText = e.target.dataset.reveal;
+    //const t = e.target.innerText;
+    //e.target.innerText = e.target.dataset.reveal;
+
+    e.target.innerHTML = '<a href="#map" id="mapInit">MAP</a> • IMAGES • TREATMENTS';
+    e.target.querySelector('#mapInit').addEventListener('click', initMap);
     $('#brand').classList.add('smallbrand');
+    $('#brand').removeEventListener('click', reveal);
+
     setTimeout(() => { 
-        e.target.innerHTML = t; 
+        e.target.innerHTML = 4; 
         $('#brand').classList.remove('smallbrand');
+        $('#brand').addEventListener('click', reveal);
     }, 2000);
     
     e.stopPropagation();
     e.preventDefault();
+}
+
+const initMap = (e) => {
+    initializeMap({
+        mapContainer: 'map', 
+        baseLayerSource: 'geodeo', 
+        drawControl: false
+    })
 }
 
 const addListenersToFigDetails = () => {

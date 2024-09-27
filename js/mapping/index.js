@@ -2,8 +2,9 @@ import { drawControlLayer } from "./controls.js";
 import { drawH3 } from "./h3.js";
 import { drawTreatments } from "./treatments.js";
 //import { addLayer, removeLayer } from "./utils.js";
+import { globals } from "../globals.js";
 
-function getBaseLayer({ origin, map }) {
+function getBaseLayer({ baseLayerSource, map }) {
     const baseLayerOpts = {
         minZoom: 1,
         maxZoom: 17,
@@ -13,32 +14,200 @@ function getBaseLayer({ origin, map }) {
 
     let baseLayer;
 
-    if (origin === 'arcgis') {
+    if (baseLayerSource === 'arcgis') {
         baseLayerOpts.attribution = '&copy; ESRI';
         baseLayer = L.tileLayer(
             'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', 
             baseLayerOpts
         ).addTo(map);
     }
-    else if (origin === 'geodeo') {
-        baseLayerOpts.vectorTileLayerStyles = {
-            
-            // A plain set of L.Path options.
-            geojsonLayer: {
-                weight: 1,
-                color: '#000',
-                fillColor: '#f5f5f5',
-                fillOpacity: 1,
-                fill: true
+    else if (baseLayerSource === 'geodeo') {
+        const layers = {
+            'ne_50m_admin_1_states_provinces_lakes': {
+                maxZoom: 2,
+                tms: true,
+                styles: {
+                    weight: 1,
+                    color: 'blue',
+                    fillColor: '',
+                    fillOpacity: 0.5,
+                    fill: true
+                }
+            },
+            'ne_50m_admin_0_countries': {
+                maxZoom: 2,
+                tms: true,
+                styles: {
+                    weight: 1,
+                    color: '#444',
+                    fillColor: 'f5f5f5',
+                    fillOpacity: 0.25,
+                    fill: true
+                }
+            },
+            'ne_10m_admin_1_sel': {
+                maxZoom: 5,
+                tms: true,
+                styles: {
+                    weight: 1,
+                    color: '#444',
+                    fillColor: '#f5f5f5',
+                    fillOpacity: 0.25,
+                    fill: true
+                }
+            },
+            'nev': {
+                maxNativeZoom: 7,
+                maxZoom: 10,
+                tms: true,
+                vectorTileLayerStyles: {
+                    playa: {
+                        stroke: true,
+                        weight: 1,
+                        color: 'aliceblue',
+                        fillColor: 'aliceblue',
+                        fillOpacity: 0.25,
+                        fill: true
+                    },
+                    urban: {
+                        stroke: true,
+                        weight: 1,
+                        color: 'bisque',
+                        fillColor: 'bisque',
+                        fillOpacity: 0.25,
+                        fill: true
+                    },
+                    water: {
+                        stroke: true,
+                        weight: 1,
+                        color: 'black',
+                        fillColor: 'lightblue',
+                        fillOpacity: 0.25,
+                        fill: true
+                    },
+                    ice: function(properties) {
+                        if (properties.type === 'glacier') {
+                            return {
+                                weight: 1,
+                                color: 'white',
+                                fillColor: 'white',
+                                fillOpacity: 0.45,
+                                fill: true
+                            }
+                        }
+                        else if (properties.type === 'ice_shelf') {
+                            return {
+                                weight: 1,
+                                color: 'white',
+                                fillColor: 'lightgrey',
+                                fillOpacity: 0.45,
+                                fill: true
+                            }
+                        }
+                    },
+                    river: {
+                        weight: 1,
+                        color: 'blue',
+                        fillColor: '',
+                        fillOpacity: 1,
+                        fill: false
+                    },
+                    railroad: {
+                        stroke: true,
+                        weight: 1,
+                        color: 'brown'
+                    },
+                    road: {
+                        weight: 1,
+                        color: '#ffcc00',
+                        fillColor: '',
+                        fillOpacity: 1,
+                        fill: false
+                    },
+                    country_label: {
+                        stroke: false,
+                        // color: 'black',
+                        // weight: 0.5,
+                        fill: false,
+                        // fillColor: 'black',
+                        // radius: 2
+                    },
+                    state_label: {
+                        stroke: false,
+                        fill: false
+                    },
+                    marine_label: {
+                        stroke: false,
+                        fill: false
+                    },
+                    lake_label: {
+                        stroke: false,
+                        fill: false
+                    },
+                    place_label: {
+                        stroke: false,
+                        fill: false
+                    },
+                    airport_label: {
+                        stroke: false,
+                        fill: false
+                    },
+                    port_label: {
+                        stroke: false,
+                        fill: false
+                    },
+                    admin: function(properties, zoom) {
+                        const level = properties.admin_level;
+
+                        if (level === 0) {
+                            return {
+                                weight: 1,
+                                color: '#444',
+                                // fillColor: 'red',
+                                // fillOpacity: 0.25,
+                                fill: false
+                            }
+                        }
+                        else if (level === 1) {
+                            return {
+                                weight: 0.5,
+                                color: '#444',
+                                // fillColor: 'red',
+                                // fillOpacity: 0.25,
+                                fill: false
+                            }
+                        }
+                        else if (level === 2) {
+                            return {
+                                weight: 1,
+                                color: '#cf52d3',
+                                dashArray: '2, 6',
+                                fillColor: 'green',
+                                fillOpacity: 0.25,
+                                fill: true
+                            }
+                        }
+                        
+                    }
+                }
+            },
+            'nev_raster': {
+                maxZoom: 15,
+                tms: true
             }
         }
 
-        baseLayer = L.vectorGrid.protobuf(
-            'https://maps.zenodeo.org/countries-coastline-1m/{z}/{x}/{y}', 
-            baseLayerOpts
-        ).addTo(map);
+        L.tileLayer(`${globals.mapServer}/nev_raster/{z}/{x}/{y}`, {
+            maxNativeZoom: 6,
+            maxZoom: 10,
+            tms: true
+        }).addTo(map);
+
+        const layer = 'nev';
+        const options = layers[layer];
+        L.vectorGrid.protobuf(`${globals.mapServer}/${layer}/{z}/{x}/{y}`, options).addTo(map);
     }
-    else if (origin === 'gbif') {
+    else if (baseLayerSource === 'gbif') {
         baseLayerOpts.attribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> / &copy; <a href="https://www.openmaptiles.org/copyright">OpenMapTiles</a>';
         const pixel_ratio = parseInt(window.devicePixelRatio) || 1;
         baseLayer = L.tileLayer(
@@ -46,26 +215,218 @@ function getBaseLayer({ origin, map }) {
             baseLayerOpts
         ).addTo(map);
     }
+    // else if (baseLayerSource === 'localhost') {
+    //     const baseUrl = 'http://localhost:3000';
+    //     const layers = {
+    //         'ne_50m_admin_1_states_provinces_lakes': {
+    //             maxZoom: 2,
+    //             tms: true,
+    //             styles: {
+    //                 weight: 1,
+    //                 color: 'blue',
+    //                 fillColor: '',
+    //                 fillOpacity: 0.5,
+    //                 fill: true
+    //             }
+    //         },
+    //         'ne_50m_admin_0_countries': {
+    //             maxZoom: 2,
+    //             tms: true,
+    //             styles: {
+    //                 weight: 1,
+    //                 color: '#444',
+    //                 fillColor: 'f5f5f5',
+    //                 fillOpacity: 0.25,
+    //                 fill: true
+    //             }
+    //         },
+    //         'ne_10m_admin_1_sel': {
+    //             maxZoom: 5,
+    //             tms: true,
+    //             styles: {
+    //                 weight: 1,
+    //                 color: '#444',
+    //                 fillColor: '#f5f5f5',
+    //                 fillOpacity: 0.25,
+    //                 fill: true
+    //             }
+    //         },
+    //         'nev': {
+    //             maxNativeZoom: 7,
+    //             maxZoom: 10,
+    //             tms: true,
+    //             vectorTileLayerStyles: {
+    //                 playa: {
+    //                     stroke: true,
+    //                     weight: 1,
+    //                     color: 'aliceblue',
+    //                     fillColor: 'aliceblue',
+    //                     fillOpacity: 0.25,
+    //                     fill: true
+    //                 },
+    //                 urban: {
+    //                     stroke: true,
+    //                     weight: 1,
+    //                     color: 'bisque',
+    //                     fillColor: 'bisque',
+    //                     fillOpacity: 0.25,
+    //                     fill: true
+    //                 },
+    //                 water: {
+    //                     stroke: true,
+    //                     weight: 1,
+    //                     color: 'black',
+    //                     fillColor: 'lightblue',
+    //                     fillOpacity: 0.25,
+    //                     fill: true
+    //                 },
+    //                 ice: function(properties) {
+    //                     if (properties.type === 'glacier') {
+    //                         return {
+    //                             weight: 1,
+    //                             color: 'white',
+    //                             fillColor: 'white',
+    //                             fillOpacity: 0.45,
+    //                             fill: true
+    //                         }
+    //                     }
+    //                     else if (properties.type === 'ice_shelf') {
+    //                         return {
+    //                             weight: 1,
+    //                             color: 'white',
+    //                             fillColor: 'lightgrey',
+    //                             fillOpacity: 0.45,
+    //                             fill: true
+    //                         }
+    //                     }
+    //                 },
+    //                 river: {
+    //                     weight: 1,
+    //                     color: 'blue',
+    //                     fillColor: '',
+    //                     fillOpacity: 1,
+    //                     fill: false
+    //                 },
+    //                 railroad: {
+    //                     stroke: true,
+    //                     weight: 1,
+    //                     color: 'brown'
+    //                 },
+    //                 road: {
+    //                     weight: 1,
+    //                     color: '#ffcc00',
+    //                     fillColor: '',
+    //                     fillOpacity: 1,
+    //                     fill: false
+    //                 },
+    //                 country_label: {
+    //                     stroke: false,
+    //                     // color: 'black',
+    //                     // weight: 0.5,
+    //                     fill: false,
+    //                     // fillColor: 'black',
+    //                     // radius: 2
+    //                 },
+    //                 state_label: {
+    //                     stroke: false,
+    //                     fill: false
+    //                 },
+    //                 marine_label: {
+    //                     stroke: false,
+    //                     fill: false
+    //                 },
+    //                 lake_label: {
+    //                     stroke: false,
+    //                     fill: false
+    //                 },
+    //                 place_label: {
+    //                     stroke: false,
+    //                     fill: false
+    //                 },
+    //                 airport_label: {
+    //                     stroke: false,
+    //                     fill: false
+    //                 },
+    //                 port_label: {
+    //                     stroke: false,
+    //                     fill: false
+    //                 },
+    //                 admin: function(properties, zoom) {
+    //                     const level = properties.admin_level;
+
+    //                     if (level === 0) {
+    //                         return {
+    //                             weight: 1,
+    //                             color: '#444',
+    //                             // fillColor: 'red',
+    //                             // fillOpacity: 0.25,
+    //                             fill: false
+    //                         }
+    //                     }
+    //                     else if (level === 1) {
+    //                         return {
+    //                             weight: 0.5,
+    //                             color: '#444',
+    //                             // fillColor: 'red',
+    //                             // fillOpacity: 0.25,
+    //                             fill: false
+    //                         }
+    //                     }
+    //                     else if (level === 2) {
+    //                         return {
+    //                             weight: 1,
+    //                             color: '#cf52d3',
+    //                             dashArray: '2, 6',
+    //                             fillColor: 'green',
+    //                             fillOpacity: 0.25,
+    //                             fill: true
+    //                         }
+    //                     }
+                        
+    //                 }
+    //             }
+    //         },
+    //         'nev_raster': {
+    //             maxZoom: 15,
+    //             tms: true
+    //         }
+    //     }
+
+    //     const layerControlObj = {};
+
+    //     L.tileLayer(`${baseUrl}/nev_raster/{z}/{x}/{y}`, {
+    //         maxNativeZoom: 6,
+    //         maxZoom: 10,
+    //         tms: true
+    //     }).addTo(map);
+
+    //     const layer = 'nev';
+    //     const options = layers[layer];
+    //     L.vectorGrid.protobuf(`${baseUrl}/${layer}/{z}/{x}/{y}`, options).addTo(map);
+    // }
 
     return baseLayer
 }
 
-function initializeMap() {
+function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
     const initialMapCenter = [0, 0];
     const initialZoom = 2;
-    const map = L.map('mapSearch').setView(initialMapCenter, initialZoom);
+    const map = L.map(mapContainer).setView(initialMapCenter, initialZoom);
 
     // turn off the Ukrainian flag emoji
     map.attributionControl.setPrefix('');
 
     const mapLayers = {
-        baseLayer: getBaseLayer({ origin: 'gbif', map })
+        baseLayer: getBaseLayer({ baseLayerSource, map })
         // drawControls: null,
         // h3: null,
         // treatments: null
     }
 
-    drawControlLayer(map, mapLayers);
+    if (drawControl) {
+        drawControlLayer(map, mapLayers);
+    }
+    
     switchTreatments2H3(map, mapLayers);
 
     map.on('moveend', function(e) {

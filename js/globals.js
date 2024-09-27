@@ -4,6 +4,9 @@ const globals = {
         ? 'http://localhost:3010/v3' 
         : 'https://test.zenodeo.org/v3',
 
+    mapServer: window.location.hostname === 'localhost' 
+        ? 'http://localhost:3000' 
+        : 'https://maps.zenodeo.org',
     // validQsKeys: [
     //     'page',
     //     'size',
