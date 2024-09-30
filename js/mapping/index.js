@@ -243,7 +243,16 @@ function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
     map.on('moveend', function(e) {
         //switchTreatments2H3(map, mapLayers);
         drawH3(map, mapLayers);
+
+        
     });
+
+    //const urlParams = new URLSearchParams(window.location.search);
+    const sidebarOptions = {
+        //position: urlParams.get('position') ?? 'left'
+        position: 'left'
+    };
+    const sidebar = L.control.sidebar('sidebar', sidebarOptions).addTo(map);
 
     // map.on('locationfound', onLocationFound);
     // map.on('locationerror', (e) => { alert(e.message) });
