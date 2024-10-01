@@ -7,6 +7,7 @@ const { rollup } = require('rollup');
 const { terser } = require('rollup-plugin-terser');
 const rm = require('gulp-rm');
 const cleanhtml = require('gulp-cleanhtml');
+const wrap = require('gulp-wrap');
 
 const d = new Date();
 const dsecs = d.getTime();
@@ -43,6 +44,9 @@ async function html() {
         .pipe(dest(destination))
 }
 
+const sep1 = '/*************************/';
+const sep2 = '/*** <%= file.relative %>  ***/';
+
 // for css
 async function css() {
     console.log('processing css for new index');
@@ -55,9 +59,6 @@ async function css() {
             `${source}/css/adv-search.css`,
             `${source}/css/examples.css`,
             `${source}/css/quicksearch.css`,
-            //`${source}/css/searchSwitcher.css`,
-            //`${source}/css/toggleSwitch.css`,
-            //`${source}/css/cssToggle.css`,
             `${source}/css/toggles.css`,
             `${source}/css/grid.css`,
             `${source}/css/carousel.css`,
@@ -66,18 +67,22 @@ async function css() {
             `${source}/css/throbber.css`,
             `${source}/css/pager.css`,
             `${source}/css/map.css`,
-            //`${source}/css/tabs-new.css`,
-            //`${source}/css/tabs.css`,
-            //`${source}/css/toggleSwitch.css`,
-            //`${source}/css/tristate-toggle.css`,
             `${source}/css/treatmentDetails.css`,
-            //`${source}/libs/fancySearch/fancySearch.css`,
             `${source}/css/sparkline.css`,
             `${source}/css/simpleLightbox.css`,
             `${source}/css/simpleLightbox-modifiers.css`,
-            `${source}/css/media-queries.css`
+            `${source}/css/media-queries.css`,
+            './libs/JavaScript-autoComplete/auto-complete.css',
+            './libs/pop-pop/pop-pop.min.css',
+            './libs/leaflet-draw/dist/leaflet.draw.css',
+            './libs/leaflet-markercluster/MarkerCluster.css',
+            './libs/leaflet-markercluster/MarkerCluster.Default.css'
         ])
         .pipe(cleanCSS({compatibility: 'ie8'}))
+
+        // https://stackoverflow.com/a/23177650/183692
+        // add file name as a comment before its content
+        .pipe(wrap(`${sep1}\n${sep2}\n<%= contents %>`))
         .pipe(concat(`ocellus-${dsecs}.css`))
         .pipe(dest(`${destination}/css`))
 }
