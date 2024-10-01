@@ -7,6 +7,23 @@ const globals = {
     mapServer: window.location.hostname === 'localhost' 
         ? 'http://localhost:3000' 
         : 'https://maps.zenodeo.org',
+
+    zenodoUri: 'https://zenodo.org/records',
+    tbUri: 'https://tb.plazi.org/GgServer/html',
+
+    uri: {
+        zenodeo: window.location.hostname === 'localhost' 
+            ? 'http://localhost:3010/v3' 
+            : 'https://test.zenodeo.org/v3',
+
+        maps:  window.location.hostname === 'localhost' 
+            ? 'http://localhost:3000' 
+            : 'https://maps.zenodeo.org',
+
+        zenodo: 'https://zenodo.org',
+        treatmentBank: 'https://tb.plazi.org/GgServer/html'
+    },
+    
     // validQsKeys: [
     //     'page',
     //     'size',
@@ -371,9 +388,6 @@ const globals = {
     // ],
 
     closedFigcaptionHeight : '30px',
-
-    zenodoUri: 'https://zenodo.org/records',
-    tbUri: 'https://tb.plazi.org/GgServer/html',
 
     /* map related globals */
     // map       : null,

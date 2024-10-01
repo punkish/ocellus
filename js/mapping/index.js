@@ -1,3 +1,4 @@
+import { $, $$ } from '../base.js';
 import { drawControlLayer } from "./controls.js";
 import { drawH3 } from "./h3.js";
 import { drawTreatments } from "./treatments.js";
@@ -220,42 +221,44 @@ function getBaseLayer({ baseLayerSource, map }) {
 }
 
 function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
-    const initialMapCenter = [0, 0];
-    const initialZoom = 2;
-    const map = L.map(mapContainer).setView(initialMapCenter, initialZoom);
+    const map = globals.maps[mapContainer];
 
-    // turn off the Ukrainian flag emoji
-    map.attributionControl.setPrefix('');
-
-    const mapLayers = {
-        baseLayer: getBaseLayer({ baseLayerSource, map })
-        // drawControls: null,
-        // h3: null,
-        // treatments: null
+    if (map) {
+        if (mapContainer === 'map') {
+            $('#map').classList.remove('noblock');
+        }
     }
+    else {
+        const initialMapCenter = [0, 0];
+        const initialZoom = 2;
+        const map = L.map(mapContainer).setView(initialMapCenter, initialZoom);
+        globals.maps[mapContainer] = map;
+        // turn off the Ukrainian flag emoji
+        map.attributionControl.setPrefix('');
 
-    if (drawControl) {
-        drawControlLayer(map, mapLayers);
-    }
-    
-    switchTreatments2H3(map, mapLayers);
+        // We store all the layers here so we can reference them later
+        const mapLayers = {
+            baseLayer: getBaseLayer({ baseLayerSource, map })
+            // drawControls,
+            // h3,
+            // h3info
+            // treatments,
+            // treatmentInfo
+        }
 
-    map.on('moveend', function(e) {
-        //switchTreatments2H3(map, mapLayers);
-        drawH3(map, mapLayers);
-
+        if (drawControl) {
+            drawControlLayer(map, mapLayers);
+        }
         
-    });
+        switchTreatments2H3(map, mapLayers);
 
-    //const urlParams = new URLSearchParams(window.location.search);
-    const sidebarOptions = {
-        //position: urlParams.get('position') ?? 'left'
-        position: 'left'
-    };
-    const sidebar = L.control.sidebar('sidebar', sidebarOptions).addTo(map);
+        map.on('moveend', function(e) {
+            switchTreatments2H3(map, mapLayers);
+        });
 
-    // map.on('locationfound', onLocationFound);
-    // map.on('locationerror', (e) => { alert(e.message) });
+        // map.on('locationfound', onLocationFound);
+        // map.on('locationerror', (e) => { alert(e.message) });
+    }
 }
 
 function switchTreatments2H3(map, mapLayers) {

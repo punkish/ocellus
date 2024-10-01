@@ -19,7 +19,7 @@ const makeTreatment = ({ figureSize, rec }) => {
 
     if (rec.zenodoRec) {
         //zenodoRec = `<a class="transition-050">Zenodo ID: ${rec.zenodoRec}</a>`;
-        zenodoLink = `<a href="${globals.zenodoUri}/${rec.zenodoRec}" target="_blank" title="more on Zenodo" alt="more on Zenodo"><img class="zenodoLink" src="img/zenodo-gradient-round.svg" width="50"></a>`;
+        zenodoLink = `<a href="${globals.uri.zenodo}/records/${rec.zenodoRec}" target="_blank" title="more on Zenodo" alt="more on Zenodo"><img class="zenodoLink" src="img/zenodo-gradient-round.svg" width="50"></a>`;
     }
 
     const figcaptionClass = figureSize === 250 
@@ -58,7 +58,7 @@ const makeTreatment = ({ figureSize, rec }) => {
     <figcaption class="${figcaptionClass}">
         <!-- ${zenodoRec} -->
         <div>
-            ${zenodoLink} <a href="${globals.tbUri}/${rec.treatmentId}" target="_blank" title="more on TreatmentBank" alt="more on TreatmentBank"><img class="tbLink" src="img/treatmentBankLogo.png" width="100"></a>
+            ${zenodoLink} <a href="${globals.uri.treatmentBank}/${rec.treatmentId}" target="_blank" title="more on TreatmentBank" alt="more on TreatmentBank"><img class="tbLink" src="img/treatmentBankLogo.png" width="100"></a>
         </div>
     </figcaption>
 </figure>`
@@ -66,12 +66,12 @@ const makeTreatment = ({ figureSize, rec }) => {
 
 const makeImage = ({ figureSize, rec }) => {
     const zenodoLink = rec.zenodoRec
-        ? `<img src="img/zenodo-gradient-35.png" width="35" height="14"> <a href="${globals.zenodoUri}/${rec.zenodoRec}" target="_blank">more on Zenodo</a>`
+        ? `<img src="img/zenodo-gradient-35.png" width="35" height="14"> <a href="${globals.uri.zenodo}/records/${rec.zenodoRec}" target="_blank">more on Zenodo</a>`
         : '';
 
     //let treatmentReveal = '';
     //treatmentReveal = `<div class="treatmentId reveal" data-reveal="${rec.treatmentId}">T</div>`;
-    const treatmentLink = `<img src="img/treatmentBankLogo.png" width="35" height="14"> <a href="${globals.tbUri}/${rec.treatmentId}" target="_blank">more on TreatmentBank</a>`;
+    const treatmentLink = `<img src="img/treatmentBankLogo.png" width="35" height="14"> <a href="${globals.uri.treatmentBank}/${rec.treatmentId}" target="_blank">more on TreatmentBank</a>`;
 
     const figcaptionClass = figureSize === 250 
         ? 'visible' 

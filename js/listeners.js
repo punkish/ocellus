@@ -45,7 +45,9 @@ const addListeners = () => {
 
     document.addEventListener('keydown', focusOnSearch);
 
-    $$('a.quicksearch').forEach((el) => el.addEventListener('click', quickSearch));
+    $$('a.quicksearch').forEach((el) => el.addEventListener(
+        'click', quickSearch
+    ));
 
     //$('#geoSearchWidget').addEventListener('click', geoSearchWidget);
 }
@@ -388,8 +390,9 @@ const reveal = (e) => {
     //const t = e.target.innerText;
     //e.target.innerText = e.target.dataset.reveal;
 
-    e.target.innerHTML = '<a href="#map" id="mapInit">MAP</a> • IMAGES • TREATMENTS';
+    e.target.innerHTML = '<a href="#map" id="mapInit">MAP</a> • <a href="#map" id="imagesInit">IMAGES</a> • TREATMENTS';
     e.target.querySelector('#mapInit').addEventListener('click', initMap);
+    e.target.querySelector('#imagesInit').addEventListener('click', initImages);
     $('#brand').classList.add('smallbrand');
     $('#brand').removeEventListener('click', reveal);
 
@@ -397,18 +400,38 @@ const reveal = (e) => {
         e.target.innerHTML = 4; 
         $('#brand').classList.remove('smallbrand');
         $('#brand').addEventListener('click', reveal);
-    }, 2000);
+    }, 3000);
     
     e.stopPropagation();
     e.preventDefault();
 }
 
 const initMap = (e) => {
+    $('#q').value = '';
+    $('#q').placeholder = 'use map below';
+    $('#q').disabled = true;
+    $('#refreshCache').disabled = true;
+    $('#clear-q').disabled = true;
+    $$('.quicksearch').forEach(a => a.classList.add('disabled'));
+    $('#search-help').style.pointerEvents = "none";
+    $('input[name=searchtype]').disabled = true;
+
     initializeMap({
         mapContainer: 'map', 
         baseLayerSource: 'geodeo', 
         drawControl: false
     })
+}
+
+const initImages = (e) => {
+    $('#q').placeholder = globals.defaultPlaceholder;
+    $('#q').disabled = false;
+    $('#refreshCache').disabled = false;
+    $('#clear-q').disabled = false;
+    $$('.quicksearch').forEach(a => a.classList.remove('disabled'));
+    $('#search-help').classList.remove('disabled');
+    $('input[name=searchtype]').disabled = false;
+    $('#map').classList.add('noblock');
 }
 
 const addListenersToFigDetails = () => {
@@ -422,12 +445,7 @@ const addListenersToFigDetails = () => {
                 ? `${fullText.substring(0, 30)}…`
                 : fullText;
 
-            if (figDetails[i].open) {
-                summary.innerText = fullText;
-            } 
-            else {
-                summary.innerText = summaryText;
-            }
+            summary.innerText = figDetails[i].open ? fullText : summaryText;
         });
     }
 }

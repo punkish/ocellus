@@ -5,6 +5,8 @@ function addLayer(map, layer) {
 }
 
 function removeLayer(map, mapLayers, layerName) {
+    console.log(`removing layer ${layerName}`);
+    console.log(mapLayers)
 
     if (layerName in mapLayers) {
         if (map.hasLayer(mapLayers[layerName])) {

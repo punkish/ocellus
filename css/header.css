@@ -24,7 +24,8 @@ header .title h1 a {
     top: 10px;
     cursor: pointer;
 }
-.smallbrand {
+.smallbrand,
+.smallbrand a {
     font-size: 8px !important;
 }
 header .subtitle {

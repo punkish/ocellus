@@ -1,8 +1,7 @@
 import { globals } from "../globals.js";
-import { addLayer, removeLayer } from "./utils.js";
 
 async function getH3(resolution)  {
-    const response = await fetch(`${globals.server}/bins/${resolution}`);
+    const response = await fetch(`${globals.uri.zenodeo}/bins/${resolution}`);
 
     // if HTTP-status is 200-299
     if (response.ok) {
@@ -45,11 +44,14 @@ async function getH3(resolution)  {
 async function drawH3(map, mapLayers) {
 
     if ('treatments' in mapLayers) {
-        removeLayer(map, mapLayers, 'treatments');
+        map.removeLayer(mapLayers.treatments);
+        mapLayers.treatmentInfo.remove();
     }
 
     if ('h3' in mapLayers) {
-        addLayer(map, mapLayers.h3);
+        map.addLayer(mapLayers.h3);
+        //map.addLayer(mapLayers.h3info);
+        mapLayers.h3info.addTo(map);
     }
     else {
         const grid = await getH3(3);
@@ -112,7 +114,6 @@ async function drawH3(map, mapLayers) {
             };
         }
     
-        removeLayer(map, mapLayers, 'h3');
         mapLayers.h3 = L.geoJSON(
             grid, 
             {
@@ -131,9 +132,8 @@ async function drawH3(map, mapLayers) {
             }
         );
         
-        addLayer(map, mapLayers.h3);
+        map.addLayer(mapLayers.h3);
         makeH3Info(map, mapLayers);
-        //makeH3Legend(map, mapLayers, classes);
     }
 
 }
@@ -173,26 +173,29 @@ function getFillColor(num, classes) {
 }
 
 function makeH3Info(map, mapLayers) {
-    mapLayers.h3info = L.control();
+    const h3info = L.control();
 
     // create a div with a class "info"
-    mapLayers.h3info.onAdd = function (map) {
-        this._div = L.DomUtil.create('div', 'info'); 
-        this.update();
+    h3info.onAdd = function (map) {
+        this._div = L.DomUtil.create('div', 'h3info'); 
+        //this.update();
         return this._div;
     };
 
     // this updates the control based on feature properties passed
-    mapLayers.h3info.update = function (props) {
-        this._div.innerHTML = props 
-            ? `${props.numOfTreatments} treatments in ${props.area} km<sup>2</sup>` 
-            : 'Hover over a bin to see num of treatments';
+    h3info.update = function (props) {
 
-        //this._div.innerHTML = `<b>Treatments<sup>*</sup></b><br><small><b>*</b><i>one treatment may be represented by more than one point</i></small><br>${str}`;
-        
+        if (props) {
+            this._div.innerHTML = `${props.numOfTreatments} treatments in ${props.area} km<sup>2</sup>`
+        }
+        else {
+            this._div.innerHTML = 'Hover over a bin to see num of treatments';
+        }
+
     };
 
-    mapLayers.h3info.addTo(map);
+    mapLayers.h3info = h3info;
+    h3info.addTo(map);
 }
 
 function makeH3Legend(map, mapLayers, classes) {

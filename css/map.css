@@ -5,7 +5,8 @@
     width: 100%;
     height: 100%;
 }
-div.info {
+div.h3info,
+div.treatmentInfo {
     background-color: white;
     background: rgba(255,255,255,0.8);
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
@@ -14,9 +15,17 @@ div.info {
     border: 1px solid;
     padding: 6px 8px;
     font: 14px/16px Arial, Helvetica, sans-serif;
-    width: 150px;
     text-align: left;
 }
+
+div.h3info {
+    width: 150px;
+}
+
+div.treatmentInfo {
+    width: 250px;
+}
+
 .my-class {
     width: 250px;
     min-height: 100px;
