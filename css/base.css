@@ -23,6 +23,12 @@ a:visited {
     border: 1px solid lightgray;
     border-radius: 2px;
 } */
+ 
+.disabled {
+    pointer-events: none;
+    background-color: lightgray;
+}
+
 main {
     flex: 1 1 auto;
     position: relative;

@@ -50,16 +50,32 @@
     <link rel="stylesheet" href="css/simpleLightbox.css">
     <link rel="stylesheet" href="css/simpleLightbox-modifiers.css">
     <link rel="stylesheet" href="css/media-queries.css">
+<<<<<<< HEAD
+=======
+    <!-- endbuild -->
+    
+    
+>>>>>>> mapping
     <link rel="stylesheet" href="libs/JavaScript-autoComplete/auto-complete.css">
     <link rel="stylesheet" href="libs/pop-pop/pop-pop.min.css">
     <link rel="stylesheet" href="libs/leaflet-draw/dist/leaflet.draw.css">
     <link rel="stylesheet" href="libs/leaflet-markercluster/MarkerCluster.css">
     <link rel="stylesheet" href="libs/leaflet-markercluster/MarkerCluster.Default.css">
+<<<<<<< HEAD
     <!-- endbuild -->
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Lora">
+=======
+    <!-- <link rel="stylesheet" href="libs/leaflet-sidebar/leaflet.sidebar.min.css" /> -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.1.0/dist/MarkerCluster.css" /> -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.1.0/dist/MarkerCluster.Default.css" /> -->
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Lora"> -->
+>>>>>>> mapping
   </head>
   <body>
     
@@ -136,7 +152,7 @@
                 <div id="fs-container"></div>
             </div> 
             -->
-
+            
             <div id="bottom-menu">
                 <div id="quicksearch">                    
                     <a class="quicksearch" href="?family=Formicidae" aria-label="find ants" data-pop="bottom" data-pop-no-shadow data-pop-arrow><img src="img/icon-ant.svg"></a> 
@@ -151,7 +167,6 @@
                 <div id="toggle-search" class="toggle-container"
                     aria-label="toggle between simple and advanced search" data-pop="left" data-pop-no-shadow data-pop-arrow>
                     <label id="toggle5" class="toggle">
-
                         <input name="searchtype" class="toggle-checkbox" 
                             type="checkbox" value="advSearch">
 
@@ -432,19 +447,15 @@
         <img src="img/fish.png">
     </footer>
     
-    <!-- <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script> -->
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
-    <!-- <script src="libs/leaflet-heat/leaflet-heat.js"></script> -->
-    <!-- <script src="https://unpkg.com/leaflet.markercluster@1.1.0/dist/leaflet.markercluster-src.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.1.0/dist/leaflet.markercluster-src.js"></script>
-
-    <script src="libs/leaflet-draw/dist/leaflet.draw.js"></script>
-    <!-- <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
+    
 
     <!-- build:js -->
     <!-- endbuild -->
+    <script src="libs/leaflet-draw/dist/leaflet.draw.js"></script>
+    <script src="libs/leaflet-sidebar/leaflet.sidebar.min.js"></script>
     <script src="libs/simple-lightbox/simpleLightbox.js"></script>
     <script src="libs/picolog/picolog.min.js"></script>
     <script src="libs/lazysizes.min.js"></script>
@@ -463,8 +474,7 @@
             getJournalTitles, 
             getCollectionCodes,
             journalTitleAc,
-            collectionCodeAc,
-            //initializeMap
+            collectionCodeAc
         } from './js/ocellus.js';
 
         window.onload = () => init();
