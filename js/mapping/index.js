@@ -5,6 +5,46 @@ import { drawTreatments } from "./treatments.js";
 //import { addLayer, removeLayer } from "./utils.js";
 import { globals } from "../globals.js";
 
+function makeCloseBtn(map) {
+    L.Control.CloseButton = L.Control.extend({
+        onAdd: function(map) {
+            const btn = L.DomUtil.create('button', 'close-btn');
+            btn.addEventListener('click', function(e) {
+                $('#map').classList.add('noblock');
+                $('#not-map').classList.remove('noblock');
+            });
+            return btn;
+        },
+    
+        onRemove: function(map) {
+            // Nothing to do here
+        }
+    });
+    
+    L.control.closeButton = function(opts) {
+        return new L.Control.CloseButton(opts);
+    }
+    
+    L.control.closeButton({ position: 'topright' }).addTo(map);
+}
+
+// function makeInfoControl({ className, initialMsg }) {
+//     console.log('making info control ' + className)
+//     const infoControl = L.Control.extend({
+//         onAdd: function(map) {
+//             this._div = L.DomUtil.create('div', className);
+//             this._div.innerHTML = initialMsg;
+//             return this._div;
+//         },
+    
+//         onRemove: function(map) {
+//             // Nothing to do here
+//         }
+//     });
+    
+//     return infoControl;
+// }
+
 function getBaseLayer({ baseLayerSource, map }) {
     const baseLayerOpts = {
         minZoom: 1,
@@ -256,6 +296,7 @@ function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
             switchTreatments2H3(map, mapLayers);
         });
 
+        makeCloseBtn(map);
         // map.on('locationfound', onLocationFound);
         // map.on('locationerror', (e) => { alert(e.message) });
     }
@@ -284,4 +325,7 @@ function switchTreatments2H3(map, mapLayers) {
 //     L.circle(e.latlng, radius).addTo(map);
 // }
 
-export { initializeMap }
+export { 
+    initializeMap, 
+    //makeInfoControl 
+}

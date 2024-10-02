@@ -407,14 +407,15 @@ const reveal = (e) => {
 }
 
 const initMap = (e) => {
-    $('#q').value = '';
-    $('#q').placeholder = 'use map below';
-    $('#q').disabled = true;
-    $('#refreshCache').disabled = true;
-    $('#clear-q').disabled = true;
-    $$('.quicksearch').forEach(a => a.classList.add('disabled'));
-    $('#search-help').style.pointerEvents = "none";
-    $('input[name=searchtype]').disabled = true;
+    // $('#q').value = '';
+    // $('#q').placeholder = 'use map below';
+    // $('#q').disabled = true;
+    // $('#refreshCache').disabled = true;
+    // $('#clear-q').disabled = true;
+    // $$('.quicksearch').forEach(a => a.classList.add('disabled'));
+    // $('#search-help').style.pointerEvents = "none";
+    // $('input[name=searchtype]').disabled = true;
+    $('#not-map').classList.add('noblock');
 
     initializeMap({
         mapContainer: 'map', 
@@ -424,14 +425,16 @@ const initMap = (e) => {
 }
 
 const initImages = (e) => {
-    $('#q').placeholder = globals.defaultPlaceholder;
-    $('#q').disabled = false;
-    $('#refreshCache').disabled = false;
-    $('#clear-q').disabled = false;
-    $$('.quicksearch').forEach(a => a.classList.remove('disabled'));
-    $('#search-help').classList.remove('disabled');
-    $('input[name=searchtype]').disabled = false;
+    // $('#q').placeholder = globals.defaultPlaceholder;
+    // $('#q').disabled = false;
+    // $('#refreshCache').disabled = false;
+    // $('#clear-q').disabled = false;
+    // $$('.quicksearch').forEach(a => a.classList.remove('disabled'));
+    // $('#search-help').classList.remove('disabled');
+    // $('input[name=searchtype]').disabled = false;
+    // $('#map').classList.add('noblock');
     $('#map').classList.add('noblock');
+    $('#not-map').classList.remove('noblock');
 }
 
 const addListenersToFigDetails = () => {

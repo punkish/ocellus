@@ -1,4 +1,5 @@
 import { globals } from "../globals.js";
+// import { makeInfoControl } from './index.js';
 
 /**
  * retrieves treatments within the provided bounds
@@ -101,66 +102,80 @@ async function showMarker(url, tid, el, html) {
 
 function makeTreatmentInfo(map, mapLayers) {
     const treatmentInfo = L.control();
+    const initialMsg = 'Click on a treatment to for more info';
 
     // create a div with a class "info"
     treatmentInfo.onAdd = function (map) {
         this._div = L.DomUtil.create('div', 'treatmentInfo'); 
         //this.update();
+        this._div.innerHTML = initialMsg;
         return this._div;
     };
+    
+
+    // const treatmentInfo = makeInfoControl({
+    //     className: 'treatmentInfo',
+    //     initialMsg
+    // });
 
     // this updates the control based on the feature passed
     treatmentInfo.update = async function (treatment) {
-        const tid = treatment.treatmentId;
-        const url = `${globals.server}/images?treatmentId=${tid}&cols=httpUri&cols=caption`;
-        let html = `<h4 class="popup">${treatment.treatmentTitle}</h4>`;
 
-        const response = await fetch(url);
+        if (treatment) {
+            const tid = treatment.treatmentId;
+            const url = `${globals.server}/images?treatmentId=${tid}&cols=httpUri&cols=caption`;
+            let html = `<h4 class="popup">${treatment.treatmentTitle}</h4>`;
 
-        if (response.ok) {
-            const res = await response.json();
-            const rec = res.item.result.records[0];
-            if (rec.httpUri) {
+            const response = await fetch(url);
 
-                // Most figures are on Zenodo, but some are on Pensoft,
-                // so the url has to be adjusted accordingly
-                // 
-                const size = 250;
-                const id = rec.httpUri.split('/')[4];
-                // if the figure is on zenodo, show their thumbnails unless 
-                // it is an svg, in which case, apologize with "no preview"
-                let uri;
-                
-                if (rec.httpUri.indexOf('zenodo') > -1) {
-                    if (rec.httpUri.indexOf('.svg') > -1) {
-                        uri = '/img/kein-preview.png';
-                        //fullImage = '/img/kein-preview.png';
+            if (response.ok) {
+                const res = await response.json();
+                const rec = res.item.result.records[0];
+                if (rec.httpUri) {
+
+                    // Most figures are on Zenodo, but some are on Pensoft,
+                    // so the url has to be adjusted accordingly
+                    // 
+                    const size = 250;
+                    const id = rec.httpUri.split('/')[4];
+                    // if the figure is on zenodo, show their thumbnails unless 
+                    // it is an svg, in which case, apologize with "no preview"
+                    let uri;
+                    
+                    if (rec.httpUri.indexOf('zenodo') > -1) {
+                        if (rec.httpUri.indexOf('.svg') > -1) {
+                            uri = '/img/kein-preview.png';
+                            //fullImage = '/img/kein-preview.png';
+                        }
+                        else {
+                            uri = `${globals.uri.zenodo}/api/iiif/record:${id}:figure.png/full/250,/0/default.jpg`;
+                            // fullImage = `${globals.uri.zenodo}/api/iiif/record:${id}:figure.png/full/^1200,/0/default.jpg`;
+                        }
                     }
+
+                    // but some are on Pensoft, so use the uri directly
                     else {
-                        uri = `${globals.uri.zenodo}/api/iiif/record:${id}:figure.png/full/250,/0/default.jpg`;
-                        // fullImage = `${globals.uri.zenodo}/api/iiif/record:${id}:figure.png/full/^1200,/0/default.jpg`;
+                        uri = `${rec.httpUri}/singlefigAOF/`;
+                        //fullImage = rec.httpUri;
                     }
+                    
+                    html += `<figure class="figure-${size}">
+                        <picture>
+                            <img src="../img/bug.gif" width="${size}" 
+                                data-src="${uri}" class="lazyload" data-recid="${id}">
+                        </picture>
+                        <figcaption>${rec.captionText} <a href="${globals.uri.treatmentBank}/treatments?treatmentId=${tid}" target="_blank">more on TB</a></figcaption>
+                    </figure>`;
                 }
-
-                // but some are on Pensoft, so use the uri directly
                 else {
-                    uri = `${rec.httpUri}/singlefigAOF/`;
-                    //fullImage = rec.httpUri;
+                    html += `<a href="${globals.uri.treatmentBank}/treatments?treatmentId=${tid}" target="_blank">more on TB</a>`;
                 }
-                
-                html += `<figure class="figure-${size}">
-                    <picture>
-                        <img src="../img/bug.gif" width="${size}" 
-                            data-src="${uri}" class="lazyload" data-recid="${id}">
-                    </picture>
-                    <figcaption>${rec.captionText} <a href="${globals.uri.treatmentBank}/treatments?treatmentId=${tid}" target="_blank">more on TB</a></figcaption>
-                </figure>`;
-            }
-            else {
-                html += `<a href="${globals.uri.treatmentBank}/treatments?treatmentId=${tid}" target="_blank">more on TB</a>`;
-            }
 
-            this._div.innerHTML = html || 'click on a treatment to see info';
+                this._div.innerHTML = html;
+            }
+        }
+        else {
+            this._div.innerHTML = initialMsg;
         }
 
     };

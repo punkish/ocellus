@@ -38,7 +38,8 @@ async function html() {
         .pipe(inject.replace('%dsecs%', dsecs))
         .pipe(inject.replace('./js/ocellus.js', `./js/ocellus-${dsecs}.js`))
         .pipe(htmlReplace({
-            'css': `./css/ocellus-${dsecs}.css`
+            'css': `./css/ocellus-${dsecs}.css`,
+            'js': `./js/libs-combined.js`
         }))
         //.pipe(cleanhtml())
         .pipe(dest(destination))
@@ -108,9 +109,28 @@ async function js() {
     });
 }
 
+async function concatJs() {
+    console.log('concatenating JS libs');
+
+    return src([
+        'libs/leaflet-draw/dist/leaflet.draw.js',
+        'libs/simple-lightbox/simpleLightbox.js',
+        'libs/picolog/picolog.min.js',
+        'libs/lazysizes.min.js',
+        'libs/JavaScript-autoComplete/auto-complete.js',
+        'libs/echarts/echarts.min.js'
+    ])
+
+    // https://stackoverflow.com/a/23177650/183692
+    // add file name as a comment before its content
+    .pipe(wrap(`${sep1}\n${sep2}\n<%= contents %>`))
+    .pipe(concat(`libs-combined.js`))
+    .pipe(dest(`${destination}/js`))
+}
+
 exports.default = parallel(
     series(
         cleanup, 
-        parallel(css, js, html)
+        parallel(css, js, concatJs, html)
     )
 );

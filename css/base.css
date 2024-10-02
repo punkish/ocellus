@@ -1,7 +1,8 @@
 /* Mobile first queries */
 
 html,
-body {
+body,
+#not-map {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -10,7 +11,7 @@ body {
     padding: unset;
 }
 body {
-    margin: 5px;
+    /* margin: 5px; */
     padding: 0;
 }
 a,

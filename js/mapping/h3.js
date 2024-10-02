@@ -1,4 +1,5 @@
 import { globals } from "../globals.js";
+//import { makeInfoControl } from './index.js';
 
 async function getH3(resolution)  {
     const response = await fetch(`${globals.uri.zenodeo}/bins/${resolution}`);
@@ -174,23 +175,27 @@ function getFillColor(num, classes) {
 
 function makeH3Info(map, mapLayers) {
     const h3info = L.control();
+    const initialMsg = 'Hover over a bin to see num of images';
 
     // create a div with a class "info"
     h3info.onAdd = function (map) {
-        this._div = L.DomUtil.create('div', 'h3info'); 
+        this._div = L.DomUtil.create('div', 'h3info');
+        this._div.innerHTML = initialMsg;
         //this.update();
         return this._div;
     };
 
+    // const h3info = makeInfoControl({
+    //     className: 'h3info',
+    //     initialMsg
+    // });
+
     // this updates the control based on feature properties passed
     h3info.update = function (props) {
 
-        if (props) {
-            this._div.innerHTML = `${props.numOfTreatments} treatments in ${props.area} km<sup>2</sup>`
-        }
-        else {
-            this._div.innerHTML = 'Hover over a bin to see num of treatments';
-        }
+        this._div.innerHTML = props
+            ? `${props.numOfTreatments} treatments in ${props.area} km<sup>2</sup>`
+            : initialMsg;
 
     };
 
