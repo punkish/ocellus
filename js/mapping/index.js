@@ -265,7 +265,8 @@ function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
 
     if (map) {
         if (mapContainer === 'map') {
-            $('#map').classList.remove('noblock');
+            $('#not-map').classList.add('hidden');
+            $('#map').classList.remove('hidden');
         }
     }
     else {
