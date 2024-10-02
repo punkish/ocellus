@@ -75,10 +75,6 @@ async function css() {
             './libs/JavaScript-autoComplete/auto-complete.css',
             './libs/pop-pop/pop-pop.min.css',
             './libs/leaflet-draw/dist/leaflet.draw.css',
-<<<<<<< HEAD
-=======
-            './libs/leaflet-sidebar/leaflet.sidebar.min.css',
->>>>>>> mapping
             './libs/leaflet-markercluster/MarkerCluster.css',
             './libs/leaflet-markercluster/MarkerCluster.Default.css'
         ])
