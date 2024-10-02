@@ -10,8 +10,8 @@ function makeCloseBtn(map) {
         onAdd: function(map) {
             const btn = L.DomUtil.create('button', 'close-btn');
             btn.addEventListener('click', function(e) {
-                $('#map').classList.add('noblock');
-                $('#not-map').classList.remove('noblock');
+                $('#map').classList.add('hidden');
+                $('#not-map').classList.remove('hidden');
             });
             return btn;
         },

@@ -393,12 +393,12 @@ const reveal = (e) => {
     e.target.innerHTML = '<a href="#map" id="mapInit">MAP</a> • <a href="#map" id="imagesInit">IMAGES</a> • TREATMENTS';
     e.target.querySelector('#mapInit').addEventListener('click', initMap);
     e.target.querySelector('#imagesInit').addEventListener('click', initImages);
-    $('#brand').classList.add('smallbrand');
+    //$('#brand').classList.add('smallbrand');
     $('#brand').removeEventListener('click', reveal);
 
     setTimeout(() => { 
         e.target.innerHTML = 4; 
-        $('#brand').classList.remove('smallbrand');
+        //$('#brand').classList.remove('smallbrand');
         $('#brand').addEventListener('click', reveal);
     }, 3000);
     
@@ -415,7 +415,7 @@ const initMap = (e) => {
     // $$('.quicksearch').forEach(a => a.classList.add('disabled'));
     // $('#search-help').style.pointerEvents = "none";
     // $('input[name=searchtype]').disabled = true;
-    $('#not-map').classList.add('noblock');
+    $('#not-map').classList.add('hidden');
 
     initializeMap({
         mapContainer: 'map', 
@@ -433,8 +433,8 @@ const initImages = (e) => {
     // $('#search-help').classList.remove('disabled');
     // $('input[name=searchtype]').disabled = false;
     // $('#map').classList.add('noblock');
-    $('#map').classList.add('noblock');
-    $('#not-map').classList.remove('noblock');
+    $('#map').classList.add('hidden');
+    $('#not-map').classList.remove('hidden');
 }
 
 const addListenersToFigDetails = () => {

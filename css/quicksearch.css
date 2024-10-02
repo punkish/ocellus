@@ -21,3 +21,31 @@
     border: 0;
     background: none;
 }
+.bg-icon1_ant,
+.bg-icon2_fish,
+.bg-icon3_spider,
+.bg-icon4_shrimp,
+.bg-icon5_beetle,
+.bg-icon6_more_examples {
+    width: 32px; height: 32px;
+    border: none;
+}
+
+.bg-icon1_ant {
+    background: url('img/icons.svg') 0px 0px;
+}
+.bg-icon2_fish {
+    background: url('img/icons.svg') -31px 0px;
+}
+.bg-icon3_spider {
+    background: url('img/icons.svg') -62px 0px;
+}
+.bg-icon4_shrimp {
+    background: url('img/icons.svg') -93px 0px;
+}
+.bg-icon5_beetle {
+    background: url('img/icons.svg') -124px 0px;
+}
+.bg-icon6_more_examples {
+    background: url('img/icons.svg') -155px 0px;
+}

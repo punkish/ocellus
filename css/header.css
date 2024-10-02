@@ -17,17 +17,18 @@ header .title h1 a {
 }
 #brand {
     color: grey;
-    font-size: 15px;
+    font-size: 12px;
     position: absolute;
     font-family: sans-serif;
     left: calc(50% + 40px);
-    top: 10px;
+    top: 5px;
     cursor: pointer;
 }
-.smallbrand,
+/* .smallbrand,
 .smallbrand a {
-    font-size: 8px !important;
-}
+    font-size: 12px !important;
+    
+} */
 header .subtitle {
     display: none;
 }
