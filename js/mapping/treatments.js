@@ -1,5 +1,4 @@
 import { globals } from "../globals.js";
-// import { makeInfoControl } from './index.js';
 
 /**
  * retrieves treatments within the provided bounds
@@ -107,6 +106,7 @@ function makeTreatmentInfo(map, mapLayers) {
     // create a div with a class "info"
     treatmentInfo.onAdd = function (map) {
         this._div = L.DomUtil.create('div', 'treatmentInfo'); 
+        this._div.id = 'treatmentInfo';
         //this.update();
         this._div.innerHTML = initialMsg;
         return this._div;
@@ -182,6 +182,12 @@ function makeTreatmentInfo(map, mapLayers) {
 
     mapLayers.treatmentInfo = treatmentInfo;
     treatmentInfo.addTo(map);
+
+    const ti = L.DomUtil.get("treatmentInfo");
+    //L.DomEvent.addListener(ti, 'change', changeHandler);
+
+    $('body').appendChild($("#treatmentInfo"));
+    $("#treatmentInfo").classList.add('treatmentInfo');
 }
 
 export { drawTreatments }
