@@ -1,0 +1,3 @@
+[submodule "libs/leaflet-sliding-panel"]
+	path = libs/leaflet-sliding-panel
+	url = git@github.com:punkish/leaflet-sliding-panel.git
