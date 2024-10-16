@@ -3,93 +3,93 @@ import { getChartContainer, yAxisFormatter } from './chart-utils.js';
 import { globals } from './globals.js';
 // import { toggleModal } from './listeners.js';
 
-function renderDashboard(obj) {
-    const { yearlyCounts, totals } = obj;
+// function renderDashboard(obj) {
+//     const { yearlyCounts, totals } = obj;
     
-    // There are years when image extraction didn't take place (this is 
-    // different from when images extraction took place but no images may 
-    // have been found). We need to add an entry for images for these years
-    // so the chart looks ok.
-    // 
-    // treatmentsCount.yearly.forEach(t => {
-    //     const tyear = t.year;
+//     // There are years when image extraction didn't take place (this is 
+//     // different from when images extraction took place but no images may 
+//     // have been found). We need to add an entry for images for these years
+//     // so the chart looks ok.
+//     // 
+//     // treatmentsCount.yearly.forEach(t => {
+//     //     const tyear = t.year;
 
-    //     const indImg = imagesCount.yearly.findIndex(i => i.year === tyear);
+//     //     const indImg = imagesCount.yearly.findIndex(i => i.year === tyear);
         
-    //     if (indImg === -1) {
-    //         imagesCount.yearly.push({
-    //             year: tyear,
-    //             num_of_records: 0
-    //         })
-    //     }
+//     //     if (indImg === -1) {
+//     //         imagesCount.yearly.push({
+//     //             year: tyear,
+//     //             num_of_records: 0
+//     //         })
+//     //     }
 
-    //     const indMtc = materialCitationsCount.yearly.findIndex(i => i.year === tyear);
+//     //     const indMtc = materialCitationsCount.yearly.findIndex(i => i.year === tyear);
         
-    //     if (indMtc === -1) {
-    //         materialCitationsCount.yearly.push({
-    //             year: tyear,
-    //             num_of_records: 0
-    //         })
-    //     }
-    // });
+//     //     if (indMtc === -1) {
+//     //         materialCitationsCount.yearly.push({
+//     //             year: tyear,
+//     //             num_of_records: 0
+//     //         })
+//     //     }
+//     // });
     
-    // imagesCount.yearly.sort((a, b) => {
-    //     return a.year - b.year
-    // });
+//     // imagesCount.yearly.sort((a, b) => {
+//     //     return a.year - b.year
+//     // });
 
-    // materialCitationsCount.yearly.sort((a, b) => {
-    //     return a.year - b.year
-    // });
+//     // materialCitationsCount.yearly.sort((a, b) => {
+//     //     return a.year - b.year
+//     // });
 
     
 
-    // create charts container that will be reused for each chart withing
-    const chartsContainer = document.getElementById('dashboardCharts');
-    const main = document.getElementsByTagName('form')[0];
-    const { width, height, padding } = getChartContainer(main);
+//     // create charts container that will be reused for each chart withing
+//     const chartsContainer = document.getElementById('dashboardCharts');
+//     const main = document.getElementsByTagName('form')[0];
+//     const { width, height, padding } = getChartContainer(main);
 
-    // const resources = [
-    //     'Treatments',
-    //     'Images',
-    //     'Species',
-    //     'Journals'
-    // ];
+//     // const resources = [
+//     //     'Treatments',
+//     //     'Images',
+//     //     'Species',
+//     //     'Journals'
+//     // ];
 
-    // resources.forEach(resource => {
-    //     const { years, series } = createData(resource, yearlyCounts);
-    //     const options = getOptions(resource, years, series);
+//     // resources.forEach(resource => {
+//     //     const { years, series } = createData(resource, yearlyCounts);
+//     //     const options = getOptions(resource, years, series);
         
-    //     createDashboardChart({
-    //         resource,
-    //         chartsContainer,
-    //         // yearlyCounts,
-    //         totals,
-    //         options,
-    //         chartsWidth,
-    //         chartsPadding
-    //     });
-    // })
+//     //     createDashboardChart({
+//     //         resource,
+//     //         chartsContainer,
+//     //         // yearlyCounts,
+//     //         totals,
+//     //         options,
+//     //         chartsWidth,
+//     //         chartsPadding
+//     //     });
+//     // })
     
-    const resource = 'Treatments';
-    const { years, series } = createData(resource, yearlyCounts);
-    const options = getOptions(resource, years, series);
+//     const resource = 'Treatments';
+//     const { years, series } = createData(resource, yearlyCounts);
+//     const options = getOptions(resource, years, series);
 
-    createDashboardChart({
-        resource,
-        chartsContainer,
-        totals,
-        options,
-        width,
-        padding
-    });
+//     createDashboardChart({
+//         resource,
+//         chartsContainer,
+//         totals,
+//         options,
+//         width,
+//         padding
+//     });
     
-    // const svg = document.querySelector('#sparkBox');
-    // svg.addEventListener('click', toggleModal);
+//     // const svg = document.querySelector('#sparkBox');
+//     // svg.addEventListener('click', toggleModal);
     
 
-    // renderYearlyCountsDb(speciesCount, 'Species');
-    // renderYearlyCountsDb(journalsCount, 'Journals');
-}
+//     // renderYearlyCountsDb(speciesCount, 'Species');
+//     // renderYearlyCountsDb(journalsCount, 'Journals');
+// }
 
 const renderYearlyCounts = ({ yearlyCounts, totals }) => {
     const chart = getChartContainer(document.querySelector('#yearlyCounts'));
@@ -358,4 +358,7 @@ function getOptions(resource, years, series) {
     return options;
 }
 
-export { renderDashboard, renderYearlyCounts }
+export { 
+    //renderDashboard, 
+    renderYearlyCounts 
+}

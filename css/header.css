@@ -7,7 +7,7 @@ header {
     display: none;
 } */
 header .title h1 {
-    margin: 0 0 -10px 0;
+    margin: 0 0 0px 0;
 }
 header .title h1 a {
     text-decoration: none;
@@ -24,11 +24,11 @@ header .title h1 a {
     top: 5px;
     cursor: pointer;
 }
-/* .smallbrand,
+.smallbrand,
 .smallbrand a {
-    font-size: 12px !important;
+    font-size: 8px !important;
     
-} */
+}
 header .subtitle {
     display: none;
 }

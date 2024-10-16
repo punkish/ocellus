@@ -1,37 +1,38 @@
+function getUrls() {
+    const cond1 = window.location.hostname === 'ocellus.localhost';
+    const cond2 = window.location.hostname === 'ocellus.local';
+    const cond3 = window.location.hostname === '127.0.0.1';
+    const cond4 = window.location.hostname === 'localhost';
+    
+    let zenodeo = 'https://test.zenodeo.org/v3';
+    let maps = 'https://maps.zenodeo.org';
+    const zenodo = 'https://zenodo.org';
+    const treatmentBank = 'https://tb.plazi.org/GgServer/html';
+
+    if (cond1 || cond2 || cond3 || cond4) {
+        zenodeo = `http://${window.location.hostname}:3010/v3`;
+        maps = `http://${window.location.hostname}:3000`;
+    }
+
+    return {
+        zenodeo,
+        maps,
+        zenodo,
+        treatmentBank
+    }
+}
+
 const globals = {
 
-    server: window.location.hostname === 'localhost' 
-        ? 'http://localhost:3010/v3' 
-        : 'https://test.zenodeo.org/v3',
-
-    mapServer: window.location.hostname === 'localhost' 
-        ? 'http://localhost:3000' 
-        : 'https://maps.zenodeo.org',
-
-    zenodoUri: 'https://zenodo.org/records',
-    tbUri: 'https://tb.plazi.org/GgServer/html',
-
-    uri: {
-        zenodeo: window.location.hostname === 'localhost' 
-            ? 'http://localhost:3010/v3' 
-            : 'https://test.zenodeo.org/v3',
-
-        maps:  window.location.hostname === 'localhost' 
-            ? 'http://localhost:3000' 
-            : 'https://maps.zenodeo.org',
-
-        zenodo: 'https://zenodo.org',
-        treatmentBank: 'https://tb.plazi.org/GgServer/html'
+    fetchOpts: {
+        // method: "GET",
+        // headers: new Headers({
+        //     "ngrok-skip-browser-warning": true,
+        // }),
     },
-    
-    // validQsKeys: [
-    //     'page',
-    //     'size',
-    //     'resource',
-    //     'q',
-    //     'refreshCache'
-    // ],
 
+    uri: getUrls(),
+    
     cache: {
         images: {
             yearlyCounts: false,
@@ -46,13 +47,6 @@ const globals = {
         bins: {}
     },
 
-    // various querystring defaults
-    // 'view' is the only one we update based on the value in the qs
-    // page        : 1,
-    // size        : 30,
-    // fpage       : 1,
-    // fsize       : 30,
-    // refreshCache: false,
     figureSize:  {
         normal: 250,
         small: 100,
@@ -60,59 +54,6 @@ const globals = {
     },
 
     defaultPlaceholder: 'search images',
-
-    //view : 'images',
-    // views : {
-    //     images: {
-    //         description: 'images from Zenodo',
-    //         totalCount: 0,
-    //         figures: [],
-    //         page: 1,
-    //         size: 30
-    //     },
-    //     treatments: {
-    //         description: 'treatments with images',
-    //         totalCount: 0,
-    //         countOfTreatments: 0,
-    //         countOfFigures: 0,
-    //         figures: [],
-    //         page: 1,
-    //         size: 30,
-    //         figpage: 2,
-    //         figsize: 30
-    //     },
-    //     map: {
-    //         description: 'treatments with locations',
-    //         totalCount: 0,
-    //         obj: null,
-    //         bounds: null,
-    //         layers: {
-    //             baselayer: {
-    //                 groups: {
-    //                     osm: null
-    //                 }
-    //             },
-    //             h3: {
-    //                 groups: {
-    //                     grid2: null
-    //                 },
-    //                 controls: {
-    //                     info: null,
-    //                     legend: null
-    //                 }
-    //             },
-    //             treatments: {
-    //                 groups: {
-    //                     treatmentsOnLand: null,
-    //                     treatmentsInWater: null
-    //                 },
-    //                 controls: {
-    //                     layerControl: null
-    //                 }
-    //             }
-    //         }
-    //     }
-    // },
 
     results: {
         totalCount: 0,
@@ -129,29 +70,9 @@ const globals = {
     pseudoResources : ['about', 'ip', 'contact', 'privacy'],
 
     params: {
-
-        // validQs: [
-        //     'page',
-        //     'size',
-        //     'resource',
-        //     'q',
-        //     'refreshCache'
-        // ],
-
-        // params allowed in queryString but not in the 
-        // 'q' input field
+        
+        // params allowed in queryString but not in the 'q' input field
         notValidQ: ['resource', 'page', 'size', 'grid', 'refreshCache', 'cols'],
-
-        // params valid for Zenodo
-        // validZenodo: [
-        //     'id',
-        //     'subtype',
-        //     'communities',
-        //     'q',
-        //     'creator',
-        //     'title',
-        //     'keywords'
-        // ],
 
         validImages: [
             'httpUri',
@@ -230,44 +151,6 @@ const globals = {
             'groupby'
         ],
 
-        // the following are the valid query params for Zenodeo
-        // validZenodeo: [
-        //     'httpUri',
-        //     'caption',
-        //     'captionText',
-        //     'treatmentId',
-        //     'treatmentTitle',
-        //     'articleTitle',
-        //     'treatmentDOI',
-        //     'articleDOI',
-        //     'zenodoDep',
-        //     'q',
-        //     'journalTitle',
-        //     'journalYear',
-        //     'authorityName',
-        //     'kingdom',
-        //     'phylum',
-        //     'class',
-        //     'family',
-        //     'order',
-        //     'genus',
-        //     'species',
-        //     'status',
-        //     'publicationDate',
-        //     'checkinTime',
-        //     'latitude',
-        //     'longitude',
-        //     'geolocation',
-        //     'isOnLand',
-        //     'validGeo',
-        //     'eco_name',
-        //     'biome',
-        //     'refreshCache',
-        //     'page',
-        //     'size',
-        //     'cols'
-        // ],
-
         // the following input params are ignored while creating the 
         // textual version of the search criteria
         // 
@@ -284,8 +167,6 @@ const globals = {
             'source',
             'grid'
         ]
-
-        
     },
 
     cols: {
@@ -304,95 +185,9 @@ const globals = {
 
     maps: {},
 
-    // // the following params don't go in the q field
-    // notq: ['resource', 'page', 'size', 'grid', 'refreshCache', 'cols'],
-
-    // // the following are the valid query params for Zenodo
-    // validZenodo: [
-    //     'id',
-    //     'subtype',
-    //     'communities',
-    //     'q',
-    //     'creator',
-    //     'title',
-    //     'keywords'
-    // ],
-
-    // the following are the valid query params for Zenodeo
-    // validZenodeo: [
-    //     //     'treatmentVersion',
-    //     //     'treatmentLSID',
-    //     //     'zoobankId',
-    //     //     'articleId',
-    //     //     'articleTitle',
-    //     //     'articleAuthor',
-    //     //     'articleDOI',
-    //     //     'journalVolume',
-    //     //     'journalIssue',
-    //     //     'pages',
-    //     //     'authorityYear',
-    //     //     'status',
-    //     //     'taxonomicNameLabel',
-    //     //     'rank',
-    //     //     'collectionCode',
-    //     //     'updateTime',
-    //     'httpUri',
-    //     'captionText',
-    //     'treatmentId',
-    //     'treatmentTitle',
-    //     'treatmentDOI',
-    //     'zenodoDep',
-    //     'q',
-    //     'journalTitle',
-    //     'journalYear',
-    //     'authorityName',
-    //     'kingdom',
-    //     'phylum',
-    //     'class',
-    //     'family',
-    //     'order',
-    //     'genus',
-    //     'species',
-    //     'publicationDate',
-    //     'checkinTime',
-    //     'latitude',
-    //     'longitude',
-    //     'geolocation',
-    //     'isOnLand',
-    //     'validGeo',
-    //     'refreshCache',
-    //     'page',
-    //     'size',
-    //     'cols',
-    //     //'resource'
-    // ],
-
     hiddenClasses: ['hidden', 'noblock'],
 
-    /**
-     * the following input params are ignored while creating the 
-     * textual version of the search criteria
-     */
-    // notInSearchCriteria : [
-    //     'resource', 
-    //     'communities', 
-    //     'communitiesChooser',
-    //     'refreshCache', 
-    //     'view',
-    //     'size', 
-    //     'page',
-    //     'reset',
-    //     'submit',
-    //     'source',
-    //     'grid'
-    // ],
-
     closedFigcaptionHeight : '30px',
-
-    /* map related globals */
-    // map       : null,
-    // mapBounds : null,
-    // mapLayers : {},
 
     // h3 layer colors
     H3ColorRamp : [
@@ -406,25 +201,35 @@ const globals = {
         '#b10026',
     ],
 
-    treatmentIcon : { 
-        iconUrl     : '/img/treatment.svg', 
-        iconSize    : [24, 24],
-        iconAnchor  : [0, 0],
-        popupAnchor : [13, 12]
+    markerIcons : {
+        default: {
+            iconUrl: '/img/marker.png',
+            iconSize: [24, 38],
+            iconAnchor: [12, 38],
+            popupAnchor: [0, 0],
+            shadowUrl: '/img/marker-shadow.png',
+            shadowSize: [41, 41],
+            shadowAnchor: [11, 37]
+        },
+        active: {
+            iconUrl: '/img/marker-active.png',
+            iconSize: [24, 38],
+            iconAnchor: [12, 38],
+            popupAnchor: [0, 0],
+            shadowUrl: '/img/marker-shadow.png',
+            shadowSize: [41, 41],
+            shadowAnchor: [12, 38]
+        },
+        clicked: {
+            iconUrl: '/img/marker-clicked.png',
+            iconSize: [24, 38],
+            iconAnchor: [12, 38],
+            popupAnchor: [0, 0],
+            shadowUrl: '/img/marker-shadow.png',
+            shadowSize: [41, 41],
+            shadowAnchor: [12, 38]
+        }
     },
-
-    treatmentIconHighlighted : { 
-        iconUrl     : '/img/treatment-highlighted.svg', 
-        iconSize    : [24, 24],
-        iconAnchor  : [0, 0],
-        popupAnchor : [13, 12]
-    },
-
-    // pager
-    // pager_length  : 9,
-    // sep           : '•••',
-    // sep_position1 : 2,
-    // sep_position2 : 6,
 
     months: [ 
         'January', 'February', 'March', 'April', 'May', 'June', 'July', 

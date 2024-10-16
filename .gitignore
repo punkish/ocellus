@@ -41,6 +41,7 @@ cache/
 scratch/
 bak/
 explorations/
+bin/
 .parcel-cache
 
 # specific config files #

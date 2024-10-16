@@ -6,20 +6,16 @@
     .columns-100 {
         --column-count: 3 !important;
     }
-
     .flex-outer > li > label {
         text-align: right;
         padding-right: 20px;
     }
-
     .flex-outer > li > label.empty {
         margin-left: unset;
     }
-    
     .flex-outer > li > label.empty2 {
         margin-left: unset;
     }
-
     #mapSearch {
         /* --map-width: 600px; */
         min-height: 480px;
@@ -72,7 +68,6 @@
         max-width: 760px;
     }
 
-    
     #mapSearch {
         /* --map-width: 500px; */
         min-height: 480px;
@@ -80,7 +75,7 @@
 }
 
 /* Larger than tablet */
-@media (min-width: 800px) {
+@media (min-width: 768px) {
     .columns-50 {
         --column-count: 13 !important;
     }
@@ -172,12 +167,10 @@
     }
     form {
         max-width: 960px;
-    }
-    
+    }  
     div.advanced-search {
         max-width: 930px;
     }
-
     #mapSearch {
         /* width: 850px;
         height: 637px; */

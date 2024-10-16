@@ -89,9 +89,11 @@ figure {
     border: 0px solid #444;
     padding: 10px;
     opacity: 1;
+    text-align: center;
 }
 figure img.lazyloaded {
     width: 100%;
+    max-width: 300px;
 }
 figure a:hover {
     background-color: unset;

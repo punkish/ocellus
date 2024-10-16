@@ -1,0 +1,44 @@
+/* https://codepen.io/jediego/pen/zqVvBZ */
+.close-btn {
+    border: 1px solid grey;
+    box-sizing: border-box;
+    width: 2em;
+    height: 2em;
+    border-radius: 2em;
+    color: transparent;
+    cursor: pointer;
+    transition: all ease 0.3s;
+}
+.close-btn:before,
+.close-btn:after {
+    position: absolute;
+    width: 2em;
+    height: 1px;
+    left: 50%;
+    top: 50%;
+    margin-left: -1em;
+    content: '';
+    background: #8a9199;
+    transition: all ease 1s;
+}
+.close-btn:before {
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+.close-btn:after {
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.close-btn:hover,
+.close-btn:focus {
+/*     -webkit-transform: rotate(180deg);
+    transform: rotate(180deg); */
+    border-color: #f26a3d;
+    background: rgba(242, 106, 61, 0.1);
+}
+.close-btn:hover:before,
+.close-btn:focus:before,
+.close-btn:hover:after,
+.close-btn:focus:after {
+    background: red;
+}

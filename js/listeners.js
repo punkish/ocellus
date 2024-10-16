@@ -2,7 +2,7 @@ import { $, $$ } from './base.js';
 import { globals } from './globals.js';
 import { submitForm, updatePlaceHolder, qs2form, form2qs } from './utils.js';
 // import { getCountOfResource } from './querier.js';
-import { renderDashboard } from './renderers-charts.js';
+// import { renderDashboard } from './renderers-charts.js';
 import { Accordion } from './accordion.js';
 import { getResource } from './querier.js';
 import { initializeMap } from './mapping/index.js';
@@ -140,7 +140,7 @@ const toggleAdvSearch = (e) => {
         $('input[name="as-q"]').focus();
         initializeMap({
             mapContainer: 'mapSearch',
-            baseLayerSource: 'gbif',
+            baseLayerSource: 'geodeo',
             drawControl: true
         });
     }
@@ -390,15 +390,15 @@ const reveal = (e) => {
     //const t = e.target.innerText;
     //e.target.innerText = e.target.dataset.reveal;
 
-    e.target.innerHTML = '<a href="#map" id="mapInit">MAP</a> • <a href="#map" id="imagesInit">IMAGES</a> • TREATMENTS';
+    e.target.innerHTML = '<a href="#map" id="mapInit">MAP</a> • IMAGES • TREATMENTS';
     e.target.querySelector('#mapInit').addEventListener('click', initMap);
-    e.target.querySelector('#imagesInit').addEventListener('click', initImages);
-    //$('#brand').classList.add('smallbrand');
+    //e.target.querySelector('#imagesInit').addEventListener('click', initImages);
+    $('#brand').classList.add('smallbrand');
     $('#brand').removeEventListener('click', reveal);
 
     setTimeout(() => { 
         e.target.innerHTML = 4; 
-        //$('#brand').classList.remove('smallbrand');
+        $('#brand').classList.remove('smallbrand');
         $('#brand').addEventListener('click', reveal);
     }, 3000);
     
@@ -416,6 +416,7 @@ const initMap = (e) => {
     // $('#search-help').style.pointerEvents = "none";
     // $('input[name=searchtype]').disabled = true;
     $('#not-map').classList.add('hidden');
+    //console.log($('#not-map'))
 
     initializeMap({
         mapContainer: 'map', 
@@ -631,23 +632,23 @@ function hideTooltip() {
     tooltip.style.display = "none";
 }
 
-async function showDashboard() {
-    if (globals.cache.treatments.yearly === false) {
-        // const treatmentsCount = await getCountOfResource('treatments', true);
-        // const imagesCount = await getCountOfResource('images', true);
-        // const speciesCount = await getCountOfResource('species', true);
-        // const journalsCount = await getCountOfResource('journals', true);
-        // const materialCitationsCount = await getCountOfResource('materialcitations', true);
+// async function showDashboard() {
+//     if (globals.cache.treatments.yearly === false) {
+//         // const treatmentsCount = await getCountOfResource('treatments', true);
+//         // const imagesCount = await getCountOfResource('images', true);
+//         // const speciesCount = await getCountOfResource('species', true);
+//         // const journalsCount = await getCountOfResource('journals', true);
+//         // const materialCitationsCount = await getCountOfResource('materialcitations', true);
     
-        renderDashboard({
-            treatmentsCount,
-            imagesCount, 
-            materialCitationsCount,
-            speciesCount, 
-            journalsCount
-        });
-    }
-}
+//         renderDashboard({
+//             treatmentsCount,
+//             imagesCount, 
+//             materialCitationsCount,
+//             speciesCount, 
+//             journalsCount
+//         });
+//     }
+// }
 
 function lightUpTheBox() {
     new SimpleLightbox({
@@ -670,7 +671,7 @@ export {
     toggleDateSelector,
     showTooltip,
     hideTooltip,
-    showDashboard,
+    //showDashboard,
     toggleModal,
     lightUpTheBox
 };

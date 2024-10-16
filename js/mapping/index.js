@@ -2,8 +2,8 @@ import { $, $$ } from '../base.js';
 import { drawControlLayer } from "./controls.js";
 import { drawH3 } from "./h3.js";
 import { drawTreatments } from "./treatments.js";
-//import { addLayer, removeLayer } from "./utils.js";
 import { globals } from "../globals.js";
+import { getMapLocation, setupMap } from '../leaflet-hash.js';
 
 function makeCloseBtn(map) {
     L.Control.CloseButton = L.Control.extend({
@@ -28,24 +28,7 @@ function makeCloseBtn(map) {
     L.control.closeButton({ position: 'topright' }).addTo(map);
 }
 
-// function makeInfoControl({ className, initialMsg }) {
-//     console.log('making info control ' + className)
-//     const infoControl = L.Control.extend({
-//         onAdd: function(map) {
-//             this._div = L.DomUtil.create('div', className);
-//             this._div.innerHTML = initialMsg;
-//             return this._div;
-//         },
-    
-//         onRemove: function(map) {
-//             // Nothing to do here
-//         }
-//     });
-    
-//     return infoControl;
-// }
-
-function getBaseLayer({ baseLayerSource, map }) {
+async function getBaseLayer({ baseLayerSource, map }) {
     const baseLayerOpts = {
         minZoom: 1,
         maxZoom: 17,
@@ -63,6 +46,8 @@ function getBaseLayer({ baseLayerSource, map }) {
         ).addTo(map);
     }
     else if (baseLayerSource === 'geodeo') {
+
+        const url = `${globals.uri.maps}/nev_raster/{z}/{x}/{y}`;
         const layers = {
             'ne_50m_admin_1_states_provinces_lakes': {
                 maxZoom: 2,
@@ -237,8 +222,7 @@ function getBaseLayer({ baseLayerSource, map }) {
                 tms: true
             }
         }
-
-        L.tileLayer(`${globals.mapServer}/nev_raster/{z}/{x}/{y}`, {
+        L.tileLayer(url, {
             maxNativeZoom: 6,
             maxZoom: 10,
             tms: true
@@ -246,7 +230,7 @@ function getBaseLayer({ baseLayerSource, map }) {
 
         const layer = 'nev';
         const options = layers[layer];
-        L.vectorGrid.protobuf(`${globals.mapServer}/${layer}/{z}/{x}/{y}`, options).addTo(map);
+        L.vectorGrid.protobuf(`${globals.uri.maps}/${layer}/{z}/{x}/{y}`, options).addTo(map);
     }
     else if (baseLayerSource === 'gbif') {
         baseLayerOpts.attribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> / &copy; <a href="https://www.openmaptiles.org/copyright">OpenMapTiles</a>';
@@ -260,7 +244,7 @@ function getBaseLayer({ baseLayerSource, map }) {
     return baseLayer
 }
 
-function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
+async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
     const map = globals.maps[mapContainer];
 
     if (map) {
@@ -270,47 +254,62 @@ function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
         }
     }
     else {
-        const initialMapCenter = [0, 0];
-        const initialZoom = 2;
-        const map = L.map(mapContainer).setView(initialMapCenter, initialZoom);
+        const { zoom, lat, lng, treatmentId } = getMapLocation({ 
+            zoom: 5, 
+            lat: 0, 
+            lng: 0
+        });
+        const map = L.map(mapContainer).setView(
+            { lat, lng }, 
+            zoom
+        );
+        setupMap(map);
         globals.maps[mapContainer] = map;
+        
         // turn off the Ukrainian flag emoji
         map.attributionControl.setPrefix('');
 
         // We store all the layers here so we can reference them later
         const mapLayers = {
-            baseLayer: getBaseLayer({ baseLayerSource, map })
+            baseLayer: getBaseLayer({ baseLayerSource, map }),
             // drawControls,
             // h3,
             // h3info
             // treatments,
             // treatmentInfo
+            markers: {}
         }
 
         if (drawControl) {
             drawControlLayer(map, mapLayers);
         }
         
-        switchTreatments2H3(map, mapLayers);
+        await switchTreatments2H3(map, mapLayers);
 
-        map.on('moveend', function(e) {
-            switchTreatments2H3(map, mapLayers);
+        map.on('moveend', async function(e) {
+            await switchTreatments2H3(map, mapLayers);
         });
 
         makeCloseBtn(map);
         // map.on('locationfound', onLocationFound);
         // map.on('locationerror', (e) => { alert(e.message) });
+
+        if (treatmentId) {
+            const marker = mapLayers.markers[treatmentId];
+            marker.fireEvent('click');
+            mapLayers.treatments.zoomToShowLayer(marker);
+        }
     }
 }
 
-function switchTreatments2H3(map, mapLayers) {
+async function switchTreatments2H3(map, mapLayers) {
     const zoom = map.getZoom();
     
     if (zoom <= 5) {
         drawH3(map, mapLayers);
     }
     else {
-        drawTreatments(map, mapLayers);
+        await drawTreatments(map, mapLayers);
     }
 }
 
@@ -326,7 +325,4 @@ function switchTreatments2H3(map, mapLayers) {
 //     L.circle(e.latlng, radius).addTo(map);
 // }
 
-export { 
-    initializeMap, 
-    //makeInfoControl 
-}
+export { initializeMap }

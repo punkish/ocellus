@@ -2,7 +2,8 @@ import { globals } from "../globals.js";
 //import { makeInfoControl } from './index.js';
 
 async function getH3(resolution)  {
-    const response = await fetch(`${globals.uri.zenodeo}/bins/${resolution}`);
+    const url = `${globals.uri.zenodeo}/bins/${resolution}`;
+    const response = await fetch(url, globals.fetchOpts);
 
     // if HTTP-status is 200-299
     if (response.ok) {
@@ -46,7 +47,7 @@ async function drawH3(map, mapLayers) {
 
     if ('treatments' in mapLayers) {
         map.removeLayer(mapLayers.treatments);
-        mapLayers.treatmentInfo.remove();
+        //mapLayers.treatmentInfo.remove();
     }
 
     if ('h3' in mapLayers) {
@@ -139,29 +140,27 @@ async function drawH3(map, mapLayers) {
 
 }
 
-function highlightBin({ mapLayers, bin }) {
-    // const bin = e.target;
-                        
-    // bin.setStyle({
-    //     weight: 2,
-    //     color: '#666',
-    //     dashArray: '',
-    //     fillOpacity: 0.1
-    // });
+function highlightBin({ mapLayers, bin }) {                        
+    bin.setStyle({
+        weight: 2,
+        color: '#666',
+        dashArray: '',
+        fillOpacity: 0.1
+    });
 
-    // if (
-    //     !L.Browser.ie && 
-    //     !L.Browser.opera && 
-    //     !L.Browser.edge
-    // ) {
-    //     bin.bringToFront();
-    // }
+    if (
+        !L.Browser.ie && 
+        !L.Browser.opera && 
+        !L.Browser.edge
+    ) {
+        bin.bringToFront();
+    }
 
     mapLayers.h3info.update(bin.feature.properties);
 }
 
 function resetBin({ mapLayers, bin }) {
-    //mapLayers.h3.resetStyle(bin);
+    mapLayers.h3.resetStyle(bin);
     mapLayers.h3info.update();
 }
 

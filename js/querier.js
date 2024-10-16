@@ -6,13 +6,19 @@ import { toggleWarn } from './listeners.js';
 const getCountOfResource = async (resource, getYearlyCounts) => {
     
     if (!globals.cache[resource].yearlyCounts) {
-        let url = `${globals.server}/${resource}?cols=`;
+        let url = `${globals.uri.zenodeo}/${resource}?cols=`;
 
         if (getYearlyCounts) {
             url += '&yearlyCounts=true';
         }
         
-        const response = await fetch(url);
+        const fetchOpts = {
+            method: "GET",
+            headers: new Headers({
+                "ngrok-skip-browser-warning": true,
+            }),
+        }
+        const response = await fetch(url, fetchOpts);
         
         // if HTTP-status is 200-299
         if (response.ok) {
@@ -207,8 +213,8 @@ const getResults = async ({ resource, queryString, figureSize }) => {
     - queryString: ${queryString},
     - figureSize: ${figureSize}`);
 
-    const url = `${globals.server}/${resource}?${queryString}`;
-    const response = await fetch(url);
+    const url = `${globals.uri.zenodeo}/${resource}?${queryString}`;
+    const response = await fetch(url, globals.fetchOpts);
 
     // if HTTP-status is 200-299
     if (response.ok) {

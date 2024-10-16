@@ -39,7 +39,8 @@ async function html() {
         .pipe(inject.replace('./js/ocellus.js', `./js/ocellus-${dsecs}.js`))
         .pipe(htmlReplace({
             'css': `./css/ocellus-${dsecs}.css`,
-            'js': `./js/libs-combined.js`
+            'csslibs': `./css/libs-combined.css`,
+            'jslibs': `./js/libs-combined.js`
         }))
         //.pipe(cleanhtml())
         .pipe(dest(destination))
@@ -64,7 +65,7 @@ async function css() {
             `${source}/css/grid.css`,
             `${source}/css/carousel.css`,
             `${source}/css/charts.css`,
-            `${source}/css/dashboard.css`,
+            //`${source}/css/dashboard.css`,
             `${source}/css/throbber.css`,
             `${source}/css/pager.css`,
             `${source}/css/map.css`,
@@ -72,7 +73,21 @@ async function css() {
             `${source}/css/sparkline.css`,
             `${source}/css/simpleLightbox.css`,
             `${source}/css/simpleLightbox-modifiers.css`,
-            `${source}/css/media-queries.css`,
+            `${source}/css/media-queries.css`
+        ])
+        .pipe(cleanCSS({compatibility: 'ie8'}))
+
+        // https://stackoverflow.com/a/23177650/183692
+        // add file name as a comment before its content
+        .pipe(wrap(`${sep1}\n${sep2}\n<%= contents %>`))
+        .pipe(concat(`ocellus-${dsecs}.css`))
+        .pipe(dest(`${destination}/css`))
+}
+
+async function cssLibs() {
+    console.log('processing css libs for new index');
+
+    return src([
             './libs/JavaScript-autoComplete/auto-complete.css',
             './libs/pop-pop/pop-pop.min.css',
             './libs/leaflet-draw/dist/leaflet.draw.css',
@@ -84,7 +99,7 @@ async function css() {
         // https://stackoverflow.com/a/23177650/183692
         // add file name as a comment before its content
         .pipe(wrap(`${sep1}\n${sep2}\n<%= contents %>`))
-        .pipe(concat(`ocellus-${dsecs}.css`))
+        .pipe(concat(`libs-combined.css`))
         .pipe(dest(`${destination}/css`))
 }
 
@@ -109,7 +124,7 @@ async function js() {
     });
 }
 
-async function concatJs() {
+async function jsLibs() {
     console.log('concatenating JS libs');
 
     return src([
@@ -131,6 +146,6 @@ async function concatJs() {
 exports.default = parallel(
     series(
         cleanup, 
-        parallel(css, js, concatJs, html)
+        parallel(css, cssLibs, js, jsLibs, html)
     )
 );

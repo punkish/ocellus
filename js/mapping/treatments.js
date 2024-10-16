@@ -1,4 +1,5 @@
 import { globals } from "../globals.js";
+import { Slidebar } from "../../libs/leaflet-slidebar/src/leaflet.slidebar.js";
 
 /**
  * retrieves treatments within the provided bounds
@@ -10,8 +11,7 @@ async function getTreatments(bounds) {
     const max_lng = bounds.getNorthEast().lng;
 
     const url = `${globals.uri.zenodeo}/images?geolocation=within(min_lat:${min_lat},min_lng:${min_lng},max_lat:${max_lat},max_lng:${max_lng})&cols=treatmentId&cols=treatmentTitle&cols=latitude&cols=longitude&size=5000`;
-
-    const response = await fetch(url);
+    const response = await fetch(url, globals.fetchOpts);
     
     // if HTTP-status is 200-299
     if (response.ok) {
@@ -26,168 +26,138 @@ async function getTreatments(bounds) {
 }
 
 async function drawTreatments(map, mapLayers) {
-    console.log('drawing treatments')
+    log.info('drawing treatments')
     
     if ('h3' in mapLayers) {
         map.removeLayer(mapLayers.h3);
         mapLayers.h3info.remove();
     }
 
+    //const screenSize = getScreenSize();
+
     if ('treatments' in mapLayers) {
         map.addLayer(mapLayers.treatments);
-        mapLayers.treatmentInfo.addTo(map);
+        mapLayers.slidebar.addTo(map);
     }
     else {
-        makeTreatmentInfo(map, mapLayers);
+        makeSlidebar(map, mapLayers);
         const bounds = map.getBounds();
         const treatments = await getTreatments(bounds);
-        mapLayers.treatments = L.markerClusterGroup();
-
-        const icon = L.icon({ 
-            iconUrl: '/img/treatment.svg', 
-            iconSize: [24, 24],
-            iconAnchor: [0, 0],
-            popupAnchor: [13, 12]
+        mapLayers.treatments = L.markerClusterGroup({
+            disableClusteringAtZoom: 10
         });
+
+        const clickedMarkers = [];
+        const iconDefault = L.icon(globals.markerIcons.default);
+        const iconActive  = L.icon(globals.markerIcons.active);
+        const iconClicked = L.icon(globals.markerIcons.clicked);
 
         treatments.forEach((treatment) => {
             const latlng = new L.LatLng(
                 treatment.latitude, 
                 treatment.longitude
             );
-            const marker = L.marker(latlng, { icon });
-            marker.on('click', function (e) {
-                mapLayers.treatmentInfo.update(treatment)
+            const marker = L.marker(
+                latlng, 
+                { 
+                    title: treatment.treatmentId,
+                    icon:  iconDefault
+                }
+            );
+            
+            marker.on('click', async function (e) {
+                const thisMarker = e.target;
+                thisMarker.setIcon(iconActive);
+                const lastClicked = clickedMarkers[ clickedMarkers.length - 1 ];
+                const content = await getTreatmentInfo(treatment);
+                mapLayers.slidebar.update({ 
+                    content, 
+                    coords: latlng 
+                });
+                clickedMarkers.push(thisMarker);
+
+                if (lastClicked) {
+                    lastClicked.setIcon(iconClicked);
+                }
             });
+
+            mapLayers.markers[treatment.treatmentId] = marker;
             mapLayers.treatments.addLayer(marker);
         });
-
+        
         map.addLayer(mapLayers.treatments);
     }
 
 }
 
-async function showMarker(url, tid, el, html) {
-    const response = await fetch(url);
+function makeSlidebar(map, mapLayers) {
 
-    if (response.ok) {
-        const res = await response.json();
-        const r = res.item.result.records[0];
-        if (r.httpUri) {
+    // create the sidebar instance and add it to the map
+    mapLayers.slidebar = new Slidebar({
+        //content: '<i>Click on a marker for more info</i>',
+        state: 'closed'
+    });
 
-            // Most figures are on Zenodo, but some are on Pensoft,
-            // so the url has to be adjusted accordingly
-            // 
-            const size = 250;
-            const id = r.httpUri.split('/')[4];
-            const i = r.httpUri.indexOf('zenodo') > -1 
-                ? `${globals.server}/${id}/thumb${size}` 
-                : r.httpUri;
-            
-            html += `<figure class="figure-${size}">
-                <picture>
-                    <img src="../img/bug.gif" width="${size}" data-src="${i}" class="lazyload" data-recid="${id}">
-                </picture>
-                <figcaption>${r.captionText} <a href="${globals.server}/treatments?treatmentId=${tid}" target="_blank">more on TB</a></figcaption>
-            </figure>`;
-        }
-        else {
-            html += `<a href="${globals.server}/treatments?treatmentId=${tid}" target="_blank">more on TB</a>`;
-        }
-        
-        el.innerHTML = html;
-    }
+    mapLayers.slidebar.addTo(map); 
 }
 
-function makeTreatmentInfo(map, mapLayers) {
-    const treatmentInfo = L.control();
-    const initialMsg = 'Click on a treatment to for more info';
+async function getTreatmentInfo (treatment) {
 
-    // create a div with a class "info"
-    treatmentInfo.onAdd = function (map) {
-        this._div = L.DomUtil.create('div', 'treatmentInfo'); 
-        this._div.id = 'treatmentInfo';
-        //this.update();
-        this._div.innerHTML = initialMsg;
-        return this._div;
-    };
-    
+    if (treatment) {
+        const tid = treatment.treatmentId;
+        const url = `${globals.uri.zenodeo}/images?treatmentId=${tid}&cols=httpUri&cols=caption`;
+        let html = `<h3>${treatment.treatmentTitle}</h3>`;
+        const response = await fetch(url, globals.fetchOpts);
 
-    // const treatmentInfo = makeInfoControl({
-    //     className: 'treatmentInfo',
-    //     initialMsg
-    // });
+        if (response.ok) {
+            const res = await response.json();
+            const rec = res.item.result.records[0];
+            if (rec.httpUri) {
 
-    // this updates the control based on the feature passed
-    treatmentInfo.update = async function (treatment) {
-
-        if (treatment) {
-            const tid = treatment.treatmentId;
-            const url = `${globals.server}/images?treatmentId=${tid}&cols=httpUri&cols=caption`;
-            let html = `<h4 class="popup">${treatment.treatmentTitle}</h4>`;
-
-            const response = await fetch(url);
-
-            if (response.ok) {
-                const res = await response.json();
-                const rec = res.item.result.records[0];
-                if (rec.httpUri) {
-
-                    // Most figures are on Zenodo, but some are on Pensoft,
-                    // so the url has to be adjusted accordingly
-                    // 
-                    const size = 250;
-                    const id = rec.httpUri.split('/')[4];
-                    // if the figure is on zenodo, show their thumbnails unless 
-                    // it is an svg, in which case, apologize with "no preview"
-                    let uri;
-                    
-                    if (rec.httpUri.indexOf('zenodo') > -1) {
-                        if (rec.httpUri.indexOf('.svg') > -1) {
-                            uri = '/img/kein-preview.png';
-                            //fullImage = '/img/kein-preview.png';
-                        }
-                        else {
-                            uri = `${globals.uri.zenodo}/api/iiif/record:${id}:figure.png/full/250,/0/default.jpg`;
-                            // fullImage = `${globals.uri.zenodo}/api/iiif/record:${id}:figure.png/full/^1200,/0/default.jpg`;
-                        }
+                // Most figures are on Zenodo, but some are on Pensoft,
+                // so the url has to be adjusted accordingly
+                // 
+                const size = 250;
+                const id = rec.httpUri.split('/')[4];
+                // if the figure is on zenodo, show their thumbnails unless 
+                // it is an svg, in which case, apologize with "no preview"
+                let uri;
+                
+                if (rec.httpUri.indexOf('zenodo') > -1) {
+                    if (rec.httpUri.indexOf('.svg') > -1) {
+                        uri = '/img/kein-preview.png';
+                        //fullImage = '/img/kein-preview.png';
                     }
-
-                    // but some are on Pensoft, so use the uri directly
                     else {
-                        uri = `${rec.httpUri}/singlefigAOF/`;
-                        //fullImage = rec.httpUri;
+                        uri = `${globals.uri.zenodo}/api/iiif/record:${id}:figure.png/full/250,/0/default.jpg`;
+                        // fullImage = `${globals.uri.zenodo}/api/iiif/record:${id}:figure.png/full/^1200,/0/default.jpg`;
                     }
-                    
-                    html += `<figure class="figure-${size}">
-                        <picture>
-                            <img src="../img/bug.gif" width="${size}" 
-                                data-src="${uri}" class="lazyload" data-recid="${id}">
-                        </picture>
-                        <figcaption>${rec.captionText} <a href="${globals.uri.treatmentBank}/treatments?treatmentId=${tid}" target="_blank">more on TB</a></figcaption>
-                    </figure>`;
                 }
+
+                // but some are on Pensoft, so use the uri directly
                 else {
-                    html += `<a href="${globals.uri.treatmentBank}/treatments?treatmentId=${tid}" target="_blank">more on TB</a>`;
+                    uri = `${rec.httpUri}/singlefigAOF/`;
+                    //fullImage = rec.httpUri;
                 }
-
-                this._div.innerHTML = html;
+                
+                html += `
+                <figure class="figure-${size}">
+                    <img src="../img/bug.gif" width="${size}" 
+                            data-src="${uri}" class="lazyload" 
+                            data-recid="${id}">
+                    <figcaption>${rec.captionText} <a href="${globals.uri.treatmentBank}/treatments?treatmentId=${tid}" target="_blank">more on TB</a></figcaption>
+                </figure>`;
             }
+            else {
+                html += `<a href="${globals.uri.treatmentBank}/treatments?treatmentId=${tid}" target="_blank">more on TB</a>`;
+            }
+
+            return html;
         }
-        else {
-            this._div.innerHTML = initialMsg;
-        }
-
-    };
-
-    mapLayers.treatmentInfo = treatmentInfo;
-    treatmentInfo.addTo(map);
-
-    const ti = L.DomUtil.get("treatmentInfo");
-    //L.DomEvent.addListener(ti, 'change', changeHandler);
-
-    $('body').appendChild($("#treatmentInfo"));
-    $("#treatmentInfo").classList.add('treatmentInfo');
+    }
+    else {
+        return 'Click on a treatment for more info';
+    }
 }
 
 export { drawTreatments }
