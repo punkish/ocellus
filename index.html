@@ -35,6 +35,7 @@
         crossorigin="" />
     
     <!-- build:csslibs -->
+    <link rel="stylesheet" href="libs/JavaScript-autoComplete/auto-complete.css">
     <link rel="stylesheet" href="libs/pop-pop/pop-pop.min.css">
     <link rel="stylesheet" href="libs/leaflet-draw/dist/leaflet.draw.css">
     <link rel="stylesheet" href="libs/leaflet-markercluster/MarkerCluster.css">
@@ -63,7 +64,6 @@
     <link rel="stylesheet" href="css/simpleLightbox.css">
     <link rel="stylesheet" href="css/simpleLightbox-modifiers.css">
     <link rel="stylesheet" href="css/media-queries.css">
-    <link rel="stylesheet" href="libs/JavaScript-autoComplete/auto-complete.css">
     <!-- endbuild -->
 </head>
 <body>
@@ -467,9 +467,7 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
     <!-- build:jslibs -->
-    <!-- <script src="js/hash.js"></script> -->
     <script src="libs/leaflet-draw/dist/leaflet.draw.js"></script>
-    <!-- <script src="libs/leaflet-permalink/leaflet.permalink.min.js"></script> -->
     <script src="libs/simple-lightbox/simpleLightbox.js"></script>
     <script src="libs/picolog/picolog.min.js"></script>
     <script src="libs/lazysizes.min.js"></script>
@@ -482,33 +480,13 @@
     <script src="https://unpkg.com/h3-js"></script>
 
     <script type="module">
-        import { 
-            init, 
-            showTooltip, 
-            hideTooltip, 
-            // getJournalTitles, 
-            // getCollectionCodes,
-            // journalTitleAc,
-            // collectionCodeAc,
-            // initializeMap
-        } from './js/ocellus.js';
+        import { init, showTooltip, hideTooltip } from './js/ocellus.js';
 
-        window.onload = () => init();
+        window.log.level = log.INFO;
         window.showTooltip = showTooltip;
         window.hideTooltip = hideTooltip;
-        window.log.level = log.INFO;
-
-        // journalTitleAc();
-        // collectionCodeAc();
-
-        // const SimpleLightbox = window.SimpleLightbox;
-
-        // window.onload = () => initializeMap({ 
-        //     mapContainer: 'map', 
-        //     baseLayerSource: 'geodeo', 
-        //     drawControl: false 
-        // });
-
+        const SimpleLightbox = window.SimpleLightbox;
+        window.onload = () => init();
     </script>
 </body>
 </html>

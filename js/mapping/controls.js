@@ -7,15 +7,6 @@ function drawControlLayer(map, mapLayers) {
     mapLayers.drawControls = new L.FeatureGroup();
     addLayer(map, mapLayers.drawControls);
 
-    // const MyCustomMarker = L.Icon.extend({
-    //     options: {
-    //         shadowUrl: null,
-    //         iconAnchor: new L.Point(12, 12),
-    //         iconSize: new L.Point(24, 24),
-    //         iconUrl: 'link/to/image.png'
-    //     }
-    // });
-
     const drawControlOptions = {
         position: 'topleft',
         draw: {

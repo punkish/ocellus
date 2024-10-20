@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="Ocellus, an explorer for the Biodiversity Literature Repository (BLR) on Zenodo">
+    <meta name="version" content="4.0">
+    <meta name="author" content="Puneet Kishor">
+    <meta name="copyright" content="Puneet Kishor">
+    <meta name="license" content="CC0 Public Domain Dedication">
+    <meta name="repo" content="https://github.com/punkish/ocellus">
+    <meta name="date" content="%date%">
+    <meta http-equiv="Cache-Control" content="max-age=604800, public">
+
+    <title>ocellus^4</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+    <link rel="stylesheet" 
+        href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" 
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+        crossorigin="" />
+    <link rel="stylesheet" href="libs/leaflet-markercluster/MarkerCluster.css">
+    <link rel="stylesheet" href="libs/leaflet-markercluster/MarkerCluster.Default.css">
+
+
+     <style>
+#map { height: 500px; }
+     </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <!-- note: leaflet.js has to come before all other leaflet plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" 
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+        crossorigin=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script>
+
+    <script type="module">
+        var map = L.map('map').setView([51.505, -0.09], 11);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        const points = [
+            [51.509, -0.08],
+            [51.503, -0.06],
+            [51.51, -0.047]
+        ];
+
+        const foo = L.markerClusterGroup();
+
+        for (const point of points) { 
+            const marker = L.marker(point);
+            marker.on('click', function(e) {
+                map.flyTo(point, 11);
+
+                // We find the right cluster
+                const cluster = foo.getVisibleParent(marker);
+                
+                if (cluster) {
+                    console.log('the marker is indeed a part of a cluster');
+
+                    // Spiderfy only if marker is in cluster
+                    foo.spiderfy(cluster);
+                }
+            });
+            foo.addLayer(marker);
+        }
+
+        map.addLayer(foo);
+    </script>
+</body>
+</html>

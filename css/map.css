@@ -56,7 +56,11 @@ https://github.com/Leaflet/Leaflet/issues/4686
 
 /* leaflet-slidebar modifications */
 #leaflet-slidebar h3 {
-    margin: 0;
+    margin: 0 0 10px 0;
+    font-size: 150%;
+}
+#leaflet-slidebar main {
+    border: none;
 }
 
 /* Larger than mobile */
@@ -65,5 +69,6 @@ https://github.com/Leaflet/Leaflet/issues/4686
         top: 40px;
         right: 40px;
         padding: 10px;
+        visibility: hidden;
     }
 }

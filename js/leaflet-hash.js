@@ -1,10 +1,9 @@
 function getMapLocation({ zoom, lat, lng, treatmentId }) {
     const parsedHash = new URLSearchParams(window.location.hash.substring(1));
-    zoom = parseInt(parsedHash.get("zoom"), 10) ?? zoom;
-    lat = parseFloat(parsedHash.get("lat")) ?? lat;
-    lng = parseFloat(parsedHash.get("lng")) ?? lng;
-    treatmentId = parsedHash.get("treatmentId") ?? treatmentId;
-    
+    zoom = parseInt(parsedHash.get("zoom"), 10) || zoom;
+    lat = parseFloat(parsedHash.get("lat")) || lat;
+    lng = parseFloat(parsedHash.get("lng")) || lng;
+    treatmentId = parsedHash.get("treatmentId") || treatmentId;
     return { zoom, lat, lng, treatmentId };
 }
 
@@ -25,15 +24,22 @@ function setupMap(map) {
         const lng = Math.round(center.lng * 100000) / 100000;
         const zoom = map.getZoom();
 
-        let hash = `#show=maps&lat=${lat}&lng=${lng}&zoom=${zoom}`;
+        const p = window.location.pathname.split('.').shift().substring(1);
+        let hash;
+
+        if (p === 'maps') {
+            hash = `#lat=${lat}&lng=${lng}&zoom=${zoom}`;
+        }
+        else if (p === 'index') {
+            hash = `#show=maps&lat=${lat}&lng=${lng}&zoom=${zoom}`;
+        }
 
         const parsedHash = new URLSearchParams(window.location.hash.substring(1));
-        const treatmentId = parsedHash.get("treatmentId") ?? treatmentId;
+        const treatmentId = parsedHash.get("treatmentId") || undefined;
 
         if (treatmentId) {
             hash += `&treatmentId=${treatmentId}`;
         }
-
 
         const state = {
             zoom,

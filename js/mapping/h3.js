@@ -44,20 +44,32 @@ async function getH3(resolution)  {
 }
 
 async function drawH3(map, mapLayers) {
+    
+    if ('imageMarkerClusters' in mapLayers) {
 
-    if ('treatments' in mapLayers) {
-        map.removeLayer(mapLayers.treatments);
-        //mapLayers.treatmentInfo.remove();
+        if (map.hasLayer(mapLayers.imageMarkerClusters)) {
+            log.info('removing image marker clusters');
+            map.removeLayer(mapLayers.imageMarkerClusters);
+            mapLayers.slidebar.remove();
+        }
+
     }
 
     if ('h3' in mapLayers) {
-        map.addLayer(mapLayers.h3);
-        //map.addLayer(mapLayers.h3info);
-        mapLayers.h3info.addTo(map);
+
+        if (!map.hasLayer(mapLayers.h3)) {
+            log.info('re-adding existing h3 layer');
+            map.addLayer(mapLayers.h3);
+            mapLayers.h3info.addTo(map);
+        }
+        
     }
     else {
+        log.info('initializing h3 layer');
         const grid = await getH3(3);
-        const densities = grid.features.map(feature => feature.properties.density);
+        const densities = grid.features.map(
+            feature => feature.properties.density
+        );
         //let max = Math.max(...densities);
         const min = Math.min(...densities); 
 
@@ -68,20 +80,11 @@ async function drawH3(map, mapLayers) {
         // min = Math.floor(min * c);
 
         //const classes = getH3Classes(min, max);
-        const colorRamp = [
-            '#ffffcc',
-            '#ffeda0',
-            '#fed976',
-            '#feb24c',
-            '#fd8d3c',
-            '#fc4e2a',
-            '#e31a1c',
-            '#b10026',
-        ];
+        
         const classes = binIt({ 
             data: densities, 
             scaleFactor: c,
-            colorRamp, 
+            colorRamp: globals.H3ColorRamp, 
             typeOfBins: 'equalFreq' 
         });
 

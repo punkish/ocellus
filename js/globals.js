@@ -202,7 +202,7 @@ const globals = {
     ],
 
     markerIcons : {
-        default: {
+        default: L.icon({
             iconUrl: '/img/marker.png',
             iconSize: [24, 38],
             iconAnchor: [12, 38],
@@ -210,8 +210,8 @@ const globals = {
             shadowUrl: '/img/marker-shadow.png',
             shadowSize: [41, 41],
             shadowAnchor: [11, 37]
-        },
-        active: {
+        }),
+        active: L.icon({
             iconUrl: '/img/marker-active.png',
             iconSize: [24, 38],
             iconAnchor: [12, 38],
@@ -219,8 +219,8 @@ const globals = {
             shadowUrl: '/img/marker-shadow.png',
             shadowSize: [41, 41],
             shadowAnchor: [12, 38]
-        },
-        clicked: {
+        }),
+        clicked: L.icon({
             iconUrl: '/img/marker-clicked.png',
             iconSize: [24, 38],
             iconAnchor: [12, 38],
@@ -228,7 +228,7 @@ const globals = {
             shadowUrl: '/img/marker-shadow.png',
             shadowSize: [41, 41],
             shadowAnchor: [12, 38]
-        }
+        })
     },
 
     months: [ 

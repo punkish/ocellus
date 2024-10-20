@@ -6,7 +6,6 @@ const concat = require('gulp-concat');
 const { rollup } = require('rollup');
 const { terser } = require('rollup-plugin-terser');
 const rm = require('gulp-rm');
-const cleanhtml = require('gulp-cleanhtml');
 const wrap = require('gulp-wrap');
 
 const d = new Date();
@@ -14,9 +13,12 @@ const dsecs = d.getTime();
 const source = '.';
 const destination = './docs';
 
+const sep1 = '/*************************/';
+const sep2 = '/*** <%= file.relative %>  ***/';
+
 // remove old css and js
 async function cleanup() {
-    console.log('cleaing up old js and css for new versions');
+    console.log('cleaing up old js and css for index');
 
     const dest = [
         `${destination}/js/ocellus-*.js`, 
@@ -27,7 +29,6 @@ async function cleanup() {
 
     return src(dest, opts).pipe( rm() );
 }
-
 
 // generate the html
 async function html() {
@@ -46,9 +47,6 @@ async function html() {
         .pipe(dest(destination))
 }
 
-const sep1 = '/*************************/';
-const sep2 = '/*** <%= file.relative %>  ***/';
-
 // for css
 async function css() {
     console.log('processing css for new index');
@@ -65,10 +63,10 @@ async function css() {
             `${source}/css/grid.css`,
             `${source}/css/carousel.css`,
             `${source}/css/charts.css`,
-            //`${source}/css/dashboard.css`,
             `${source}/css/throbber.css`,
             `${source}/css/pager.css`,
             `${source}/css/map.css`,
+            `${source}/css/close-btn.css`,
             `${source}/css/treatmentDetails.css`,
             `${source}/css/sparkline.css`,
             `${source}/css/simpleLightbox.css`,
@@ -88,11 +86,12 @@ async function cssLibs() {
     console.log('processing css libs for new index');
 
     return src([
-            './libs/JavaScript-autoComplete/auto-complete.css',
-            './libs/pop-pop/pop-pop.min.css',
-            './libs/leaflet-draw/dist/leaflet.draw.css',
-            './libs/leaflet-markercluster/MarkerCluster.css',
-            './libs/leaflet-markercluster/MarkerCluster.Default.css'
+            `${source}/libs/JavaScript-autoComplete/auto-complete.css`,
+            `${source}/libs/pop-pop/pop-pop.min.css`,
+            `${source}/libs/leaflet-draw/dist/leaflet.draw.css`,
+            `${source}/libs/leaflet-markercluster/MarkerCluster.css`,
+            `${source}/libs/leaflet-markercluster/MarkerCluster.Default.css`,
+            `${source}/libs/leaflet-slidebar/src/leaflet.slidebar.css`
         ])
         .pipe(cleanCSS({compatibility: 'ie8'}))
 
@@ -105,7 +104,7 @@ async function cssLibs() {
 
 // rollup js
 async function js() {
-    console.log('rolling up the js for new index');
+    console.log('rolling up the JS for new index');
     
     const bundle = await rollup({
         input: `${source}/js/ocellus.js`
@@ -125,15 +124,15 @@ async function js() {
 }
 
 async function jsLibs() {
-    console.log('concatenating JS libs');
+    console.log('concatenating without minifying JS libs');
 
     return src([
-        'libs/leaflet-draw/dist/leaflet.draw.js',
-        'libs/simple-lightbox/simpleLightbox.js',
-        'libs/picolog/picolog.min.js',
-        'libs/lazysizes.min.js',
-        'libs/JavaScript-autoComplete/auto-complete.js',
-        'libs/echarts/echarts.min.js'
+        `${source}/libs/leaflet-draw/dist/leaflet.draw.js`,
+        `${source}/libs/simple-lightbox/simpleLightbox.js`,
+        `${source}/libs/picolog/picolog.min.js`,
+        `${source}/libs/lazysizes.min.js`,
+        `${source}/libs/JavaScript-autoComplete/auto-complete.js`,
+        `${source}/libs/echarts/echarts.min.js`
     ])
 
     // https://stackoverflow.com/a/23177650/183692
@@ -143,9 +142,9 @@ async function jsLibs() {
     .pipe(dest(`${destination}/js`))
 }
 
-exports.default = parallel(
-    series(
-        cleanup, 
-        parallel(css, cssLibs, js, jsLibs, html)
-    )
+const gulp4index = series(
+    cleanup, 
+    parallel(css, cssLibs, js, jsLibs, html)
 );
+
+exports.gulp4index = gulp4index;

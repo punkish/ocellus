@@ -50,9 +50,7 @@ function init() {
         addListeners();
         journalTitleAc();
         collectionCodeAc();
-        const SimpleLightbox = window.SimpleLightbox;
     }
-
 }
 
 export { 
@@ -63,5 +61,5 @@ export {
     // getCollectionCodes, 
     // journalTitleAc,
     // collectionCodeAc,
-    //initializeMap
+    initializeMap
 }

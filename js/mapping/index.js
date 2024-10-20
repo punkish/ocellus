@@ -1,18 +1,35 @@
 import { $, $$ } from '../base.js';
 import { drawControlLayer } from "./controls.js";
 import { drawH3 } from "./h3.js";
-import { drawTreatments } from "./treatments.js";
+import { drawImageMarkers } from "./imageMarkers.js";
 import { globals } from "../globals.js";
 import { getMapLocation, setupMap } from '../leaflet-hash.js';
 
 function makeCloseBtn(map) {
     L.Control.CloseButton = L.Control.extend({
         onAdd: function(map) {
-            const btn = L.DomUtil.create('button', 'close-btn');
-            btn.addEventListener('click', function(e) {
+
+            // We add a close button to the map. The close button behaves 
+            // differently based on whether the map is in maps.html or in 
+            // index.html
+            const p = window.location.pathname.split('.').shift().substring(1);
+
+            // By default, if the map is in index.html, the close button hides 
+            // the map and makes the non-map section visible
+            let fn = (e) => {
                 $('#map').classList.add('hidden');
                 $('#not-map').classList.remove('hidden');
-            });
+            }
+
+            // However, if the map is in maps.html, the close button 
+            // redirects the browser to index.html
+            if (p === 'maps') {
+                fn = (e) => window.location.href = 'index.html';
+            }
+
+            const btn = L.DomUtil.create('button', 'close-btn');
+            btn.addEventListener('click', fn);
+
             return btn;
         },
     
@@ -269,47 +286,53 @@ async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
         // turn off the Ukrainian flag emoji
         map.attributionControl.setPrefix('');
 
+        map.on('moveend', async function(e) {
+            await switchLayers(map, mapLayers);
+        });
+
         // We store all the layers here so we can reference them later
         const mapLayers = {
             baseLayer: getBaseLayer({ baseLayerSource, map }),
             // drawControls,
             // h3,
-            // h3info
-            // treatments,
-            // treatmentInfo
-            markers: {}
+            // h3info,
+            // imageMarkers,
+            // imageMarkerClusters,
+            // slidebar
         }
 
         if (drawControl) {
             drawControlLayer(map, mapLayers);
         }
         
-        await switchTreatments2H3(map, mapLayers);
-
-        map.on('moveend', async function(e) {
-            await switchTreatments2H3(map, mapLayers);
-        });
-
+        await switchLayers(map, mapLayers);
         makeCloseBtn(map);
         // map.on('locationfound', onLocationFound);
         // map.on('locationerror', (e) => { alert(e.message) });
-
+        
         if (treatmentId) {
-            const marker = mapLayers.markers[treatmentId];
-            marker.fireEvent('click');
-            mapLayers.treatments.zoomToShowLayer(marker);
+            const [ treatments_id, images_id ] = treatmentId.split('-');
+
+            
+            const marker = mapLayers.imageMarkers.has(treatmentId);
+    
+            if (marker) {
+                mapLayers.imageMarkerClusters.zoomToShowLayer(marker);
+                marker.fireEvent('click');
+            }
+            
         }
     }
 }
 
-async function switchTreatments2H3(map, mapLayers) {
+async function switchLayers(map, mapLayers) {
     const zoom = map.getZoom();
     
     if (zoom <= 5) {
         drawH3(map, mapLayers);
     }
     else {
-        await drawTreatments(map, mapLayers);
+        await drawImageMarkers(map, mapLayers);
     }
 }
 
