@@ -1,0 +1,108 @@
+#leaflet-slidebar {
+    box-sizing: border-box;
+    --slidebar-height: 568px;
+    background-color: white;
+    opacity: 1;
+    border-radius: 20px 20px 0 0;
+    padding: 5px;
+    z-index: 2000;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transition: height 0.5s ease-in;
+
+}
+#leaflet-slidebar.closed {
+    height: 0;
+    padding: 0;
+}
+#leaflet-slidebar.quarter {
+    height: calc( var(--slidebar-height) * 0.25);
+}
+#leaflet-slidebar.half {
+    height: calc( var(--slidebar-height) * 0.5);
+}
+#leaflet-slidebar.full {
+    height: calc( var(--slidebar-height) * 0.75);
+}
+#leaflet-slidebar nav {
+    margin-left: 0;
+    margin-top: -10px;
+}
+#leaflet-slidebar nav ul.left {
+    padding-left: 0;
+    float: left;
+}
+#leaflet-slidebar nav ul.right {
+    float: right;
+    padding-left: 5px;
+    padding-bottom: 3px;
+    margin: 0;
+}
+#leaflet-slidebar nav::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+#leaflet-slidebar ul li {
+    list-style: none;
+    padding: 0;
+    display: inline-block;
+}
+#leaflet-slidebar ul li  button {
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    border: 1px solid gray;
+    background-color: lightgray;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    cursor: pointer;
+}
+#leaflet-slidebar ul li  button:hover {
+    background-color: whitesmoke;
+}
+#leaflet-slidebar main {
+    border-top: 1px solid gray;
+    padding: 10px;
+    overflow-y: auto;
+}
+#leaflet-slidebar main figure {
+    border: 0px solid red;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+#leaflet-slidebar hr {
+    width: 50px;
+    margin: 0 auto;
+}
+
+/* Larger than mobile */
+@media only screen and (min-width: 400px) {
+    #leaflet-slidebar {
+        --slidebar-width: 350px;
+        width: var(--slidebar-width);
+        height: auto !important;
+        max-height: 500px;
+        top: 20px;
+        bottom: unset;
+        left: unset;
+        right: 20px;
+        border-radius: 20px;
+        transition: width 0.5s ease-in;
+        padding: 0;
+    }
+    #leaflet-slidebar nav {
+        display: none;
+    }
+    #leaflet-slidebar hr {
+        display: none;
+    }
+    #leaflet-slidebar main {
+        width: 95%;
+        max-height: 450px;
+        overflow-y: scroll;
+        border: none;
+    }
+}

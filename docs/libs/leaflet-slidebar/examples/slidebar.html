@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="a sliding side/bottom panel">
+    <meta name="version" content="4.0">
+    <meta name="author" content="Puneet Kishor">
+    <meta name="copyright" content="Puneet Kishor">
+    <meta name="license" content="CC0 Public Domain Dedication">
+    <meta name="repo" content="https://github.com/punkish/leaflet-slidebar">
+    <meta name="date" content="%date%">
+    <meta http-equiv="Cache-Control" content="max-age=604800, public">
+
+    <title>Leaflet Slidebar</title>
+
+    <link rel="stylesheet" href="../src/leaflet.slidebar.css">
+    <style>
+body {
+    padding: 0;
+    margin: 0;
+}
+html, body, #map {
+    height: 100%;
+    font: sans-serif;
+}
+#map {
+    background-color: lightblue;
+}
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <script src="../dev/chance.min.js"></script>
+    <!-- <script src="../src/leaflet.slidebar.js"></script> -->
+    <script>
+        const container = document.querySelector('#map');
+        //createSlidebar(container);
+
+        function toggleSize(el, targetSize) {
+            const sizes = [ 'closed', 'quarter', 'half', 'full' ];
+
+            sizes.forEach(s => el.classList.remove(s));
+            el.classList.add(targetSize);
+        }
+
+        function slb(container, fn) {
+            container.innerHTML = `
+                <div id="leaflet-slidebar" class="leaflet-slidebar full">
+                    <nav>
+                        <ul class="right">
+                            <li><button name="full" title="maximize the info window">&#9633;</button></li>
+                            <li><button name="half" title="set info window to half size">&lrtri;</button></li>
+                            <li><button name="quarter" title="set info window to a quarter size">&mdash;</button></li>
+                            <li><button name="closed" title="close the info window">&times;</button></li>
+                        </ul>
+                    </nav>
+                    
+                    <main></main>
+                </div>`;
+
+                const s = document.querySelector('#leaflet-slidebar');
+                const buttons = document.querySelectorAll('#leaflet-slidebar ul.right button');
+                buttons.forEach(b => b.addEventListener('click', function(e) {
+                    fn(s, b.name)
+                }));
+        }
+
+        function slbContent() {
+            const title = chance.sentence({ words: 5 });
+            const figcaption = chance.sentence({ words: 15 });
+
+            return `<h3>${title}</h3>
+            <figure>
+                <div class="img">img</div>
+                <figcaption><p>${figcaption}</p></figcaption>
+            </figure>`;
+        }
+
+        slb(container, toggleSize);
+
+        const contentContainer = document.querySelector('#leaflet-slidebar main');
+        contentContainer.innerHTML = slbContent();
+
+        
+
+        
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="description" content="a sliding side/bottom panel">
+    <meta name="version" content="4.0">
+    <meta name="author" content="Puneet Kishor">
+    <meta name="copyright" content="Puneet Kishor">
+    <meta name="license" content="CC0 Public Domain Dedication">
+    <meta name="repo" content="https://github.com/punkish/leaflet-slidebar">
+    <meta name="date" content="%date%">
+    <meta http-equiv="Cache-Control" content="max-age=604800, public">
+
+    <title>Leaflet Slidebar</title>
+
+    <link rel="stylesheet" 
+        href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" 
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+        crossorigin="" />
+    <link rel="stylesheet" href="../src/leaflet.slidebar.css">
+    <style>
+body {
+    padding: 0;
+    margin: 0;
+}
+html, body, #map {
+    height: 100%;
+    font: sans-serif;
+}
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <!-- note: leaflet.js has to come before all other leaflet plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" 
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+        crossorigin=""></script>
+    
+    <!-- <script src="../src/leaflet.slidebar.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/chance@1.1.12/chance.min.js"></script>
+    <script type="module">
+        import { Slidebar } from '../src/leaflet.slidebar.js';
+
+        // create the sidebar instance and add it to the map
+        const slidebar = new Slidebar({
+            //content: '<i>Click on a marker for more info</i>',
+            state: 'closed'
+        });
+
+        const center = chance.coordinates({fixed: 2})
+            .split(',')
+            .map(c => c.trim() && Number(c));
+
+        const map = L.map('map').setView(center, 6);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+        
+        const numOfMarkers = 6;
+        const clickedMarkers = [];
+
+        function getMarkerIcon(markerType) {
+            const opts = {
+                iconUrl: '../src/img/marker.png',
+                iconSize: [24, 38],
+                iconAnchor: [12, 38],
+                popupAnchor: [0, 0],
+                shadowUrl: '../src/img/marker-shadow.png',
+                shadowSize: [41, 41],
+                shadowAnchor: [12, 38]
+            }
+
+            if (markerType) {
+                opts.iconUrl = `../src/img/marker-${markerType}.png`;
+            }
+
+            return opts;
+        }
+
+        const markerOptions = {
+            default: {
+                icon: L.icon(getMarkerIcon())
+            },
+            active: {
+                icon: L.icon(getMarkerIcon('active'))
+            },
+            clicked: {
+                icon: L.icon(getMarkerIcon('clicked'))
+            }
+        };
+
+        for (let i = 0; i < numOfMarkers; i++) {
+            const lat = chance.latitude({
+                min: center[0] - 2, 
+                max: center[0] + 2, 
+                fixed: 2
+            });
+
+            const lng = chance.longitude({
+                min: center[1] - 2, 
+                max: center[1] + 2, 
+                fixed: 2
+            });
+
+            const latlng = new L.LatLng(lat, lng);
+
+            const title = chance.sentence({ words: 5 });
+            const desc = chance.sentence({ words: 15 });
+            const content = `
+            <h3>${title}</h3>
+            <figure>
+                <div class="img">img</div>
+                <figcaption><p>${desc}</p></figcaption>
+            </figure>`;
+
+            const marker = L.marker(latlng, markerOptions.default).addTo(map);
+            marker.on('click', function(e) {
+                const thisMarker = e.target;
+                thisMarker.setIcon(markerOptions.active.icon);
+                const lastClicked = clickedMarkers[ clickedMarkers.length - 1 ];
+                slidebar.update({ content, latlng });
+                clickedMarkers.push(thisMarker);
+
+                if (lastClicked) {
+                    lastClicked.setIcon(markerOptions.clicked.icon);
+                }
+            });
+        }
+
+        slidebar.addTo(map);        
+    </script>
+</body>
+</html>
