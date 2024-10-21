@@ -54,9 +54,14 @@ async function css() {
     console.log('processing css for new maps');
 
     return src([
+            `${source}/css/uglyduck.css`,
             `${source}/css/base.css`,
+            `${source}/css/header.css`,
+            `${source}/css/toggles.css`,
+            `${source}/css/grid.css`,
+            `${source}/css/throbber.css`,
             `${source}/css/map.css`,
-            `${source}/css/close-btn.css`
+            `${source}/css/media-queries.css`
         ])
         .pipe(cleanCSS({compatibility: 'ie8'}))
 

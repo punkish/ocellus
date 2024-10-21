@@ -9,10 +9,10 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Sun Oct 20 2024 19:12:34 GMT+0200 (Central European Summer Time)">
+    <meta name="date" content="Mon Oct 21 2024 18:15:44 GMT+0200 (Central European Summer Time)">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
-    <title>ocellus^4</title>
+    <title>ocellus^4 maps</title>
 
     <!-- 
     favicons derived from "Eye. Kaufer, Waldo Glover, 1906-, artist" 
@@ -36,11 +36,69 @@
     
     <link rel="stylesheet" href="./css/libs-maps-combined.css">
 
-    <link rel="stylesheet" href="./css/ocellus-maps-1729444354719.css">
+    <link rel="stylesheet" href="./css/ocellus-maps-1729527344364.css">
 </head>
 <body>
-    <section id="map"></section>
+    <header>
+        <div class="title">
+            <div id="brand" class="reveal" 
+                data-reveal="MAP • IMAGES • TREATMENTS">4</div>
+            <h1><a href="/index.html">ocellus</a></h1>
+            <div class="subtitle">
+                <div class="small">A Plazi Project</div>
+                <a href="#about" class="modalToggle">about</a>
+            </div>
+        </div>
+        <div id="throbber" class="nothrob"></div>
+    </header>
     
+
+    <main>
+        <section id="map"></section>
+
+        <section id="about" class="modal hidden noblock">
+            <a href="#" class="close modalToggle">close</a>
+    
+            <h1>About</h1>
+        
+            <p>Ocellus is a frontend to the Biodiversity Literature Repository (BLR) on <a href="https://zenodo.org" target="_blank">Zenodo</a>, and taxonomic treatments in <a href="http://treatmentbank.org" target="_blank">TreatmentBank</a>. Ocellus depends on <a href="https://test.zenodeo.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API that queries, analyzes and aggregates results from these various repositories via a single, unified interface. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, and then retrieve the results for you.</p>
+    
+            <p>Check out our policies on <a href="#privacy" class="modalToggle">privacy</a> and <a href="#ip" class="modalToggle">intellectual property</a>, or <a href="#contact" class="modalToggle">send us feedback</a>.</p>
+        </section>
+
+        <section id="privacy" class="modal hidden noblock">
+            <a href="#" class="close modalToggle">close</a>
+
+            <h1>Privacy</h1>
+    
+            <p>We track nothing. What you do with the data here is not our business. Check out our policy on <a href="#ip" class="modalToggle">intellectual property</a> or <a href="#contact" class="modalToggle">give us feedback</a>.</p>
+        </section>
+
+        <section id="ip" class="modal hidden noblock">
+            <a href="#" class="close modalToggle">close</a>
+    
+            <h1>Intellectual Property</h1>
+        
+            <p>All information we extract or create is dedicated to the public domain under the <a href="https://creativecommons.org/publicdomain/zero/1.0/legalcode" target="_blank">CC0 Public Domain Dedication</a>. All original content by authors of source article is copyrighted by either the authors or their publishers and is used under its applicable open license. For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country.</p>
+    
+            <p>If you use are data, please be nice and give us credit by citing us as follows: <cite>Biodiversity Literature Repository. 2013-. A community to share publications related to bio-systematics. Plazi.</cite></p>
+    
+            <p>The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up" target="_blank">Internet Archive</a> and has no known copyright restrictions.</p>
+    
+            <p>Check out our <a href="#privacy" class="modalToggle">privacy policy</a> or <a href="#contact" class="modalToggle">give us feedback</a>.</p>
+        </section>
+
+        <section id="contact" class="modal hidden noblock">
+            <a href="#" class="close modalToggle">close</a>
+        
+            <h1>Contact</h1>
+    
+            <p>Biodiversity Literature Repository (BLR aka BioLitRepo) is a production of Plazi in partnership with Zenodo/CERN, Geneva, and Pensoft Publishers, Sofia, Bulgaria, with generous support from The Arcadia Foundation, UK.</p>
+            
+            <p>Check out our policies on <a href="#privacy" class="modalToggle">privacy</a> and <a href="#ip" class="modalToggle">intellectual property</a>, or contact <a href="mailto:blr@plazi.org">Plazi</a> for more information.</p>
+        </section>
+    </main>
+
     <!-- note: leaflet.js has to come before all other leaflet plugins -->
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
@@ -51,7 +109,7 @@
     <script src="https://unpkg.com/h3-js"></script>
 
     <script type="module">
-        import { initializeMap } from './js/ocellus-maps-1729444354719.js';
+        import { initializeMap } from './js/ocellus-maps-1729527344364.js';
 
         window.log.level = log.INFO;
         window.onload = () => initializeMap({ 
