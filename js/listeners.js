@@ -19,7 +19,7 @@ const addListeners = () => {
 
     $$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
     //$$('.reveal').forEach(el => el.addEventListener('click', reveal));
-    $('#brand').addEventListener('click', reveal);
+    //$('#brand').addEventListener('click', reveal);
 
     $$('.example-insert')
         .forEach(el => el.addEventListener('click', insertExample));

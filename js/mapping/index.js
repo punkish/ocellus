@@ -307,7 +307,7 @@ async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
         }
         
         await switchLayers(map, mapLayers);
-        makeCloseBtn(map);
+        //makeCloseBtn(map);
         // map.on('locationfound', onLocationFound);
         // map.on('locationerror', (e) => { alert(e.message) });
         
