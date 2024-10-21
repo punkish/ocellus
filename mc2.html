@@ -33,55 +33,50 @@
     <link rel="stylesheet" href="css/throbber.css">
     <!-- <link rel="stylesheet" href="css/map.css">
     <link rel="stylesheet" href="css/close-btn.css"> -->
+    <link rel="stylesheet" href="css/media-queries.css">
     <!-- endbuild -->
      <style>
-    html,
-    body {
-      height: 100%;
-      margin: 0;
-    }
-    .box {
-      display: flex;
-      flex-flow: column;
-      height: 100%;
-    }
-    /* .box .row {
-      border: 1px dotted #0313fc;
-    } */
-    .box .row.header {
-      flex: 0 1 auto;
-    }
-    .box .row.content {
-      flex: 1 1 auto;
-    }
-    /* .box .row.footer {
-      flex: 0 1 40px;
-      display: none;
-    } */
-    .box-container {
-      display: contents;
-    }
+body {
+  margin: 0;
+}
+
+section {
+  height: 100vh;/* missing in your code */
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 100%;
+  grid-template-areas: 'menu' 'section_1';
+}
+
+header {
+  grid-area: menu;
+}
+
+#map {
+  background: #bee;
+  grid-area: section_1;
+}
      </style>
 </head>
 <body>
-    <div class="box">
-        <div class="box-container">
-            <header class="row header">
-                <div class="title">
-                    <div id="brand" class="reveal" 
-                        data-reveal="MAP • IMAGES • TREATMENTS">4</div>
-                    <h1><a href="/index.html">ocellus</a></h1>
-                    <div class="subtitle">
-                        <div class="small">A Plazi Project</div>
-                        <a href="#about" class="modalToggle">about</a>
-                    </div>
+    <section>
+        <header class="row header">
+            <div class="title">
+                <div id="brand" class="reveal" 
+                    data-reveal="MAP • IMAGES • TREATMENTS">4</div>
+                <h1><a href="/index.html">ocellus</a></h1>
+                <div class="subtitle">
+                    <div class="small">A Plazi Project</div>
+                    <a href="#about" class="modalToggle">about</a>
                 </div>
-                <div id="throbber" class="nothrob"></div>
-            </header>
+            </div>
+            <div id="throbber" class="nothrob"></div>
+        </header>
+        
+        <div id="map" class="row content"></div>
+    </section>
             
-            <div id="map" class="row content"></div>
-        </div>
-    </div>
+ 
 
     <!-- note: leaflet.js has to come before all other leaflet plugins -->
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" 

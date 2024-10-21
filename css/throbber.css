@@ -5,7 +5,6 @@
     /* margin-bottom: 2rem; */
     border-top: 1px solid silver;
     border-bottom: 1px solid silver;
-    padding: 0;
     transition: opacity 0.3s ease;
     background-size: 30px 30px;
     background-image: linear-gradient(

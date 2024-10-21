@@ -28,6 +28,7 @@ function makeCloseBtn(map) {
             }
 
             const btn = L.DomUtil.create('button', 'close-btn');
+            //btn.innerHTML = 'ocellus';
             btn.addEventListener('click', fn);
 
             return btn;
@@ -42,7 +43,7 @@ function makeCloseBtn(map) {
         return new L.Control.CloseButton(opts);
     }
     
-    L.control.closeButton({ position: 'topright' }).addTo(map);
+    L.control.closeButton({ position: 'topleft' }).addTo(map);
 }
 
 async function getBaseLayer({ baseLayerSource, map }) {
@@ -310,18 +311,18 @@ async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
         // map.on('locationfound', onLocationFound);
         // map.on('locationerror', (e) => { alert(e.message) });
         
-        if (treatmentId) {
-            const [ treatments_id, images_id ] = treatmentId.split('-');
+        // if (treatmentId) {
+        //     const [ treatments_id, images_id ] = treatmentId.split('-');
 
             
-            const marker = mapLayers.imageMarkers.has(treatmentId);
+        //     const marker = mapLayers.imageMarkers.has(treatmentId);
     
-            if (marker) {
-                mapLayers.imageMarkerClusters.zoomToShowLayer(marker);
-                marker.fireEvent('click');
-            }
+        //     if (marker) {
+        //         mapLayers.imageMarkerClusters.zoomToShowLayer(marker);
+        //         marker.fireEvent('click');
+        //     }
             
-        }
+        // }
     }
 }
 

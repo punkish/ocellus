@@ -40,7 +40,8 @@ async function foo(map, mapLayers) {
     images.forEach((image) => {
         const images_id = image.images_id;
         
-        // We add the image if the imageMarkers Map() doesn't already have it
+        // We add a marker for the image if the imageMarkers Map() doesn't 
+        // already have it
         if (!mapLayers.imageMarkers.has(images_id)) {
             const treatmentId = image.treatmentId;
             const markerOpts = { 
@@ -101,7 +102,10 @@ async function foo(map, mapLayers) {
     });
     
     // Add the imageMarkerClusters layer to the map
-    map.addLayer(mapLayers.imageMarkerClusters);
+    if (!map.hasLayer(mapLayers.imageMarkerClusters)) {
+        map.addLayer(mapLayers.imageMarkerClusters);
+    }
+    
 }
 
 async function drawImageMarkers(map, mapLayers) {
@@ -129,6 +133,19 @@ async function drawImageMarkers(map, mapLayers) {
         mapLayers.imageMarkers = new Map();
         await foo(map, mapLayers);
     }
+
+    // if (treatmentId) {
+    //     const [ treatments_id, images_id ] = treatmentId.split('-');
+
+        
+    //     const marker = mapLayers.imageMarkers.has(treatmentId);
+
+    //     if (marker) {
+    //         mapLayers.imageMarkerClusters.zoomToShowLayer(marker);
+    //         marker.fireEvent('click');
+    //     }
+        
+    // }
 }
 
 function updatePermalink(map, treatmentId, images_id) {
