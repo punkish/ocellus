@@ -9,7 +9,7 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Mon Oct 21 2024 18:15:44 GMT+0200 (Central European Summer Time)">
+    <meta name="date" content="Tue Oct 22 2024 14:46:55 GMT+0200 (Central European Summer Time)">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4</title>
@@ -36,7 +36,7 @@
     
     <link rel="stylesheet" href="./css/libs-combined.css">
 
-    <link rel="stylesheet" href="./css/ocellus-1729527344363.css">
+    <link rel="stylesheet" href="./css/ocellus-1729601215542.css">
 </head>
 <body>
     <header>
@@ -120,7 +120,7 @@
             
             <div id="bottom-menu">
                 <div id="quicksearch">              
-                    <a class="quicksearch" href="?family=Formicidae" 
+                    <!-- <a class="quicksearch" href="?family=Formicidae" 
                         aria-label="find ants" data-pop="bottom" 
                         data-pop-no-shadow 
                         data-pop-arrow><img src="img/icon-ant.svg"></a> 
@@ -142,13 +142,72 @@
                         data-pop-arrow><img src="img/icon-beetle.svg"></a>
                     <a id="search-help" href="#" aria-label="more examples" 
                         data-pop="bottom" data-pop-no-shadow 
-                        data-pop-arrow><img src="img/icon-more-examples.svg"></a>
-                    <!-- <button class="bg-icon1_ant"    ></button>
-                    <button class="bg-icon2_fish"   ></button>
-                    <button class="bg-icon3_spider" ></button>
-                    <button class="bg-icon4_shrimp" ></button>
-                    <button class="bg-icon5_beetle" ></button>
-                    <button class="bg-icon6_more_examples"></button> -->
+                        data-pop-arrow><img src="img/icon-more-examples.svg"></a> -->
+                        
+                    <!-- <button class="quicksearch bg-ant" 
+                        aria-label="find ants" data-pop="bottom" 
+                        data-pop-no-shadow 
+                        data-pop-arrow></button>
+                    <button class="quicksearch bg-fish"
+                        aria-label="find fishes" data-pop="bottom" 
+                        data-pop-no-shadow 
+                        data-pop-arrow></button>
+                    <button class="quicksearch bg-spider"
+                        aria-label="find spiders" data-pop="bottom" 
+                        data-pop-no-shadow 
+                        data-pop-arrow></button>
+                    <button class="quicksearch bg-shrimp"
+                        aria-label="find shrimp, crabs and other crustacea" 
+                        data-pop="bottom" data-pop-no-shadow 
+                        data-pop-arrow></button>
+                    <button class="quicksearch bg-beetle"
+                        aria-label="find beetles" data-pop="bottom" 
+                        data-pop-no-shadow 
+                        data-pop-arrow></button>
+                    <button class="quicksearch bg-more"
+                        aria-label="more examples" 
+                        data-pop="bottom" data-pop-no-shadow 
+                        data-pop-arrow></button>
+                    <button class="quicksearch bg-map"
+                        aria-label="ocellus maps" 
+                        data-pop="bottom" data-pop-no-shadow 
+                        data-pop-arrow></button> -->
+                    <a  href="?family=Formicidae"
+                        class="quicksearch bg-ant" 
+                        aria-label="find ants" data-pop="bottom" 
+                        data-pop-no-shadow 
+                        data-pop-arrow>ants</a>
+                    <a href="?class=Actinopterygii" 
+                        class="quicksearch bg-fish"
+                        aria-label="find fishes" data-pop="bottom" 
+                        data-pop-no-shadow 
+                        data-pop-arrow>fishes</a>
+                    <a href="?class=Arachnida"
+                        class="quicksearch bg-spider"
+                        aria-label="find spiders" data-pop="bottom" 
+                        data-pop-no-shadow 
+                        data-pop-arrow>spiders</a>
+                    <a href="?class=Malacostraca"
+                        class="quicksearch bg-crustacean"
+                        aria-label="find shrimp, crabs and other crustacea" 
+                        data-pop="bottom" data-pop-no-shadow 
+                        data-pop-arrow>crustacea</a>
+                    <a href="?order=Coleoptera"
+                        class="quicksearch bg-beetle"
+                        aria-label="find beetles" data-pop="bottom" 
+                        data-pop-no-shadow 
+                        data-pop-arrow>beetles</a>
+                    <a href="#"
+                        id="search-help"
+                        class="quicksearch2 bg-more"
+                        aria-label="more examples" 
+                        data-pop="bottom" data-pop-no-shadow 
+                        data-pop-arrow>more examples</a>
+                    <a href="maps.html" 
+                        class="quicksearch2 bg-map"
+                        aria-label="ocellus maps" 
+                        data-pop="bottom" data-pop-no-shadow 
+                        data-pop-arrow>maps</a>
                     <div class="warn hidden"></div>
                 </div>
 
@@ -439,7 +498,7 @@
     <script src="https://unpkg.com/h3-js"></script>
 
     <script type="module">
-        import { init, showTooltip, hideTooltip } from './js/ocellus-1729527344363.js';
+        import { init, showTooltip, hideTooltip } from './js/ocellus-1729601215542.js';
 
         window.log.level = log.INFO;
         window.showTooltip = showTooltip;

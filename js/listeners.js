@@ -59,7 +59,7 @@ function quickSearch(event) {
 
     const state = {};
     const title = '';
-    const url = `${event.target.parentNode.href}&resource=${resource}`;
+    const url = `${event.target.href}&resource=${resource}`;
     history.pushState(state, title, url);
     const loc = new URL(location);
     let qs;

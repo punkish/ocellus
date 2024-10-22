@@ -1,11 +1,12 @@
 #quicksearch {
     text-align: left;
-    /* margin-top: -15px; */
     margin-left: 15px;
     position: relative;
     float: left;
-    padding-top: 5px;
+    /*! padding-top: 5px; */
+    margin-top: -8px
 }
+/* 
 #quicksearch img {
     width: 30px;
     height: 30px;
@@ -20,8 +21,8 @@
     padding: 0;
     border: 0;
     background: none;
-}
-.bg-icon1_ant,
+} */
+/* .bg-icon1_ant,
 .bg-icon2_fish,
 .bg-icon3_spider,
 .bg-icon4_shrimp,
@@ -29,23 +30,44 @@
 .bg-icon6_more_examples {
     width: 32px; height: 32px;
     border: none;
-}
+} */
 
-.bg-icon1_ant {
-    background: url('img/icons.svg') 0px 0px;
+.quicksearch,
+.quicksearch2 {
+    border: 0px dotted;
+    width: 30px; 
+    height: 30px;
+    background-size: 124px 124px;
+    background-image: url('/img/css_sprites.png');
+    cursor: pointer;
+    display: inline-block;
 }
-.bg-icon2_fish {
-    background: url('img/icons.svg') -31px 0px;
+a.quicksearch,
+a.quicksearch2 {
+    font-size: 0 !important;
 }
-.bg-icon3_spider {
-    background: url('img/icons.svg') -62px 0px;
+.quicksearch:hover,
+.quicksearch2:hover {
+    background-color: lightgray;
 }
-.bg-icon4_shrimp {
-    background: url('img/icons.svg') -93px 0px;
+.bg-map {
+    background-position: -6px -6px;
 }
-.bg-icon5_beetle {
-    background: url('img/icons.svg') -124px 0px;
+.bg-more {
+    background-position: -47px -6px;
 }
-.bg-icon6_more_examples {
-    background: url('img/icons.svg') -155px 0px;
+.bg-crustacean {
+    background-position: -6px -47px;
+}
+.bg-beetle {
+    background-position: -47px -47px;
+}
+.bg-spider {
+    background-position: -88px -6px;
+}
+.bg-fish {
+    background-position: -88px -47px;
+}
+.bg-ant {
+    background-position: -6px -88px;
 }

@@ -1,6 +1,5 @@
-#search-help {
+/* #search-help {
     position: relative;
-    /* float: left; */
     width: 24px;
     height: 24px;
     border: none;
@@ -9,10 +8,7 @@
     text-align: left;
     color: blue;
     text-decoration: underline;
-    /* margin-top: 10px; */
-    /* min-width: 300px; */
-/*     text-align: middle; */
-}
+} */
 .examples {
     position: absolute;
     background-color: white;

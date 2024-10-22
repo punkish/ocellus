@@ -210,7 +210,7 @@ input.ns-val-input:focus {
     outline: none;
     border: none;
 }
-#ants {
+/* #ants {
     background-position: -1px 0px;
 }
 #fishes {
@@ -227,7 +227,7 @@ input.ns-val-input:focus {
 }
 #examples {
     background-position: -151px 0px;
-}
+} */
 .warn {
     background-color: orange;
     color: white;
