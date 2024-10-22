@@ -125,9 +125,6 @@ async function jsLibs() {
     .pipe(dest(`${destination}/js`))
 }
 
-const gulp4maps = series(
-    cleanup, 
-    parallel(css, cssLibs, js, jsLibs, html)
-);
+const gulp4maps = parallel(css, cssLibs, js, jsLibs, html);
 
 exports.gulp4maps = gulp4maps;
