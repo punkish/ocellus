@@ -306,7 +306,7 @@ async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
             drawControlLayer(map, mapLayers);
         }
         
-        await switchLayers(map, mapLayers);
+        await switchLayers(map, mapLayers, treatmentId);
         //makeCloseBtn(map);
         // map.on('locationfound', onLocationFound);
         // map.on('locationerror', (e) => { alert(e.message) });
@@ -314,8 +314,8 @@ async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
         // if (treatmentId) {
         //     const [ treatments_id, images_id ] = treatmentId.split('-');
 
-            
-        //     const marker = mapLayers.imageMarkers.has(treatmentId);
+        //     console.log(treatments_id)
+        //     const marker = mapLayers.imageMarkers.has(treatments_id);
     
         //     if (marker) {
         //         mapLayers.imageMarkerClusters.zoomToShowLayer(marker);
@@ -326,14 +326,14 @@ async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
     }
 }
 
-async function switchLayers(map, mapLayers) {
+async function switchLayers(map, mapLayers, treatmentId) {
     const zoom = map.getZoom();
     
     if (zoom <= 5) {
         drawH3(map, mapLayers);
     }
     else {
-        await drawImageMarkers(map, mapLayers);
+        await drawImageMarkers(map, mapLayers, treatmentId);
     }
 }
 

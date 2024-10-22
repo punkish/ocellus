@@ -108,7 +108,7 @@ async function foo(map, mapLayers) {
     
 }
 
-async function drawImageMarkers(map, mapLayers) {
+async function drawImageMarkers(map, mapLayers, treatmentId) {
     
     if ('h3' in mapLayers) {
 
@@ -134,18 +134,17 @@ async function drawImageMarkers(map, mapLayers) {
         await foo(map, mapLayers);
     }
 
-    // if (treatmentId) {
-    //     const [ treatments_id, images_id ] = treatmentId.split('-');
+    if (treatmentId) {
+        const [ treatments_id, images_id ] = treatmentId.split('-');
 
-        
-    //     const marker = mapLayers.imageMarkers.has(treatmentId);
+        const marker = mapLayers.imageMarkers.get(Number(images_id));
 
-    //     if (marker) {
-    //         mapLayers.imageMarkerClusters.zoomToShowLayer(marker);
-    //         marker.fireEvent('click');
-    //     }
+        if (marker) {
+            mapLayers.imageMarkerClusters.zoomToShowLayer(marker);
+            marker.fireEvent('click');
+        }
         
-    // }
+    }
 }
 
 function updatePermalink(map, treatmentId, images_id) {
@@ -194,6 +193,8 @@ async function getImageInfo (image) {
         if (response.ok) {
             const res = await response.json();
             const rec = res.item.result.records[0];
+            const tbLink = `<a href="${globals.uri.treatmentBank}/${treatmentId}" target="_blank">more on TB</a>`;
+
             if (rec.httpUri) {
 
                 // Most figures are on Zenodo, but some are on Pensoft,
@@ -201,16 +202,20 @@ async function getImageInfo (image) {
                 // 
                 const size = 250;
                 const id = rec.httpUri.split('/')[4];
-                // if the figure is on zenodo, show their thumbnails unless 
-                // it is an svg, in which case, apologize with "no preview"
+
                 let uri;
                 
                 if (rec.httpUri.indexOf('zenodo') > -1) {
+
                     if (rec.httpUri.indexOf('.svg') > -1) {
+
+                        // If it is an svg, apologize with "no preview"
                         uri = '/img/kein-preview.png';
                         //fullImage = '/img/kein-preview.png';
                     }
                     else {
+
+                        // if the figure is on zenodo, show their thumbnails  
                         uri = `${globals.uri.zenodo}/api/iiif/record:${id}:figure.png/full/250,/0/default.jpg`;
                         // fullImage = `${globals.uri.zenodo}/api/iiif/record:${id}:figure.png/full/^1200,/0/default.jpg`;
                     }
@@ -226,11 +231,11 @@ async function getImageInfo (image) {
                 <figure class="figure-${size}">
                     <img src="../img/bug.gif" width="${size}" data-src="${uri}" 
                         class="lazyload" data-recid="${id}">
-                    <figcaption>${rec.captionText} <a href="${globals.uri.treatmentBank}/treatments?treatmentId=${treatmentId}" target="_blank">more on TB</a></figcaption>
+                    <figcaption>${rec.captionText} ${tbLink}</figcaption>
                 </figure>`;
             }
             else {
-                content += `<a href="${globals.uri.treatmentBank}/treatments?treatmentId=${treatmentId}" target="_blank">more on TB</a>`;
+                content += tbLink;
             }
 
             return content;
