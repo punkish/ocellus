@@ -1,5 +1,10 @@
 import { globals } from "../globals.js";
 //import { makeInfoControl } from './index.js';
+import { 
+    cellArea, 
+    cellToBoundary,
+    UNITS
+} from 'https://cdn.jsdelivr.net/npm/h3-js@4.1.0/+esm';
 
 async function getH3(resolution)  {
     const url = `${globals.uri.zenodeo}/bins/${resolution}`;
@@ -13,8 +18,10 @@ async function getH3(resolution)  {
         blackList.forEach(b => delete json[b]);
 
         for (const [h3id, numOfTreatments] of Object.entries(json)) {
-            const area = Math.round(h3.cellArea(h3id, h3.UNITS.km2));
-            const coords = h3.cellToBoundary(h3id); // lat, lng
+            // const area = Math.round(h3.cellArea(h3id, h3.UNITS.km2));
+            // const coords = h3.cellToBoundary(h3id); // lat, lng
+            const area = Math.round(cellArea(h3id, UNITS.km2));
+            const coords = cellToBoundary(h3id); // lat, lng
             const coordinates = coords.map(c => [c[1], c[0]]); // lng, lat
 
             const hexagon = {
