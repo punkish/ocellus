@@ -1,3 +1,4 @@
+import { $ } from "../base.js";
 import { globals } from "../globals.js";
 import { Slidebar } from "../../libs/leaflet-slidebar/src/leaflet.slidebar.js";
 
@@ -26,85 +27,101 @@ async function getImages(bounds) {
 }
 
 async function foo(map, mapLayers) {
+    const throbber = $('#throbber');
+    throbber.classList.remove('nothrob');
     const bounds = map.getBounds();
     const images = await getImages(bounds);
 
-    if (!mapLayers.imageMarkerClusters) {
-        mapLayers.imageMarkerClusters = L.markerClusterGroup({ 
-            disableClusteringAtZoom: 10 
-        });
-    }
-    
-    const clickedMarkers = [];
+    if (images) {
 
-    images.forEach((image) => {
-        const images_id = image.images_id;
-        
-        // We add a marker for the image if the imageMarkers Map() doesn't 
-        // already have it
-        if (!mapLayers.imageMarkers.has(images_id)) {
-            const treatmentId = image.treatmentId;
-            const markerOpts = { 
-                title: treatmentId,
-                icon:  globals.markerIcons.default
-            };
-
-            const latlng = new L.LatLng(image.latitude, image.longitude);
-            const marker = L.marker(latlng, markerOpts);
-        
-            marker.on('click', async function (e) {
-                const thisMarker = e.target;
-                thisMarker.setIcon(globals.markerIcons.active);
-                const content = await getImageInfo(image);
-                mapLayers.slidebar.update({ content, latlng });
-                const lsb = document.querySelector('#leaflet-slidebar');
-                lsb.style.visibility = 'visible';
-                updatePermalink(map, treatmentId, images_id);
-                //mapLayers.imageMarkerClusters.zoomToShowLayer(thisMarker);
-                const cluster = mapLayers.imageMarkerClusters
-                    .getVisibleParent(thisMarker);
-
-                // if (cluster) {
-                //     console.log(`marker is part of a cluster`);
-                //     console.log(cluster)
-                //     mapLayers.imageMarkerClusters.spiderfy(cluster);
-                // }
-                
-                
-                //const lastKey = [...mapLayers.markers.keys()].pop();
-                
-                // if (lastKey) {
-                //     const lastClicked = mapLayers.markers.get(lastKey);
-                //     console.log(`setting icon of ${lastKey} to 'clicked'`);
-                //     lastClicked.marker.setIcon(globals.markerIcons.clicked);
-                //     lastClicked.status = 'clicked';
-                // }
-
-                const lastClickedMarker = clickedMarkers[ 
-                    clickedMarkers.length - 1
-                ];
-
-                if (lastClickedMarker) {
-                    lastClickedMarker.setIcon(globals.markerIcons.clicked);
-                }
-
-                clickedMarkers.push(thisMarker);
-                
+        if (!mapLayers.imageMarkerClusters) {
+            mapLayers.imageMarkerClusters = L.markerClusterGroup({ 
+                disableClusteringAtZoom: 10 
             });
-    
-            // Store the marker in the markers Map() 
-            mapLayers.imageMarkers.set(images_id, marker);
-
-            // Add the marker to the imageMarkerClusters layer
-            mapLayers.imageMarkerClusters.addLayer(marker);
         }
         
-    });
-    
-    // Add the imageMarkerClusters layer to the map
-    if (!map.hasLayer(mapLayers.imageMarkerClusters)) {
-        map.addLayer(mapLayers.imageMarkerClusters);
+        const clickedMarkers = [];
+        
+
+        images.forEach((image) => {
+            const images_id = image.images_id;
+            
+            // We add a marker for the image if the imageMarkers Map() doesn't 
+            // already have it
+            if (!mapLayers.imageMarkers.has(images_id)) {
+                const treatmentId = image.treatmentId;
+                const markerOpts = { 
+                    title: treatmentId,
+                    icon:  globals.markerIcons.default
+                };
+
+                const latlng = new L.LatLng(image.latitude, image.longitude);
+                const marker = L.marker(latlng, markerOpts);
+            
+                marker.on('click', async function (e) {
+                    throbber.classList.remove('nothrob');
+                    const thisMarker = e.target;
+                    thisMarker.setIcon(globals.markerIcons.active);
+                    const content = await getImageInfo(image);
+                    mapLayers.slidebar.update({ content, latlng });
+                    throbber.classList.add('nothrob');
+                    const lsb = document.querySelector('#leaflet-slidebar');
+                    lsb.style.visibility = 'visible';
+                    updatePermalink(map, treatmentId, images_id);
+                    //mapLayers.imageMarkerClusters.zoomToShowLayer(thisMarker);
+                    const cluster = mapLayers.imageMarkerClusters
+                        .getVisibleParent(thisMarker);
+
+                    // if (cluster) {
+                    //     console.log(`marker is part of a cluster`);
+                    //     console.log(cluster)
+                    //     mapLayers.imageMarkerClusters.spiderfy(cluster);
+                    // }
+                    
+                    
+                    //const lastKey = [...mapLayers.markers.keys()].pop();
+                    
+                    // if (lastKey) {
+                    //     const lastClicked = mapLayers.markers.get(lastKey);
+                    //     console.log(`setting icon of ${lastKey} to 'clicked'`);
+                    //     lastClicked.marker.setIcon(globals.markerIcons.clicked);
+                    //     lastClicked.status = 'clicked';
+                    // }
+
+                    const lastClickedMarker = clickedMarkers[ 
+                        clickedMarkers.length - 1
+                    ];
+
+                    if (lastClickedMarker) {
+                        lastClickedMarker.setIcon(globals.markerIcons.clicked);
+                    }
+
+                    clickedMarkers.push(thisMarker);
+                    
+                });
+        
+                // Store the marker in the markers Map() 
+                mapLayers.imageMarkers.set(images_id, marker);
+
+                // Add the marker to the imageMarkerClusters layer
+                mapLayers.imageMarkerClusters.addLayer(marker);
+            }
+            
+        });
+        
+        // Add the imageMarkerClusters layer to the map
+        if (!map.hasLayer(mapLayers.imageMarkerClusters)) {
+            log.info('re-adding existing image marker clusters');
+            map.addLayer(mapLayers.imageMarkerClusters);
+        }
+        else {
+            log.info('used existing image marker clusters layer');
+        }
+
+        
     }
+
+    throbber.classList.add('nothrob');
     
 }
 
@@ -121,7 +138,6 @@ async function drawImageMarkers(map, mapLayers, treatmentId) {
     }
 
     if ('imageMarkerClusters' in mapLayers) {
-        log.info('re-adding existing image marker clusters');
         await foo(map, mapLayers);
         mapLayers.slidebar.addTo(map);
     }
