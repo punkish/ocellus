@@ -73,7 +73,7 @@ async function drawH3(map, mapLayers) {
     }
     else {
         log.info('initializing h3 layer');
-        const grid = await getH3(3);
+        const grid = await getH3(2);
         const densities = grid.features.map(
             feature => feature.properties.density
         );
