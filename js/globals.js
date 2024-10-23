@@ -1,29 +1,20 @@
-function getUrls() {
+function setEnv(globals) {
     const cond1 = window.location.hostname === 'ocellus.localhost';
     const cond2 = window.location.hostname === 'ocellus.local';
     const cond3 = window.location.hostname === '127.0.0.1';
     const cond4 = window.location.hostname === 'localhost';
-    
-    let zenodeo = 'https://test.zenodeo.org/v3';
-    let maps = 'https://maps.zenodeo.org';
-    const zenodo = 'https://zenodo.org';
-    const treatmentBank = 'https://tb.plazi.org/GgServer/html';
 
-    if (cond1 || cond2 || cond3 || cond4) {
-        zenodeo = `http://${window.location.hostname}:3010/v3`;
-        maps = `http://${window.location.hostname}:3000`;
+    if (!(cond1 && cond2 && cond3 && cond4)) {
+        globals.zenodeo = 'https://test.zenodeo.org/v3';
+        globals.maps = 'https://maps.zenodeo.org';
+        window.log.level = 'ERROR';
     }
-
-    return {
-        zenodeo,
-        maps,
-        zenodo,
-        treatmentBank
+    else {
+        window.log.level = 'INFO';
     }
 }
 
 const globals = {
-
     fetchOpts: {
         // method: "GET",
         // headers: new Headers({
@@ -31,7 +22,12 @@ const globals = {
         // }),
     },
 
-    uri: getUrls(),
+    uri: {
+        zenodeo: 'http://localhost:3010/v3',
+        maps: 'http://localhost:3000',
+        zenodo: 'https://zenodo.org',
+        treatmentBank: 'https://tb.plazi.org/GgServer/html'
+    },
     
     cache: {
         images: {
@@ -242,5 +238,7 @@ const globals = {
     }
     
 };
+
+setEnv(globals);
 
 export { globals }
