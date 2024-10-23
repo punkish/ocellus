@@ -5,8 +5,8 @@ function setEnv(globals) {
     const cond4 = window.location.hostname === 'localhost';
 
     if (!(cond1 && cond2 && cond3 && cond4)) {
-        globals.zenodeo = 'https://test.zenodeo.org/v3';
-        globals.maps = 'https://maps.zenodeo.org';
+        globals.uri.zenodeo = 'https://test.zenodeo.org/v3';
+        globals.uri.maps = 'https://maps.zenodeo.org';
         window.log.level = 'ERROR';
     }
     else {
