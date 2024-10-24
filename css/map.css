@@ -59,16 +59,13 @@ https://github.com/Leaflet/Leaflet/issues/4686
     margin: 0 0 10px 0;
     font-size: 150%;
 }
-#leaflet-slidebar main {
-    border: none;
-}
 
 /* Larger than mobile */
-@media only screen and (min-width: 400px) {
+/* @media only screen and (min-width: 400px) {
     #leaflet-slidebar {
         top: 40px;
         right: 40px;
         padding: 10px;
         visibility: hidden;
     }
-}
+} */
