@@ -27,6 +27,7 @@ async function getImages(bounds) {
 }
 
 async function foo(map, mapLayers) {
+    console.log('fired')
     const throbber = $('#throbber');
     throbber.classList.remove('nothrob');
     const bounds = map.getBounds();
@@ -248,7 +249,8 @@ async function getImageInfo (image) {
                     <img src="../img/bug.gif" width="${size}" data-src="${uri}" 
                         class="lazyload" data-recid="${id}">
                     <figcaption>${rec.captionText} ${tbLink}</figcaption>
-                </figure>`;
+                </figure>
+                <hr class="style-eight">`;
             }
             else {
                 content += tbLink;
