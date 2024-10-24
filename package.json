@@ -10,6 +10,7 @@
     "gulp-html-replace": "^1.6.2",
     "gulp-inject-string": "^1.1.2",
     "gulp-rm": "^2.0.0",
+    "gulp-sourcemaps": "^3.0.0",
     "gulp-terser": "^1.2.0",
     "gulp-useref": "^4.0.1",
     "gulp-wrap": "^0.15.0",

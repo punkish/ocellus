@@ -2,6 +2,7 @@ const { series, parallel, src, dest } = require('gulp');
 const htmlReplace = require('gulp-html-replace');
 const inject = require('gulp-inject-string');
 const cleanCSS = require('gulp-clean-css');
+const sourcemaps = require('gulp-sourcemaps');
 const concat = require('gulp-concat');
 const { rollup } = require('rollup');
 const { terser } = require('rollup-plugin-terser');
@@ -63,11 +64,13 @@ async function css() {
             `${source}/css/map.css`,
             `${source}/css/media-queries.css`
         ])
-        .pipe(cleanCSS({compatibility: 'ie8'}))
+        // .pipe(sourcemaps.init())
+        // .pipe(cleanCSS({compatibility: 'ie8'}))
+        // .pipe(sourcemaps.write('.'))
 
         // https://stackoverflow.com/a/23177650/183692
         // add file name as a comment before its content
-        .pipe(wrap(`${sep1}\n${sep2}\n<%= contents %>`))
+        .pipe(wrap(`${sep2}\n<%= contents %>`))
         .pipe(concat(`ocellus-maps-${dsecs}.css`))
         .pipe(dest(`${destination}/css`))
 }
