@@ -277,7 +277,12 @@ async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
             lat: 0, 
             lng: 0
         });
-        const map = L.map(mapContainer).setView(
+        const mapOptions = {
+            preferCanvas: true,
+            //renderer: L.canvas()
+        };
+
+        const map = L.map(mapContainer, mapOptions).setView(
             { lat, lng }, 
             zoom
         );
