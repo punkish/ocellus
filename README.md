@@ -5,7 +5,7 @@
 A simple interface to the images in the [Biodiversity Literature Repository](https://biolitrepo.org) (BLR) built upon [Zenodeo](http://zenodeo.punkish.org), the `nodejs` API to the [Zenodo API](https://zenodo.org/api).
 
 <figure>
-    <img src="img/readme-1.jpg" width="300">
+    <img src="img/readme-1.jpg" width="300" style="border:2px solid;">
     <figcaption>
         <ol>
             <li>switch controls source of images: all, Zenodo, or treatments</li>
@@ -15,7 +15,7 @@ A simple interface to the images in the [Biodiversity Literature Repository](htt
 </figure>
 
 <figure>
-    <img src="img/readme-2.jpg" width="300">
+    <img src="img/readme-2.jpg" width="300" style="border:2px solid;">
     <figcaption>
         <ol start="3">
             <li>Syntax of example searches. Click on 'try this search' to insert search in the input field above, then click [go] to perform search.</li>
@@ -24,7 +24,7 @@ A simple interface to the images in the [Biodiversity Literature Repository](htt
 </figure>
 
 <figure>
-    <img src="img/readme-3.jpg" width="300">
+    <img src="img/readme-3.jpg" width="300" style="border:2px solid;">
     <figcaption>
         <ol start="4">
             <li>Switch flips source to 'treatments' when there is an extended syntax query in the input field. For now, extended querying is only possible for treatments. For searching images on Zenodo or on both Zenodo and treatments, do a simple query search that performs a full-text search on all the records.</li>

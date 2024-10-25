@@ -2,12 +2,7 @@
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
 import { initializeMap } from './mapping/index.js';
-
-function setLoglevel(hostname) {
-    return hostname === 'localhost' 
-        ? 'INFO'
-        : 'ERROR';
-}
+import { setEnv } from './utils.js';
 
 const toggleModal = (e) => {
     const t = new URL(e.target.href).hash;
@@ -30,8 +25,13 @@ const toggleModal = (e) => {
     }
 }
 
-// set loglevel to 'INFO' on local development machine and to 'ERROR' on prod
-log.level = log[setLoglevel(window.location.hostname)];
-$$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
-
-export { initializeMap }
+function init() {
+    setEnv(globals);
+    $$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
+    initializeMap({ 
+        mapContainer: 'map', 
+        baseLayerSource: 'gbif', 
+        drawControl: false 
+    })
+}
+export { init }

@@ -129,12 +129,8 @@
     <!-- <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script> -->
 
     <script type="module">
-        import { initializeMap } from './js/ocellus-maps.js';
-        window.onload = () => initializeMap({ 
-            mapContainer: 'map', 
-            baseLayerSource: 'gbif', 
-            drawControl: false 
-        });
+        import { init } from './js/ocellus-maps.js';
+        window.onload = () => init();
     </script>
 </body>
 </html>

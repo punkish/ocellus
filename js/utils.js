@@ -4,6 +4,21 @@ import { renderYearlyCountsSparkline } from './renderers.js';
 // import { renderDashboard } from './renderers-charts.js';
 import { globals } from './globals.js';
 
+function setEnv(globals) {
+    const cond1 = window.location.hostname === 'ocellus.localhost';
+    const cond2 = window.location.hostname === 'ocellus.local';
+    const cond3 = window.location.hostname === '127.0.0.1';
+    const cond4 = window.location.hostname === 'localhost';
+    window.log.level = 'INFO';
+
+    if (!(cond1 || cond2 || cond3 || cond4)) {
+        globals.uri.zenodeo = 'https://test.zenodeo.org/v3';
+        globals.uri.maps = 'https://maps.zenodeo.org';
+        window.log.level = 'ERROR';
+    }
+    
+}
+
 /**
  * convert queryString to form inputs. Right now qs2form() fills 
  * only the normal search form. TODO: be able to fill fancy search
@@ -489,6 +504,7 @@ const formatDate = (d) => {
 }
 
 export { 
+    setEnv,
     nth, 
     niceNumbers, 
     smoke, 
