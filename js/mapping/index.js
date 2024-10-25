@@ -285,8 +285,12 @@ async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
             { lat, lng }, 
             zoom
         );
-        L.easyButton( '<img src="/img/world.webp" width="40">', function(){
-            map.fitWorld();
+        
+        const northEast = {lat: 61.60639637138628, lng: 131.48437500000003};const southWest = {lat: -31.952162238024975, lng: -137.10937500000003};
+        const bounds = L.latLngBounds(northEast, southWest);
+
+        L.easyButton( '.', function(){
+            map.fitBounds(bounds);
         }).addTo(map);
 
         setupMap(map);
@@ -336,8 +340,8 @@ async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
 
 async function switchLayers(map, mapLayers, treatmentId) {
     const zoom = map.getZoom();
-    //const bounds = map.getBounds();
-    //console.log(bounds);
+    // const bounds = map.getBounds();
+    // console.log(bounds);
     
     if (zoom <= 5) {
         drawH3(map, mapLayers);

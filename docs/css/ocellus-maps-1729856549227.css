@@ -712,6 +712,12 @@ hr.style-eight:after {
         visibility: hidden;
     }
 } */
+
+/* override easy button style for custom leaflet control */
+.easy-button-container button {
+    background-image: url('/img/world.webp');
+    background-size: 30px 30px;
+}
 /*** media-queries.css  ***/
 /* Larger than mobile */
 @media only screen and (min-width: 400px) {
