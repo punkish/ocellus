@@ -26,8 +26,7 @@ async function getImages(bounds) {
     }
 }
 
-async function foo(map, mapLayers) {
-    console.log('fired')
+async function makeImageMarkers(map, mapLayers) {
     const throbber = $('#throbber');
     throbber.classList.remove('nothrob');
     const bounds = map.getBounds();
@@ -139,7 +138,7 @@ async function drawImageMarkers(map, mapLayers, treatmentId) {
     }
 
     if ('imageMarkerClusters' in mapLayers) {
-        await foo(map, mapLayers);
+        await makeImageMarkers(map, mapLayers);
         mapLayers.slidebar.addTo(map);
     }
     else {
@@ -148,7 +147,7 @@ async function drawImageMarkers(map, mapLayers, treatmentId) {
 
         // We store the markers as we draw them
         mapLayers.imageMarkers = new Map();
-        await foo(map, mapLayers);
+        await makeImageMarkers(map, mapLayers);
     }
 
     if (treatmentId) {

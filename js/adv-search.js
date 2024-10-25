@@ -1,33 +1,5 @@
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
-// import { toggleDateSelector } from './listeners.js';
-
-// function geoSearchWidget(event) {
-
-//     // initialize map with drawControl
-//     const initialMapCenter = [0, 0];
-//     const initialZoom = 2;
-//     const map = L.map('mapSearch').setView(initialMapCenter, initialZoom);
-
-//     // turn off the Ukrainian flag emoji
-//     map.attributionControl.setPrefix('');
-
-//     // set map source
-//     let mapSource = 'http://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}';
-//     //mapSource = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-
-//     L.tileLayer(mapSource, {
-//         maxZoom: 19,
-//         //attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-//     }).addTo(map);
-
-//     // redraw the map if the browser window is resized
-//     //map.invalidateSize(true);
-//     //drawHeatMap(map);
-//     //drawBinsGeoJson(map);
-    
-//     drawControlLayer(map);
-// }
 
 // lower left: lat -76.41, lng: -165.94; upper right: lat 72.32, lng 165.23
 
@@ -478,199 +450,6 @@ async function drawBinsGeoJson(map) {
         }).addTo(map);
 }
 
-const init = () => {
-
-    // const biomeAc = new autoComplete({
-    //     selector: $('input[name="as-biome"]'),
-    
-    //     //
-    //     // 
-    //     // 'term' refers to the value currently in the text input.
-    //     // 'response' callback, which expects a single argument: the data 
-    //     //      to suggest to the user. This data must be an array of 
-    //     //      filtered suggestions based on the provided term:
-    //     //      ['suggestion 1', 'suggestion 2', 'suggestion 3', ...]
-    //     // 
-    //     //
-    //     source: async function(term, suggest) {
-    //         const response = await fetch(`${globals.server}/biomes?biome=${term}*`);
-    
-    //         if (!response.ok) {
-    //             throw Error("HTTP-Error: " + response.status)
-    //         }
-    
-    //         const json = await response.json();
-    //         const matches = [];
-    
-    //         if (json.item.result.records) {
-    //             json.item.result.records.forEach(r => matches.push(r.biome_synonym));
-    //         }
-    //         else {
-    //             matches.push('nothing found… please try again');
-    //         }
-    
-    //         //
-    //         // We narrow the matches array as the user types in the input 
-    //         // field. This makes the dropdown box focus on only the 
-    //         // matching terms
-    //         //
-    //         if (matches.length) {
-    //             const suggestions = [];
-    
-    //             for (let i=0; i<matches.length; i++) {
-    //                 if (~matches[i].toLowerCase().indexOf(term)) {
-    //                     suggestions.push(matches[i]);
-    //                 }
-    //             }
-    
-    //             suggest(suggestions);
-    //         }
-    //     },
-    
-    //     minChars: 3,
-    //     delay: 150
-    // });
-    
-}
-
-// const authorityAc = new autoComplete({
-//     selector: document.querySelector('input[name=authorityName]'),
-
-//     //
-//     // 
-//     // 'term' refers to the value currently in the text input.
-//     // 'response' callback, which expects a single argument: the data 
-//     //      to suggest to the user. This data must be an array of 
-//     //      filtered suggestions based on the provided term:
-//     //      ['suggestion 1', 'suggestion 2', 'suggestion 3', ...]
-//     // 
-//     //
-//     source: async function(term, suggest) {
-        
-
-//         const response = await fetch(`http://localhost:3010/v3/treatmentauthors?treatmentAuthor=${term}*`);
-
-//         if (!response.ok) {
-//             throw Error("HTTP-Error: " + response.status)
-//         }
-
-       
-//         const json = await response.json();
-//         const matches = [];
-
-//         if (json.item.result.records) {
-//             json.item.result.records.forEach(r => matches.push(r.treatmentAuthor));
-//         }
-//         else {
-//             matches.push('nothing found… please try again');
-//         }
-
-//         //
-//         // We narrow the matches array as the user types in the input 
-//         // field. This makes the dropdown box focus on only the 
-//         // matching terms
-//         //
-//         if (matches.length) {
-//             const suggestions = [];
-
-//             for (let i=0; i<matches.length; i++) {
-//                 if (~matches[i].toLowerCase().indexOf(term)) {
-//                     suggestions.push(matches[i]);
-//                 }
-//             }
-
-//             suggest(suggestions);
-//         }
-//     },
-
-//     minChars: 3,
-//     delay: 150
-// });
-
-// function journalTitleAc() {
-//     const ac = new autoComplete({
-//         selector: 'input[name="as-journalTitle"]',
-//         minChars: 2,
-//         source: async function(term, suggest) {
-//             term = term.toLowerCase();
-//             const choices = await getJournalTitles();
-//             const matches = [];
-
-//             for (let i=0; i < choices.length; i++) {
-
-//                 if (~choices[i].journalTitle.toLowerCase().indexOf(term)) {
-//                     matches.push({
-//                         journals_id: choices[i].journals_id,
-//                         journalTitle: choices[i].journalTitle
-//                     });
-//                 }
-
-//                 // if (~choices[i][val].toLowerCase().indexOf(term)) {
-//                 //     matches.push({
-//                 //         key: choices[i][key],
-//                 //         val: choices[i][val]
-//                 //     });
-//                 // }
-//             }
-            
-//             suggest(matches);
-//         },
-//         renderItem: function (item, search){
-            
-//             // escape special characters
-//             search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-//             const re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-//             const disp = item.journalTitle.replace(re, "<b>$1</b>");
-//             return `<div class="autocomplete-suggestion" data-id="${item.journalTitle}" data-val="${item.journalTitle}">${disp}</div>`;
-//         },
-//         onSelect: function(e, term, item){
-//             document.querySelector('input[name="as-journalTitle"]').value = item.getAttribute('data-id');
-//         }
-//     });
-// }
-
-// function collectionCodeAc() {
-//     const ac = new autoComplete({
-//         selector: 'input[name="as-collectionCode"]',
-//         minChars: 2,
-//         source: async function(term, suggest) {
-//             term = term.toLowerCase();
-//             const choices = await getCollectionCodes();
-//             const matches = [];
-
-//             for (let i=0; i < choices.length; i++) {
-                
-//                 if (~choices[i].collectionCode.toLowerCase().indexOf(term)) {
-//                     matches.push({
-//                         collectionCode: choices[i].collectionCode,
-//                         name: choices[i].name
-//                     });
-//                 }
-
-//             }
-            
-//             suggest(matches);
-//         },
-//         renderItem: function (item, search){
-            
-//             // escape special characters
-//             search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-//             const re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-//             let disp = item.collectionCode.replace(re, "<b>$1</b>");
-
-//             if (item.name) {
-//                 disp += ` (${item.name})`;
-//             }
-
-//             return `<div class="autocomplete-suggestion" data-id="${item.collectionCode}">${disp}</div>`;
-//         },
-//         onSelect: function(e, term, item){
-//             document.querySelector('input[name="as-collectionCode"]').value = item.getAttribute('data-id');
-//         }
-        
-//     });
-// }
-
 function makeAutoComplete({ selector, minChars, cb, disp, val }) {
     return new autoComplete({
 
@@ -682,9 +461,13 @@ function makeAutoComplete({ selector, minChars, cb, disp, val }) {
         //      autoComplete
         minChars,
 
+        // delay: 150,
+
         // 'term' is what is typed by the user
         // 'suggest' is a callback that takes an array of results matching 
-        //      the 'term' and constructs a widget of suggestions
+        //      the 'term' and constructs a widget of suggestions, This array 
+        //      of filtered suggestions is based on the provided term:
+        //      ['suggestion 1', 'suggestion 2', 'suggestion 3', ...]
         // 'cb' feeds the choices
         source: async function(term, suggest) {
             term = term.toLowerCase();
@@ -724,13 +507,22 @@ function makeAutoComplete({ selector, minChars, cb, disp, val }) {
     });
 }
 
-export { 
-    init, 
-    //geoSearchWidget, 
-    getJournalTitles, 
-    getCollectionCodes, 
-    // journalTitleAc,
-    // collectionCodeAc,
-    makeAutoComplete
-    //getBins 
+function initAdvSearch() {
+    makeAutoComplete({
+        selector: 'input[name="as-journalTitle"]',
+        minChars: 2, 
+        cb: getJournalTitles, 
+        disp: 'journalTitle', 
+        val: 'journalTitle'
+    });
+
+    makeAutoComplete({
+        selector: 'input[name="as-collectionCode"]',
+        minChars: 2, 
+        cb: getCollectionCodes, 
+        disp: 'collectionCode', 
+        val: 'collectionCode'
+    });
 }
+
+export { initAdvSearch }

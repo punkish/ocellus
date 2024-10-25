@@ -3,79 +3,49 @@
 import { updatePlaceHolder, qs2form, form2qs } from './utils.js';
 import { getResource } from './querier.js';
 import { addListeners, showTooltip, hideTooltip } from './listeners.js';
-import { 
-    getJournalTitles, 
-    getCollectionCodes, 
-    // journalTitleAc,
-    // collectionCodeAc,
-    makeAutoComplete
-} from './adv-search.js';
+import { initAdvSearch } from './adv-search.js';
+import { globals } from './globals.js';
 import { initializeMap } from './mapping/index.js';
 
-// set loglevel to 'INFO' on local development machine and to 'ERROR' on prod
-log.level = log[setLoglevel(window.location.hostname)];
+function setEnv(globals) {
+    const cond1 = window.location.hostname === 'ocellus.localhost';
+    const cond2 = window.location.hostname === 'ocellus.local';
+    const cond3 = window.location.hostname === '127.0.0.1';
+    const cond4 = window.location.hostname === 'localhost';
+    window.log.level = 'INFO';
 
-function setLoglevel(hostname) {
-    return hostname === 'localhost' 
-        ? 'INFO'
-        : 'ERROR';
+    if (!(cond1 || cond2 || cond3 || cond4)) {
+        globals.uri.zenodeo = 'https://test.zenodeo.org/v3';
+        globals.uri.maps = 'https://maps.zenodeo.org';
+        window.log.level = 'ERROR';
+    }
+    
 }
 
 function init() {
-    const parsedHash = new URLSearchParams(window.location.hash.substring(1));
-    const show = parsedHash ? parsedHash.get("show") : 'index';
-    
-    if (show === 'maps') {
-        initializeMap({ 
-            mapContainer: 'map', 
-            baseLayerSource: 'geodeo', 
-            drawControl: false 
-        });
+    setEnv(globals);
+    const loc = new URL(location);
+
+    if (loc.search) {
+        log.info(`- locSearch: ${loc.search.substring(1)}`);
+        qs2form(loc.search.substring(1));
+
+        // create the queryString from the form so all the form fields such 
+        // as page and size are also included properly
+        const queryString = form2qs();
+        getResource(queryString);
     }
     else {
-        const loc = new URL(location);
-
-        if (loc.search) {
-            log.info(`- locSearch: ${loc.search.substring(1)}`);
-            qs2form(loc.search.substring(1));
-    
-            // create the queryString from the form so all the form fields such as 
-            // page and size are also included properly
-            const queryString = form2qs();
-            getResource(queryString);
-        }
-        else {
-            updatePlaceHolder('images');
-        }
-    
-        addListeners();
-        // journalTitleAc();
-        // collectionCodeAc();
-        makeAutoComplete({
-            selector: 'input[name="as-journalTitle"]',
-            minChars: 2, 
-            cb: getJournalTitles, 
-            disp: 'journalTitle', 
-            val: 'journalTitle'
-        });
-
-        makeAutoComplete({
-            selector: 'input[name="as-collectionCode"]',
-            minChars: 2, 
-            cb: getCollectionCodes, 
-            disp: 'collectionCode', 
-            val: 'collectionCode'
-        });
+        updatePlaceHolder('images');
     }
+
+    addListeners();
+    initAdvSearch();
 }
 
 export { 
     init, 
     showTooltip, 
     hideTooltip, 
-    // getJournalTitles, 
-    // getCollectionCodes, 
-    // journalTitleAc,
-    // collectionCodeAc,
     initializeMap
 }
