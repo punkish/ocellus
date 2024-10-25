@@ -77,7 +77,7 @@ async function css() {
 
         // https://stackoverflow.com/a/23177650/183692
         // add file name as a comment before its content
-        .pipe(wrap(`${sep1}\n${sep2}\n<%= contents %>`))
+        .pipe(wrap(`${sep2}\n<%= contents %>`))
         .pipe(concat(`ocellus-${dsecs}.css`))
         .pipe(dest(`${destination}/css`))
 }
@@ -97,7 +97,7 @@ async function cssLibs() {
 
         // https://stackoverflow.com/a/23177650/183692
         // add file name as a comment before its content
-        .pipe(wrap(`${sep1}\n${sep2}\n<%= contents %>`))
+        .pipe(wrap(`${sep2}\n<%= contents %>`))
         .pipe(concat(`libs-combined.css`))
         .pipe(dest(`${destination}/css`))
 }

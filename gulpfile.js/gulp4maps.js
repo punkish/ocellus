@@ -81,13 +81,14 @@ async function cssLibs() {
     return src([
             `${source}/libs/leaflet-markercluster/MarkerCluster.css`,
             `${source}/libs/leaflet-markercluster/MarkerCluster.Default.css`,
-            `${source}/libs/leaflet-slidebar/src/leaflet.slidebar.css`
+            `${source}/libs/leaflet-slidebar/src/leaflet.slidebar.css`,
+            `${source}/libs/leaflet-easybutton/easy-button.css`
         ])
         .pipe(cleanCSS({compatibility: 'ie8'}))
 
         // https://stackoverflow.com/a/23177650/183692
         // add file name as a comment before its content
-        .pipe(wrap(`${sep1}\n${sep2}\n<%= contents %>`))
+        .pipe(wrap(`${sep2}\n<%= contents %>`))
         .pipe(concat(`libs-maps-combined.css`))
         .pipe(dest(`${destination}/css`))
 }
@@ -118,7 +119,8 @@ async function jsLibs() {
 
     return src([
         `${source}/libs/picolog/picolog.min.js`,
-        `${source}/libs/lazysizes.min.js`
+        `${source}/libs/lazysizes.min.js`,
+        `${source}/libs/leaflet-easybutton/easy-button.min.js`
     ])
 
     // https://stackoverflow.com/a/23177650/183692
