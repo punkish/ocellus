@@ -65,7 +65,7 @@ async function css() {
             `${source}/css/media-queries.css`
         ])
         // .pipe(sourcemaps.init())
-        // .pipe(cleanCSS({compatibility: 'ie8'}))
+        .pipe(cleanCSS({compatibility: 'ie8'}))
         // .pipe(sourcemaps.write('.'))
 
         // https://stackoverflow.com/a/23177650/183692

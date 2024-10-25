@@ -587,63 +587,121 @@ const init = () => {
 //     delay: 150
 // });
 
-function journalTitleAc() {
-    const ac = new autoComplete({
-        selector: 'input[name="as-journalTitle"]',
-        minChars: 2,
+// function journalTitleAc() {
+//     const ac = new autoComplete({
+//         selector: 'input[name="as-journalTitle"]',
+//         minChars: 2,
+//         source: async function(term, suggest) {
+//             term = term.toLowerCase();
+//             const choices = await getJournalTitles();
+//             const matches = [];
+
+//             for (let i=0; i < choices.length; i++) {
+
+//                 if (~choices[i].journalTitle.toLowerCase().indexOf(term)) {
+//                     matches.push({
+//                         journals_id: choices[i].journals_id,
+//                         journalTitle: choices[i].journalTitle
+//                     });
+//                 }
+
+//                 // if (~choices[i][val].toLowerCase().indexOf(term)) {
+//                 //     matches.push({
+//                 //         key: choices[i][key],
+//                 //         val: choices[i][val]
+//                 //     });
+//                 // }
+//             }
+            
+//             suggest(matches);
+//         },
+//         renderItem: function (item, search){
+            
+//             // escape special characters
+//             search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+//             const re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+//             const disp = item.journalTitle.replace(re, "<b>$1</b>");
+//             return `<div class="autocomplete-suggestion" data-id="${item.journalTitle}" data-val="${item.journalTitle}">${disp}</div>`;
+//         },
+//         onSelect: function(e, term, item){
+//             document.querySelector('input[name="as-journalTitle"]').value = item.getAttribute('data-id');
+//         }
+//     });
+// }
+
+// function collectionCodeAc() {
+//     const ac = new autoComplete({
+//         selector: 'input[name="as-collectionCode"]',
+//         minChars: 2,
+//         source: async function(term, suggest) {
+//             term = term.toLowerCase();
+//             const choices = await getCollectionCodes();
+//             const matches = [];
+
+//             for (let i=0; i < choices.length; i++) {
+                
+//                 if (~choices[i].collectionCode.toLowerCase().indexOf(term)) {
+//                     matches.push({
+//                         collectionCode: choices[i].collectionCode,
+//                         name: choices[i].name
+//                     });
+//                 }
+
+//             }
+            
+//             suggest(matches);
+//         },
+//         renderItem: function (item, search){
+            
+//             // escape special characters
+//             search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+//             const re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+//             let disp = item.collectionCode.replace(re, "<b>$1</b>");
+
+//             if (item.name) {
+//                 disp += ` (${item.name})`;
+//             }
+
+//             return `<div class="autocomplete-suggestion" data-id="${item.collectionCode}">${disp}</div>`;
+//         },
+//         onSelect: function(e, term, item){
+//             document.querySelector('input[name="as-collectionCode"]').value = item.getAttribute('data-id');
+//         }
+        
+//     });
+// }
+
+function makeAutoComplete({ selector, minChars, cb, disp, val }) {
+    return new autoComplete({
+
+        // 'selector': The input field to which the autoComplete will be 
+        //      attached
+        selector,
+
+        // 'minChars': The number of characters typed to trigger the 
+        //      autoComplete
+        minChars,
+
+        // 'term' is what is typed by the user
+        // 'suggest' is a callback that takes an array of results matching 
+        //      the 'term' and constructs a widget of suggestions
+        // 'cb' feeds the choices
         source: async function(term, suggest) {
             term = term.toLowerCase();
-            const choices = await getJournalTitles();
-            const matches = [];
+            const choices = await cb();
 
-            for (let i=0; i < choices.length; i++) {
-
-                if (~choices[i].journalTitle.toLowerCase().indexOf(term)) {
-                    matches.push({
-                        journals_id: choices[i].journals_id,
-                        journalTitle: choices[i].journalTitle
-                    });
-                }
-
-                // if (~choices[i][val].toLowerCase().indexOf(term)) {
-                //     matches.push({
-                //         key: choices[i][key],
-                //         val: choices[i][val]
-                //     });
-                // }
-            }
-            
-            suggest(matches);
-        },
-        renderItem: function (item, search){
-            
-            // escape special characters
-            search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-            const re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-            const disp = item.journalTitle.replace(re, "<b>$1</b>");
-            return `<div class="autocomplete-suggestion" data-id="${item.journalTitle}" data-val="${item.journalTitle}">${disp}</div>`;
-        },
-        onSelect: function(e, term, item){
-            document.querySelector('input[name="as-journalTitle"]').value = item.getAttribute('data-id');
-        }
-    });
-}
-
-function collectionCodeAc() {
-    const ac = new autoComplete({
-        selector: 'input[name="as-collectionCode"]',
-        minChars: 2,
-        source: async function(term, suggest) {
-            term = term.toLowerCase();
-            const choices = await getCollectionCodes();
+            // 'matches' is an array of object { disp, val }
+            //      'disp' is visible to the user
+            //      'val' is sent back in the form
+            //      'disp' and 'val' can be the same
             const matches = [];
 
             for (let i=0; i < choices.length; i++) {
                 
-                if (~choices[i].collectionCode.toLowerCase().indexOf(term)) {
+                if (~choices[i][disp].toLowerCase().indexOf(term)) {
                     matches.push({
-                        collectionCode: choices[i].collectionCode,
-                        name: choices[i].name
+                        disp: choices[i][disp],
+                        val: choices[i][val]
                     });
                 }
 
@@ -656,16 +714,11 @@ function collectionCodeAc() {
             // escape special characters
             search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
             const re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-            let disp = item.collectionCode.replace(re, "<b>$1</b>");
-
-            if (item.name) {
-                disp += ` (${item.name})`;
-            }
-
-            return `<div class="autocomplete-suggestion" data-id="${item.collectionCode}">${disp}</div>`;
+            const disp = item.disp.replace(re, "<b>$1</b>");
+            return `<div class="autocomplete-suggestion" data-id="${item.val}">${disp}</div>`;
         },
         onSelect: function(e, term, item){
-            document.querySelector('input[name="as-collectionCode"]').value = item.getAttribute('data-id');
+            document.querySelector(selector).value = item.getAttribute('data-id');
         }
         
     });
@@ -676,7 +729,8 @@ export {
     //geoSearchWidget, 
     getJournalTitles, 
     getCollectionCodes, 
-    journalTitleAc,
-    collectionCodeAc
+    // journalTitleAc,
+    // collectionCodeAc,
+    makeAutoComplete
     //getBins 
 }

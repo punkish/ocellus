@@ -4,10 +4,11 @@ import { updatePlaceHolder, qs2form, form2qs } from './utils.js';
 import { getResource } from './querier.js';
 import { addListeners, showTooltip, hideTooltip } from './listeners.js';
 import { 
-    // getJournalTitles, 
-    // getCollectionCodes, 
-    journalTitleAc,
-    collectionCodeAc
+    getJournalTitles, 
+    getCollectionCodes, 
+    // journalTitleAc,
+    // collectionCodeAc,
+    makeAutoComplete
 } from './adv-search.js';
 import { initializeMap } from './mapping/index.js';
 
@@ -48,8 +49,23 @@ function init() {
         }
     
         addListeners();
-        journalTitleAc();
-        collectionCodeAc();
+        // journalTitleAc();
+        // collectionCodeAc();
+        makeAutoComplete({
+            selector: 'input[name="as-journalTitle"]',
+            minChars: 2, 
+            cb: getJournalTitles, 
+            disp: 'journalTitle', 
+            val: 'journalTitle'
+        });
+
+        makeAutoComplete({
+            selector: 'input[name="as-collectionCode"]',
+            minChars: 2, 
+            cb: getCollectionCodes, 
+            disp: 'collectionCode', 
+            val: 'collectionCode'
+        });
     }
 }
 
