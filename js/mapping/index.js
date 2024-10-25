@@ -263,15 +263,15 @@ async function getBaseLayer({ baseLayerSource, map }) {
 }
 
 async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
-    const map = globals.maps[mapContainer];
+    //const map = globals.maps[mapContainer];
 
-    if (map) {
-        if (mapContainer === 'map') {
-            $('#not-map').classList.add('hidden');
-            $('#map').classList.remove('hidden');
-        }
-    }
-    else {
+    // if (map) {
+    //     if (mapContainer === 'map') {
+    //         $('#not-map').classList.add('hidden');
+    //         $('#map').classList.remove('hidden');
+    //     }
+    // }
+    // else {
         const { zoom, lat, lng, treatmentId } = getMapLocation({ 
             zoom: 5, 
             lat: 0, 
@@ -289,12 +289,14 @@ async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
         const northEast = {lat: 61.60639637138628, lng: 131.48437500000003};const southWest = {lat: -31.952162238024975, lng: -137.10937500000003};
         const bounds = L.latLngBounds(northEast, southWest);
 
-        L.easyButton( '.', function(){
-            map.fitBounds(bounds);
-        }).addTo(map);
+        if (mapContainer === 'map') {
+            L.easyButton( '.', function(){
+                map.fitBounds(bounds);
+            }).addTo(map);
+        }
 
         setupMap(map);
-        globals.maps[mapContainer] = map;
+        //globals.maps[mapContainer] = map;
         
         // turn off the Ukrainian flag emoji
         map.attributionControl.setPrefix('');
@@ -335,7 +337,7 @@ async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
         //     }
             
         // }
-    }
+    //}
 }
 
 async function switchLayers(map, mapLayers, treatmentId) {

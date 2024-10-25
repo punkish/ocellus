@@ -311,7 +311,7 @@ const form2qs = () => {
             'authorityName',
             'articleTitle',
             'journalTitle',
-            'journals_id',
+            //'journals_id',
             'collectionCode'
         ];
 

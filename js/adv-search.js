@@ -188,7 +188,7 @@ async function getCollectionCodes() {
         return globals.cache.collectionCodes;
     }
     else {
-        const url = `${globals.server}/collectioncodes?cols=collectionCode&cols=name&size=4300`;
+        const url = `${globals.uri.zenodeo}/collectioncodes?cols=collectionCode&cols=name&size=4300`;
         const response = await fetch(url);
     
         // if HTTP-status is 200-299
@@ -221,7 +221,7 @@ async function getJournalTitles() {
         return globals.cache.journals;
     }
     else {
-        const url = `${globals.server}/journals?size=1100&sortby=journalTitle:asc`;
+        const url = `${globals.uri.zenodeo}/journals?size=1100&sortby=journalTitle:asc`;
         const response = await fetch(url);
     
         // if HTTP-status is 200-299
@@ -251,7 +251,7 @@ async function getJournalTitles() {
 
 async function getMaterialCitations() {
     
-        const url = `${globals.server}/materialcitations?validGeo=true&cols=latitude&cols=longitude&size=520000`;
+        const url = `${globals.uri.zenodeo}/materialcitations?validGeo=true&cols=latitude&cols=longitude&size=520000`;
         const response = await fetch(url);
     
         // if HTTP-status is 200-299
@@ -274,7 +274,7 @@ async function getBins(binLevel) {
         return globals.cache.bins[binLevel];
     }
     else {
-        const url = `${globals.server}/bins/${binLevel}`;
+        const url = `${globals.uri.zenodeo}/bins/${binLevel}`;
         const response = await fetch(url);
     
         // if HTTP-status is 200-299
@@ -597,6 +597,7 @@ function journalTitleAc() {
             const matches = [];
 
             for (let i=0; i < choices.length; i++) {
+
                 if (~choices[i].journalTitle.toLowerCase().indexOf(term)) {
                     matches.push({
                         journals_id: choices[i].journals_id,
@@ -620,10 +621,10 @@ function journalTitleAc() {
             search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
             const re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
             const disp = item.journalTitle.replace(re, "<b>$1</b>");
-            return `<div class="autocomplete-suggestion" data-id="${item.journals_id}" data-val="${item.journalTitle}">${disp}</div>`;
+            return `<div class="autocomplete-suggestion" data-id="${item.journalTitle}" data-val="${item.journalTitle}">${disp}</div>`;
         },
         onSelect: function(e, term, item){
-            document.querySelector(keySelector).value = item.getAttribute('data-id');
+            document.querySelector('input[name="as-journalTitle"]').value = item.getAttribute('data-id');
         }
     });
 }

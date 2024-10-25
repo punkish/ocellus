@@ -85,7 +85,7 @@ const globals = {
             'collectionCode',
             'status',
             'journalTitle',
-            'journals_id',
+            //'journals_id',
             'journalYear',
             'kingdom',
             'phylum',

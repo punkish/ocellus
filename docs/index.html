@@ -9,7 +9,7 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Fri Oct 25 2024 13:42:29 GMT+0200 (Central European Summer Time)">
+    <meta name="date" content="Fri Oct 25 2024 16:32:06 GMT+0200 (Central European Summer Time)">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4</title>
@@ -36,7 +36,7 @@
     
     <link rel="stylesheet" href="./css/libs-combined.css">
 
-    <link rel="stylesheet" href="./css/ocellus-1729856549183.css">
+    <link rel="stylesheet" href="./css/ocellus-1729866726941.css">
 </head>
 <body>
     <header>
@@ -119,59 +119,7 @@
             -->
             
             <div id="bottom-menu">
-                <div id="quicksearch">              
-                    <!-- <a class="quicksearch" href="?family=Formicidae" 
-                        aria-label="find ants" data-pop="bottom" 
-                        data-pop-no-shadow 
-                        data-pop-arrow><img src="img/icon-ant.svg"></a> 
-                    <a class="quicksearch" href="?class=Actinopterygii" 
-                        aria-label="find fishes" data-pop="bottom" 
-                        data-pop-no-shadow 
-                        data-pop-arrow><img src="img/icon-fish.svg"></a>
-                    <a class="quicksearch" href="?class=Arachnida" 
-                        aria-label="find spiders" data-pop="bottom" 
-                        data-pop-no-shadow 
-                        data-pop-arrow><img src="img/icon-spider.svg"></a>
-                    <a class="quicksearch" href="?class=Malacostraca" 
-                        aria-label="find shrimp, crabs and other crustacea" 
-                        data-pop="bottom" data-pop-no-shadow 
-                        data-pop-arrow><img src="img/icon-shrimp.svg"></a>
-                    <a class="quicksearch" href="?order=Coleoptera" 
-                        aria-label="find beetles" data-pop="bottom" 
-                        data-pop-no-shadow 
-                        data-pop-arrow><img src="img/icon-beetle.svg"></a>
-                    <a id="search-help" href="#" aria-label="more examples" 
-                        data-pop="bottom" data-pop-no-shadow 
-                        data-pop-arrow><img src="img/icon-more-examples.svg"></a> -->
-                        
-                    <!-- <button class="quicksearch bg-ant" 
-                        aria-label="find ants" data-pop="bottom" 
-                        data-pop-no-shadow 
-                        data-pop-arrow></button>
-                    <button class="quicksearch bg-fish"
-                        aria-label="find fishes" data-pop="bottom" 
-                        data-pop-no-shadow 
-                        data-pop-arrow></button>
-                    <button class="quicksearch bg-spider"
-                        aria-label="find spiders" data-pop="bottom" 
-                        data-pop-no-shadow 
-                        data-pop-arrow></button>
-                    <button class="quicksearch bg-shrimp"
-                        aria-label="find shrimp, crabs and other crustacea" 
-                        data-pop="bottom" data-pop-no-shadow 
-                        data-pop-arrow></button>
-                    <button class="quicksearch bg-beetle"
-                        aria-label="find beetles" data-pop="bottom" 
-                        data-pop-no-shadow 
-                        data-pop-arrow></button>
-                    <button class="quicksearch bg-more"
-                        aria-label="more examples" 
-                        data-pop="bottom" data-pop-no-shadow 
-                        data-pop-arrow></button>
-                    <button class="quicksearch bg-map"
-                        aria-label="ocellus maps" 
-                        data-pop="bottom" data-pop-no-shadow 
-                        data-pop-arrow></button> -->
+                <div id="quicksearch">
                     <a  href="?family=Formicidae"
                         class="quicksearch bg-ant" 
                         aria-label="find ants" data-pop="bottom" 
@@ -212,7 +160,8 @@
                 </div>
 
                 <div id="toggle-search" class="toggle-container"
-                    aria-label="toggle between simple and advanced search" data-pop="left" data-pop-no-shadow data-pop-arrow>
+                    aria-label="toggle between simple and advanced search" 
+                    data-pop="left" data-pop-no-shadow data-pop-arrow>
                     <label id="toggle5" class="toggle">
                         <input name="searchtype" class="toggle-checkbox" 
                             type="checkbox" value="advSearch">
@@ -303,7 +252,7 @@
 
                 <!-- journalTitle/journals_id filled by autocomplete -->
                 <input name="as-journalTitle" id="as-journalTitle" type="text" class="fullwidth" placeholder="Journal Title">
-                <input name="as-journals_id" id="as-journals_id" type="text">
+                <!-- <input name="as-journals_id" id="as-journals_id" type="hidden"> -->
 
                 <select name="as-journalYear" id="as-journalYear" class="fullwidth">
                     <option value="">Journal Year…</option>
@@ -421,7 +370,6 @@
 
         <div id="throbber" class="nothrob"></div>
     </header>
-    
 
     <main>
         <section id="images">
@@ -498,7 +446,7 @@
     <script src="https://unpkg.com/h3-js"></script>
 
     <script type="module">
-        import { init, showTooltip, hideTooltip } from './js/ocellus-1729856549183.js';
+        import { init, showTooltip, hideTooltip } from './js/ocellus-1729866726941.js';
         window.showTooltip = showTooltip;
         window.hideTooltip = hideTooltip;
         const SimpleLightbox = window.SimpleLightbox;
