@@ -281,11 +281,14 @@ async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
             preferCanvas: true,
             //renderer: L.canvas()
         };
-
         const map = L.map(mapContainer, mapOptions).setView(
             { lat, lng }, 
             zoom
         );
+        L.easyButton( '<img src="/img/world.webp" width="40">', function(){
+            map.fitWorld();
+        }).addTo(map);
+
         setupMap(map);
         globals.maps[mapContainer] = map;
         
@@ -333,6 +336,8 @@ async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
 
 async function switchLayers(map, mapLayers, treatmentId) {
     const zoom = map.getZoom();
+    //const bounds = map.getBounds();
+    //console.log(bounds);
     
     if (zoom <= 5) {
         drawH3(map, mapLayers);

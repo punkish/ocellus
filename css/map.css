@@ -90,3 +90,8 @@ hr.style-eight:after {
         visibility: hidden;
     }
 } */
+
+/* override easy button style for custom leaflet control */
+.leaflet-touch .leaflet-bar button {
+    line-height: 36px;
+}
