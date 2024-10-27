@@ -5,6 +5,7 @@ const cleanCSS = require('gulp-clean-css');
 const concat = require('gulp-concat');
 const { rollup } = require('rollup');
 const { terser } = require('rollup-plugin-terser');
+const replace = require('@rollup/plugin-replace');
 const rm = require('gulp-rm');
 const wrap = require('gulp-wrap');
 
@@ -12,9 +13,7 @@ const d = new Date();
 const dsecs = d.getTime();
 const source = '.';
 const destination = './docs';
-
-const sep1 = '/*************************/';
-const sep2 = '/*** <%= file.relative %>  ***/';
+const sep = '/*** <%= file.relative %>  ***/';
 
 // remove old css and js
 async function cleanup() {
@@ -77,7 +76,7 @@ async function css() {
 
         // https://stackoverflow.com/a/23177650/183692
         // add file name as a comment before its content
-        .pipe(wrap(`${sep2}\n<%= contents %>`))
+        .pipe(wrap(`${sep}\n<%= contents %>`))
         .pipe(concat(`ocellus-${dsecs}.css`))
         .pipe(dest(`${destination}/css`))
 }
@@ -97,7 +96,7 @@ async function cssLibs() {
 
         // https://stackoverflow.com/a/23177650/183692
         // add file name as a comment before its content
-        .pipe(wrap(`${sep2}\n<%= contents %>`))
+        .pipe(wrap(`${sep}\n<%= contents %>`))
         .pipe(concat(`libs-combined.css`))
         .pipe(dest(`${destination}/css`))
 }
@@ -114,6 +113,15 @@ async function js() {
         file: `${destination}/js/ocellus-${dsecs}.js`,
         format: "esm",
         plugins: [
+            replace({
+                values: {
+                    'INFO': 'ERROR',
+                    'http://localhost:3010/v3': 'https://test.zenodeo.org/v3',
+                    'http://localhost:3000'   : 'https://maps.zenodeo.org',
+                    //__buildDate__: () => JSON.stringify(new Date()),
+                    //__buildVersion: 15
+                }
+            }),
             terser({
                 format: {
                     preamble: `/* generated: ${d} */`
@@ -137,7 +145,7 @@ async function jsLibs() {
 
     // https://stackoverflow.com/a/23177650/183692
     // add file name as a comment before its content
-    .pipe(wrap(`${sep1}\n${sep2}\n<%= contents %>`))
+    .pipe(wrap(`${sep}\n<%= contents %>`))
     .pipe(concat(`libs-combined.js`))
     .pipe(dest(`${destination}/js`))
 }
