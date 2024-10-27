@@ -12,118 +12,8 @@ import {
     toggleAdvSearch,
     lightUpTheBox
 } from './listeners.js';
+import { makeImage, makeTreatment } from './render-figures.js';
 
-const makeTreatment = ({ figureSize, rec }) => {
-    let zenodoRec = '';
-    let zenodoLink = '';
-
-    if (rec.zenodoRec) {
-        //zenodoRec = `<a class="transition-050">Zenodo ID: ${rec.zenodoRec}</a>`;
-        zenodoLink = `<a href="${globals.uri.zenodo}/records/${rec.zenodoRec}" target="_blank" title="more on Zenodo" alt="more on Zenodo"><img class="zenodoLink" src="img/zenodo-gradient-round.svg" width="50"></a>`;
-    }
-
-    const figcaptionClass = figureSize === 250 
-        ? 'visible' 
-        : 'noblock';
-
-    const figureClass = `figure-${figureSize} ` + (rec.treatmentId 
-        ? 'tb' 
-        : '');
-
-    const treatmentDOI = rec.treatmentDOI
-        ? `<a href="https://dx.doi.org/${rec.treatmentDOI}">${rec.treatmentDOI}</a>`
-        : '';
-
-    let citation = '';
-
-    if (rec.articleTitle) {
-        citation += `<span class="articleTitle">${rec.articleTitle}</span>`;
-    }
-
-    if (rec.articleAuthor) {
-        citation += ` by <span class="articleAuthor">${rec.articleAuthor}</span>`;
-    }
-
-    if (rec.journalTitle) {
-        citation += ` in <span class="journalTitle">${rec.journalTitle}</span>`;
-    }
-
-    if (treatmentDOI) {
-        citation += `. ${treatmentDOI}`;
-    }
-
-    return `<figure class="${figureClass}">
-    <p class="treatmentTitle">${rec.treatmentTitle}</p>
-    <p class="citation">${citation}</p>
-    <figcaption class="${figcaptionClass}">
-        <!-- ${zenodoRec} -->
-        <div>
-            ${zenodoLink} <a href="${globals.uri.treatmentBank}/${rec.treatmentId}" target="_blank" title="more on TreatmentBank" alt="more on TreatmentBank"><img class="tbLink" src="img/treatmentBankLogo.png" width="100"></a>
-        </div>
-    </figcaption>
-</figure>`
-}
-
-const makeImage = ({ figureSize, rec }) => {
-    const zenodoLink = rec.zenodoRec
-        ? `<img src="img/zenodo-gradient-35.png" width="35" height="14"> <a href="${globals.uri.zenodo}/records/${rec.zenodoRec}" target="_blank">more on Zenodo</a>`
-        : '';
-
-    //let treatmentReveal = '';
-    //treatmentReveal = `<div class="treatmentId reveal" data-reveal="${rec.treatmentId}">T</div>`;
-    const treatmentLink = `<img src="img/treatmentBankLogo.png" width="35" height="14"> <a href="${globals.uri.treatmentBank}/${rec.treatmentId}" target="_blank">more on TreatmentBank</a>`;
-
-    const figcaptionClass = figureSize === 250 
-        ? 'visible' 
-        : 'noblock';
-
-    const figureClass = `figure-${figureSize}` + (rec.treatmentId ? ' tb' : '');
-
-    // <div class="switches"><div class="close"></div></div>
-    const retryGetImage = `this.onerror=null; setTimeout(() => { this.src='${rec.uri}' }, 1000);`;
-    const resizeBox = (rec.loc || rec.convexHull)
-        ? `this.parentNode.parentNode.parentNode.parentNode.style.height=this.height+150+'px'`
-        : '';
-
-    // <picture>
-    // <source srcset="${rec.uri}" 
-    //     data-src="${rec.uri}" 
-    //     class="lazyload" 
-    //     data-recid="${rec.treatmentId}" 
-    //     onerror="${retryGetImage}" 
-    //     onload="${resizeBox}" 
-    //     media="(orientation: portrait)" />
-    // <img src="img/bug.gif" width="${rec.figureSize}" 
-    //     data-src="${rec.uri}" 
-    //     class="lazyload" 
-    //     data-recid="${rec.treatmentId}" 
-    //     onerror="${retryGetImage}"
-    //     onload="${resizeBox}">
-    // </picture>
-
-    return `<figure class="${figureClass}">
-    <a class="zen" href="${rec.fullImage}">
-
-            <img src="img/bug.gif" width="${rec.figureSize}" 
-                data-src="${rec.uri}" 
-                class="lazyload" 
-                data-recid="${rec.treatmentId}" 
-                onerror="${retryGetImage}"
-                onload="${resizeBox}">
-        
-    </a>
-    <figcaption class="${figcaptionClass}">
-        <details>
-            <summary class="figTitle" data-title="${rec.treatmentTitle}">
-                ${rec.treatmentTitle}
-            </summary>
-            <p>${rec.captionText}</p>
-            ${treatmentLink}<br>
-            ${zenodoLink}
-        </details>
-    </figcaption>
-</figure>`;
-}
 
 function makeSlider({ resource, figureSize, rec }) {
     const figure = resource === 'images'
@@ -261,10 +151,6 @@ const renderSlides = (slides, qs, prev, next) => {
         $('#grid-images').innerHTML = '';
     }
 }
-
-// const renderTreatments = () => {
-
-// }
 
 const renderPager = (qs, prev, next) => {
     log.info('- renderPager()');

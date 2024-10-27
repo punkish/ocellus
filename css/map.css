@@ -59,6 +59,11 @@ https://github.com/Leaflet/Leaflet/issues/4686
     margin: 0 0 10px 0;
     font-size: 150%;
 }
+#leaflet-slidebar main figure {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
 
 /* Glyph, by Harry Roberts */
 /* https://css-tricks.com/examples/hrs/ */

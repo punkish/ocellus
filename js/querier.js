@@ -12,13 +12,7 @@ const getCountOfResource = async (resource, getYearlyCounts) => {
             url += '&yearlyCounts=true';
         }
         
-        const fetchOpts = {
-            method: "GET",
-            headers: new Headers({
-                "ngrok-skip-browser-warning": true,
-            }),
-        }
-        const response = await fetch(url, fetchOpts);
+        const response = await fetch(url, globals.fetchOpts);
         
         // if HTTP-status is 200-299
         if (response.ok) {
@@ -268,7 +262,7 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                     record.treatments_id = r.treatments_id;
                     record.images_id = r.images_id;
                     record.treatmentTitle = r.treatmentTitle;
-                    record.zenodoRec = r.zenodoDep;
+                    record.zenodoDep = r.zenodoDep;
                     record.figureSize = figureSize;
 
                     // Most figures are on Zenodo, so adjust their url 
@@ -287,12 +281,12 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                             // record.uri = `${globals.zenodoUri}/${id}/thumb${figureSize}`;
                             // https://zenodo.org/api/iiif/record:6758444:figure.png/full/250,/0/default.png
                             record.uri = `https://zenodo.org/api/iiif/record:${id}:figure.png/full/250,/0/default.jpg`;
-                            record.img = `${globals.zenodoUri}/${id}/thumb${figureSize}`;
+                            record.img = `${globals.uri.zenodo}/${id}/thumb${figureSize}`;
 
                             // record.fullImage = `${globals.zenodoUri}/${id}/thumb1200`;
                             // https://zenodo.org/api/iiif/record:6758444:figure.png/full/1200,/0/default.png
                             record.fullImage = `https://zenodo.org/api/iiif/record:${id}:figure.png/full/^1200,/0/default.jpg`;
-                            record.fullImg = `${globals.zenodoUri}/${id}/thumb1200`;
+                            record.fullImg = `${globals.uri.zenodo}/${id}/thumb1200`;
                         }
                     }
 
@@ -325,7 +319,7 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                     record.treatmentId = r.treatmentId;
                     record.treatments_id = r.treatments_id;
                     record.treatmentTitle = r.treatmentTitle;
-                    record.zenodoRec = r.zenodoDep;
+                    record.zenodoDep = r.zenodoDep;
                     record.figureSize = figureSize;
                     record.journalTitle = r.journalTitle;
                     record.treatmentDOI = r.treatmentDOI;
@@ -359,18 +353,6 @@ const getResults = async ({ resource, queryString, figureSize }) => {
         alert("HTTP-Error: " + response.status);
     }
 }
-
-// const getImagesFromZenodeo = () => {
-
-// }
-
-// const getImagesFromZenodo = () => {
-
-// }
-
-// const getTreatmentsFromZenodeo = () => {
-
-// }
 
 export {
     getCountOfResource,

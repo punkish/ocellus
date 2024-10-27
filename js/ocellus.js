@@ -4,12 +4,9 @@ import { updatePlaceHolder, qs2form, form2qs } from './utils.js';
 import { getResource } from './querier.js';
 import { addListeners, showTooltip, hideTooltip } from './listeners.js';
 import { initAdvSearch } from './adv-search.js';
-import { globals } from './globals.js';
 import { initializeMap } from './mapping/index.js';
-import { setEnv } from './utils.js';
 
 function init() {
-    setEnv(globals);
     const loc = new URL(location);
 
     if (loc.search) {

@@ -2,7 +2,6 @@
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
 import { initializeMap } from './mapping/index.js';
-import { setEnv } from './utils.js';
 
 const toggleModal = (e) => {
     const t = new URL(e.target.href).hash;
@@ -26,7 +25,6 @@ const toggleModal = (e) => {
 }
 
 function init() {
-    setEnv(globals);
     $$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
     initializeMap({ 
         mapContainer: 'map', 

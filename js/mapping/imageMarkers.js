@@ -1,7 +1,7 @@
 import { $ } from "../base.js";
 import { globals } from "../globals.js";
 import { Slidebar } from "../../libs/leaflet-slidebar/src/leaflet.slidebar.js";
-
+import { makeImage, makeTreatment } from "../render-figures.js";
 /**
  * retrieves treatments within the provided bounds
  */
@@ -11,7 +11,7 @@ async function getImages(bounds) {
     const max_lat = bounds.getNorthEast().lat;
     const max_lng = bounds.getNorthEast().lng;
 
-    const url = `${globals.uri.zenodeo}/images?geolocation=within(min_lat:${min_lat},min_lng:${min_lng},max_lat:${max_lat},max_lng:${max_lng})&cols=treatmentId&cols=treatmentTitle&cols=latitude&cols=longitude&size=5000`;
+    const url = `${globals.uri.zenodeo}/images?geolocation=within(min_lat:${min_lat},min_lng:${min_lng},max_lat:${max_lat},max_lng:${max_lng})&cols=treatmentId&cols=latitude&cols=longitude&size=5000`;
     const response = await fetch(url, globals.fetchOpts);
     
     // if HTTP-status is 200-299
@@ -201,59 +201,47 @@ async function getImageInfo (image) {
 
     if (image) {
         const treatmentId = image.treatmentId;
-        //const url = `${globals.uri.zenodeo}/images?treatmentId=${treatmentId}&cols=httpUri&cols=caption`;
-        const url = `${globals.uri.zenodeo}/images?id=${image.images_id}&cols=httpUri&cols=caption`;
-        let content = `<h3>${image.treatmentTitle}</h3>`;
+        const url = `${globals.uri.zenodeo}/images?id=${image.images_id}&cols=treatmentId&cols=treatmentTitle&cols=zenodoDep&cols=httpUri&cols=caption`;
+
         const response = await fetch(url, globals.fetchOpts);
 
         if (response.ok) {
             const res = await response.json();
-            const rec = res.item.result.records[0];
-            const tbLink = `<a href="${globals.uri.treatmentBank}/${treatmentId}" target="_blank">more on TB</a>`;
+            const r = res.item.result.records[0];
+            const record = {
+                zenodoDep: r.zenodoDep,
+                treatmentId: r.treatmentId,
+                treatmentTitle: r.treatmentTitle,
+                captionText: r.captionText,
+                loc: undefined,
+                convexHull: undefined
+            };
 
-            if (rec.httpUri) {
+            const id = r.httpUri.split('/')[4];
 
-                // Most figures are on Zenodo, but some are on Pensoft,
-                // so the url has to be adjusted accordingly
-                // 
-                const size = 250;
-                const id = rec.httpUri.split('/')[4];
-
-                let uri;
-                
-                if (rec.httpUri.indexOf('zenodo') > -1) {
-
-                    if (rec.httpUri.indexOf('.svg') > -1) {
-
-                        // If it is an svg, apologize with "no preview"
-                        uri = '/img/kein-preview.png';
-                        //fullImage = '/img/kein-preview.png';
-                    }
-                    else {
-
-                        // if the figure is on zenodo, show their thumbnails  
-                        uri = `${globals.uri.zenodo}/api/iiif/record:${id}:figure.png/full/250,/0/default.jpg`;
-                        // fullImage = `${globals.uri.zenodo}/api/iiif/record:${id}:figure.png/full/^1200,/0/default.jpg`;
-                    }
+            // if the figure is on zenodo, show their thumbnails unless 
+            // it is an svg, in which case, apologize with "no preview"
+            if (r.httpUri.indexOf('zenodo') > -1) {
+                if (r.httpUri.indexOf('.svg') > -1) {
+                    record.uri = '/img/kein-preview.png';
+                    record.fullImage = '/img/kein-preview.png';
                 }
-
-                // but some are on Pensoft, so use the uri directly
                 else {
-                    uri = `${rec.httpUri}/singlefigAOF/`;
-                    //fullImage = rec.httpUri;
+                    record.uri = `https://zenodo.org/api/iiif/record:${id}:figure.png/full/250,/0/default.jpg`;
+
+                    record.fullImage = `https://zenodo.org/api/iiif/record:${id}:figure.png/full/^1200,/0/default.jpg`;
+                    record.fullImg = `${globals.zenodoUri}/${id}/thumb1200`;
                 }
-                
-                content += `
-                <figure class="figure-${size}">
-                    <img src="../img/bug.gif" width="${size}" data-src="${uri}" 
-                        class="lazyload" data-recid="${id}">
-                    <figcaption>${rec.captionText} ${tbLink}</figcaption>
-                </figure>
-                <hr class="style-eight">`;
             }
+
+            // but some are on Pensoft, so use the uri directly
             else {
-                content += tbLink;
+                record.uri = `${r.httpUri}/singlefigAOF/`;
+                record.fullImage = r.httpUri;
             }
+            
+
+            const content = makeImage({ figureSize: 250, rec: record, target: 'slidebar' });
 
             return content;
         }

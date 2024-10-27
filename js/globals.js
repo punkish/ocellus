@@ -26,7 +26,7 @@ export const globals = {
         },
         journals: null,
         collectionCodes: null,
-        bins: {}
+        bins: null
     },
 
     figureSize:  {

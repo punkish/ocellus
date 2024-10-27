@@ -5,47 +5,6 @@ import { drawImageMarkers } from "./imageMarkers.js";
 import { globals } from "../globals.js";
 import { getMapLocation, setupMap } from '../leaflet-hash.js';
 
-function makeCloseBtn(map) {
-    L.Control.CloseButton = L.Control.extend({
-        onAdd: function(map) {
-
-            // We add a close button to the map. The close button behaves 
-            // differently based on whether the map is in maps.html or in 
-            // index.html
-            const p = window.location.pathname.split('.').shift().substring(1);
-
-            // By default, if the map is in index.html, the close button hides 
-            // the map and makes the non-map section visible
-            let fn = (e) => {
-                $('#map').classList.add('hidden');
-                $('#not-map').classList.remove('hidden');
-            }
-
-            // However, if the map is in maps.html, the close button 
-            // redirects the browser to index.html
-            if (p === 'maps') {
-                fn = (e) => window.location.href = 'index.html';
-            }
-
-            const btn = L.DomUtil.create('button', 'close-btn');
-            //btn.innerHTML = 'ocellus';
-            btn.addEventListener('click', fn);
-
-            return btn;
-        },
-    
-        onRemove: function(map) {
-            // Nothing to do here
-        }
-    });
-    
-    L.control.closeButton = function(opts) {
-        return new L.Control.CloseButton(opts);
-    }
-    
-    L.control.closeButton({ position: 'topleft' }).addTo(map);
-}
-
 async function getBaseLayer({ baseLayerSource, map }) {
     const baseLayerOpts = {
         minZoom: 1,
@@ -262,45 +221,38 @@ async function getBaseLayer({ baseLayerSource, map }) {
     return baseLayer
 }
 
-async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
-    //const map = globals.maps[mapContainer];
+async function initializeMap({ mapContainer, baseLayerSource }) {
+    const mapOptions = { preferCanvas: true };
+    let northEast = {lat: 72, lng: 124};
+    let southWest = {lat: -60, lng: -124};
+    let zoom = 5;
+    let lat = 0;
+    let lng = 0;
+    let treatmentId;
 
-    // if (map) {
-    //     if (mapContainer === 'map') {
-    //         $('#not-map').classList.add('hidden');
-    //         $('#map').classList.remove('hidden');
-    //     }
-    // }
-    // else {
-        const { zoom, lat, lng, treatmentId } = getMapLocation({ 
-            zoom: 5, 
-            lat: 0, 
-            lng: 0
-        });
-        const mapOptions = {
-            preferCanvas: true,
-            //renderer: L.canvas()
-        };
-        const map = L.map(mapContainer, mapOptions).setView(
-            { lat, lng }, 
-            zoom
-        );
+    if (mapContainer === 'map') {
+        const ml = getMapLocation({ zoom, lat, lng });
+
+        zoom = ml.zoom;
+        lat = ml.lat;
+        lng = ml.lng;
+        treatmentId = ml.treatmentId;
+
+        northEast = {lat: 61.6, lng: 131.48};
+        southWest = {lat: -31.95, lng: -137.11};
+    }
+    
+    const bounds = L.latLngBounds(northEast, southWest);
+    const map = L.map(mapContainer, mapOptions).setView({ lat, lng }, zoom);
+
+    // turn off the Ukrainian flag emoji
+    map.attributionControl.setPrefix('');
         
-        const northEast = {lat: 61.60639637138628, lng: 131.48437500000003};const southWest = {lat: -31.952162238024975, lng: -137.10937500000003};
-        const bounds = L.latLngBounds(northEast, southWest);
-
-        if (mapContainer === 'map') {
-            L.easyButton( '.', function(){
-                map.fitBounds(bounds);
-            }).addTo(map);
-        }
-
+    L.easyButton('.', () => map.fitBounds(bounds)).addTo(map);
+        
+    if (mapContainer === 'map') {
         setupMap(map);
-        //globals.maps[mapContainer] = map;
         
-        // turn off the Ukrainian flag emoji
-        map.attributionControl.setPrefix('');
-
         map.on('moveend', async function(e) {
             await switchLayers(map, mapLayers);
         });
@@ -308,42 +260,27 @@ async function initializeMap({ mapContainer, baseLayerSource, drawControl }) {
         // We store all the layers here so we can reference them later
         const mapLayers = {
             baseLayer: getBaseLayer({ baseLayerSource, map }),
-            // drawControls,
-            // h3,
-            // h3info,
-            // imageMarkers,
-            // imageMarkerClusters,
-            // slidebar
-        }
-
-        if (drawControl) {
-            drawControlLayer(map, mapLayers);
         }
         
         await switchLayers(map, mapLayers, treatmentId);
-        //makeCloseBtn(map);
-        // map.on('locationfound', onLocationFound);
-        // map.on('locationerror', (e) => { alert(e.message) });
-        
-        // if (treatmentId) {
-        //     const [ treatments_id, images_id ] = treatmentId.split('-');
+    }
+    else if (mapContainer === 'mapSearch') {
+        map.on('moveend', async function(e) {
+            drawH3(map, mapLayers);
+        });
 
-        //     console.log(treatments_id)
-        //     const marker = mapLayers.imageMarkers.has(treatments_id);
-    
-        //     if (marker) {
-        //         mapLayers.imageMarkerClusters.zoomToShowLayer(marker);
-        //         marker.fireEvent('click');
-        //     }
-            
-        // }
-    //}
+        // We store all the layers here so we can reference them later
+        const mapLayers = {
+            baseLayer: getBaseLayer({ baseLayerSource, map }),
+        }
+
+        drawControlLayer(map, mapLayers);
+        drawH3(map, mapLayers);
+    }
 }
 
 async function switchLayers(map, mapLayers, treatmentId) {
     const zoom = map.getZoom();
-    // const bounds = map.getBounds();
-    // console.log(bounds);
     
     if (zoom <= 5) {
         drawH3(map, mapLayers);
@@ -352,17 +289,5 @@ async function switchLayers(map, mapLayers, treatmentId) {
         await drawImageMarkers(map, mapLayers, treatmentId);
     }
 }
-
-// function onLocationFound(e) {
-//     const radius = e.accuracy;
-//     const url = `${globals.server}/treatments?cols=latitude&cols=longitude&size=1000`;
-//     getTreatments(url);
-
-//     L.marker(e.latlng).addTo(map)
-//         .bindPopup(`You are within${radius}meters from this point`)
-//         .openPopup();
-
-//     L.circle(e.latlng, radius).addTo(map);
-// }
 
 export { initializeMap }
