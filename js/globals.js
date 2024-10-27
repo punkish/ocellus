@@ -1,3 +1,5 @@
+window.log.level = 'INFO';
+
 export const globals = {
     fetchOpts: {
         // method: "GET",
