@@ -1,4 +1,4 @@
-window.log.level = 'INFO';
+log.level = log.INFO;
 
 export const globals = {
     fetchOpts: {
@@ -17,6 +17,10 @@ export const globals = {
     
     cache: {
         images: {
+            yearlyCounts: false,
+            totals: false
+        },
+        "images-geo": {
             yearlyCounts: false,
             totals: false
         },

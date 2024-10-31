@@ -1,10 +1,10 @@
 import { globals } from "../globals.js";
-//import { makeInfoControl } from './index.js';
 import { 
     cellArea, 
     cellToBoundary,
     UNITS
-} from 'https://cdn.jsdelivr.net/npm/h3-js@4.1.0/+esm';
+} from '../../node_modules/h3-js/dist/h3-js.es.js';
+//'https://cdn.jsdelivr.net/npm/h3-js@4.1.0/+esm'
 
 async function getH3(resolution)  {
     const url = `${globals.uri.zenodeo}/bins/${resolution}`;

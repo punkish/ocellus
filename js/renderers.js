@@ -13,7 +13,7 @@ import {
     lightUpTheBox
 } from './listeners.js';
 import { makeImage, makeTreatment } from './render-figures.js';
-
+import { getResource, getCountOfResource } from './querier.js';
 
 function makeSlider({ resource, figureSize, rec }) {
     const figure = resource === 'images'
@@ -367,8 +367,23 @@ function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
     $('#charts-container summary').style.visibility = 'visible';
 }
 
+function svgFrag(i, height, sparkHeight, barWidth, tooltipText) {
+    return `
+    <g class="sparkBar" transform="translate(${i * barWidth},0)">
+        <rect width="${barWidth}" height="${height}" 
+            y="${sparkHeight - height}"
+            onmouseover="showTooltip(evt, '${tooltipText}');"
+            onmouseout="hideTooltip();"></rect>
+    </g>`;
+}
+
 // https://css-tricks.com/how-to-make-charts-with-svg/
-const renderYearlyCountsSparkline = (resource, yearlyCounts) => {
+async function renderYearlyCountsSparkline(resource, validGeo = false) {
+    const getYearlyCounts = true;
+    const yearlyCounts = await getCountOfResource(
+        resource, getYearlyCounts, validGeo
+    );
+
     let {
         images,
         treatments,
@@ -382,56 +397,52 @@ const renderYearlyCountsSparkline = (resource, yearlyCounts) => {
         ? images
         : treatments;
 
-    $('#q').placeholder = `search ${resource}`;
-
     const barWidth = 3;
-    const className = 'bar';
     const numOfRects = yc.length;
     const sparkWidth = barWidth * numOfRects;
     const sparkHeight = 40;
-    const maxNum = Math.max(...yc);
+    //const maxNum = Math.max(...yc);
     const heightRatio = sparkHeight / totalCount;
     //const totalImages = numImg.reduce((partialSum, a) => partialSum + a, 0);
 
-    function svgFrag(i, className, height, sparkHeight, barWidth, year, count) {
-        return `<g class="${className}" transform="translate(${i * barWidth},0)">
-            <rect height="${height}" y="${sparkHeight - height}" width="${barWidth}" onmousemove="showTooltip(evt, '${year}: ${count} ${resource}');" onmouseout="hideTooltip();"></rect>
-        </g>`;
-    }
-
-    let spark = `<svg id="svgSpark" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="chart" height="${sparkHeight}" width="${sparkWidth}" aria-labelledby="title" role="img">`;
+    let svg = `<svg id="svgSpark" version="1.1" 
+        xmlns="http://www.w3.org/2000/svg" 
+        xmlns:xlink="http://www.w3.org/1999/xlink" 
+        class="sparkChart" 
+        height="${sparkHeight}" 
+        width="${sparkWidth}" 
+        aria-labelledby="title" 
+        role="img">`;
 
     for (let i = 0; i < numOfRects; i++) {
         const year = yc[i].year;
         const count = yc[i][`num_of_${resource}`];
+        const tooltipText = `${count} ${resource} from ${year}`;
         const height = count * heightRatio;
-        spark += svgFrag(i, className, height, sparkHeight, barWidth, year, count);
+        svg += svgFrag(i, height, sparkHeight, barWidth, tooltipText);
     }
 
-    spark += '</svg>';
+    svg += '</svg>';
 
-    const svg = document.querySelector('#sparkBox');
-    let html = spark;
-    //html += '<a href="#dashboard" class="modalToggle">';
+    const sparkChart = $('#sparkChart');
+    sparkChart.innerHTML = svg;
+    
+    let text = `<span>~${abbrevNum(totalCount)}</span> ${resource}, `;
+    text += (resource === 'images') 
+        ? `<span>~${abbrevNum(treatments)}</span> treatments, `
+        : `<span>~${abbrevNum(images)}</span> images, `;
+        text += `<span>~${abbrevNum(species)}</span> species, <span>~${abbrevNum(journals)}</span> journals`;
 
-    totalCount = Math.round(totalCount / 1000, 0);
-    treatments = Math.round(treatments / 1000, 0);
-    images = Math.round(images / 1000, 0);
-    species = Math.round(species / 1000, 0);
-    journals = Math.round(journals / 1000, 0);
+    const sparkText = $('#sparkText');
+    sparkText.innerHTML = text;
+}
 
-    if (resource === 'images') {
-        html += ` <span>~${totalCount}K</span> ${resource}, <span>~${treatments}K</span> treatments, `;
+function abbrevNum(num) {
+    if (num > 999) {
+        num = num < 999999 ? `${Math.round(num / 1000, 0)}K` : `${num}M`;
     }
-    else {
-        html += `<span>~${totalCount}K</span> ${resource}, <span>~${images}K</span> images, `;
-    }
-
-    html += `<span>~${species}K</span> species, <span>~${journals}K</span> journals`;
-
-    //html += '</a>';
-
-    svg.innerHTML = html;
+     
+    return num;
 }
 
 export {

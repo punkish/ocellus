@@ -1,52 +1,52 @@
-#sparkBox .chart {
-    display: none;
-    margin-right: 0;
-    transition: all 0.3s ease;
-}
-  
-#sparkBox.sparkBox {
+#sparkBox {
     padding: 0 10px;
     cursor: pointer;
     font-family: sans-serif;
     font-size: 10px;
-    display: inline-block;
-    /* text-align: left; */
+    width: 285px;
+    border: none;
+    margin: 0 0 3px;
+
+    /* ensures the text stays on one line and does not wrap */
+    white-space: nowrap;
+    overflow-x: auto;
 }
-#sparkBox .sparkBox:hover .chart, .sparkBox:focus .chart {
-    transform: scale(4) translate(10px, -20px);
+#sparkBox div {
+    display: inline;
 }
-  
-#sparkBox .bar {
+.sparkChart {
+    display: none;
+    margin-right: 0;
+    transition: all 0.3s ease;
+}
+.sparkChart:hover, 
+.sparkChart:focus {
+    transform: scale(4) translate(10px, -15px);
+}
+.sparkBar {
     position: relative;
     fill: #000;
-    /* height: 21px; */
     transition: fill 0.3s ease;
     cursor: pointer;
     font-family: Helvetica, sans-serif;
     display: inline-block;
 }
-  
-#sparkBox .chart:hover .bar,
-#sparkBox .chart:focus .bar {
-    fill: #aaa;
-}
-
-#sparkBox .bar:hover,
-#sparkBox .bar:focus {
+.sparkBar:hover,
+.sparkBar:focus {
     fill: #ff4136 !important;
-}
-#sparkBox .bar:hover text,
-#sparkBox .bar:focus text {
-    fill: #ff4136;
 }
 #sparkBox span {
     color: green;
 }
-
-#tooltip {
-    background: cornsilk;
-    border: 1px solid black;
-    border-radius: 5px;
-    padding: 5px;
-    z-index: 10;
+#sparkTip {
+    position: relative;
+    width: 200px;
+    left: 93px;
+}
+#sparkTip.visible {
+    display: inline;
+}
+#sparkTip.hidden {
+    /* display: hidden; */
+    display: inline;
 }

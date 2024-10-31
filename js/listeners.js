@@ -1,8 +1,6 @@
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
-import { submitForm, updatePlaceHolder, qs2form, form2qs } from './utils.js';
-// import { getCountOfResource } from './querier.js';
-// import { renderDashboard } from './renderers-charts.js';
+import { submitForm, updateSearchPlaceHolder, qs2form, form2qs } from './utils.js';
 import { Accordion } from './accordion.js';
 import { getResource } from './querier.js';
 import { initializeMap } from './mapping/index.js';
@@ -16,40 +14,18 @@ const addListeners = () => {
     $('#q').addEventListener('focus', resetPrompt);
     $('#search-help').addEventListener('click', toggleExamples);
     $('div.examples').addEventListener('toggle', controlDetails, true);
-
-    $$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
-    //$$('.reveal').forEach(el => el.addEventListener('click', reveal));
-    //$('#brand').addEventListener('click', reveal);
-
-    $$('.example-insert')
-        .forEach(el => el.addEventListener('click', insertExample));
-
     $('input[name=searchtype').addEventListener('click', toggleAdvSearch);
     $('input[name=resource').addEventListener('click', toggleResource);
+    $('select[name="as-publicationDate"]').addEventListener('change', toggleDateSelector);
+    $('select[name="as-checkinTime"]').addEventListener('change', toggleDateSelector);
 
-    // $$('.resource input')
-    //     .forEach(el => el.addEventListener('click', toggleResource));
-
-    $('select[name="as-publicationDate"]')
-        .addEventListener('change', toggleDateSelector);
-    $('select[name="as-checkinTime"]')
-        .addEventListener('change', toggleDateSelector);
-
-    $$('input[type=date').forEach(el => el.addEventListener(
-        'change', resetDatePickerWarning
-    ));
-
-    $$('#charts-container').forEach((el) => {
-        new Accordion(el);
-    });
+    $$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
+    $$('.example-insert').forEach(el => el.addEventListener('click', insertExample));
+    $$('input[type=date').forEach(el => el.addEventListener('change', resetDatePickerWarning));
+    $$('#charts-container').forEach(el => new Accordion(el));
+    $$('a.quicksearch').forEach((el) => el.addEventListener('click', quickSearch));
 
     document.addEventListener('keydown', focusOnSearch);
-
-    $$('a.quicksearch').forEach((el) => el.addEventListener(
-        'click', quickSearch
-    ));
-
-    //$('#geoSearchWidget').addEventListener('click', geoSearchWidget);
 }
 
 function quickSearch(event) {
@@ -226,7 +202,7 @@ const toggleResource = (e) => {
     // value
     // const resource = Array.from($$('input[name=resource]'))
     //     .filter(i => i.checked)[0];
-    updatePlaceHolder(resource);
+    updateSearchPlaceHolder(resource);
 }
 
 // https://gomakethings.com/only-allowing-one-open-dropdown-at-a-time-with-the-details-element/
@@ -315,16 +291,12 @@ const toggleModal = (e) => {
 const promptForSearchTerm = () => {
     $('#q').placeholder = "c'mon, type something";
     $('#q').classList.add('red-placeholder');
-    // e.stopPropagation();
-    // e.preventDefault();
 }
 
 const resetPrompt = (e)=> {
     $('#q').placeholder = globals.defaultPlaceholder;
     $('#q').classList.remove('red-placeholder');
     $('#refreshCache').checked = false;
-    // e.stopPropagation();
-    // e.preventDefault();
 }
 
 /**
@@ -385,58 +357,6 @@ const resetPrompt = (e)=> {
 //     history.pushState({}, null, url.href);
 // }
 
-const reveal = (e) => {
-    //$('#brand').innerHTML = 'MAP • IMAGES • TREATMENTS';
-    //const t = e.target.innerText;
-    //e.target.innerText = e.target.dataset.reveal;
-
-    e.target.innerHTML = '<a href="#map" id="mapInit">MAP</a> • IMAGES • TREATMENTS';
-    e.target.querySelector('#mapInit').addEventListener('click', initMap);
-    //e.target.querySelector('#imagesInit').addEventListener('click', initImages);
-    $('#brand').classList.add('smallbrand');
-    $('#brand').removeEventListener('click', reveal);
-
-    setTimeout(() => { 
-        e.target.innerHTML = 4; 
-        $('#brand').classList.remove('smallbrand');
-        $('#brand').addEventListener('click', reveal);
-    }, 3000);
-    
-    e.stopPropagation();
-    e.preventDefault();
-}
-
-const initMap = (e) => {
-    // $('#q').value = '';
-    // $('#q').placeholder = 'use map below';
-    // $('#q').disabled = true;
-    // $('#refreshCache').disabled = true;
-    // $('#clear-q').disabled = true;
-    // $$('.quicksearch').forEach(a => a.classList.add('disabled'));
-    // $('#search-help').style.pointerEvents = "none";
-    // $('input[name=searchtype]').disabled = true;
-    $('#not-map').classList.add('hidden');
-    //console.log($('#not-map'))
-
-    initializeMap({
-        mapContainer: 'map', 
-        baseLayerSource: 'geodeo', 
-        drawControl: false
-    })
-}
-
-const initImages = (e) => {
-    // $('#q').placeholder = globals.defaultPlaceholder;
-    // $('#q').disabled = false;
-    // $('#refreshCache').disabled = false;
-    // $('#clear-q').disabled = false;
-    // $$('.quicksearch').forEach(a => a.classList.remove('disabled'));
-    // $('#search-help').classList.remove('disabled');
-    // $('input[name=searchtype]').disabled = false;
-    // $('#map').classList.add('noblock');
-    $('#map').classList.add('hidden');
-    $('#not-map').classList.remove('hidden');
-}
 
 const addListenersToFigDetails = () => {
     const figDetails = $$('figcaption > details');
@@ -620,35 +540,17 @@ const toggleDateSelector = (e) => {
 }
 
 function showTooltip(evt, text) {
-    const tooltip = document.getElementById("tooltip");
-    tooltip.innerHTML = text;
-    tooltip.style.display = "block";
-    tooltip.style.left = evt.offsetX + 'px';
-    tooltip.style.top = evt.offsetY + 'px';
+    const sparkTip = $("#sparkTip");
+    sparkTip.innerHTML = text;
+    sparkTip.classList.remove('hidden');
+    sparkTip.classList.add('visible');
 }
 
 function hideTooltip() {
-    const tooltip = document.getElementById("tooltip");
-    tooltip.style.display = "none";
+    const sparkTip = $("#sparkTip");
+    sparkTip.classList.remove('visible');
+    sparkTip.classList.add('hidden');
 }
-
-// async function showDashboard() {
-//     if (globals.cache.treatments.yearly === false) {
-//         // const treatmentsCount = await getCountOfResource('treatments', true);
-//         // const imagesCount = await getCountOfResource('images', true);
-//         // const speciesCount = await getCountOfResource('species', true);
-//         // const journalsCount = await getCountOfResource('journals', true);
-//         // const materialCitationsCount = await getCountOfResource('materialcitations', true);
-    
-//         renderDashboard({
-//             treatmentsCount,
-//             imagesCount, 
-//             materialCitationsCount,
-//             speciesCount, 
-//             journalsCount
-//         });
-//     }
-// }
 
 function lightUpTheBox() {
     new SimpleLightbox({
@@ -671,7 +573,6 @@ export {
     toggleDateSelector,
     showTooltip,
     hideTooltip,
-    //showDashboard,
     toggleModal,
     lightUpTheBox
 };

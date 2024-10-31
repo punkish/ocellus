@@ -92,7 +92,12 @@
     form {
         max-width: 790px;
     }
-    #sparkBox .chart {
+    #sparkBox {
+        height: auto;
+        width: 100%;
+        overflow: hidden;
+    }
+    .sparkChart {
         display: inline-block;
     }
     #charts-container,
@@ -141,6 +146,10 @@
         /* width: 720px;
         height: 540px; */
         min-height: 540px;
+    }
+    #toggle-search {
+        float: right;
+        right: 50px;
     }
 }
 

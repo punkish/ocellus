@@ -1,9 +1,10 @@
 #map {
+    --top: 45px;
     position: absolute;
-    top: 0;
+    top: var(--top);
     bottom: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% - var(--top));
 }
 div.h3info {
     background-color: white;

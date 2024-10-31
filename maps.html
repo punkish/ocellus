@@ -29,18 +29,17 @@
     <meta name="msapplication-config" content="/favicons/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
 
-    <link rel="stylesheet" 
+    <!-- <link rel="stylesheet" 
         href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" 
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
-        crossorigin="" />
-    <!-- <link rel="stylesheet" 
-        href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css"> -->
+        crossorigin="" /> -->
+    <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css">
     
     <!-- build:csslibs -->
-    <link rel="stylesheet" href="libs/leaflet-markercluster/MarkerCluster.css">
-    <link rel="stylesheet" href="libs/leaflet-markercluster/MarkerCluster.Default.css">
     <link rel="stylesheet" href="libs/leaflet-slidebar/src/leaflet.slidebar.css">
-    <link rel="stylesheet" href="libs/leaflet-easybutton/easy-button.css">
+    <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.css">
+    <link rel="stylesheet" href="node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="node_modules/leaflet-easybutton/src/easy-button.css">
     <!-- endbuild -->
 
     <!-- build:css -->
@@ -50,6 +49,7 @@
     <link rel="stylesheet" href="css/toggles.css">
     <link rel="stylesheet" href="css/grid.css">
     <link rel="stylesheet" href="css/throbber.css">
+    <link rel="stylesheet" href="css/sparkline.css">
     <link rel="stylesheet" href="css/map.css">
     <link rel="stylesheet" href="css/media-queries.css">
     <!-- endbuild -->
@@ -70,6 +70,11 @@
     
 
     <main>
+        <div id="sparkBox" class="sparkBox">
+            <div id="sparkText"></div>
+            <div id="sparkChart"></div>
+            <div id="sparkTip" class="hidden"></div>
+        </div>
         <section id="map"></section>
 
         <section id="about" class="modal hidden noblock">
@@ -116,20 +121,25 @@
     </main>
 
     <!-- note: leaflet.js has to come before all other leaflet plugins -->
-    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script> -->
     
     <!-- build:jslibs -->
     <script src="libs/picolog/picolog.min.js"></script>
     <script src="libs/lazysizes.min.js"></script>
-    <script src="libs/leaflet-easybutton/easy-button.min.js"></script>
+    <script src="node_modules/leaflet/dist/leaflet.js"></script>
+    <script src="node_modules/leaflet-easybutton/src/easy-button.js"></script>
+    <script src="node_modules/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <script src="node_modules/leaflet.vectorgrid/dist/Leaflet.VectorGrid.bundled.js"></script>
     <!-- endbuild -->
 
-    <script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script> -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script> -->
 
     <script type="module">
-        import { init } from './js/ocellus-maps.js';
+        import { init, showTooltip, hideTooltip } from './js/ocellus-maps.js';
+        window.showTooltip = showTooltip;
+        window.hideTooltip = hideTooltip;
         window.onload = () => init();
     </script>
 </body>

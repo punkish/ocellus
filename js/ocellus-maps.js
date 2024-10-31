@@ -1,7 +1,10 @@
 /* generated: __buildDate__ */
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
+//import { updateSearchPlaceHolder } from './utils.js';
 import { initializeMap } from './mapping/index.js';
+import { renderYearlyCountsSparkline } from './renderers.js';
+import { showTooltip, hideTooltip } from './listeners.js';
 
 const toggleModal = (e) => {
     const t = new URL(e.target.href).hash;
@@ -26,10 +29,12 @@ const toggleModal = (e) => {
 
 function init() {
     $$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
+    const validGeo = true;
+    renderYearlyCountsSparkline('images', validGeo);
     initializeMap({ 
         mapContainer: 'map', 
-        baseLayerSource: 'gbif', 
+        baseLayerSource: 'geodeo', 
         drawControl: false 
     })
 }
-export { init }
+export { init, showTooltip, hideTooltip }

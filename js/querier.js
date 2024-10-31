@@ -1,12 +1,27 @@
-import { $, $$ } from './base.js';
+import { $ } from './base.js';
 import { globals } from './globals.js';
 import { makeSlider, renderPage } from './renderers.js';
 import { toggleWarn } from './listeners.js';
 
-const getCountOfResource = async (resource, getYearlyCounts) => {
-    
-    if (!globals.cache[resource].yearlyCounts) {
-        let url = `${globals.uri.zenodeo}/${resource}?cols=`;
+function updateTotal(totals, cur) {
+    totals.images += cur.num_of_images;
+    totals.treatments += cur.num_of_treatments;
+    totals.species += cur.num_of_species;
+    totals.journals += cur.num_of_journals;
+    return totals;
+}
+
+const getCountOfResource = async (resource, getYearlyCounts, validGeo) => {
+    const segment = validGeo ? `${resource}-geo` : resource;
+
+    if (!globals.cache[segment].yearlyCounts) {
+        let url = `${globals.uri.zenodeo}/${resource}?`
+        
+        if (validGeo) {
+            url += 'validGeo=true&';
+        }
+
+        url += `cols=`;
 
         if (getYearlyCounts) {
             url += '&yearlyCounts=true';
@@ -22,24 +37,19 @@ const getCountOfResource = async (resource, getYearlyCounts) => {
             if (getYearlyCounts) {
                 const yearlyCounts = json.item.result.yearlyCounts;
 
-                const totals = yearlyCounts.reduce(( totals, cur ) => {
-                    totals.images += cur.num_of_images;
-                    totals.treatments += cur.num_of_treatments;
-                    totals.species += cur.num_of_species;
-                    totals.journals += cur.num_of_journals;
-                    return totals;
-                }, {
+                const startingValue = {
                     images: 0,
                     treatments: 0,
                     species: 0,
                     journals: 0
-                });
+                };
 
-                globals.cache[resource].yearlyCounts = yearlyCounts;
-                globals.cache[resource].totals = totals;
+                const totals = yearlyCounts.reduce(updateTotal, startingValue);
+                globals.cache[segment].yearlyCounts = yearlyCounts;
+                globals.cache[segment].totals = totals;
             }
             else {
-                globals.cache[resource].totals[resource] = count;
+                globals.cache[segment].totals[resource] = count;
             }
         }
     
@@ -49,7 +59,7 @@ const getCountOfResource = async (resource, getYearlyCounts) => {
         }
     }
 
-    return globals.cache[resource];    
+    return globals.cache[segment];    
 }
 
 const getResource = async (qs) => {
@@ -219,22 +229,17 @@ const getResults = async ({ resource, queryString, figureSize }) => {
 
         if (json.item.result.yearlyCounts) {
             yearlyCounts = {};
-            const yc = json.item.result.yearlyCounts;
+            const yearlyCounts = json.item.result.yearlyCounts;
 
-            const totals = yc.reduce(( totals, cur ) => {
-                totals.images += cur.num_of_images;
-                totals.treatments += cur.num_of_treatments;
-                totals.species += cur.num_of_species;
-                totals.journals += cur.num_of_journals;
-                return totals;
-            }, {
+            const startingValue = {
                 images: 0,
                 treatments: 0,
                 species: 0,
                 journals: 0
-            });
+            };
 
-            yearlyCounts.yearlyCounts = yc;
+            const totals = yearlyCounts.reduce(updateTotal, startingValue);
+            yearlyCounts.yearlyCounts = yearlyCounts;
             yearlyCounts.totals = totals;
         }
 

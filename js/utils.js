@@ -1,6 +1,6 @@
 import { $, $$ } from './base.js';
 import { getResource, getCountOfResource } from './querier.js';
-import { renderYearlyCountsSparkline } from './renderers.js';
+// import { renderYearlyCountsSparkline } from './renderers.js';
 // import { renderDashboard } from './renderers-charts.js';
 import { globals } from './globals.js';
 
@@ -173,12 +173,16 @@ const submitForm = () => {
     }
 }
 
-const updatePlaceHolder = async (resource) => {
-    const getYearlyCounts = true;
-    const yearlyCounts = await getCountOfResource(resource, getYearlyCounts);
-    renderYearlyCountsSparkline(resource, yearlyCounts);
+function updateSearchPlaceHolder(resource) {
     $('#q').placeholder = `search ${resource}`;
 }
+
+// const updatePlaceHolder = async (resource) => {
+//     const getYearlyCounts = true;
+//     const yearlyCounts = await getCountOfResource(resource, getYearlyCounts);
+//     renderYearlyCountsSparkline(resource, yearlyCounts);
+//     $('#q').placeholder = `search ${resource}`;
+// }
 
 /**
  * convert form inputs to searchParams. All possible inputs
@@ -493,7 +497,7 @@ export {
     niceNumbers, 
     smoke, 
     submitForm, 
-    updatePlaceHolder, 
+    updateSearchPlaceHolder, 
     qs2form,
     form2qs, 
     updateUrl,

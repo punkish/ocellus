@@ -1,10 +1,10 @@
 /* generated: __buildDate__ */
-
-import { updatePlaceHolder, qs2form, form2qs } from './utils.js';
+import { updateSearchPlaceHolder, qs2form, form2qs } from './utils.js';
 import { getResource } from './querier.js';
 import { addListeners, showTooltip, hideTooltip } from './listeners.js';
 import { initAdvSearch } from './adv-search.js';
 import { initializeMap } from './mapping/index.js';
+import { renderYearlyCountsSparkline } from './renderers.js';
 
 function init() {
     const loc = new URL(location);
@@ -19,7 +19,9 @@ function init() {
         getResource(queryString);
     }
     else {
-        updatePlaceHolder('images');
+        const resource = 'images';
+        updateSearchPlaceHolder(resource);
+        renderYearlyCountsSparkline(resource)
     }
 
     addListeners();

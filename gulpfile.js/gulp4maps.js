@@ -109,7 +109,7 @@ async function js() {
         plugins: [
             replace({
                 values: {
-                    'INFO': 'ERROR',
+                    'log.INFO': 'log.ERROR',
                     'http://localhost:3010/v3': 'https://test.zenodeo.org/v3',
                     'http://localhost:3000'   : 'https://maps.zenodeo.org',
                     //__buildDate__: () => JSON.stringify(new Date()),
