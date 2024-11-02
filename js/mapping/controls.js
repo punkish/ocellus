@@ -1,11 +1,12 @@
-import { addLayer } from "./utils.js";
-import { $, $$ } from "../base.js";
+import { $ } from "../base.js";
 
 function drawControlLayer(map, mapLayers) {
 
     // the featureGroup stores the user-drawn features
     mapLayers.drawControls = new L.FeatureGroup();
-    addLayer(map, mapLayers.drawControls);
+    if (!map.hasLayer(mapLayers.drawControls)) {
+        map.addLayer(mapLayers.drawControls);
+    }
 
     const drawControlOptions = {
         position: 'topleft',

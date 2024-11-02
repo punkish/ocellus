@@ -29,11 +29,9 @@
     <meta name="msapplication-config" content="/favicons/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
 
-    <!-- <link rel="stylesheet" 
-        href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" 
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
-        crossorigin="" /> -->
+    <!-- build:leafletcss -->
     <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css">
+    <!-- endbuild -->
     
     <!-- build:csslibs -->
     <link rel="stylesheet" href="libs/leaflet-slidebar/src/leaflet.slidebar.css">
@@ -121,12 +119,13 @@
     </main>
 
     <!-- note: leaflet.js has to come before all other leaflet plugins -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script> -->
-    
+    <!-- build:leafletjs -->
+    <script src="node_modules/leaflet/dist/leaflet.js"></script>
+    <!-- endbuild -->
+
     <!-- build:jslibs -->
     <script src="libs/picolog/picolog.min.js"></script>
     <script src="libs/lazysizes.min.js"></script>
-    <script src="node_modules/leaflet/dist/leaflet.js"></script>
     <script src="node_modules/leaflet-easybutton/src/easy-button.js"></script>
     <script src="node_modules/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
     <script src="node_modules/leaflet.vectorgrid/dist/Leaflet.VectorGrid.bundled.js"></script>
