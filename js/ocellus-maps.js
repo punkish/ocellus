@@ -30,7 +30,8 @@ const toggleModal = (e) => {
 function init() {
     $$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
     const validGeo = true;
-    renderYearlyCountsSparkline('images', validGeo);
+    const context = 'maps';
+    renderYearlyCountsSparkline('images', validGeo, context);
     initializeMap({ 
         mapContainer: 'map', 
         baseLayerSource: 'geodeo', 

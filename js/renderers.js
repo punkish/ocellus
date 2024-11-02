@@ -378,7 +378,11 @@ function svgFrag(i, height, sparkHeight, barWidth, tooltipText) {
 }
 
 // https://css-tricks.com/how-to-make-charts-with-svg/
-async function renderYearlyCountsSparkline(resource, validGeo = false) {
+async function renderYearlyCountsSparkline(
+    resource, 
+    validGeo = false, 
+    context = 'index'
+) {
     const getYearlyCounts = true;
     const yearlyCounts = await getCountOfResource(
         resource, getYearlyCounts, validGeo
@@ -427,11 +431,19 @@ async function renderYearlyCountsSparkline(resource, validGeo = false) {
     const sparkChart = $('#sparkChart');
     sparkChart.innerHTML = svg;
     
-    let text = `<span>~${abbrevNum(totalCount)}</span> ${resource}, `;
+    let text = '';
+
+    if (context === 'maps') {
+        text = `<span>~${abbrevNum(totalCount)}</span> geocoded ${resource} `;
+    }
+    else {
+        text = `<span>~${abbrevNum(totalCount)}</span> ${resource} `;
+    }
+
     text += (resource === 'images') 
-        ? `<span>~${abbrevNum(treatments)}</span> treatments, `
+        ? `from <span>~${abbrevNum(treatments)}</span> treatments `
         : `<span>~${abbrevNum(images)}</span> images, `;
-        text += `<span>~${abbrevNum(species)}</span> species, <span>~${abbrevNum(journals)}</span> journals`;
+        text += `of <span>~${abbrevNum(species)}</span> species in <span>~${abbrevNum(journals)}</span> journals`;
 
     const sparkText = $('#sparkText');
     sparkText.innerHTML = text;
