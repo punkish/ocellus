@@ -431,14 +431,9 @@ async function renderYearlyCountsSparkline(
     const sparkChart = $('#sparkChart');
     sparkChart.innerHTML = svg;
     
-    let text = '';
-
-    if (context === 'maps') {
-        text = `<span>~${abbrevNum(totalCount)}</span> geocoded ${resource} `;
-    }
-    else {
-        text = `<span>~${abbrevNum(totalCount)}</span> ${resource} `;
-    }
+    let text = (context === 'maps') 
+        ? `<span>~${abbrevNum(totalCount)}</span> geocoded ${resource} `
+        : `<span>~${abbrevNum(totalCount)}</span> ${resource} `;
 
     text += (resource === 'images') 
         ? `from <span>~${abbrevNum(treatments)}</span> treatments `

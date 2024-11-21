@@ -225,11 +225,10 @@ const getResults = async ({ resource, queryString, figureSize }) => {
         const json = await response.json();
         const records = json.item.result.records;
 
-        let yearlyCounts = undefined;
+        const yearlyCounts = {};
 
         if (json.item.result.yearlyCounts) {
-            yearlyCounts = {};
-            const yearlyCounts = json.item.result.yearlyCounts;
+            const yc = json.item.result.yearlyCounts;
 
             const startingValue = {
                 images: 0,
@@ -238,8 +237,8 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                 journals: 0
             };
 
-            const totals = yearlyCounts.reduce(updateTotal, startingValue);
-            yearlyCounts.yearlyCounts = yearlyCounts;
+            const totals = yc.reduce(updateTotal, startingValue);
+            yearlyCounts.yearlyCounts = yc;
             yearlyCounts.totals = totals;
         }
 
