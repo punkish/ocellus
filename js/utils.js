@@ -9,7 +9,7 @@ import { globals } from './globals.js';
  * only the normal search form. TODO: be able to fill fancy search
  * form as well.
  */
-const qs2form = (qs) => {
+function qs2form(qs) {
     log.info(`- qs2form(qs)
     - qs: ${qs}`);
 
@@ -22,27 +22,20 @@ const qs2form = (qs) => {
     const q = [];
 
     sp.forEach((val, key) => {
-        log.info(`val: ${val}, key: ${key}`);
+        log.info(`      key: "${key}", val: "${val}"`);
 
         // for keys that won't go into 'q'
         if (globals.params.notValidQ.includes(key)) {
 
             if (key === 'resource') {
-                log.info(`setting form to query resource ${val}`);
+                log.info(`      setting form to query resource "${val}"`);
                 updatePlaceHolder(val);
-
-                if (val === 'treatments') {
-                    log.info('setting toggle-resource to true');
-                    $('input[name=resource]').checked = true;
-                }
-                else {
-                    log.info('setting toggle-resource to false');
-                    $('input[name=resource]').checked = false;
-                }
-                
+                const checked = val === 'treatments' ? true : false;
+                log.info(`      setting toggle-resource to "${checked}"`);
+                $('input[name=resource]').checked = checked;
             }
             else {
-                log.info(`setting input name ${key} to ${val}`);
+                log.info(`      setting input name "${key}" to "${val}"`);
                 $(`input[name=${key}]`).value = val;
             }
 
@@ -50,14 +43,13 @@ const qs2form = (qs) => {
 
         // all the keys that will go into 'q'
         else {
+            log.info('      building value of "q"');
 
             // default value
             let value = key;
 
             if (val) {
-                value = key === 'q' 
-                    ? decodeURIComponent(val) 
-                    : `${key}=${val}`;
+                value = key === 'q' ? decodeURIComponent(val) : `${key}=${val}`;
             }
 
             q.push(value);
@@ -70,33 +62,30 @@ const qs2form = (qs) => {
 
 // Javascript: Ordinal suffix for numbers
 // https://stackoverflow.com/a/15810761
-const nth = function(n) {
+function nth(n) {
     if ( isNaN(n) || n % 1 ) return n;
 
     const s = n % 100;
 
-    if ( s > 3 && s < 21 ) return n + 'th';
+    if ( s > 3 && s < 21 ) return `${n}th`;
 
     switch( s % 10 ) {
-        case 1:  return n + 'st';
-        case 2:  return n + 'nd';
-        case 3:  return n + 'rd';
-        default: return n + 'th';
+        case 1:  return `${n}st`;
+        case 2:  return `${n}nd`;
+        case 3:  return `${n}rd`;
+        default: return `${n}th`;
     }
 }
 
-const niceNumbers = (n) => {
+function niceNumbers(n) {
     const nice = [
-        'One', 'Two', 'Three', 'Four', 
-        'Five', 'Six', 'Seven', 'Eight', 'Nine'
+        'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'
     ];
 
-    return n < 10 
-        ? nice[n - 1].toLowerCase() 
-        : n
+    return n < 10 ? nice[n - 1].toLowerCase() : n
 }
 
-const smoke = function (e) {
+function smoke(e) {
 
     // http://jsfiddle.net/Y7Ek4/22/
     let intervalId = 0
@@ -160,7 +149,7 @@ const smoke = function (e) {
 
 // click on [go] button gets query results and renders the page
 // 
-const submitForm = () => {
+function submitForm() {
     log.info('submitForm()');
     const qs = form2qs();
 
@@ -174,10 +163,11 @@ const submitForm = () => {
 }
 
 function updateSearchPlaceHolder(resource) {
+    log.info(`- updateSearchPlaceHolder(): ${resource}`);
     $('#q').placeholder = `search ${resource}`;
 }
 
-const updatePlaceHolder = async (resource) => {
+async function updatePlaceHolder(resource) {
     const getYearlyCounts = true;
     const yearlyCounts = await getCountOfResource(resource, getYearlyCounts);
     renderYearlyCountsSparkline(resource, yearlyCounts);
@@ -197,90 +187,81 @@ const updatePlaceHolder = async (resource) => {
  * go: go
  * 
  */
-const form2qs = () => {
+function form2qs() {
+    log.info('- form2qs()');
     const sp = new URLSearchParams();
     //const arr = Array.from($$('form input.query'));
     //const r = / & /g;
 
     const searchtypeToggle = $('input[name=searchtype');
-    const typeOfSearch = searchtypeToggle.checked === true
-        ? 'as'
-        : 'ss';
-
+    const typeOfSearch = searchtypeToggle.checked === true ? 'as' : 'ss';
     let submitFlag = true;
 
     if (typeOfSearch === 'ss') {
-        log.info('- form2qs(): simple search');
+        log.info('    simple search');
 
-        Array.from($$('form input.query'))
-            .filter(i => i.value)
-            .forEach(i => {
-                
-                let key = i.name;
-                let val = i.value;
+        Array.from($$('form input.query')).filter(i => i.value).forEach(i => {
+            let key = i.name;
+            let val = i.value;
 
-                if (i.name === 'q') {
+            if (key === 'q') {
 
-                    // see discussion at
-                    // https://stackoverflow.com/q/77613064/183692
-                    const formVal = i.value.replaceAll(/ & /g, '%20%26%20');
-                    const spTmp = new URLSearchParams(formVal);
+                // see discussion at
+                // https://stackoverflow.com/q/77613064/183692
+                const formVal = i.value.replaceAll(/ & /g, '%20%26%20');
+                const spTmp = new URLSearchParams(formVal);
 
-                    spTmp.forEach((v, k) => {
-                        if (v === '') {
+                spTmp.forEach((v, k) => {
+                    if (v === '') {
 
-                            // check if the input looks like a DOI
-                            const match = val.match(/(^10\.[0-9]{4,}.*)/);
-                            if (match && match[1]) {
-                                key = 'articleDOI';
-                                val = match[1];
-                            }
-                            else {
-                                key = 'q';
-                                val = k;
-                            }
-                            
+                        // check if the input looks like a DOI
+                        const match = val.match(/(^10\.[0-9]{4,}.*)/);
+                        if (match && match[1]) {
+                            key = 'articleDOI';
+                            val = match[1];
                         }
                         else {
-                            key = k;
-                            val = v;
+                            key = 'q';
+                            val = k;
                         }
-
-                        sp.append(key, val);
-                    });
-                }
-                else {
-            
-                    if ((i.type === 'radio' || i.type === 'checkbox')) {
-
-                        if (i.name === 'resource') {
-                            // console.log(i);
-                            // console.log(i.checked)
-
-                            if (i.checked || i.checked === 'true') {
-                                sp.append(key, val);
-                            }
-                            else {
-                                sp.append(key, 'images');
-                            }
-                        }
-                        else {
-                            if (i.checked || i.checked === 'true') {
-                                sp.append(key, val);
-                            }
-                        }
-                        
                         
                     }
                     else {
-                        sp.append(key, val);
+                        key = k;
+                        val = v;
                     }
 
+                    sp.append(key, val);
+                });
+            }
+            else {
+        
+                if ((i.type === 'radio' || i.type === 'checkbox')) {
+
+                    if (i.name === 'resource') {
+                        if (i.checked || i.checked === 'true') {
+                            sp.append(key, val);
+                        }
+                        else {
+                            sp.append(key, 'images');
+                        }
+                    }
+                    else {
+                        if (i.checked || i.checked === 'true') {
+                            sp.append(key, val);
+                        }
+                    }
+                    
                 }
-            });
+                else {
+                    sp.append(key, val);
+                }
+
+            }
+        });
     }
     else if (typeOfSearch === 'as') {
-        log.info('- form2qs(): advanced search');
+        log.info('    advanced search');
 
         const commonInputs = [
             'page',
@@ -305,7 +286,6 @@ const form2qs = () => {
                     sp.append(fldName, fld.value);
                 }
             }
-            
             
         });
 
@@ -450,7 +430,7 @@ const form2qs = () => {
     }
 }
 
-const updateUrl = (qs) => {
+function updateUrl(qs) {
     log.info('- updateUrl(qs)');
     const state = {};
     const title = '';
@@ -460,7 +440,7 @@ const updateUrl = (qs) => {
 
 // Convert milliseconds to days:hours:mins without seconds
 // https://stackoverflow.com/a/8528531/183692
-const formatTime = (ms) => {
+function formatTime(ms) {
     const ms_in_h = 60 * 60 * 1000;
     const ms_in_d = 24 * ms_in_h;
     let d = Math.floor(ms / ms_in_d);
@@ -481,7 +461,7 @@ const formatTime = (ms) => {
     return `${d} days ${pad(h)} hours ${pad(m)} mins`;
 }
 
-const formatDate = (d) => {
+function formatDate(d) {
     const yyyy = d.getFullYear();
     const mm = d.getMonth();
     const dd = d.getDate();
