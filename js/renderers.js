@@ -1,10 +1,9 @@
-import { $, $$ } from './base.js';
+import { $ } from './base.js';
 import { globals } from './globals.js';
 import { renderYearlyCounts } from './renderers-charts.js';
 import { renderTermFreq } from './renderer-termFreq.js';
 import { niceNumbers, qs2form, formatDate, formatTime } from './utils.js';
 import { 
-    //addListenersToFigcaptions, 
     addListenersToFigDetails,
     addListenersToFigureTypes, 
     addListenersToPagerLinks,
@@ -13,7 +12,7 @@ import {
     lightUpTheBox
 } from './listeners.js';
 import { makeImage, makeTreatment } from './render-figures.js';
-import { getResource, getCountOfResource } from './querier.js';
+import { getCountOfResource } from './querier.js';
 
 function makeSlider({ resource, figureSize, rec }) {
     const figure = resource === 'images'
@@ -383,6 +382,11 @@ async function renderYearlyCountsSparkline(
     validGeo = false, 
     context = 'index'
 ) {
+    log.info(`- renderYearlyCountsSparkline()
+    - resource: ${resource}
+    - validGeo: ${validGeo}
+    - context: ${context}`);
+
     const getYearlyCounts = true;
     const yearlyCounts = await getCountOfResource(
         resource, getYearlyCounts, validGeo
@@ -401,36 +405,6 @@ async function renderYearlyCountsSparkline(
         ? images
         : treatments;
 
-    const barWidth = 3;
-    const numOfRects = yc.length;
-    const sparkWidth = barWidth * numOfRects;
-    const sparkHeight = 40;
-    //const maxNum = Math.max(...yc);
-    const heightRatio = sparkHeight / totalCount;
-    //const totalImages = numImg.reduce((partialSum, a) => partialSum + a, 0);
-
-    let svg = `<svg id="svgSpark" version="1.1" 
-        xmlns="http://www.w3.org/2000/svg" 
-        xmlns:xlink="http://www.w3.org/1999/xlink" 
-        class="sparkChart" 
-        height="${sparkHeight}" 
-        width="${sparkWidth}" 
-        aria-labelledby="title" 
-        role="img">`;
-
-    for (let i = 0; i < numOfRects; i++) {
-        const year = yc[i].year;
-        const count = yc[i][`num_of_${resource}`];
-        const tooltipText = `${count} ${resource} from ${year}`;
-        const height = count * heightRatio;
-        svg += svgFrag(i, height, sparkHeight, barWidth, tooltipText);
-    }
-
-    svg += '</svg>';
-
-    const sparkChart = $('#sparkChart');
-    sparkChart.innerHTML = svg;
-    
     let text = (context === 'maps') 
         ? `<span>~${abbrevNum(totalCount)}</span> geocoded ${resource} `
         : `<span>~${abbrevNum(totalCount)}</span> ${resource} `;
@@ -438,7 +412,42 @@ async function renderYearlyCountsSparkline(
     text += (resource === 'images') 
         ? `from <span>~${abbrevNum(treatments)}</span> treatments `
         : `<span>~${abbrevNum(images)}</span> images, `;
+
+    // Add more text to the yearly counts status as well as a sparkchart
+    // only if the document width is wider than a cellphone
+    if (document.body.clientWidth > 359) {
         text += `of <span>~${abbrevNum(species)}</span> species in <span>~${abbrevNum(journals)}</span> journals`;
+        
+        const barWidth = 3;
+        const numOfRects = yc.length;
+        const sparkWidth = barWidth * numOfRects;
+        const sparkHeight = 40;
+        //const maxNum = Math.max(...yc);
+        const heightRatio = sparkHeight / totalCount;
+        //const totalImages = numImg.reduce((partialSum, a) => partialSum + a, 0);
+    
+        let svg = `<svg id="svgSpark" version="1.1" 
+            xmlns="http://www.w3.org/2000/svg" 
+            xmlns:xlink="http://www.w3.org/1999/xlink" 
+            class="sparkChart" 
+            height="${sparkHeight}" 
+            width="${sparkWidth}" 
+            aria-labelledby="title" 
+            role="img">`;
+    
+        for (let i = 0; i < numOfRects; i++) {
+            const year = yc[i].year;
+            const count = yc[i][`num_of_${resource}`];
+            const tooltipText = `${count} ${resource} from ${year}`;
+            const height = count * heightRatio;
+            svg += svgFrag(i, height, sparkHeight, barWidth, tooltipText);
+        }
+    
+        svg += '</svg>';
+    
+        const sparkChart = $('#sparkChart');
+        sparkChart.innerHTML = svg;
+    }
 
     const sparkText = $('#sparkText');
     sparkText.innerHTML = text;
