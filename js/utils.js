@@ -4,14 +4,25 @@ import { renderYearlyCountsSparkline } from './renderers.js';
 // import { renderDashboard } from './renderers-charts.js';
 import { globals } from './globals.js';
 
+function formatLog(msg, level) {
+    if (level === 1) {
+        return `- ${msg}`;
+    }
+    else if (level === 2) {
+        return `  ${msg}`;
+    }
+    else if (level === 3) {
+        return `    ${msg}`;
+    }
+}
+
 /**
  * convert queryString to form inputs. Right now qs2form() fills 
  * only the normal search form. TODO: be able to fill fancy search
  * form as well.
  */
 function qs2form(qs) {
-    log.info(`- qs2form(qs)
-    - qs: ${qs}`);
+    log.info(formatLog(`qs2form(${qs})`, 1));
 
     const sp = new URLSearchParams(qs);
     
@@ -22,20 +33,20 @@ function qs2form(qs) {
     const q = [];
 
     sp.forEach((val, key) => {
-        log.info(`      key: "${key}", val: "${val}"`);
+        log.info(formatLog(`key: "${key}", val: "${val}"`, 3));
 
         // for keys that won't go into 'q'
         if (globals.params.notValidQ.includes(key)) {
 
             if (key === 'resource') {
-                log.info(`      setting form to query resource "${val}"`);
+                log.info(formatLog(`setting form to query resource "${val}"`, 3));
                 updatePlaceHolder(val);
                 const checked = val === 'treatments' ? true : false;
-                log.info(`      setting toggle-resource to "${checked}"`);
+                log.info(formatLog(`setting toggle-resource to "${checked}"`, 3));
                 $('input[name=resource]').checked = checked;
             }
             else {
-                log.info(`      setting input name "${key}" to "${val}"`);
+                log.info(formatLog(`setting input name "${key}" to "${val}"`, 3));
                 $(`input[name=${key}]`).value = val;
             }
 
@@ -43,7 +54,7 @@ function qs2form(qs) {
 
         // all the keys that will go into 'q'
         else {
-            log.info('      building value of "q"');
+            log.info(formatLog(`building value of "q"`, 3));
 
             // default value
             let value = key;
@@ -63,6 +74,8 @@ function qs2form(qs) {
 // Javascript: Ordinal suffix for numbers
 // https://stackoverflow.com/a/15810761
 function nth(n) {
+    log.info(formatLog(`nth(${n})`, 1));
+
     if ( isNaN(n) || n % 1 ) return n;
 
     const s = n % 100;
@@ -78,6 +91,8 @@ function nth(n) {
 }
 
 function niceNumbers(n) {
+    log.info(formatLog(`niceNumbers(${n})`, 1));
+
     const nice = [
         'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'
     ];
@@ -86,11 +101,14 @@ function niceNumbers(n) {
 }
 
 function smoke(e) {
+    log.info(formatLog(`smoke(${e})`, 1));
 
     // http://jsfiddle.net/Y7Ek4/22/
     let intervalId = 0
 
-    const animatePoof = function() {
+    function animatePoof() {
+        log.info(formatLog(`animatePoof()`, 1));
+
         let bgTop = 0
         let frame = 0
         const frames = 6
@@ -98,6 +116,8 @@ function smoke(e) {
         const frameRate = 80
     
         function animate() {
+            log.info(formatLog(`animate()`, 1));
+
             if (frame < frames) {
                 sel_puff.style.backgroundPosition = "0 "+bgTop+"px"
                 bgTop = bgTop - frameSize
@@ -110,7 +130,9 @@ function smoke(e) {
         //setTimeout("sel_puff.style.visibility = 'hidden'", frames * frameRate)
     }
 
-    const hide = function() {
+    function hide() {
+        log.info(formatLog(`hide()`, 1));
+
         let opacity = Number(t.style.opacity)
         
         if (opacity > 0) { 
@@ -150,7 +172,8 @@ function smoke(e) {
 // click on [go] button gets query results and renders the page
 // 
 function submitForm() {
-    log.info('submitForm()');
+    log.info(formatLog('submitForm()', 1));
+
     const qs = form2qs();
 
     if (qs) {
@@ -163,11 +186,14 @@ function submitForm() {
 }
 
 function updateSearchPlaceHolder(resource) {
-    log.info(`- updateSearchPlaceHolder(): ${resource}`);
+    log.info(formatLog(`updateSearchPlaceHolder("${resource}")`, 1));
+
     $('#q').placeholder = `search ${resource}`;
 }
 
 async function updatePlaceHolder(resource) {
+    log.info(formatLog(`updatePlaceHolder("${resource}")`, 1));
+
     const getYearlyCounts = true;
     const yearlyCounts = await getCountOfResource(resource, getYearlyCounts);
     renderYearlyCountsSparkline(resource, yearlyCounts);
@@ -188,7 +214,8 @@ async function updatePlaceHolder(resource) {
  * 
  */
 function form2qs() {
-    log.info('- form2qs()');
+    log.info(formatLog('form2qs()', 1));
+
     const sp = new URLSearchParams();
     //const arr = Array.from($$('form input.query'));
     //const r = / & /g;
@@ -198,7 +225,7 @@ function form2qs() {
     let submitFlag = true;
 
     if (typeOfSearch === 'ss') {
-        log.info('    simple search');
+        log.info(formatLog('simple search', 3));
 
         Array.from($$('form input.query')).filter(i => i.value).forEach(i => {
             let key = i.name;
@@ -261,7 +288,7 @@ function form2qs() {
         });
     }
     else if (typeOfSearch === 'as') {
-        log.info('    advanced search');
+        log.info(formatLog('advanced search', 3));
 
         const commonInputs = [
             'page',
@@ -431,7 +458,8 @@ function form2qs() {
 }
 
 function updateUrl(qs) {
-    log.info('- updateUrl(qs)');
+    log.info(formatLog(`updateUrl(${qs})`, 1));
+
     const state = {};
     const title = '';
     const url = `?${qs}`;
@@ -441,6 +469,8 @@ function updateUrl(qs) {
 // Convert milliseconds to days:hours:mins without seconds
 // https://stackoverflow.com/a/8528531/183692
 function formatTime(ms) {
+    log.info(formatLog(`formatTime(${ms})`, 1));
+
     const ms_in_h = 60 * 60 * 1000;
     const ms_in_d = 24 * ms_in_h;
     let d = Math.floor(ms / ms_in_d);
@@ -462,6 +492,8 @@ function formatTime(ms) {
 }
 
 function formatDate(d) {
+    log.info(formatLog(`formatDate(${d})`, 1));
+
     const yyyy = d.getFullYear();
     const mm = d.getMonth();
     const dd = d.getDate();
