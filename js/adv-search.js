@@ -1,4 +1,3 @@
-import { $, $$ } from './base.js';
 import { globals } from './globals.js';
 
 async function getDataFromZenodeo({url, segment, display, value}) {
@@ -35,9 +34,8 @@ async function getDataFromZenodeo({url, segment, display, value}) {
 }
 
 async function getCollectionCodes() {
-    const url = `${globals.uri.zenodeo}/collectioncodes?cols=collectionCode&cols=name&size=4300`;
     return await getDataFromZenodeo({
-        url,
+        url: `${globals.uri.zenodeo}/collectioncodes?cols=collectionCode&cols=name&size=4300`,
         segment: 'collectionCodes',
         display: 'collectionCode',
         value: 'collectionCode'
@@ -45,9 +43,8 @@ async function getCollectionCodes() {
 }
 
 async function getJournalTitles() {
-    const url = `${globals.uri.zenodeo}/journals?size=1100&sortby=journalTitle:asc`;
     return await getDataFromZenodeo({
-        url,
+        url: `${globals.uri.zenodeo}/journals?size=1100&sortby=journalTitle:asc`,
         segment: 'journals',
         display: 'journalTitle',
         value: 'journalTitle'
@@ -55,6 +52,13 @@ async function getJournalTitles() {
 }
 
 function makeAutoComplete({ selector, minChars, cb, display, value }) {
+    log.info(`- makeAutoComplete()
+    - selector: ${selector}
+    - minChars: ${minChars}
+    - cb: ${cb}
+    - display: ${display}
+    - value: ${value}`);
+
     return new autoComplete({
 
         // 'selector': The input field to which the autoComplete will be 
@@ -112,6 +116,8 @@ function makeAutoComplete({ selector, minChars, cb, display, value }) {
 }
 
 function initAdvSearch() {
+    log.info(`- initAdvSearch()`);
+
     makeAutoComplete({
         selector: 'input[name="as-journalTitle"]',
         minChars: 2, 
