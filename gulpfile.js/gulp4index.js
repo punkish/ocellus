@@ -62,6 +62,7 @@ async function css() {
             `${source}/css/quicksearch.css`,
             `${source}/css/toggles-lib.css`,
             `${source}/css/grid.css`,
+            `${source}/css/figure.css`,
             `${source}/css/carousel.css`,
             `${source}/css/charts.css`,
             `${source}/css/throbber.css`,

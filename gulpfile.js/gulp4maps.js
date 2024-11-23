@@ -62,6 +62,7 @@ async function css() {
             `${source}/css/header.css`,
             // `${source}/css/toggles.css`,
             // `${source}/css/grid.css`,
+            `${source}/css/figure.css`,
             `${source}/css/throbber.css`,
             `${source}/css/sparkline.css`,
             `${source}/css/map.css`,
