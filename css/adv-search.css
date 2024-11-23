@@ -5,6 +5,26 @@ div.advanced-search {
     border-radius: 10px;
     padding: 20px;
 }
+/* Larger than phablet */
+@media (min-width: 550px) {
+    div.advanced-search {
+        max-width: 760px;
+    }
+}
+
+/* Larger than tablet */
+@media (min-width: 768px) {
+    div.advanced-search {
+        max-width: 760px;
+    }
+}
+
+/* Larger than desktop */
+@media (min-width: 1100px) { 
+    div.advanced-search {
+        max-width: 930px;
+    }
+}
 
 div.advanced-search input[type=text]:focus {
     border-bottom: blue 2px solid !important;
@@ -16,7 +36,6 @@ div.advanced-search input[type=date] {
     border-bottom: 1px solid grey;
     width: 100%;
 }
-
 div.advanced-search input[type='date'] {
     width: 130px !important;
 }
@@ -34,7 +53,6 @@ div.advanced-search input[name="as-status"] {
 div.advanced-search input[name="as-status"]:checked {
     background-color: green;
 }
-
 input[name="as-refreshCache"] {
     margin-right: 10px;
 }
@@ -43,19 +61,54 @@ input[name="as-refreshCache"] {
 .flex-outer > li > label.empty {
     margin-left: -200px;
 }
-
 .flex-outer > li > label.empty2 {
     margin-left: -100px;
 }
 
-#mapSearch {
-    --map-width: 100%;
+/* Larger than mobile */
+@media only screen and (min-width: 400px) {
+    .flex-outer > li > label {
+        text-align: right;
+        padding-right: 20px;
+    }
+    .flex-outer > li > label.empty {
+        margin-left: unset;
+    }
+    .flex-outer > li > label.empty2 {
+        margin-left: unset;
+    }
 }
 
 #mapSearch {
+    --map-width: 100%;
     width: var(--map-width);
     height: calc( 0.75 * var(--map-width) + 30px );
     min-height: 230px;
+}
+
+/* Larger than mobile */
+@media only screen and (min-width: 400px) {
+    #mapSearch {
+        min-height: 480px;
+    }
+}
+
+/* Larger than tablet */
+@media (min-width: 768px) {
+    #mapSearch {
+        /* width: 720px;
+        height: 540px; */
+        min-height: 540px;
+    }
+}
+
+/* Larger than desktop */
+@media (min-width: 1100px) {
+    #mapSearch {
+        /* width: 850px;
+        height: 637px; */
+        min-height: 600px;
+    }
 }
 
 /* wildcard * in CSS for classes */

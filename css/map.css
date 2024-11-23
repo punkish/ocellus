@@ -1,5 +1,5 @@
 #map {
-    --top: 45px;
+    --top: 50px;
     position: absolute;
     top: var(--top);
     bottom: 0;

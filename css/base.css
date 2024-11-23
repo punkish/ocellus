@@ -60,6 +60,22 @@ div.title a,
     /* https://www.w3schools.com/csS/css3_shadows_box.asp */
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+
+/* Larger than phablet */
+@media (min-width: 550px) {
+    .modal {
+        max-width: unset;
+    }
+}
+
+/* Larger than desktop */
+@media (min-width: 1100px) {
+    .modal {
+        max-width: 960px;
+        left: calc(50% - 480px);
+    }
+}
+
 .block {
     display: block;
 }

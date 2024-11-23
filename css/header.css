@@ -3,9 +3,6 @@ header {
     position: relative;
     display: block;
 }
-/* header .title {
-    display: none;
-} */
 header .title h1 {
     margin: 0 0 0px 0;
 }
@@ -15,6 +12,33 @@ header .title h1 a {
     font-weight: 100;
     font-size: 24px;
 }
+header div.subtitle {
+    display: none;
+}
+
+/* Larger than phablet */
+@media (min-width: 550px) {
+    /* header .title {
+        display: block;
+    } */
+    header .title h1 a {
+        font-size: 27px !important;
+    }
+    header div.subtitle {
+        display: block;
+    }
+}
+
+/* TODO: where is default header .small */
+
+/* Larger than tablet */
+@media (min-width: 768px) {
+    header .small {
+        text-transform: uppercase;
+        font-size: 10px;
+    }
+}
+
 #brand {
     color: grey;
     font-size: 12px;
@@ -24,11 +48,16 @@ header .title h1 a {
     top: 5px;
     cursor: pointer;
 }
+
+/* Larger than phablet */
+@media (min-width: 550px) {
+    #brand {
+        left: calc(50% + 43px);
+    }
+}
+
 .smallbrand,
 .smallbrand a {
     font-size: 8px !important;
     
-}
-header .subtitle {
-    display: none;
 }

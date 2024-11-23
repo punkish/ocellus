@@ -11,6 +11,16 @@
     white-space: nowrap;
     overflow-x: auto;
 }
+
+/* Larger than tablet */
+@media (min-width: 768px) {
+    #sparkBox {
+        height: auto;
+        width: 100%;
+        overflow: hidden;
+    }
+}
+
 #sparkBox div {
     display: inline;
 }
@@ -19,6 +29,14 @@
     margin-right: 0;
     transition: all 0.3s ease;
 }
+
+/* Larger than tablet */
+@media (min-width: 768px) {
+    .sparkChart {
+        display: inline-block;
+    }
+}
+
 .sparkChart:hover, 
 .sparkChart:focus {
     transform: scale(4) translate(10px, -15px);

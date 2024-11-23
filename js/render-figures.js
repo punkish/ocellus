@@ -85,7 +85,7 @@ const makeImage = ({ figureSize, rec, target }) => {
             </summary>
             <p>${rec.captionText}</p>
             ${treatmentLink}<br>
-            ${zenodoLink}
+            ${zenodoLink}<br>
         </details>
         `;
     }

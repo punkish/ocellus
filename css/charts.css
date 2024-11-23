@@ -36,13 +36,60 @@ details.charts summary {
     font-size: 10pt;
     font-family: sans-serif;
 }
+details.charts summary span {
+    color: black;
+}
+details.charts summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Larger than tablet */
+@media (min-width: 768px) {
+    #charts-container,
+    #charts {
+        display: block;
+        visibility: hidden;
+        border: 1px solid lightgrey;
+        border-top: none;
+        padding-bottom: 20px;
+        background-color: white;
+    }
+    details.charts {
+        box-sizing: border-box;
+        margin: 0 auto 20px auto;
+        background: white;
+        max-width: 790px;
+    }
+    details.charts summary {
+        border: 1px solid lightgrey;
+        border-radius: 5px 5px 0 0;
+        background: #f5f5f5;
+        cursor: pointer;
+        padding-left: 2rem;
+    }
+    details.charts[open] > summary:before {
+        transform: rotate(90deg);
+    }
+    details.charts summary:before {
+        content: "";
+        border-width: 0.4rem;
+        border-style: solid;
+        border-color: transparent transparent transparent #ccc;
+        position: absolute;
+        top: 0.7rem;
+        left: 1rem;
+        transform: rotate(0);
+        transform-origin: 0.2rem 50%;
+        transition: 0.25s transform ease;
+    }
+}
+
 #yearlyCounts,
 #termFreq {
     display: none;
     visibility: hidden;
 }
-div.caption span,
-details.charts summary span {
+div.caption span {
     color: black;
 }
 span.crit-key {
@@ -50,7 +97,4 @@ span.crit-key {
 }
 span.crit-val {
     font-weight: 800;
-}
-details.charts summary::-webkit-details-marker {
-    display: none;
 }
