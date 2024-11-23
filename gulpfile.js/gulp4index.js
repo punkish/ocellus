@@ -60,7 +60,7 @@ async function css() {
             `${source}/css/adv-search.css`,
             `${source}/css/examples.css`,
             `${source}/css/quicksearch.css`,
-            `${source}/css/toggles.css`,
+            `${source}/css/toggles-lib.css`,
             `${source}/css/grid.css`,
             `${source}/css/carousel.css`,
             `${source}/css/charts.css`,

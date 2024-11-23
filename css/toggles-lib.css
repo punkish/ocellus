@@ -1,0 +1,138 @@
+.toggle {
+    cursor: pointer;
+}
+
+/* toggle block or inline placement */
+.toggle-inline {
+    display: inline-block;
+}
+.toggle-block {
+    display: block;
+}
+/* end: toggle block or inline placement */
+
+.toggle-label {
+    font-family: sans-serif;
+    font-size: 8px;
+}
+
+/* the slot */
+.toggle-switch {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    transition: background 0.25s;
+}
+.toggle-switch:before, 
+.toggle-switch:after {
+    content: "";
+}
+/* end: the slot */
+
+/* the knob */
+.toggle-round {
+    border-radius: calc(var(--toggle-height) / 2);
+}
+.toggle-square {
+    border-radius: 0;
+}
+.toggle-round:before,
+.toggle-square:before {
+    display: block;
+    background: linear-gradient(to bottom, #fff 0%, #eee 100%);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+    position: absolute;
+    transition: left 0.25s;
+}
+.toggle-round:before {
+    border-radius: 50%;
+}
+.toggle-square:before {
+    border-radius: 0;
+}
+/* end: the knob */
+
+.toggle:hover .toggle-switch:before {
+  background: linear-gradient(to bottom, #fff 0%, #fff 100%);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+}
+
+/* the size */
+.toggle-small {
+    --toggle-width: 28px;
+}
+.toggle-medium {
+    --toggle-width: 38px;
+}
+.toggle-large {
+    --toggle-width: 48px;
+}
+.toggle-xlarge {
+    --toggle-width: 58px;
+}
+.toggle-xxlarge {
+    --toggle-width: 68px;
+}
+.toggle-small,
+.toggle-medium,
+.toggle-large,
+.toggle-xlarge,
+.toggle-xxlarge {
+    --toggle-height: calc(1px + (var(--toggle-width) / 2));
+    --toggle-knob-width: calc(var(--toggle-height) - 4px);
+    width: var(--toggle-width);
+    height: var(--toggle-height);
+}
+.toggle-small:before,
+.toggle-medium:before,
+.toggle-large:before,
+.toggle-xlarge:before,
+.toggle-xxlarge:before {
+    width: var(--toggle-knob-width);
+    height: var(--toggle-knob-width);
+    top: 2px;
+    left: 2px;
+}
+/* end: the size */
+
+/* colors */
+.toggle-green {
+    background: lightgreen;
+}
+.toggle-checkbox:checked + .toggle-green {
+    background: #56c080;
+}
+.toggle-red {
+    background: lightpink;
+}
+.toggle-checkbox:checked + .toggle-red {
+    background: red;
+}
+.toggle-blue {
+    background: lightblue;
+}
+.toggle-checkbox:checked + .toggle-blue {
+    background: darkblue;
+}
+.toggle-grey {
+    background: lightgrey;
+}
+.toggle-checkbox:checked + .toggle-grey {
+    background: #444;
+}
+/* end: colors */
+
+/* toggled (right) position of the knob */
+.toggle-checkbox:checked + .toggle-small:before,
+.toggle-checkbox:checked + .toggle-medium:before,
+.toggle-checkbox:checked + .toggle-large:before,
+.toggle-checkbox:checked + .toggle-xlarge:before,
+.toggle-checkbox:checked + .toggle-xxlarge:before {
+    left: calc((var(--toggle-width) / 2) + 1px);
+}
+/* end: toggled (right) position of the knob */
+
+.toggle-checkbox {
+  position: absolute;
+  visibility: hidden;
+}

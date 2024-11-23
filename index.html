@@ -52,7 +52,7 @@
     <link rel="stylesheet" href="css/adv-search.css">
     <link rel="stylesheet" href="css/examples.css">
     <link rel="stylesheet" href="css/quicksearch.css">
-    <link rel="stylesheet" href="css/toggles.css">
+    <link rel="stylesheet" href="css/toggles-lib.css">
     <link rel="stylesheet" href="css/grid.css">
     <link rel="stylesheet" href="css/carousel.css">
     <link rel="stylesheet" href="css/charts.css">
@@ -104,13 +104,18 @@
                                 data-pop="top" data-pop-no-shadow 
                                 data-pop-arrow data-pop-multiline>
 
-                                <label id="toggle4" class="toggle">
+                                <!-- <label id="toggle4" class="toggle">
                                     <input name="resource" 
                                     class="toggle-checkbox query" 
                                     type="checkbox" 
                                     value="treatments">
 
                                     <div class="toggle-switch"></div>
+                                </label> -->
+
+                                <label class="toggle toggle-inline">
+                                    <input name="resource" class="toggle-checkbox query" type="checkbox" value="treatments">
+                                    <div class="toggle-switch toggle-round toggle-medium toggle-green"></div>
                                 </label>
 
                             </div>
@@ -191,11 +196,17 @@
                 <div id="toggle-search" class="toggle-container"
                     aria-label="toggle between simple and advanced search" 
                     data-pop="left" data-pop-no-shadow data-pop-arrow>
-                    <label id="toggle5" class="toggle">
+
+                    <!-- <label id="toggle5" class="toggle">
                         <input name="searchtype" class="toggle-checkbox" 
                             type="checkbox" value="advSearch">
 
                         <div class="toggle-switch"></div>
+                    </label> -->
+
+                    <label class="toggle toggle-inline">
+                        <input name="searchtype" class="toggle-checkbox" type="checkbox" value="advSearch">
+                        <div class="toggle-switch toggle-round toggle-small toggle-grey"></div>
                     </label>
                 </div>
 

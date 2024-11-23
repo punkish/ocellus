@@ -388,7 +388,7 @@ const addListenersToFigureTypes = () => {
 function carousel(box) {
 
     // Read necessary elements from the DOM once
-    const next = box.querySelector('.next');
+    const next = box.querySelector('.toggle-checkbox');
     const prev = box.querySelector('.prev');
 
     // Define the global counter, the items and the current item 
@@ -433,17 +433,19 @@ function carousel(box) {
     next.addEventListener('click', function(ev) {
         navigate(1);
         drawMap(ev);
-        
-        // if (ev.target.src.indexOf('-img.svg') > -1) {
-        //     ev.target.src = 'img/icon-carousel-image-loc.svg';
+        //console.log(ev.target.innerHTML)
+
+        // if (ev.target.innerHTML === 'map') {
+        //     ev.target.innerHTML = 'img';
         // }
         // else {
-        //     ev.target.src = 'img/icon-carousel-image-img.svg';
+        //     ev.target.innerHTML = 'map';
         // }
+        
     });
-    prev.addEventListener('click', function(ev) {
-        navigate(-1);
-    });
+    // prev.addEventListener('click', function(ev) {
+    //     navigate(-1);
+    // });
 
     // show the first element 
     // (when direction is 0 counter doesn't change)

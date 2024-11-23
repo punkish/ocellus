@@ -19,6 +19,8 @@ function makeSlider({ resource, figureSize, rec }) {
         ? makeImage({ figureSize, rec })
         : makeTreatment({ figureSize, rec });
 
+    const rsc = resource === 'images' ? 'image' : 'treatment';
+
     const uniqId = resource === 'images'
         ? `${rec.treatments_id}-${rec.images_id}`
         : rec.treatments_id;
@@ -26,18 +28,15 @@ function makeSlider({ resource, figureSize, rec }) {
     if (rec.loc || rec.convexHull) {
         return `
         <div class="carouselbox">
-
-            <div class="buttons">
-                <button class="prev">
-                    ◀ <span class="offscreen">Previous</span>
-                </button>
-                <button class="next" 
+            <label class="toggle toggle-inline">
+                <span class="toggle-label">${rsc}</span>
+                <input class="toggle-checkbox" type="checkbox" 
                     data-loc=${JSON.stringify(rec.loc)} 
                     data-convexhull=${JSON.stringify(rec.convexHull)} 
                     data-id="${uniqId}">
-                    <span class="offscreen">Next</span> ▶︎
-                </button>
-            </div> 
+                <div class="toggle-switch toggle-square toggle-small toggle-grey"></div>
+                <span class="toggle-label">map</span>
+            </label>
 
             <div class="content">
                 <div class="slide">

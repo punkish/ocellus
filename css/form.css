@@ -248,3 +248,13 @@ input[disabled] {
     background-color: red;
     color: white;
 }
+/* tweak margins and spacings for resource and advanced search toggles */
+#toggle-resource {
+    float: left;
+    margin: 7px;
+}
+#toggle-search {
+    float: right;
+    right: 50px;
+    top: 5px;
+}
