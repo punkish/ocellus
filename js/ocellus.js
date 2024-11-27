@@ -21,7 +21,7 @@ function init() {
     else {
         const resource = 'images';
         updateSearchPlaceHolder(resource);
-        renderYearlyCountsSparkline(resource)
+        renderYearlyCountsSparkline(resource);
     }
 
     addListeners();

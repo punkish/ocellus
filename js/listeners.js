@@ -4,6 +4,7 @@ import { submitForm, updateSearchPlaceHolder, qs2form, form2qs } from './utils.j
 import { Accordion } from './accordion.js';
 import { getResource } from './querier.js';
 import { initializeMap } from './mapping/index.js';
+import { renderYearlyCountsSparkline } from './renderers.js';
 
 const addListeners = () => {
     log.info('- addListeners()');
@@ -203,6 +204,7 @@ const toggleResource = (e) => {
     // const resource = Array.from($$('input[name=resource]'))
     //     .filter(i => i.checked)[0];
     updateSearchPlaceHolder(resource);
+    renderYearlyCountsSparkline(resource);
 }
 
 // https://gomakethings.com/only-allowing-one-open-dropdown-at-a-time-with-the-details-element/
