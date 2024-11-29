@@ -13,7 +13,7 @@ function updateTotal(totals, cur) {
 
 const getCountOfResource = async (resource, getYearlyCounts, validGeo) => {
     const segment = validGeo ? `${resource}-geo` : resource;
-
+    console.log(`segment: ${segment}`);
     if (!globals.cache[segment].yearlyCounts) {
         let url = `${globals.uri.zenodeo}/${resource}?`
         

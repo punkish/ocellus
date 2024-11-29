@@ -385,6 +385,7 @@ async function renderYearlyCountsSparkline(
     - resource: ${resource}
     - validGeo: ${validGeo}
     - context: ${context}`);
+    console.log(validGeo)
 
     const getYearlyCounts = true;
     const yearlyCounts = await getCountOfResource(

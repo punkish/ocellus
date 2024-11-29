@@ -301,65 +301,6 @@ const resetPrompt = (e)=> {
     $('#refreshCache').checked = false;
 }
 
-/**
- * @function setSource
- * @summary activate the source of the images
- */
-// const setSource = (e) => {
-//     const sources = $$('input[name=resource');
-//     let source = 'all';
-//     sources.forEach(s => {
-//         if (s.checked) {
-//             source = s.value;
-//         }
-//     })
-
-//     let placeholder = 'search all images';
-//     if (source === 'Zenodo') {
-//         placeholder = 'search images from Zenodo';
-//     }
-//     else if (source === 'treatments') {
-//         placeholder = 'search images from treatments';
-//     }
-//     $('#q').placeholder = placeholder;
-// }
-
-/**
- * @function setView
- * @summary activate the correct tab on the form based on 'globals.view'
- */
-// const setView = (e) => {
-//     if (e) {
-//         globals.view = e.target.value;
-//     }
-
-//     //$(`#setview_${globals.view}`).checked = true;
-
-//     common.updateFooter();
-//     common.updatePlaceholder();
-
-//     // first, hide all the views
-//     Object.keys(globals.views).forEach(view => {
-//         globals
-//             .hiddenClasses
-//             .forEach(c => $(`#${view}`).classList.add(c));
-//     });
-
-//     // now, unhide results section based on globals.view
-//     // that is, make either the 'images' or the 'map'
-//     // or the 'treatments' section visible
-//     globals
-//         .hiddenClasses
-//         .forEach(c => $(`#${globals.view}`).classList.remove(c));
-
-//     const url = new URL(location);
-//     const searchParams = url.searchParams;
-//     searchParams.set('view', globals.view);
-
-//     history.pushState({}, null, url.href);
-// }
-
-
 const addListenersToFigDetails = () => {
     const figDetails = $$('figcaption > details');
 

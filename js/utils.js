@@ -40,7 +40,7 @@ function qs2form(qs) {
 
             if (key === 'resource') {
                 log.info(formatLog(`setting form to query resource "${val}"`, 3));
-                updatePlaceHolder(val);
+                updateSearchPlaceHolder(val);
                 const checked = val === 'treatments' ? true : false;
                 log.info(formatLog(`setting toggle-resource to "${checked}"`, 3));
                 $('input[name=resource]').checked = checked;
@@ -160,13 +160,13 @@ function smoke(e) {
 
     // hide the figure /////////////////////
     // https://stackoverflow.com/a/29168819
-    const t = e.currentTarget.parentNode.parentNode
-    hidden.push(t)
+    const t = e.currentTarget.parentNode.parentNode;
+    hidden.push(t);
     // sel_hiddenFigures.innerHTML = ` (${hidden.length} hidden) <a id="hide-unhide" href="#unhide">unhide</a>`
     // document.getElementById('hide-unhide').addEventListener('click', unhide)
-    t.style.opacity = 1
+    t.style.opacity = 1;
 
-    intervalId = setInterval(hide, 50)
+    intervalId = setInterval(hide, 50);
 }
 
 // click on [go] button gets query results and renders the page
@@ -188,15 +188,6 @@ function submitForm() {
 function updateSearchPlaceHolder(resource) {
     log.info(formatLog(`updateSearchPlaceHolder("${resource}")`, 1));
 
-    $('#q').placeholder = `search ${resource}`;
-}
-
-async function updatePlaceHolder(resource) {
-    log.info(formatLog(`updatePlaceHolder("${resource}")`, 1));
-
-    const getYearlyCounts = true;
-    const yearlyCounts = await getCountOfResource(resource, getYearlyCounts);
-    renderYearlyCountsSparkline(resource, yearlyCounts);
     $('#q').placeholder = `search ${resource}`;
 }
 
