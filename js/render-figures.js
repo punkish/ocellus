@@ -1,20 +1,30 @@
 import { globals } from "./globals.js";
 
-const makeTreatment = ({ figureSize, rec }) => {
-    let zenodoDep = '';
-    let zenodoLink = '';
+function makeLinks({ figureSize, rec }) {
+    const zenodoLink = rec.zenodoDep
+    ? `<img src="img/zenodo-gradient-35.png" width="35" height="14"> <a href="${globals.uri.zenodo}/records/${rec.zenodoDep}" target="_blank">more on Zenodo</a>`
+    : '';
 
-    if (rec.zenodoDep) {
-        zenodoLink = `<a href="${globals.uri.zenodo}/records/${rec.zenodoDep}" target="_blank" title="more on Zenodo" alt="more on Zenodo"><img class="zenodoLink" src="img/zenodo-gradient-round.svg" width="50"></a>`;
+    const treatmentLink = `<img src="img/treatmentBankLogo.png" width="35" height="14"> <a href="${globals.uri.treatmentBank}/${rec.treatmentId}" target="_blank">more on TreatmentBank</a>`;
+
+    const figcaptionClass = figureSize === 250 ? 'visible' : 'noblock';
+    const figureClass = `figure-${figureSize} ` + (rec.treatmentId ? 'tb' : '');
+
+    return { 
+        zenodoLink, 
+        treatmentLink, 
+        figcaptionClass, 
+        figureClass 
     }
+}
 
-    const figcaptionClass = figureSize === 250 
-        ? 'visible' 
-        : 'noblock';
-
-    const figureClass = `figure-${figureSize} ` + (rec.treatmentId 
-        ? 'tb' 
-        : '');
+const makeTreatment = ({ figureSize, rec }) => {
+    const { 
+        zenodoLink, 
+        treatmentLink, 
+        figcaptionClass, 
+        figureClass 
+    } = makeLinks({ figureSize, rec });
 
     const treatmentDOI = rec.treatmentDOI
         ? `<a href="https://dx.doi.org/${rec.treatmentDOI}">${rec.treatmentDOI}</a>`
@@ -43,29 +53,28 @@ const makeTreatment = ({ figureSize, rec }) => {
     <p class="citation">${citation}</p>
     <figcaption class="${figcaptionClass}">
         <div>
-            ${zenodoLink} <a href="${globals.uri.treatmentBank}/${rec.treatmentId}" target="_blank" title="more on TreatmentBank" alt="more on TreatmentBank"><img class="tbLink" src="img/treatmentBankLogo.png" width="100"></a>
+            ${treatmentLink}<br>
+            ${zenodoLink}
         </div>
     </figcaption>
 </figure>`
 }
 
 const makeImage = ({ figureSize, rec, target }) => {
-    const zenodoLink = rec.zenodoDep
-        ? `<img src="img/zenodo-gradient-35.png" width="35" height="14"> <a href="${globals.uri.zenodo}/records/${rec.zenodoDep}" target="_blank">more on Zenodo</a>`
+    const { 
+        zenodoLink, 
+        treatmentLink, 
+        figcaptionClass, 
+        figureClass 
+    } = makeLinks({ figureSize, rec });
+
+    let retryGetImage = `this.onerror=null; setTimeout(() => { this.src='${rec.uri}' }, 1000);`;
+    let resizeBox = (rec.loc || rec.convexHull)
+        ? `this.parentNode.parentNode.parentNode.parentNode.style.height=this.height+200+'px'`
         : '';
 
-    const treatmentLink = `<img src="img/treatmentBankLogo.png" width="35" height="14"> <a href="${globals.uri.treatmentBank}/${rec.treatmentId}" target="_blank">more on TreatmentBank</a>`;
-
-    const figcaptionClass = figureSize === 250 
-        ? 'visible' 
-        : 'noblock';
-
-    const figureClass = `figure-${figureSize}` + (rec.treatmentId ? ' tb' : '');
-
-    const retryGetImage = `this.onerror=null; setTimeout(() => { this.src='${rec.uri}' }, 1000);`;
-    const resizeBox = (rec.loc || rec.convexHull)
-        ? `this.parentNode.parentNode.parentNode.parentNode.style.height=this.height+150+'px'`
-        : '';
+    retryGetImage = '';
+    resizeBox = '';
 
     let figcaptionContent;
 
@@ -85,23 +94,25 @@ const makeImage = ({ figureSize, rec, target }) => {
             </summary>
             <p>${rec.captionText}</p>
             ${treatmentLink}<br>
-            ${zenodoLink}<br>
+            ${zenodoLink}
         </details>
         `;
     }
 
-    return `<figure class="${figureClass}">
-    <a class="zen" href="${rec.fullImage}"><img src="img/bug.gif" 
-        width="${rec.figureSize}" 
-        data-src="${rec.uri}" 
-        class="lazyload" 
-        data-recid="${rec.treatmentId}" 
-        onerror="${retryGetImage}"
-        onload="${resizeBox}"></a>
-    <figcaption class="${figcaptionClass}">
-        ${figcaptionContent}
-    </figcaption>
-</figure>`;
+    return `
+    <figure class="${figureClass}">
+        <a class="zen" href="${rec.fullImage}"><img src="img/bug.gif" 
+            width="${rec.figureSize}" 
+            data-src="${rec.uri}" 
+            class="lazyload" 
+            data-recid="${rec.treatmentId}" 
+            onerror="${retryGetImage}"
+            onload="${resizeBox}"></a>
+        <figcaption class="${figcaptionClass}">
+            ${figcaptionContent}
+        </figcaption>
+    </figure>
+`;
 }
 
 export { makeImage, makeTreatment }

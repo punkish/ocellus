@@ -1,4 +1,4 @@
-import { $ } from './base.js';
+import { $, $$ } from './base.js';
 import { globals } from './globals.js';
 import { renderYearlyCounts } from './renderers-charts.js';
 import { renderTermFreq } from './renderer-termFreq.js';
@@ -26,30 +26,63 @@ function makeSlider({ resource, figureSize, rec }) {
         : rec.treatments_id;
 
     if (rec.loc || rec.convexHull) {
+        // return `
+        // <div class="carouselbox">
+        //     <label class="toggle toggle-inline">
+        //         <span class="toggle-label">${rsc}</span>
+        //         <input class="toggle-checkbox" type="checkbox" 
+        //             data-loc=${JSON.stringify(rec.loc)} 
+        //             data-convexhull=${JSON.stringify(rec.convexHull)} 
+        //             data-id="${uniqId}">
+        //         <div class="toggle-switch toggle-square toggle-small toggle-grey"></div>
+        //         <span class="toggle-label">map</span>
+        //     </label>
+
+        //     <div class="content">
+        //         <div class="slide">
+        //             ${figure}
+        //         </div>
+        //         <div id="map-${uniqId}" class="map slide"></div>
+        //     </div>
+        // </div>`;
+
         return `
         <div class="carouselbox">
-            <label class="toggle toggle-inline">
-                <span class="toggle-label">${rsc}</span>
-                <input class="toggle-checkbox" type="checkbox" 
-                    data-loc=${JSON.stringify(rec.loc)} 
-                    data-convexhull=${JSON.stringify(rec.convexHull)} 
-                    data-id="${uniqId}">
-                <div class="toggle-switch toggle-square toggle-small toggle-grey"></div>
-                <span class="toggle-label">map</span>
-            </label>
+            <div class="buttons">
+                <label class="toggle toggle-inline">
+                    <span class="toggle-label">${rsc}</span>
+                    <input class="toggle-checkbox" type="checkbox" 
+                        data-loc=${JSON.stringify(rec.loc)} 
+                        data-convexhull=${JSON.stringify(rec.convexHull)} 
+                        data-id="${uniqId}">
+                    <div class="toggle-switch toggle-round toggle-small toggle-grey"></div>
+                    <span class="toggle-label">map</span>
+                </label>
+            </div>
 
-            <div class="content">
+            <div class="slides">
                 <div class="slide">
                     ${figure}
                 </div>
-                <div id="map-${uniqId}" class="map slide"></div>
+                <div class="slide">
+                    <div id="map-${uniqId}" class="map"></div>
+                </div>
             </div>
-        </div>`
+        </div>`;
     }
     else {
+        // return `
+        // <div class="slidr">
+        //     ${figure}
+        // </div>`
+
         return `
-        <div class="slidr">
-            ${figure}
+        <div class="carouselbox">
+            <div class="slides">
+                <div class="slide current">
+                    ${figure}
+                </div>
+            </div>
         </div>`
     }
     
@@ -81,7 +114,28 @@ const renderPage = ({
 
     $('#grid-images').classList.add(`columns-${figureSize}`);
 
-    renderSlides(slides, qs, prev, next);
+    if (slides.length) {
+        $('#grid-images').innerHTML = slides.join('');
+        // renderPager(qs, prev, next);
+        addListenersToFigDetails();
+        addListenersToFigureTypes();
+        addListenersToMapCarouselLink();
+    }
+
+    // if nothing is found, remove previous search results 
+    else {
+        $('#grid-images').innerHTML = '';
+    }
+
+    // const figs = $$('.carouselbox');
+
+    // for (const fig of figs) {
+    //     const tb = fig.querySelector('.tb');
+    //     const h = tb.clientHeight;
+    //     const m = fig.querySelector('.map');
+    //     m.setAttribute('style', `height:${h}px`);
+    //     console.log(m)
+    // }
     renderPager(qs, prev, next);
     $('#throbber').classList.add('nothrob');
 
@@ -129,24 +183,6 @@ const renderPage = ({
 
     if (resource === 'images') {
         lightUpTheBox();
-    }
-    
-}
-
-const renderSlides = (slides, qs, prev, next) => {
-    log.info('- renderSlides()');
-
-    if (slides.length) {
-        $('#grid-images').innerHTML = slides.join('');
-        // renderPager(qs, prev, next);
-        addListenersToFigDetails();
-        addListenersToFigureTypes();
-        addListenersToMapCarouselLink();
-    }
-    else {
-
-        // if nothing is found, remove previous search results 
-        $('#grid-images').innerHTML = '';
     }
 }
 

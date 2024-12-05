@@ -168,36 +168,27 @@ table {
     margin: 0;
 }
 
-
-#grid-images details {
-    /* border: 1px solid lightgray; */
+/* #grid-images details {
     border-radius: 4px;
     padding: 0.5em 0.5em 0;
 }
 #grid-images details summary {
-    /* font-weight: bold; */
+    font-weight: bold;
     margin: -0.5em -0.5em 0;
     padding: 0.5em;
-    /* box-shadow: inset 0 -3em 3em rgba(0, 0, 0, 0.1); */
-
-    /******************************/
-    /* limit length of summary    */
-    /* https://btxx.org/posts/te/ */
-    /******************************/
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 #grid-images details[open] {
     padding: 0.5em;
-    height: 120px;
     overflow: auto;
 }
 #grid-images details[open] summary {
     border-bottom: 1px solid #aaa;
     margin-bottom: 0.5em;
-}
-/* treatments figures */
+} */
+
 p.treatmentTitle {
     font-weight: bold;
     font-size: 150%;

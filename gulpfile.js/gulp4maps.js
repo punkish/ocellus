@@ -60,13 +60,11 @@ async function css() {
             `${source}/css/uglyduck.css`,
             `${source}/css/base.css`,
             `${source}/css/header.css`,
-            // `${source}/css/toggles.css`,
-            // `${source}/css/grid.css`,
             `${source}/css/figure.css`,
             `${source}/css/throbber.css`,
             `${source}/css/sparkline.css`,
-            `${source}/css/map.css`,
-            `${source}/css/media-queries.css`
+            `${source}/css/map.css`
+
         ])
         // .pipe(sourcemaps.init())
         .pipe(cleanCSS({compatibility: 'ie8'}))

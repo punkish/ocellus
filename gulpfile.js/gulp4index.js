@@ -72,8 +72,7 @@ async function css() {
             `${source}/css/treatmentDetails.css`,
             `${source}/css/sparkline.css`,
             `${source}/css/simpleLightbox.css`,
-            `${source}/css/simpleLightbox-modifiers.css`,
-            `${source}/css/media-queries.css`
+            `${source}/css/simpleLightbox-modifiers.css`
         ])
         .pipe(cleanCSS({compatibility: 'ie8'}))
 

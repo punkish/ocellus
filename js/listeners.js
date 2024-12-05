@@ -328,82 +328,76 @@ const addListenersToFigureTypes = () => {
     }
 }
 
-function carousel(box) {
+function setMapSize(carouselbox) {
+    const height = carouselbox.clientHeight;
+    const map = carouselbox.querySelector('.map');
 
-    // Read necessary elements from the DOM once
-    const next = box.querySelector('.toggle-checkbox');
-    const prev = box.querySelector('.prev');
+    if (!map.style.height) {
+
+        // Set map height to height of the carousel box minus the height 
+        // of the toggle control
+        map.style.height = `${height - 28}px`;
+    }
+}
+
+function carousel(box) {
+    const toggle = box.querySelector('.toggle-checkbox');
 
     // Define the global counter, the items and the current item 
     let counter = 0;
-    const items = box.querySelectorAll('.content .slide');
+    const items = box.querySelectorAll('.slide');
     const amount = items.length;
     let current = items[0];
 
-    box.classList.add('active');
+    // add event handlers to buttons
+    toggle.addEventListener('click', function(event) {
+        const tgt = event.currentTarget;
+        const carouselbox = tgt.parentNode.parentNode.parentNode;
+        setMapSize(carouselbox);
+
+        navigate(1);
+        drawMap(event);
+    });
+
+    // show the first element 
+    // (when direction is 0 counter doesn't change)
+    navigate(0);
 
     // navigate through the carousel
     function navigate(direction) {
 
         // hide the old current list item 
         current.classList.remove('current');
-        
+
         // calculate the new position
         counter = counter + direction;
 
-        // if the previous one was chosen
-        // and the counter is less than 0 
-        // make the counter the last element,
-        // thus looping the carousel
+        // if the previous one was chosen and the counter is less than 0 
+        // make the counter the last element, thus looping the carousel
         if (direction === -1 && counter < 0) { 
             counter = amount - 1; 
         }
 
-        // if the next button was clicked and there 
-        // is no items element, set the counter 
-        // to 0
+        // if the toggle button was clicked and there is no items element, 
+        // set the counter to 0
         if (direction === 1 && !items[counter]) { 
             counter = 0;
         }
 
-        // set new current element 
-        // and add CSS class
+        // set new current element and add CSS class
         current = items[counter];
         current.classList.add('current');
     }
-
-    // add event handlers to buttons
-    next.addEventListener('click', function(ev) {
-        navigate(1);
-        drawMap(ev);
-        //console.log(ev.target.innerHTML)
-
-        // if (ev.target.innerHTML === 'map') {
-        //     ev.target.innerHTML = 'img';
-        // }
-        // else {
-        //     ev.target.innerHTML = 'map';
-        // }
-        
-    });
-    // prev.addEventListener('click', function(ev) {
-    //     navigate(-1);
-    // });
-
-    // show the first element 
-    // (when direction is 0 counter doesn't change)
-    navigate(0);
-};
+}
 
 function drawMap(event) {
     const tgt = event.currentTarget;
-    const map = globals.maps[tgt.dataset.id];
-    //const point = [tgt.dataset.latitude, tgt.dataset.longitude];
-    
+    const id = tgt.dataset.id;
+    const map = globals.maps[id];
+
     if (!map) {
-        const map = L.map(`map-${tgt.dataset.id}`);
-        //.setView(point, 10);
-        globals.maps[tgt.dataset.id] = map;
+        const map = L.map(`map-${id}`);
+        globals.maps[id] = map;
         const mapSource = 'http://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}';
         // const mapSource = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
@@ -413,7 +407,7 @@ function drawMap(event) {
         }).addTo(map);
 
         const mcIcon = L.icon({
-            iconUrl: 'img/treatment.svg',
+            iconUrl: '../../img/treatment.svg',
             iconSize: [10, 10],
             iconAnchor: [5, 5],
             // popupAnchor: [-3, -76],
@@ -442,7 +436,10 @@ function drawMap(event) {
         }
         else if (tgt.dataset.convexhull) {
             const convexhull = JSON.parse(tgt.dataset.convexhull);
-            const polygon = L.polygon(convexhull, {color: '#9BC134', weight: 1}).addTo(map);
+            const polygon = L.polygon(
+                convexhull, 
+                { color: '#9BC134', weight: 1} 
+            ).addTo(map);
             convexhull.forEach((point, index) => {
                 L.marker(point, {icon: mcIcon}).addTo(map);
             });
@@ -453,7 +450,11 @@ function drawMap(event) {
 
 function addListenersToMapCarouselLink() {
     $$(".carouselbox").forEach(box => {
-        // m.addEventListener('click', drawMap)
+
+        if (!box.querySelector('.buttons')) {
+            return;
+        }
+
         carousel(box);
     });
 }

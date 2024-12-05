@@ -2,7 +2,8 @@ figure {
     position: relative;
     height: auto;
     border: 0px solid #444;
-    padding: 10px;
+    margin: 0;
+    padding: 0px;
     opacity: 1;
     text-align: center;
 }
@@ -60,16 +61,17 @@ figure.figure-50 {
     margin: 0 auto 10px auto;
 }
 figure.tb {
-    padding: 5px;
+    /* padding: 1rem; */
     font-family: sans-serif;
     font-size: 12px;
 }
 figcaption {
-    font-size: 10px;
+    font-family: helvetica,sans-serif;
+    font-size: 10pt;
     text-align: left;
     cursor: pointer;
-    line-height: 0.8rem;
-    padding-bottom: 1rem;
+    line-height: 1.1rem;
+    /* padding-bottom: 1rem; */
 }
 figcaption div.closed {
     height: 0;
@@ -82,4 +84,31 @@ figcaption div.open {
 }
 figcaption h3 {
     line-height: 1.25rem;
+}
+figcaption details {
+    border-radius: 4px;
+    padding: 0.5em 0.5em 0;
+}
+figcaption details summary {
+    font-weight: bold;
+    margin: -0.5em -0.5em 0;
+    padding: 0.5em;
+
+    /******************************/
+    /* limit length of summary    */
+    /* https://btxx.org/posts/te/ */
+    /******************************/
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+figcaption details[open] {
+    padding: 0.5em;
+    overflow: auto;
+}
+figcaption details[open] summary {
+    border-bottom: 1px solid #aaa;
+    margin-bottom: 0.5em;
+    overflow: unset;
+    white-space: unset;
 }
