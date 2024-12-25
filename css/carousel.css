@@ -1,4 +1,4 @@
-/* .slidr, */
+/* https://github.com/codepo8/simple-carousel/blob/master/carousel-simplest.html */
 .carouselbox {
     width: var(--image-size);
     position: relative;
@@ -31,9 +31,6 @@
     top: 30px;
     display: block;
 }
-/* .buttons {
-    display: none;
-} */
 .carouselbox .buttons {
     display: block;
     padding: 2px 0 6px 0;

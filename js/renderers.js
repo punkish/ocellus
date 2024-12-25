@@ -26,26 +26,6 @@ function makeSlider({ resource, figureSize, rec }) {
         : rec.treatments_id;
 
     if (rec.loc || rec.convexHull) {
-        // return `
-        // <div class="carouselbox">
-        //     <label class="toggle toggle-inline">
-        //         <span class="toggle-label">${rsc}</span>
-        //         <input class="toggle-checkbox" type="checkbox" 
-        //             data-loc=${JSON.stringify(rec.loc)} 
-        //             data-convexhull=${JSON.stringify(rec.convexHull)} 
-        //             data-id="${uniqId}">
-        //         <div class="toggle-switch toggle-square toggle-small toggle-grey"></div>
-        //         <span class="toggle-label">map</span>
-        //     </label>
-
-        //     <div class="content">
-        //         <div class="slide">
-        //             ${figure}
-        //         </div>
-        //         <div id="map-${uniqId}" class="map slide"></div>
-        //     </div>
-        // </div>`;
-
         return `
         <div class="carouselbox">
             <div class="buttons">
@@ -71,11 +51,6 @@ function makeSlider({ resource, figureSize, rec }) {
         </div>`;
     }
     else {
-        // return `
-        // <div class="slidr">
-        //     ${figure}
-        // </div>`
-
         return `
         <div class="carouselbox">
             <div class="slides">
@@ -127,15 +102,6 @@ const renderPage = ({
         $('#grid-images').innerHTML = '';
     }
 
-    // const figs = $$('.carouselbox');
-
-    // for (const fig of figs) {
-    //     const tb = fig.querySelector('.tb');
-    //     const h = tb.clientHeight;
-    //     const m = fig.querySelector('.map');
-    //     m.setAttribute('style', `height:${h}px`);
-    //     console.log(m)
-    // }
     renderPager(qs, prev, next);
     $('#throbber').classList.add('nothrob');
 

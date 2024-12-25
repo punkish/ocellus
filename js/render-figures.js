@@ -1,6 +1,6 @@
 import { globals } from "./globals.js";
 
-function makeLinks({ figureSize, rec }) {
+function makeLinks({ figureSize, rec, resource }) {
     const zenodoLink = rec.zenodoDep
     ? `<img src="img/zenodo-gradient-35.png" width="35" height="14"> <a href="${globals.uri.zenodo}/records/${rec.zenodoDep}" target="_blank">more on Zenodo</a>`
     : '';
@@ -8,7 +8,7 @@ function makeLinks({ figureSize, rec }) {
     const treatmentLink = `<img src="img/treatmentBankLogo.png" width="35" height="14"> <a href="${globals.uri.treatmentBank}/${rec.treatmentId}" target="_blank">more on TreatmentBank</a>`;
 
     const figcaptionClass = figureSize === 250 ? 'visible' : 'noblock';
-    const figureClass = `figure-${figureSize} ` + (rec.treatmentId ? 'tb' : '');
+    const figureClass = `figure-${figureSize} ` + (resource === 'treatment' ? 'tb' : 'img');
 
     return { 
         zenodoLink, 
@@ -24,7 +24,7 @@ const makeTreatment = ({ figureSize, rec }) => {
         treatmentLink, 
         figcaptionClass, 
         figureClass 
-    } = makeLinks({ figureSize, rec });
+    } = makeLinks({ figureSize, rec, resource: 'treatment' });
 
     const treatmentDOI = rec.treatmentDOI
         ? `<a href="https://dx.doi.org/${rec.treatmentDOI}">${rec.treatmentDOI}</a>`
@@ -66,7 +66,7 @@ const makeImage = ({ figureSize, rec, target }) => {
         treatmentLink, 
         figcaptionClass, 
         figureClass 
-    } = makeLinks({ figureSize, rec });
+    } = makeLinks({ figureSize, rec, resource: 'image' });
 
     let retryGetImage = `this.onerror=null; setTimeout(() => { this.src='${rec.uri}' }, 1000);`;
     let resizeBox = (rec.loc || rec.convexHull)

@@ -60,10 +60,12 @@ figure.figure-50 {
     width: 50px; 
     margin: 0 auto 10px auto;
 }
-figure.tb {
-    /* padding: 1rem; */
+figure {
     font-family: sans-serif;
     font-size: 12px;
+}
+figure.tb {
+    padding: 1rem;
 }
 figcaption {
     font-family: helvetica,sans-serif;
