@@ -13,7 +13,7 @@ function updateTotal(totals, cur) {
 
 const getCountOfResource = async (resource, getYearlyCounts, validGeo) => {
     const segment = validGeo ? `${resource}-geo` : resource;
-    console.log(`segment: ${segment}`);
+
     if (!globals.cache[segment].yearlyCounts) {
         let url = `${globals.uri.zenodeo}/${resource}?`
         
@@ -27,15 +27,15 @@ const getCountOfResource = async (resource, getYearlyCounts, validGeo) => {
             url += '&yearlyCounts=true';
         }
         
-        const response = await fetch(url, globals.fetchOpts);
+        const resp = await fetch(url, globals.fetchOpts);
         
         // if HTTP-status is 200-299
-        if (response.ok) {
-            const json = await response.json();
-            const count = json.item.result.count;
+        if (resp.ok) {
+            const json = await resp.json();
+            const { query, response } = json;
 
             if (getYearlyCounts) {
-                const yearlyCounts = json.item.result.yearlyCounts;
+                const yearlyCounts = response.yearlyCounts;
 
                 const startingValue = {
                     images: 0,
@@ -49,7 +49,7 @@ const getCountOfResource = async (resource, getYearlyCounts, validGeo) => {
                 globals.cache[segment].totals = totals;
             }
             else {
-                globals.cache[segment].totals[resource] = count;
+                globals.cache[segment].totals[resource] = response.count;
             }
         }
     
@@ -163,7 +163,7 @@ const getResource = async (qs) => {
             // are for images, they can have one or two sources, 
             // Zenodo and/or Zenodeo
             results.forEach(r => {
-
+                
                 if (typeof(r) != 'undefined') {
                     res.recs.push(...r.recs);
                     res.count += r.count;
@@ -218,17 +218,16 @@ const getResults = async ({ resource, queryString, figureSize }) => {
     - figureSize: ${figureSize}`);
 
     const url = `${globals.uri.zenodeo}/${resource}?${queryString}`;
-    const response = await fetch(url, globals.fetchOpts);
+    const resp = await fetch(url, globals.fetchOpts);
 
     // if HTTP-status is 200-299
-    if (response.ok) {
-        const json = await response.json();
-        const records = json.item.result.records;
+    if (resp.ok) {
+        const { query, response, stored, ttl, cacheHit } = await resp.json();
 
         const yearlyCounts = {};
 
-        if (json.item.result.yearlyCounts) {
-            const yc = json.item.result.yearlyCounts;
+        if (response.yearlyCounts) {
+            const yc = response.yearlyCounts;
 
             const startingValue = {
                 images: 0,
@@ -246,19 +245,19 @@ const getResults = async ({ resource, queryString, figureSize }) => {
             resource,
             count: 0,
             recs: [],
-            termFreq: json.item.result.termFreq,
+            termFreq: response.termFreq,
             yearlyCounts,
             prev: '',
             next: '',
-            stored: json.stored,
-            ttl: json.ttl,
-            cacheHit: json.cacheHit || false
+            stored,
+            ttl,
+            cacheHit
         };
 
-        if (records) {
-            results.count = results.count + json.item.result.count;
+        if (response.records) {
+            results.count = results.count + response.count;
 
-            records.forEach(r => {
+            response.records.forEach(r => {
                 const record = {};
 
                 if (resource === 'images') {

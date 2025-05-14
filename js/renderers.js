@@ -85,7 +85,8 @@ const renderPage = ({
     - qs: ${qs}
     - count: ${count}
     - prev: ${prev}
-    - next: ${next}`);
+    - next: ${next}
+    - cacheHit: ${cacheHit}`);
 
     $('#grid-images').classList.add(`columns-${figureSize}`);
 
@@ -387,7 +388,6 @@ async function renderYearlyCountsSparkline(
     - resource: ${resource}
     - validGeo: ${validGeo}
     - context: ${context}`);
-    console.log(validGeo)
 
     const getYearlyCounts = true;
     const yearlyCounts = await getCountOfResource(

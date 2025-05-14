@@ -2,14 +2,14 @@ import { globals } from './globals.js';
 
 async function getDataFromZenodeo({url, segment, display, value}) {
     console.log(`getting ${segment}`)
-    const response = await fetch(url);
+    const resp = await fetch(url);
 
     // if HTTP-status is 200-299
-    if (response.ok) {
-        const json = await response.json();
+    if (resp.ok) {
+        const { query, response } = await resp.json();
 
-        if ('item' in json) {
-            const records = json.item.result.records;
+        if ('records' in response) {
+            const records = response.records;
 
             if (records) {
                 globals.cache[segment] = records.map(r => {
@@ -20,9 +20,9 @@ async function getDataFromZenodeo({url, segment, display, value}) {
                 });
             }
         }
-        else {
-            globals.cache[segment] = json;
-        }
+        // else {
+        //     globals.cache[segment] = json;
+        // }
 
         return globals.cache[segment];
     }
