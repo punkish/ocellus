@@ -9,7 +9,7 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Thu May 15 2025 00:24:42 GMT+0200 (Central European Summer Time)">
+    <meta name="date" content="Fri Jun 27 2025 13:53:14 GMT+0200 (Central European Summer Time)">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4 image search</title>
@@ -34,7 +34,7 @@
 
     <link rel="stylesheet" href="./css/libs-combined.css">
 
-    <link rel="stylesheet" href="./css/ocellus-1747261482542.css">
+    <link rel="stylesheet" href="./css/ocellus-1751025194216.css">
 </head>
 <body>
     <header>
@@ -139,6 +139,23 @@
                         aria-label="find beetles" data-pop="bottom" 
                         data-pop-no-shadow 
                         data-pop-arrow>beetles</a>
+
+                    <a href="?order=Chiroptera"
+                        class="quicksearch bg-bat"
+                        aria-label="find bats" data-pop="bottom" 
+                        data-pop-no-shadow 
+                        data-pop-arrow>bats</a>
+                    <a href="?class=Reptilia"
+                        class="quicksearch bg-reptile"
+                        aria-label="find reptiles" 
+                        data-pop="bottom" data-pop-no-shadow 
+                        data-pop-arrow>reptiles</a>
+                    <a href="?family=Vespidae"
+                        class="quicksearch bg-wasp"
+                        aria-label="find wasps" data-pop="bottom" 
+                        data-pop-no-shadow 
+                        data-pop-arrow>wasps</a>
+
                     <a href="#"
                         id="search-help"
                         class="quicksearch2 bg-more"
@@ -175,11 +192,11 @@
                     <button class="example-insert">articleDOI=10.11646/zootaxa.5284.3.7</button>
                 </details>
                 <details open>
-                    <summary><img src="img/icon_fts_all.svg" width="30" align="top">from treatments with the given term anywhere in the text (a fulltext search against the entire treatment)</summary>
+                    <summary><img src="img/examples/" width="30" align="top">from treatments with the given term anywhere in the text (a fulltext search against the entire treatment)</summary>
                     <button class="example-insert">phylogeny</button><br>
                 </details>
                 <details open>
-                    <summary><img src="img/icon_fts_caption.svg" width="30" align="top">with the given term anywhere in the text of the image caption (a fulltext search against just the image caption)</summary>
+                    <summary><img src="img/examples/icon_fts_caption.svg" width="30" align="top">with the given term anywhere in the text of the image caption (a fulltext search against just the image caption)</summary>
                     <button class="example-insert">captionText=phylogeny</button><br>
                 </details>
                 <details>
@@ -444,7 +461,7 @@
     -->
     
     <script type="module">
-        import { init, showTooltip, hideTooltip } from './js/ocellus-1747261482542.js';
+        import { init, showTooltip, hideTooltip } from './js/ocellus-1751025194216.js';
         window.showTooltip = showTooltip;
         window.hideTooltip = hideTooltip;
         const SimpleLightbox = window.SimpleLightbox;
