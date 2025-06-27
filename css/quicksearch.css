@@ -14,7 +14,7 @@
     width: 35px; 
     height: 35px;
     background-size: 160px 120px;
-    background-image: url('/img/quicksearch-sprites.png');
+    background-image: url('/img/quicksearch-icons/quicksearch-sprites.png');
     cursor: pointer;
     display: inline-block;
 }
