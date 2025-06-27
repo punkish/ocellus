@@ -8,7 +8,8 @@
 }
 .quicksearch,
 .quicksearch2 {
-    border: 1px black solid;
+    border: 1px solid;
+    border-color: lightgrey;
     border-radius: 5px;
     width: 35px; 
     height: 35px;
@@ -23,6 +24,7 @@ a.quicksearch2 {
 }
 .quicksearch:hover,
 .quicksearch2:hover {
+    border-color: black;
     background-color: lightgray;
 }
 
@@ -59,11 +61,11 @@ a.quicksearch2 {
     background-position: -123px -3px;
 }
 .bg-beetle, 
-.bg-bat, 
-.bg-reptile, 
-.bg-wasp {
-    display: none;
-}
+    .bg-bat, 
+    .bg-reptile, 
+    .bg-wasp {
+        display: none;
+    }
 
 /* Larger than tablet */
 @media (min-width: 768px) {
