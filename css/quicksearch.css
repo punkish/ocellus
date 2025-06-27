@@ -6,39 +6,14 @@
     /*! padding-top: 5px; */
     margin-top: -8px
 }
-/* 
-#quicksearch img {
-    width: 30px;
-    height: 30px;
-    border: 1px solid lightgray;
-    border-radius: 2px;
-}
-#quicksearch img:hover {
-    background: lightgray;
-    border: 1px solid gray;
-}
-#quicksearch a, a.hover {
-    padding: 0;
-    border: 0;
-    background: none;
-} */
-/* .bg-icon1_ant,
-.bg-icon2_fish,
-.bg-icon3_spider,
-.bg-icon4_shrimp,
-.bg-icon5_beetle,
-.bg-icon6_more_examples {
-    width: 32px; height: 32px;
-    border: none;
-} */
-
 .quicksearch,
 .quicksearch2 {
-    border: 0px dotted;
-    width: 30px; 
-    height: 30px;
-    background-size: 124px 124px;
-    background-image: url('/img/css_sprites.png');
+    border: 1px black solid;
+    border-radius: 5px;
+    width: 35px; 
+    height: 35px;
+    background-size: 160px 120px;
+    background-image: url('/img/quicksearch-sprites.png');
     cursor: pointer;
     display: inline-block;
 }
@@ -50,24 +25,52 @@ a.quicksearch2 {
 .quicksearch2:hover {
     background-color: lightgray;
 }
-.bg-map {
-    background-position: -6px -6px;
-}
-.bg-more {
-    background-position: -47px -6px;
-}
-.bg-crustacean {
-    background-position: -6px -47px;
-}
-.bg-beetle {
-    background-position: -47px -47px;
-}
-.bg-spider {
-    background-position: -88px -6px;
+
+/* https://www.toptal.com/developers/css/sprite-generator */
+.bg-ant {
+    background-position: -4px -3px;
 }
 .bg-fish {
-    background-position: -89px -47px;
+    background-position: -83px -3px;
 }
-.bg-ant {
-    background-position: -6px -89px;
+.bg-spider {
+    background-position: -83px -83px;
+}
+.bg-crustacean {
+    background-position: -44px -44px;
+}
+.bg-beetle {
+    background-position: -4px -44px;
+}
+.bg-more {
+    background-position: -4px -83px;
+}
+.bg-map {
+    background-position: -83px -44px;
+}
+
+.bg-bat {
+    background-position: -44px -3px;
+}
+.bg-reptile {
+    background-position: -44px -83px;
+}
+.bg-wasp {
+    background-position: -123px -3px;
+}
+.bg-beetle, 
+.bg-bat, 
+.bg-reptile, 
+.bg-wasp {
+    display: none;
+}
+
+/* Larger than tablet */
+@media (min-width: 768px) {
+    .bg-beetle, 
+    .bg-bat, 
+    .bg-reptile, 
+    .bg-wasp {
+        display: inline-block;
+    }
 }
