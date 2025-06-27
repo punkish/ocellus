@@ -9,7 +9,7 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Fri Jun 27 2025 13:53:14 GMT+0200 (Central European Summer Time)">
+    <meta name="date" content="Fri Jun 27 2025 16:07:26 GMT+0200 (Central European Summer Time)">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4 image search</title>
@@ -34,7 +34,7 @@
 
     <link rel="stylesheet" href="./css/libs-combined.css">
 
-    <link rel="stylesheet" href="./css/ocellus-1751025194216.css">
+    <link rel="stylesheet" href="./css/ocellus-1751033246183.css">
 </head>
 <body>
     <header>
@@ -140,6 +140,7 @@
                         data-pop-no-shadow 
                         data-pop-arrow>beetles</a>
 
+                    <!-- visible only in tablet or larger screens -->
                     <a href="?order=Chiroptera"
                         class="quicksearch bg-bat"
                         aria-label="find bats" data-pop="bottom" 
@@ -155,6 +156,7 @@
                         aria-label="find wasps" data-pop="bottom" 
                         data-pop-no-shadow 
                         data-pop-arrow>wasps</a>
+                    <!-- end -->
 
                     <a href="#"
                         id="search-help"
@@ -187,12 +189,24 @@
                 <p>Click on the link to try the search<br><em><b>Note:</b> These extended syntax queries are currently only possible against treatments.</em></p>
     
                 <details open>
+                    <summary>bats<img src="img/quicksearch-icons/bat.png" width="30" align="top"></summary>
+                    <button class="example-insert">order=Chiroptera</button>
+                </details>
+                <details open>
+                    <summary>reptiles<img src="img/quicksearch-icons/reptile.png" width="30" align="top"></summary>
+                    <button class="example-insert">class=Reptilia</button>
+                </details>
+                <details open>
+                    <summary>wasps<img src="img/quicksearch-icons/wasp.png" width="30" align="top"></summary>
+                    <button class="example-insert">family=Vespidae</button>
+                </details>
+                <details open>
                     <summary>from the article with the given DOI (either of the two below will work)</summary>
                     <button class="example-insert">10.11646/zootaxa.5284.3.7</button><br>
                     <button class="example-insert">articleDOI=10.11646/zootaxa.5284.3.7</button>
                 </details>
                 <details open>
-                    <summary><img src="img/examples/" width="30" align="top">from treatments with the given term anywhere in the text (a fulltext search against the entire treatment)</summary>
+                    <summary><img src="img/examples/icon_fts_all.svg" width="30" align="top">from treatments with the given term anywhere in the text (a fulltext search against the entire treatment)</summary>
                     <button class="example-insert">phylogeny</button><br>
                 </details>
                 <details open>
@@ -461,7 +475,7 @@
     -->
     
     <script type="module">
-        import { init, showTooltip, hideTooltip } from './js/ocellus-1751025194216.js';
+        import { init, showTooltip, hideTooltip } from './js/ocellus-1751033246183.js';
         window.showTooltip = showTooltip;
         window.hideTooltip = hideTooltip;
         const SimpleLightbox = window.SimpleLightbox;
