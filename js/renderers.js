@@ -457,7 +457,7 @@ async function renderYearlyCountsSparkline(
 
 function abbrevNum(num) {
     if (num > 999) {
-        num = num < 999999 ? `${Math.round(num / 1000, 0)}K` : `${num}M`;
+        num = num < 999999 ? `${Math.round(num / 1000, 0)}K` : `${Math.round(num / 1000000, 2)}M`;
     }
      
     return num;
