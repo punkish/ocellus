@@ -281,9 +281,13 @@ function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
             const match = v.match(/(?<operator>\w+)\((?<term>[\w\s]+)\)/);
             
             if (match) {
-                const { operator, term } = match.groups;
+                let { operator, term } = match.groups;
+
+                if (operator === 'eq') {
+                    operator = 'is';
+                }
                 
-                criterion = `${tag1o}${k}${tagc}${operator.replace(/_/,' ')} ${tag2o}${term}${tagc}`;
+                criterion = `${tag1o}${k}${tagc} ${operator.replace(/_/,' ')} ${tag2o}${term}${tagc}`;
             }
             else {
                 if (k === 'q') {

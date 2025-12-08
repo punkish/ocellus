@@ -9,7 +9,7 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Fri Oct 03 2025 17:58:31 GMT+0200 (Central European Summer Time)">
+    <meta name="date" content="Mon Dec 08 2025 19:36:49 GMT+0100 (Central European Standard Time)">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4 image search</title>
@@ -34,7 +34,7 @@
 
     <link rel="stylesheet" href="./css/libs-combined.css">
 
-    <link rel="stylesheet" href="./css/ocellus-1759507111425.css">
+    <link rel="stylesheet" href="./css/ocellus-1765219009179.css">
 </head>
 <body>
     <header>
@@ -114,44 +114,44 @@
             
             <div id="bottom-menu">
                 <div id="quicksearch">
-                    <a  href="?family=Formicidae"
+                    <a  href="?family=eq(Formicidae)"
                         class="quicksearch bg-ant" 
                         aria-label="find ants" data-pop="bottom" 
                         data-pop-no-shadow 
                         data-pop-arrow>ants</a>
-                    <a href="?class=Actinopterygii" 
+                    <a href="?class=eq(Actinopterygii)" 
                         class="quicksearch bg-fish"
                         aria-label="find fishes" data-pop="bottom" 
                         data-pop-no-shadow 
                         data-pop-arrow>fishes</a>
-                    <a href="?class=Arachnida"
+                    <a href="?class=eq(Arachnida)"
                         class="quicksearch bg-spider"
                         aria-label="find spiders" data-pop="bottom" 
                         data-pop-no-shadow 
                         data-pop-arrow>spiders</a>
-                    <a href="?class=Malacostraca"
+                    <a href="?class=eq(Malacostraca)"
                         class="quicksearch bg-crustacean"
                         aria-label="find shrimp, crabs and other crustacea" 
                         data-pop="bottom" data-pop-no-shadow 
                         data-pop-arrow>crustacea</a>
-                    <a href="?order=Coleoptera"
+                    <a href="?order=eq(Coleoptera)"
                         class="quicksearch bg-beetle"
                         aria-label="find beetles" data-pop="bottom" 
                         data-pop-no-shadow 
                         data-pop-arrow>beetles</a>
 
                     <!-- visible only in tablet or larger screens -->
-                    <a href="?order=Chiroptera"
+                    <a href="?order=eq(Chiroptera)"
                         class="quicksearch bg-bat"
                         aria-label="find bats" data-pop="bottom" 
                         data-pop-no-shadow 
                         data-pop-arrow>bats</a>
-                    <a href="?class=Reptilia"
+                    <a href="?class=eq(Reptilia)"
                         class="quicksearch bg-reptile"
                         aria-label="find reptiles" 
                         data-pop="bottom" data-pop-no-shadow 
                         data-pop-arrow>reptiles</a>
-                    <a href="?family=Vespidae"
+                    <a href="?family=eq(Vespidae)"
                         class="quicksearch bg-wasp"
                         aria-label="find wasps" data-pop="bottom" 
                         data-pop-no-shadow 
@@ -188,6 +188,7 @@
             <div class="examples hidden">
                 <p>Click on the link to try the search<br><em><b>Note:</b> These extended syntax queries are currently only possible against treatments.</em></p>
     
+                <!--
                 <details open>
                     <summary>bats<img src="img/quicksearch-icons/bat.png" width="30" align="top"></summary>
                     <button class="example-insert">order=Chiroptera</button>
@@ -200,10 +201,10 @@
                     <summary>wasps<img src="img/quicksearch-icons/wasp.png" width="30" align="top"></summary>
                     <button class="example-insert">family=Vespidae</button>
                 </details>
+                -->
                 <details open>
-                    <summary>from the article with the given DOI (either of the two below will work)</summary>
-                    <button class="example-insert">10.11646/zootaxa.5284.3.7</button><br>
-                    <button class="example-insert">articleDOI=10.11646/zootaxa.5284.3.7</button>
+                    <summary>from the article with the given DOI</summary>
+                    <button class="example-insert">articleDOI=eq(10.11646/zootaxa.5284.3.7)</button>
                 </details>
                 <details open>
                     <summary><img src="img/examples/icon_fts_all.svg" width="30" align="top">from treatments with the given term anywhere in the text (a fulltext search against the entire treatment)</summary>
@@ -215,7 +216,7 @@
                 </details>
                 <details>
                     <summary>from the Museum für Naturkunde</summary>
-                    <button class="example-insert">collectionCode=MfN</button>
+                    <button class="example-insert">collectionCode=eq(MfN)</button>
                 </details>
                 <details>
                     <summary>from the articles published in the European Journal of Taxonomy</summary>
@@ -247,7 +248,7 @@
                 </details>
                 <details>
                     <summary>from treatments from family 'Agamidae'</summary>
-                    <button class="example-insert">family=Agamidae</button>
+                    <button class="example-insert">family=eq(Agamidae)</button>
                 </details>
                 <details>
                     <summary>text contains 'moloch' OR 'horridus'</summary>
@@ -475,7 +476,7 @@
     -->
     
     <script type="module">
-        import { init, showTooltip, hideTooltip } from './js/ocellus-1759507111425.js';
+        import { init, showTooltip, hideTooltip } from './js/ocellus-1765219009179.js';
         window.showTooltip = showTooltip;
         window.hideTooltip = hideTooltip;
         const SimpleLightbox = window.SimpleLightbox;
