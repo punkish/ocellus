@@ -321,7 +321,10 @@ function form2qs() {
             const fld = $(`input[name="as-${fldName}"]`);
 
             if (fld.value) {
-                sp.append(fldName, fld.value);
+
+                // using eq() ensures an equality SQL search instead of a 
+                // LIKE SQL search
+                sp.append(fldName, `eq(${fld.value})`);
             }
         });
         
