@@ -10,7 +10,7 @@ export const globals = {
 
     uri: {
         zenodeo: 'http://localhost:3010/v3',
-        maps: 'http://localhost:3000',
+        maps: 'http://localhost:3010/v3/geo',
         zenodo: 'https://zenodo.org',
         treatmentBank: 'https://tb.plazi.org/GgServer/html'
     },
