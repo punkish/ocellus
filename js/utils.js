@@ -328,19 +328,38 @@ function form2qs() {
             }
         });
         
-        const checkboxInputs = [
-            'status',
-            'refreshCache'
-        ];
+        // const checkboxInputs = [
+        //     'status',
+        //     'refreshCache'
+        // ];
 
-        checkboxInputs.forEach((fldName) => {
-            const fld = $(`input[name="as-${fldName}"]`);
+        // checkboxInputs.forEach((fldName) => {
+        //     const fld = $(`input[name="as-${fldName}"]`);
 
-            if (fld.checked || fld.checked === 'true') {
-                sp.append(fldName, fld.value);
-            }
+        //     if (fld.checked || fld.checked === 'true') {
+
+        //         if (fldName === 'status') {
+        //             sp.append(fldName, `eq(${fld.value}`);
+        //         }
+        //         else {
+        //             sp.append(fldName, fld.value);
+        //         }
+                    
+        //     }
             
-        });
+        // });
+
+        const status = $(`input[name="as-status"]`);
+        
+        if (status.checked || status.checked === 'true') {
+            sp.append('status', `eq(${status.value})`);
+        }
+
+        const refreshCache = $(`input[name="as-refreshCache"]`);
+        
+        if (refreshCache.checked || refreshCache.checked === 'true') {
+            sp.append('refreshCache', refreshCache.value);
+        }
 
         const selectInputs = [
             'journalYear',
