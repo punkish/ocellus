@@ -2,7 +2,7 @@
 
 *eye see you*
 
-A simple interface to the images in the [Biodiversity Literature Repository](https://biolitrepo.org) (BLR) built upon [Zenodeo](http://zenodeo.punkish.org), the `nodejs` API to the [Zenodo API](https://zenodo.org/api).
+A simple, mobile-first, interface to the images in the [Biodiversity Literature Repository](https://biolitrepo.org) (BLR) built upon [Zenodeo](http://zenodeo.punkish.org), the `nodejs` API to treatments data extracted from [TreatmentBank](https://treatmentbank.org).
 
 <figure>
     <img src="img/readme/readme-1.jpg" width="300" style="border:2px solid;">
