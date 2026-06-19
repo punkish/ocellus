@@ -65,6 +65,7 @@ function makeSlider({ resource, figureSize, rec }) {
 
 const renderPage = ({
     resource, 
+    layout,
     figureSize, 
     slides, 
     qs, 
@@ -80,6 +81,7 @@ const renderPage = ({
 }) => {
 
     log.info(`- renderPage()
+    - layout: ${layout}
     - figureSize: ${figureSize}px
     - figures: ${slides.length} slides
     - qs: ${qs}
@@ -88,7 +90,27 @@ const renderPage = ({
     - next: ${next}
     - cacheHit: ${cacheHit}`);
 
-    $('#grid-images').classList.add(`columns-${figureSize}`);
+    //$('#grid-images').classList.add(`columns-${figureSize}`);
+
+    const gridImages = $('#grid-images');
+    gridImages.classList.remove('layout-pg', 'columns-250', 'columns-100', 'columns-50');
+    
+    const chartsContainer = $('#charts-container');
+    if (layout === 'pg') {
+        gridImages.style.setProperty('--image-size', `${figureSize}px`);
+        gridImages.style.setProperty('--column-gap', '2px');
+        gridImages.classList.add('layout-pg');
+        if (chartsContainer) {
+            chartsContainer.classList.add('noblock');
+        }
+    } else {
+        gridImages.style.removeProperty('--image-size');
+        gridImages.style.removeProperty('--column-gap');
+        gridImages.classList.add(`columns-${figureSize}`);
+        if (chartsContainer) {
+            chartsContainer.classList.remove('noblock');
+        }
+    }
 
     if (slides.length) {
         $('#grid-images').innerHTML = slides.join('');

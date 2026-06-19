@@ -68,3 +68,19 @@
     /* display: hidden; */
     display: inline;
 }
+#topmenu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 5px;
+    padding: 0 10px;
+}
+
+#layout {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-family: sans-serif;
+}

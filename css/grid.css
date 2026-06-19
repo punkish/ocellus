@@ -319,3 +319,38 @@ div.close:hover:before {
 #pager a {
     margin: 1rem;
 }
+
+#grid-images.layout-pg {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    column-width: var(--image-size) !important;
+    column-gap: var(--column-gap) !important;
+    column-count: auto !important;
+}
+
+#grid-images.layout-pg .carouselbox {
+    border: none !important;
+    box-shadow: none !important;
+    margin-bottom: 2px !important;
+    width: var(--image-size) !important;
+}
+
+#grid-images.layout-pg .carouselbox .buttons {
+    display: none !important;
+}
+
+#grid-images.layout-pg .slide.current {
+    top: 0 !important;
+}
+
+#grid-images.layout-pg figure {
+    width: var(--image-size) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#grid-images.layout-pg figcaption {
+    display: none !important;
+}

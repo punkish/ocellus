@@ -17,6 +17,7 @@ const addListeners = () => {
     $('div.examples').addEventListener('toggle', controlDetails, true);
     $('input[name=searchtype').addEventListener('click', toggleAdvSearch);
     $('input[name=resource').addEventListener('click', toggleResource);
+    $('input[name=layout-toggle]').addEventListener('change', toggleLayout);
     $('select[name="as-publicationDate"]').addEventListener('change', toggleDateSelector);
     $('select[name="as-checkinTime"]').addEventListener('change', toggleDateSelector);
 
@@ -205,6 +206,21 @@ const toggleResource = (e) => {
     //     .filter(i => i.checked)[0];
     updateSearchPlaceHolder(resource);
     renderYearlyCountsSparkline(resource);
+}
+
+const toggleLayout = (e) => {
+    const layoutInput = $('input[name=layout]');
+    const imgInput = $('input[name=img]');
+    
+    if (e.target.checked) {
+        layoutInput.value = 'pg';
+        imgInput.value = '50';
+    } else {
+        layoutInput.value = 'normal';
+        imgInput.value = '250';
+    }
+    
+    submitForm();
 }
 
 // https://gomakethings.com/only-allowing-one-open-dropdown-at-a-time-with-the-details-element/
@@ -514,6 +530,7 @@ export {
     addListenersToMapCarouselLink,
     toggleSearch,
     toggleResource,
+    toggleLayout,
     toggleWarn,
     toggleAdvSearch,
     toggleDateSelector,
