@@ -73,11 +73,8 @@ const getResource = async (qs) => {
     // save page and size to use later to update the results
     const page = sp.get('page');
     const size = sp.get('size');
-    const layoutEl = $('input[name=layout]');
-    const imgEl = $('input[name=img]');
-    const layout = layoutEl ? layoutEl.value : 'normal';
-    const imgSize = imgEl ? imgEl.value : (layout === 'pg' ? '50' : '250');
-    const figureSize = parseInt(imgSize, 10);
+    const grid = sp.get('grid') || 'normal';
+    const figureSize = globals.figureSize[grid];
 
     // what are we getting, images or treatments?
     const resource = sp.get('resource');
@@ -190,7 +187,6 @@ const getResource = async (qs) => {
 
             const resultsObj = {
                 resource,
-                layout,
                 figureSize,
                 slides,
                 qs, 

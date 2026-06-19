@@ -475,18 +475,7 @@ function updateUrl(qs) {
 
     const state = {};
     const title = '';
-
-    const layoutEl = $('input[name=layout]');
-    const imgEl = $('input[name=img]');
-    const layout = layoutEl ? layoutEl.value : 'normal';
-    const img = imgEl ? imgEl.value : '250';
-
-    let hash = '';
-    if (layout === 'pg') {
-        hash = `#layout=pg&img=${img}`;
-    }
-
-    const url = `?${qs}${hash}`;
+    const url = `?${qs}`;
     history.pushState(state, title, url);
 }
 
