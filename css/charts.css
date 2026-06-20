@@ -98,3 +98,8 @@ span.crit-key {
 span.crit-val {
     font-weight: 800;
 }
+
+/* [gemini] Hide charts container when layout is toggled to photogrid */
+#charts-container.noblock {
+    display: none !important;
+}

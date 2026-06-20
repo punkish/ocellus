@@ -45,7 +45,11 @@ export const globals = {
         totalCount: 0,
         figures: [],
         page: 1,
-        size: 30
+        size: 30,
+        // [gemini] Tracks whether photogrid has been loaded from the server during the current query session
+        photogridLoaded: false,
+        // [gemini] Tracks the currently active photogrid visual theme (journal, slate, editorial)
+        activeTheme: 'journal'
     },
 
     // resource are what are fetched from remote and displayed

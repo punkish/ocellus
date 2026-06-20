@@ -1,0 +1,71 @@
+/* [gemini] Stylesheets for the three visual themes of the photogrid layout */
+
+/* --- Theme 1: "The Journal Monograph" (Default) --- */
+#grid-images.layout-pg.theme-journal {
+    column-gap: 8px !important;
+    background: transparent;
+    padding: 0 10px !important;
+}
+
+#grid-images.layout-pg.theme-journal .carouselbox {
+    border: 1px solid #e1e4e8 !important;
+    background: #fafbfc;
+    border-radius: 4px;
+    margin-bottom: 8px !important;
+    padding: 4px;
+    box-shadow: 0 1px 3px rgba(27, 31, 35, 0.04) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+#grid-images.layout-pg.theme-journal .carouselbox:hover {
+    transform: translateY(-2px);
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 4px 12px rgba(27, 31, 35, 0.08) !important;
+}
+
+/* --- Theme 2: "The Museum Catalog" (Slate) --- */
+#grid-images.layout-pg.theme-slate {
+    background: #1a1f26;
+    padding: 12px !important;
+    border-radius: 6px;
+    column-gap: 6px !important;
+    transition: background 0.3s ease;
+}
+
+#grid-images.layout-pg.theme-slate .carouselbox {
+    border: 1px solid #2d3540 !important;
+    background: #12161a;
+    border-radius: 3px;
+    margin-bottom: 6px !important;
+    padding: 2px;
+    transition: border-color 0.2s ease, filter 0.2s ease;
+    filter: brightness(0.9);
+    box-shadow: none !important;
+}
+
+#grid-images.layout-pg.theme-slate .carouselbox:hover {
+    border-color: #4e5d6c !important;
+    filter: brightness(1.0);
+}
+
+/* --- Theme 3: "The Editorial Plinth" (Editorial) --- */
+#grid-images.layout-pg.theme-editorial {
+    column-gap: 10px !important;
+    background: transparent;
+    padding: 0 10px !important;
+}
+
+#grid-images.layout-pg.theme-editorial .carouselbox {
+    border: 1px solid #eae6df !important;
+    background: #fdfcfb;
+    border-radius: 6px;
+    margin-bottom: 10px !important;
+    padding: 5px;
+    box-shadow: 0 2px 8px rgba(120, 110, 95, 0.04) !important;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+}
+
+#grid-images.layout-pg.theme-editorial .carouselbox:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 16px rgba(120, 110, 95, 0.08) !important;
+}

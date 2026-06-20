@@ -64,6 +64,8 @@
     <link rel="stylesheet" href="css/sparkline.css">
     <link rel="stylesheet" href="css/simpleLightbox.css">
     <link rel="stylesheet" href="css/simpleLightbox-modifiers.css">
+    <!-- [gemini] Stylesheets for the photogrid visual themes -->
+    <link rel="stylesheet" href="css/themes.css">
     <!-- endbuild -->
 </head>
 <body>
@@ -453,6 +455,16 @@
                         <div class="toggle-switch toggle-round toggle-small toggle-grey"></div>
                         <span class="toggle-label">photogrid</span>
                     </label>
+                    <!-- [gemini] Grid size widget to adjust grid image width between 50px and 100px in steps of 25px -->
+                    <div id="gridsize-widget" class="noblock" style="margin-left: 20px;">
+                        <button id="gridsize-minus" type="button" class="gridsize-btn" aria-label="decrease image size">-</button>
+                        <span id="gridsize-display" style="font-family: sans-serif; font-size: 10px; margin: 0 5px; vertical-align: middle;">50px</span>
+                        <button id="gridsize-plus" type="button" class="gridsize-btn" aria-label="increase image size">+</button>
+                    </div>
+                    <!-- [gemini] Theme cycling widget to switch between photogrid visual themes -->
+                    <div id="theme-widget" class="noblock" style="margin-left: 20px;">
+                        <button id="theme-cycle" type="button" class="gridsize-btn" style="min-width: 120px;" aria-label="cycle visual themes">theme: journal</button>
+                    </div>
                 </div>
 
                 <!-- <div id="search-criteria"></div> -->

@@ -6,6 +6,8 @@ import { addListeners, showTooltip, hideTooltip } from './listeners.js';
 import { initAdvSearch } from './adv-search.js';
 import { initializeMap } from './mapping/index.js';
 import { renderYearlyCountsSparkline } from './renderers.js';
+// [gemini] Import globals to access and store the loaded active theme
+import { globals } from './globals.js';
 
 function init() {
     const loc = new URL(location);
@@ -29,6 +31,11 @@ function init() {
             if (imgInput) {
                 imgInput.value = img;
             }
+        }
+        // [gemini] Parse and set active theme from URL hash on load
+        const theme = hashParams.get('theme');
+        if (theme) {
+            globals.results.activeTheme = theme;
         }
     }
 

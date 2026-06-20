@@ -97,6 +97,9 @@ const renderPage = ({
     
     const chartsContainer = $('#charts-container');
     
+    // [gemini] Store totalCount in globals to access it during layout toggles
+    globals.results.totalCount = count;
+
     if (layout === 'pg') {
         gridImages.style.setProperty('--image-size', `${figureSize}px`);
         gridImages.style.setProperty('--column-gap', '2px');
@@ -104,6 +107,16 @@ const renderPage = ({
         if (chartsContainer) {
             chartsContainer.classList.add('noblock');
         }
+        // [gemini] Show grid size widget and set display text when photogrid loads
+        const sizeWidget = $('#gridsize-widget');
+        if (sizeWidget) {
+            sizeWidget.classList.remove('noblock');
+        }
+        const sizeDisplay = $('#gridsize-display');
+        if (sizeDisplay) {
+            sizeDisplay.innerText = `${figureSize}px`;
+        }
+        globals.results.photogridLoaded = true;
     } 
     else {
         gridImages.style.removeProperty('--image-size');
@@ -112,6 +125,12 @@ const renderPage = ({
         if (chartsContainer) {
             chartsContainer.classList.remove('noblock');
         }
+        // [gemini] Hide grid size widget when default layout is active
+        const sizeWidget = $('#gridsize-widget');
+        if (sizeWidget) {
+            sizeWidget.classList.add('noblock');
+        }
+        globals.results.photogridLoaded = false;
     }
 
     if (slides.length) {

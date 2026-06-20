@@ -18,6 +18,9 @@ const addListeners = () => {
     $('input[name=searchtype').addEventListener('click', toggleAdvSearch);
     $('input[name=resource').addEventListener('click', toggleResource);
     $('input[name=layout-toggle]').addEventListener('change', toggleLayout);
+    // [gemini] Listeners for the grid size adjust buttons
+    $('#gridsize-plus').addEventListener('click', () => adjustGridSize(25));
+    $('#gridsize-minus').addEventListener('click', () => adjustGridSize(-25));
     $('select[name="as-publicationDate"]').addEventListener('change', toggleDateSelector);
     $('select[name="as-checkinTime"]').addEventListener('change', toggleDateSelector);
 
@@ -208,20 +211,142 @@ const toggleResource = (e) => {
     renderYearlyCountsSparkline(resource);
 }
 
-const toggleLayout = (e) => {
+// [gemini] Helper to sync layout hidden inputs and browser URL search and hash params
+const syncFormInputsAndHash = (isPg, imgSize) => {
     const layoutInput = $('input[name=layout]');
     const imgInput = $('input[name=img]');
-    
-    if (e.target.checked) {
-        layoutInput.value = 'pg';
-        imgInput.value = '50';
-    } 
-    else {
-        layoutInput.value = 'normal';
-        imgInput.value = '250';
+    if (layoutInput) {
+        layoutInput.value = isPg ? 'pg' : 'normal';
     }
-    
-    submitForm();
+    if (imgInput) {
+        imgInput.value = isPg ? imgSize.toString() : '250';
+    }
+
+    const loc = new URL(window.location);
+    const searchParams = loc.search;
+    let newHash = '';
+    if (isPg) {
+        newHash = `#layout=pg&img=${imgSize}`;
+    }
+    const newUrl = `${loc.pathname}${searchParams}${newHash}`;
+    window.history.pushState({}, '', newUrl);
+}
+
+// [gemini] Flip the image grid layout to photogrid (pg) client-side
+const flipLayoutToPg = (imgSize) => {
+    const gridImages = $('#grid-images');
+    if (gridImages) {
+        gridImages.classList.remove('layout-pg', 'columns-250', 'columns-100', 'columns-50');
+        gridImages.style.setProperty('--image-size', `${imgSize}px`);
+        gridImages.style.setProperty('--column-gap', '2px');
+        gridImages.classList.add('layout-pg');
+    }
+
+    const chartsContainer = $('#charts-container');
+    if (chartsContainer) {
+        chartsContainer.classList.add('noblock');
+    }
+
+    const sizeWidget = $('#gridsize-widget');
+    if (sizeWidget) {
+        sizeWidget.classList.remove('noblock');
+    }
+
+    const sizeDisplay = $('#gridsize-display');
+    if (sizeDisplay) {
+        sizeDisplay.innerText = `${imgSize}px`;
+    }
+
+    const layoutToggle = $('input[name=layout-toggle]');
+    if (layoutToggle) {
+        layoutToggle.checked = true;
+    }
+}
+
+// [gemini] Flip the image grid layout to default client-side
+const flipLayoutToDefault = () => {
+    const gridImages = $('#grid-images');
+    if (gridImages) {
+        gridImages.classList.remove('layout-pg', 'columns-250', 'columns-100', 'columns-50');
+        gridImages.style.removeProperty('--image-size');
+        gridImages.style.removeProperty('--column-gap');
+        gridImages.classList.add('columns-250');
+    }
+
+    const chartsContainer = $('#charts-container');
+    if (chartsContainer) {
+        chartsContainer.classList.remove('noblock');
+    }
+
+    const sizeWidget = $('#gridsize-widget');
+    if (sizeWidget) {
+        sizeWidget.classList.add('noblock');
+    }
+
+    const layoutToggle = $('input[name=layout-toggle]');
+    if (layoutToggle) {
+        layoutToggle.checked = false;
+    }
+}
+
+// [gemini] Adjusts grid image size by delta on client-side (bounds: 50px - 100px)
+const adjustGridSize = (delta) => {
+    const imgInput = $('input[name=img]');
+    let currentSize = imgInput ? parseInt(imgInput.value, 10) || 50 : 50;
+
+    let newSize = currentSize + delta;
+    if (newSize < 50) newSize = 50;
+    if (newSize > 100) newSize = 100;
+
+    const gridImages = $('#grid-images');
+    if (gridImages) {
+        gridImages.style.setProperty('--image-size', `${newSize}px`);
+    }
+
+    const sizeDisplay = $('#gridsize-display');
+    if (sizeDisplay) {
+        sizeDisplay.innerText = `${newSize}px`;
+    }
+
+    syncFormInputsAndHash(true, newSize);
+}
+
+// [gemini] Toggles layout. Fires submitForm() first time photogrid is requested, subsequent toggles happen client-side
+const toggleLayout = (e) => {
+    const isChecked = e.target.checked;
+
+    if (isChecked) {
+        if (globals.results.photogridLoaded) {
+            const imgInput = $('input[name=img]');
+            const imgSize = imgInput ? parseInt(imgInput.value, 10) || 50 : 50;
+            flipLayoutToPg(imgSize);
+            syncFormInputsAndHash(true, imgSize);
+        } else {
+            const resultCount = globals.results.totalCount || 0;
+            const pgSize = Math.min(200, resultCount || 200);
+
+            const layoutInput = $('input[name=layout]');
+            const imgInput = $('input[name=img]');
+            const sizeInput = $('input[name=size]');
+
+            if (layoutInput) layoutInput.value = 'pg';
+            if (imgInput) imgInput.value = '50';
+            if (sizeInput) sizeInput.value = pgSize.toString();
+
+            submitForm();
+        }
+    } else {
+        if (globals.results.photogridLoaded) {
+            flipLayoutToDefault();
+            syncFormInputsAndHash(false, 50);
+        } else {
+            const layoutInput = $('input[name=layout]');
+            const imgInput = $('input[name=img]');
+            if (layoutInput) layoutInput.value = 'normal';
+            if (imgInput) imgInput.value = '250';
+            submitForm();
+        }
+    }
 }
 
 // https://gomakethings.com/only-allowing-one-open-dropdown-at-a-time-with-the-details-element/
