@@ -214,6 +214,8 @@ const getResource = async (qs) => {
             }
 
             renderPage(resultsObj);
+            const layoutContainer = $('#layout');
+            layoutContainer.classList.remove('hidden');
         });
 }
 

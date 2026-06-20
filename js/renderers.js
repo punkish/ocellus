@@ -96,6 +96,7 @@ const renderPage = ({
     gridImages.classList.remove('layout-pg', 'columns-250', 'columns-100', 'columns-50');
     
     const chartsContainer = $('#charts-container');
+    
     if (layout === 'pg') {
         gridImages.style.setProperty('--image-size', `${figureSize}px`);
         gridImages.style.setProperty('--column-gap', '2px');
@@ -103,7 +104,8 @@ const renderPage = ({
         if (chartsContainer) {
             chartsContainer.classList.add('noblock');
         }
-    } else {
+    } 
+    else {
         gridImages.style.removeProperty('--image-size');
         gridImages.style.removeProperty('--column-gap');
         gridImages.classList.add(`columns-${figureSize}`);

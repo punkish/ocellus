@@ -3,7 +3,7 @@
     cursor: pointer;
     font-family: sans-serif;
     font-size: 10px;
-    width: 285px;
+    /* width: 285px; */
     border: none;
     margin: 0 0 3px;
 
@@ -16,7 +16,7 @@
 @media (min-width: 768px) {
     #sparkBox {
         height: auto;
-        width: 100%;
+        /* width: 100%; */
         overflow: hidden;
     }
 }
@@ -78,9 +78,12 @@
 }
 
 #layout {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+    display: inline;
+    /* align-items: center;
+    gap: 5px; */
     font-size: 10px;
     font-family: sans-serif;
+    right: 40px;
+    height: 42.5px;
+    padding-top: 25px;
 }

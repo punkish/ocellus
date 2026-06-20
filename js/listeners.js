@@ -215,7 +215,8 @@ const toggleLayout = (e) => {
     if (e.target.checked) {
         layoutInput.value = 'pg';
         imgInput.value = '50';
-    } else {
+    } 
+    else {
         layoutInput.value = 'normal';
         imgInput.value = '250';
     }

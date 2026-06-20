@@ -90,16 +90,6 @@
                     <div id="sparkChart"></div>
                     <div id="sparkTip" class="hidden"></div>
                 </div>
-                <div id="layout" class="toggle-container"
-                    aria-label="choose grid layout" 
-                    data-pop="top" data-pop-no-shadow data-pop-arrow>
-                    <label class="toggle toggle-inline">
-                        <span class="toggle-label">default</span>
-                        <input name="layout-toggle" class="toggle-checkbox" type="checkbox">
-                        <div class="toggle-switch toggle-round toggle-small toggle-grey"></div>
-                        <span class="toggle-label">photogrid</span>
-                    </label>
-                </div>
             </div>
             
             <div id="normalSearch" class="search-container">
@@ -451,8 +441,20 @@
                     <div id="termFreq" class="chart"></div> 
                 </div>
             </details>
-            
+
             <div class="column-2 box">
+                
+                <div id="layout" class="toggle-container hidden"
+                    aria-label="choose grid layout" 
+                    data-pop="top" data-pop-no-shadow data-pop-arrow>
+                    <label class="toggle toggle-inline">
+                        <span class="toggle-label">default</span>
+                        <input name="layout-toggle" class="toggle-checkbox" type="checkbox">
+                        <div class="toggle-switch toggle-round toggle-small toggle-grey"></div>
+                        <span class="toggle-label">photogrid</span>
+                    </label>
+                </div>
+
                 <!-- <div id="search-criteria"></div> -->
                 <!-- this is where the images go -->
                 <div id="grid-images"></div>
