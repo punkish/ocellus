@@ -18,13 +18,13 @@ async function getBaseLayer({ baseLayerSource, map }) {
     if (baseLayerSource === 'arcgis') {
         baseLayerOpts.attribution = '&copy; ESRI';
         baseLayer = L.tileLayer(
-            'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', 
+            'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
             baseLayerOpts
         ).addTo(map);
     }
     else if (baseLayerSource === 'geodeo') {
 
-        const url = `${globals.uri.maps}/nev_raster/{z}/{x}/{y}`;
+        const url = `${window.Ocellus.uris.maps}/nev_raster/{z}/{x}/{y}`;
         const layers = {
             'ne_50m_admin_1_states_provinces_lakes': {
                 maxZoom: 2,
@@ -88,7 +88,7 @@ async function getBaseLayer({ baseLayerSource, map }) {
                         fillOpacity: 0.25,
                         fill: true
                     },
-                    ice: function(properties) {
+                    ice: function (properties) {
                         if (properties.type === 'glacier') {
                             return {
                                 weight: 1,
@@ -159,7 +159,7 @@ async function getBaseLayer({ baseLayerSource, map }) {
                         stroke: false,
                         fill: false
                     },
-                    admin: function(properties, zoom) {
+                    admin: function (properties, zoom) {
                         const level = properties.admin_level;
 
                         if (level === 0) {
@@ -190,7 +190,7 @@ async function getBaseLayer({ baseLayerSource, map }) {
                                 fill: true
                             }
                         }
-                        
+
                     }
                 }
             },
@@ -207,13 +207,13 @@ async function getBaseLayer({ baseLayerSource, map }) {
 
         const layer = 'nev';
         const options = layers[layer];
-        L.vectorGrid.protobuf(`${globals.uri.maps}/${layer}/{z}/{x}/{y}`, options).addTo(map);
+        L.vectorGrid.protobuf(`${window.Ocellus.uris.maps}/${layer}/{z}/{x}/{y}`, options).addTo(map);
     }
     else if (baseLayerSource === 'gbif') {
         baseLayerOpts.attribution = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> / &copy; <a href="https://www.openmaptiles.org/copyright">OpenMapTiles</a>';
         const pixel_ratio = parseInt(window.devicePixelRatio) || 1;
         baseLayer = L.tileLayer(
-            'https://tile.gbif.org/3857/omt/{z}/{x}/{y}@{r}x.png?style=gbif-natural'.replace('{r}', pixel_ratio), 
+            'https://tile.gbif.org/3857/omt/{z}/{x}/{y}@{r}x.png?style=gbif-natural'.replace('{r}', pixel_ratio),
             baseLayerOpts
         ).addTo(map);
     }
@@ -223,8 +223,8 @@ async function getBaseLayer({ baseLayerSource, map }) {
 
 async function initializeMap({ mapContainer, baseLayerSource }) {
     const mapOptions = { preferCanvas: true };
-    let northEast = {lat: 72, lng: 124};
-    let southWest = {lat: -60, lng: -124};
+    let northEast = { lat: 72, lng: 124 };
+    let southWest = { lat: -60, lng: -124 };
     let zoom = 5;
     let lat = 0;
     let lng = 0;
@@ -238,22 +238,22 @@ async function initializeMap({ mapContainer, baseLayerSource }) {
         lng = ml.lng;
         treatmentId = ml.treatmentId;
 
-        northEast = {lat: 61.6, lng: 131.48};
-        southWest = {lat: -31.95, lng: -137.11};
+        northEast = { lat: 61.6, lng: 131.48 };
+        southWest = { lat: -31.95, lng: -137.11 };
     }
-    
+
     const bounds = L.latLngBounds(northEast, southWest);
     const map = L.map(mapContainer, mapOptions).setView({ lat, lng }, zoom);
 
     // turn off the Ukrainian flag emoji
     map.attributionControl.setPrefix('');
-        
+
     L.easyButton('.', () => map.fitBounds(bounds)).addTo(map);
-        
+
     if (mapContainer === 'map') {
         setupMap(map);
-        
-        map.on('moveend', async function(e) {
+
+        map.on('moveend', async function (e) {
             await switchLayers(map, mapLayers);
         });
 
@@ -261,11 +261,11 @@ async function initializeMap({ mapContainer, baseLayerSource }) {
         const mapLayers = {
             baseLayer: getBaseLayer({ baseLayerSource, map }),
         }
-        
+
         await switchLayers(map, mapLayers, treatmentId);
     }
     else if (mapContainer === 'mapSearch') {
-        map.on('moveend', async function(e) {
+        map.on('moveend', async function (e) {
             drawH3(map, mapLayers);
         });
 
@@ -281,7 +281,7 @@ async function initializeMap({ mapContainer, baseLayerSource }) {
 
 async function switchLayers(map, mapLayers, treatmentId) {
     const zoom = map.getZoom();
-    
+
     if (zoom <= 5) {
         drawH3(map, mapLayers);
     }

@@ -21,6 +21,11 @@ const addListeners = () => {
     // [gemini] Listeners for the grid size adjust buttons
     $('#gridsize-plus').addEventListener('click', () => adjustGridSize(25));
     $('#gridsize-minus').addEventListener('click', () => adjustGridSize(-25));
+    // [gemini] Listener for the theme cycle button
+    const themeCycleBtn = $('#theme-cycle');
+    if (themeCycleBtn) {
+        themeCycleBtn.addEventListener('click', cycleTheme);
+    }
     $('select[name="as-publicationDate"]').addEventListener('change', toggleDateSelector);
     $('select[name="as-checkinTime"]').addEventListener('change', toggleDateSelector);
 
@@ -226,30 +231,90 @@ const syncFormInputsAndHash = (isPg, imgSize) => {
     const searchParams = loc.search;
     let newHash = '';
     if (isPg) {
-        newHash = `#layout=pg&img=${imgSize}`;
+        // [gemini] Include active theme in layout hash state
+        newHash = `#layout=pg&img=${imgSize}&theme=${globals.results.activeTheme}`;
     }
     const newUrl = `${loc.pathname}${searchParams}${newHash}`;
     window.history.pushState({}, '', newUrl);
+}
+
+// [gemini] Fades out the charts container and sets it to display: none (noblock) after fade-out
+const fadeOutChartsContainer = () => {
+    const chartsContainer = $('#charts-container');
+    if (!chartsContainer) return;
+
+    // Reset any ongoing transition/timeout behaviors
+    chartsContainer.classList.remove('noblock');
+    
+    // Trigger layout reflow to make sure transition works
+    void chartsContainer.offsetWidth;
+
+    // Add fade-out class to trigger opacity transition
+    chartsContainer.classList.add('fade-out');
+
+    const handleTransitionEnd = (e) => {
+        // Only run for opacity transition on the container itself
+        if (e.propertyName === 'opacity') {
+            chartsContainer.classList.add('noblock');
+            chartsContainer.removeEventListener('transitionend', handleTransitionEnd);
+        }
+    };
+    chartsContainer.addEventListener('transitionend', handleTransitionEnd);
+}
+
+// [gemini] Cycles the photogrid visual theme (journal -> slate -> editorial -> journal)
+const cycleTheme = () => {
+    const themes = ['journal', 'slate', 'editorial'];
+    let currentIndex = themes.indexOf(globals.results.activeTheme);
+    if (currentIndex === -1) currentIndex = 0;
+    
+    const nextIndex = (currentIndex + 1) % themes.length;
+    const nextTheme = themes[nextIndex];
+    globals.results.activeTheme = nextTheme;
+
+    // Update button text
+    const themeCycleBtn = $('#theme-cycle');
+    if (themeCycleBtn) {
+        themeCycleBtn.innerText = `theme: ${nextTheme}`;
+    }
+
+    // Update classes on grid-images
+    const gridImages = $('#grid-images');
+    if (gridImages && gridImages.classList.contains('layout-pg')) {
+        gridImages.classList.remove('theme-journal', 'theme-slate', 'theme-editorial');
+        gridImages.classList.add(`theme-${nextTheme}`);
+    }
+
+    // Sync hash
+    const imgInput = $('input[name=img]');
+    const imgSize = imgInput ? parseInt(imgInput.value, 10) || 50 : 50;
+    syncFormInputsAndHash(true, imgSize);
 }
 
 // [gemini] Flip the image grid layout to photogrid (pg) client-side
 const flipLayoutToPg = (imgSize) => {
     const gridImages = $('#grid-images');
     if (gridImages) {
-        gridImages.classList.remove('layout-pg', 'columns-250', 'columns-100', 'columns-50');
+        // [gemini] Clear theme classes before adding layout-pg and current activeTheme
+        gridImages.classList.remove('layout-pg', 'columns-250', 'columns-100', 'columns-50', 'theme-journal', 'theme-slate', 'theme-editorial');
         gridImages.style.setProperty('--image-size', `${imgSize}px`);
         gridImages.style.setProperty('--column-gap', '2px');
         gridImages.classList.add('layout-pg');
+        gridImages.classList.add(`theme-${globals.results.activeTheme}`);
     }
 
-    const chartsContainer = $('#charts-container');
-    if (chartsContainer) {
-        chartsContainer.classList.add('noblock');
-    }
+    // [gemini] Trigger smooth fade out of charts container
+    fadeOutChartsContainer();
 
     const sizeWidget = $('#gridsize-widget');
     if (sizeWidget) {
         sizeWidget.classList.remove('noblock');
+    }
+
+    // [gemini] Show theme cycling widget
+    const themeWidget = $('#theme-widget');
+    if (themeWidget) {
+        themeWidget.classList.remove('noblock');
     }
 
     const sizeDisplay = $('#gridsize-display');
@@ -267,20 +332,28 @@ const flipLayoutToPg = (imgSize) => {
 const flipLayoutToDefault = () => {
     const gridImages = $('#grid-images');
     if (gridImages) {
-        gridImages.classList.remove('layout-pg', 'columns-250', 'columns-100', 'columns-50');
+        // [gemini] Clear photogrid themes when flipping layout back to default
+        gridImages.classList.remove('layout-pg', 'columns-250', 'columns-100', 'columns-50', 'theme-journal', 'theme-slate', 'theme-editorial');
         gridImages.style.removeProperty('--image-size');
         gridImages.style.removeProperty('--column-gap');
         gridImages.classList.add('columns-250');
     }
 
+    // [gemini] Restore chart container visibility and opacity
     const chartsContainer = $('#charts-container');
     if (chartsContainer) {
-        chartsContainer.classList.remove('noblock');
+        chartsContainer.classList.remove('noblock', 'fade-out');
     }
 
     const sizeWidget = $('#gridsize-widget');
     if (sizeWidget) {
         sizeWidget.classList.add('noblock');
+    }
+
+    // [gemini] Hide theme cycling widget
+    const themeWidget = $('#theme-widget');
+    if (themeWidget) {
+        themeWidget.classList.add('noblock');
     }
 
     const layoutToggle = $('input[name=layout-toggle]');
@@ -663,5 +736,6 @@ export {
     showTooltip,
     hideTooltip,
     toggleModal,
-    lightUpTheBox
+    lightUpTheBox,
+    fadeOutChartsContainer
 };

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -32,7 +33,7 @@
     <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css">
     <!-- endbuild -->
 
-    <link rel="stylesheet" href="libs/leaflet-draw/dist/leaflet.draw.css"> 
+    <link rel="stylesheet" href="libs/leaflet-draw/dist/leaflet.draw.css">
 
     <!-- build:csslibs -->
     <link rel="stylesheet" href="libs/JavaScript-autoComplete/auto-complete.css">
@@ -68,18 +69,18 @@
     <link rel="stylesheet" href="css/themes.css">
     <!-- endbuild -->
 </head>
+
 <body>
     <header>
         <div class="title">
-            <div id="brand" class="reveal" 
-                data-reveal="MAP • IMAGES • TREATMENTS">4</div>
+            <div id="brand" class="reveal" data-reveal="MAP • IMAGES • TREATMENTS">4</div>
             <h1><a href="/index.html">ocellus</a></h1>
             <div class="subtitle">
                 <div class="small">A Plazi Project</div>
                 <a href="#about" class="modalToggle">about</a>
             </div>
         </div>
-        
+
         <form>
             <input class="query" id="page" name="page" type="hidden" value="1">
             <input class="query" id="size" name="size" type="hidden" value="30">
@@ -93,7 +94,7 @@
                     <div id="sparkTip" class="hidden"></div>
                 </div>
             </div>
-            
+
             <div id="normalSearch" class="search-container">
                 <div id="ns-container">
                     <div id="ns-widget">
@@ -103,43 +104,35 @@
                             resource is what we want to retrieve and  
                             display. It is either "images" or "treatments" 
                             -->
-                            <div id="toggle-resource" 
-                                class="toggle-container"
-                                aria-label="toggle image vs treatments search" 
-                                data-pop="top" data-pop-no-shadow 
+                            <div id="toggle-resource" class="toggle-container"
+                                aria-label="toggle image vs treatments search" data-pop="top" data-pop-no-shadow
                                 data-pop-arrow data-pop-multiline>
 
                                 <label class="toggle toggle-inline">
-                                    <input name="resource" class="toggle-checkbox query" type="checkbox" value="treatments">
+                                    <input name="resource" class="toggle-checkbox query" type="checkbox"
+                                        value="treatments">
                                     <div class="toggle-switch toggle-round toggle-medium toggle-green"></div>
                                 </label>
 
                             </div>
 
-                            <input id="q" name="q" type="text" 
-                                placeholder="search images" 
-                                class="query ns-val-input">
+                            <input id="q" name="q" type="text" placeholder="search images" class="query ns-val-input">
 
                             <div id="ns-input-controls">
-                                <input name="refreshCache" id="refreshCache" 
-                                    type="checkbox" value="true" 
-                                    class="query unchecked" 
-                                    aria-label="This will refresh the cache. You probably don't want to do this." 
-                                    data-pop="top" 
-                                    data-pop-no-shadow data-pop-arrow 
-                                    data-pop-multiline>
+                                <input name="refreshCache" id="refreshCache" type="checkbox" value="true"
+                                    class="query unchecked"
+                                    aria-label="This will refresh the cache. You probably don't want to do this."
+                                    data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>
 
-                                <button id="clear-q" type="reset" 
-                                    aria-label="reset search" data-pop="top" 
-                                    data-pop-no-shadow 
-                                    data-pop-arrow>&#8855;</button>
+                                <button id="clear-q" type="reset" aria-label="reset search" data-pop="top"
+                                    data-pop-no-shadow data-pop-arrow>&#8855;</button>
                             </div>
                         </div>
 
-                        <button id="ns-go" name="go" type="submit" 
-                            class="ns-button-primary">go</button>
+                        <button id="ns-go" name="go" type="submit" class="ns-button-primary">go</button>
                     </div>
                 </div>
+                <div id="progress"></div>
             </div>
 
             <!-- 
@@ -147,69 +140,38 @@
                 <div id="fs-container"></div>
             </div> 
             -->
-            
+
             <div id="bottom-menu">
                 <div id="quicksearch">
-                    <a  href="?family=eq(Formicidae)"
-                        class="quicksearch bg-ant" 
-                        aria-label="find ants" data-pop="bottom" 
-                        data-pop-no-shadow 
-                        data-pop-arrow>ants</a>
-                    <a href="?class=eq(Actinopterygii)" 
-                        class="quicksearch bg-fish"
-                        aria-label="find fishes" data-pop="bottom" 
-                        data-pop-no-shadow 
-                        data-pop-arrow>fishes</a>
-                    <a href="?class=eq(Arachnida)"
-                        class="quicksearch bg-spider"
-                        aria-label="find spiders" data-pop="bottom" 
-                        data-pop-no-shadow 
-                        data-pop-arrow>spiders</a>
-                    <a href="?class=eq(Malacostraca)"
-                        class="quicksearch bg-crustacean"
-                        aria-label="find shrimp, crabs and other crustacea" 
-                        data-pop="bottom" data-pop-no-shadow 
+                    <a href="?family=eq(Formicidae)" class="quicksearch bg-ant" aria-label="find ants" data-pop="bottom"
+                        data-pop-no-shadow data-pop-arrow>ants</a>
+                    <a href="?class=eq(Actinopterygii)" class="quicksearch bg-fish" aria-label="find fishes"
+                        data-pop="bottom" data-pop-no-shadow data-pop-arrow>fishes</a>
+                    <a href="?class=eq(Arachnida)" class="quicksearch bg-spider" aria-label="find spiders"
+                        data-pop="bottom" data-pop-no-shadow data-pop-arrow>spiders</a>
+                    <a href="?class=eq(Malacostraca)" class="quicksearch bg-crustacean"
+                        aria-label="find shrimp, crabs and other crustacea" data-pop="bottom" data-pop-no-shadow
                         data-pop-arrow>crustacea</a>
-                    <a href="?order=eq(Coleoptera)"
-                        class="quicksearch bg-beetle"
-                        aria-label="find beetles" data-pop="bottom" 
-                        data-pop-no-shadow 
-                        data-pop-arrow>beetles</a>
+                    <a href="?order=eq(Coleoptera)" class="quicksearch bg-beetle" aria-label="find beetles"
+                        data-pop="bottom" data-pop-no-shadow data-pop-arrow>beetles</a>
 
                     <!-- visible only in tablet or larger screens -->
-                    <a href="?order=eq(Chiroptera)"
-                        class="quicksearch bg-bat"
-                        aria-label="find bats" data-pop="bottom" 
-                        data-pop-no-shadow 
-                        data-pop-arrow>bats</a>
-                    <a href="?class=eq(Reptilia)"
-                        class="quicksearch bg-reptile"
-                        aria-label="find reptiles" 
-                        data-pop="bottom" data-pop-no-shadow 
-                        data-pop-arrow>reptiles</a>
-                    <a href="?family=eq(Vespidae)"
-                        class="quicksearch bg-wasp"
-                        aria-label="find wasps" data-pop="bottom" 
-                        data-pop-no-shadow 
-                        data-pop-arrow>wasps</a>
+                    <a href="?order=eq(Chiroptera)" class="quicksearch bg-bat" aria-label="find bats" data-pop="bottom"
+                        data-pop-no-shadow data-pop-arrow>bats</a>
+                    <a href="?class=eq(Reptilia)" class="quicksearch bg-reptile" aria-label="find reptiles"
+                        data-pop="bottom" data-pop-no-shadow data-pop-arrow>reptiles</a>
+                    <a href="?family=eq(Vespidae)" class="quicksearch bg-wasp" aria-label="find wasps" data-pop="bottom"
+                        data-pop-no-shadow data-pop-arrow>wasps</a>
                     <!-- end -->
 
-                    <a href="#"
-                        id="search-help"
-                        class="quicksearch2 bg-more"
-                        aria-label="more examples" 
-                        data-pop="bottom" data-pop-no-shadow 
-                        data-pop-arrow>more examples</a>
-                    <a href="maps.html" 
-                        class="quicksearch2 bg-map"
-                        aria-label="ocellus maps" 
-                        data-pop="bottom" data-pop-no-shadow 
-                        data-pop-arrow>maps</a>
+                    <a href="#" id="search-help" class="quicksearch2 bg-more" aria-label="more examples"
+                        data-pop="bottom" data-pop-no-shadow data-pop-arrow>more examples</a>
+                    <a href="maps.html" class="quicksearch2 bg-map" aria-label="ocellus maps" data-pop="bottom"
+                        data-pop-no-shadow data-pop-arrow>maps</a>
                     <div class="warn hidden"></div>
                 </div>
 
-                <div id="toggle-search" class="toggle-container"
-                    aria-label="toggle between simple and advanced search" 
+                <div id="toggle-search" class="toggle-container" aria-label="toggle between simple and advanced search"
                     data-pop="left" data-pop-no-shadow data-pop-arrow>
 
                     <label class="toggle toggle-inline">
@@ -222,8 +184,9 @@
             </div>
 
             <div class="examples hidden">
-                <p>Click on the link to try the search<br><em><b>Note:</b> These extended syntax queries are currently only possible against treatments.</em></p>
-    
+                <p>Click on the link to try the search<br><em><b>Note:</b> These extended syntax queries are currently
+                        only possible against treatments.</em></p>
+
                 <!--
                 <details open>
                     <summary>bats<img src="img/quicksearch-icons/bat.png" width="30" align="top"></summary>
@@ -243,11 +206,14 @@
                     <button class="example-insert">articleDOI=eq(10.11646/zootaxa.5284.3.7)</button>
                 </details>
                 <details open>
-                    <summary><img src="img/examples/icon_fts_all.svg" width="30" align="top">from treatments with the given term anywhere in the text (a fulltext search against the entire treatment)</summary>
+                    <summary><img src="img/examples/icon_fts_all.svg" width="30" align="top">from treatments with the
+                        given term anywhere in the text (a fulltext search against the entire treatment)</summary>
                     <button class="example-insert">phylogeny</button><br>
                 </details>
                 <details open>
-                    <summary><img src="img/examples/icon_fts_caption.svg" width="30" align="top">with the given term anywhere in the text of the image caption (a fulltext search against just the image caption)</summary>
+                    <summary><img src="img/examples/icon_fts_caption.svg" width="30" align="top">with the given term
+                        anywhere in the text of the image caption (a fulltext search against just the image caption)
+                    </summary>
                     <button class="example-insert">captionText=phylogeny</button><br>
                 </details>
                 <details>
@@ -260,11 +226,13 @@
                 </details>
                 <details>
                     <summary>from the article whose title starts with "Morphology and taxonomic assessment"</summary>
-                    <button class="example-insert">articleTitle=starts_with(Morphology and taxonomic assessment)</button>
+                    <button class="example-insert">articleTitle=starts_with(Morphology and taxonomic
+                        assessment)</button>
                 </details>
                 <details>
                     <summary>from the treatments with materialCitations found within 10 kms of a given lat/lng</summary>
-                    <button class="example-insert">geolocation=within(radius:10, units:'kilometers', lat:40.21, lng:-120.33)</button>
+                    <button class="example-insert">geolocation=within(radius:10, units:'kilometers', lat:40.21,
+                        lng:-120.33)</button>
                 </details>
                 <details>
                     <summary>in the articles published since 2021-12-21</summary>
@@ -299,21 +267,26 @@
             <div id="as-container" class="advanced-search noblock">
                 <input name="as-q" id="as-q" type="text" class="fullwidth" placeholder="Search Full Text">
 
-                <input name="as-treatmentTitle" id="as-treatmentTitle" type="text" class="fullwidth" placeholder="Treatment Title">
+                <input name="as-treatmentTitle" id="as-treatmentTitle" type="text" class="fullwidth"
+                    placeholder="Treatment Title">
 
-                <input name="as-authorityName" id="as-authorityName" type="text" class="fullwidth" placeholder="Authority">
+                <input name="as-authorityName" id="as-authorityName" type="text" class="fullwidth"
+                    placeholder="Authority">
 
-                <input name="as-articleTitle" id="as-articleTitle" type="text" class="fullwidth" placeholder="Article Title">
+                <input name="as-articleTitle" id="as-articleTitle" type="text" class="fullwidth"
+                    placeholder="Article Title">
 
                 <label for="as-status">New Species</label>
                 <input name="as-status" id="as-status" type="checkbox" value="sp. nov.">
 
                 <!-- collectionCode/collectionName filled by autocomplete -->
                 <!-- <input name="as-collectionName" id="as-collectionName" type="text" class="fullwidth" placeholder="Collection Name"> -->
-                <input name="as-collectionCode" id="as-collectionCode" type="text" class="fullwidth" placeholder="Collection Code">
+                <input name="as-collectionCode" id="as-collectionCode" type="text" class="fullwidth"
+                    placeholder="Collection Code">
 
                 <!-- journalTitle/journals_id filled by autocomplete -->
-                <input name="as-journalTitle" id="as-journalTitle" type="text" class="fullwidth" placeholder="Journal Title">
+                <input name="as-journalTitle" id="as-journalTitle" type="text" class="fullwidth"
+                    placeholder="Journal Title">
                 <!-- <input name="as-journals_id" id="as-journals_id" type="hidden"> -->
 
                 <select name="as-journalYear" id="as-journalYear" class="fullwidth">
@@ -362,7 +335,7 @@
 
                     <div id="as-publicationDate-range">
                         <input name="as-publicationDateFrom" id="as-publicationDateFrom" type="date">
-                        <span class="hidden">and</span> 
+                        <span class="hidden">and</span>
                         <input class="hidden" name="as-publicationDateTo" id="as-publicationDateTo" type="date">
                     </div>
                 </fieldset>
@@ -379,7 +352,7 @@
 
                     <div id="as-checkinTime-range">
                         <input name="as-checkinTimeFrom" id="as-checkinTimeFrom" type="date">
-                        <span class="hidden">and</span> 
+                        <span class="hidden">and</span>
                         <input class="hidden" name="as-checkinTimeTo" id="as-checkinTimeTo" type="date">
                     </div>
                 </fieldset>
@@ -390,28 +363,36 @@
                     <option value="Deserts and Xeric Shrublands">Biome is Deserts and Xeric Shrublands</option>
                     <option value="Flooded Grasslands and Savannas">Biome is Flooded Grasslands and Savannas</option>
                     <option value="Mangroves">Biome is Mangroves</option>
-                    <option value="Mediterranean Forests, Woodlands and Scrub">Biome is Mediterranean Forests, Woodlands and Scrub</option>
-                    <option value="Montane Grasslands and Shrublands">Biome is Montane Grasslands and Shrublands</option>
+                    <option value="Mediterranean Forests, Woodlands and Scrub">Biome is Mediterranean Forests, Woodlands
+                        and Scrub</option>
+                    <option value="Montane Grasslands and Shrublands">Biome is Montane Grasslands and Shrublands
+                    </option>
                     <!-- <option value="15">N/A</option> -->
-                    <option value="Temperate Broadleaf and Mixed Forests">Biome is Temperate Broadleaf and Mixed Forests</option>
+                    <option value="Temperate Broadleaf and Mixed Forests">Biome is Temperate Broadleaf and Mixed Forests
+                    </option>
                     <option value="Temperate Conifer Forests">Biome is Temperate Conifer Forests</option>
-                    
+
                     <!-- <option title="synonyms: Pampas, Veld, Savanna">Temperate Grasslands, Savannas and Shrublands</option> -->
                     <!-- <option title="synonyms: Temperate Grasslands, Savannas & Shrublands" disabled>&nbsp;&nbsp;&nbsp;&nbsp;- Pampas</option> -->
                     <!-- <option title="synonyms: Temperate Grasslands, Savannas & Shrublands" disabled>&nbsp;&nbsp;&nbsp;&nbsp;- Veld</option> -->
                     <!-- <option title="synonyms: Temperate Grasslands, Savannas & Shrublands" disabled>&nbsp;&nbsp;&nbsp;&nbsp;- Savanna</option> -->
-                    
+
                     <optgroup label="Temperate Grasslands, Savannas & Shrublands">
-                        <option value="Temperate Grasslands, Savannas & Shrublands">Temperate Grasslands, Savannas & Shrublands</option>
+                        <option value="Temperate Grasslands, Savannas & Shrublands">Temperate Grasslands, Savannas &
+                            Shrublands</option>
                         <option value="Temperate Grasslands, Savannas & Shrublands">synonym: Pampas</option>
                         <option value="Temperate Grasslands, Savannas & Shrublands">synonym: Veld</option>
                         <option value="Temperate Grasslands, Savannas & Shrublands">synonym: Savanna</option>
-                    </optgroup> 
-                    
-                    <option value="Tropical and Subtropical Coniferous Forests">Biome is Tropical and Subtropical Coniferous Forests</option>
-                    <option value="Tropical and Subtropical Dry Broadleaf Forests">Biome is Tropical and Subtropical Dry Broadleaf Forests</option>
-                    <option value="Tropical and Subtropical Grasslands, Savannas and Shrublands">Biome is Tropical and Subtropical Grasslands, Savannas and Shrublands</option>
-                    <option value="Tropical and Subtropical Moist Broadleaf Forests">Biome is Tropical and Subtropical Moist Broadleaf Forests</option>
+                    </optgroup>
+
+                    <option value="Tropical and Subtropical Coniferous Forests">Biome is Tropical and Subtropical
+                        Coniferous Forests</option>
+                    <option value="Tropical and Subtropical Dry Broadleaf Forests">Biome is Tropical and Subtropical Dry
+                        Broadleaf Forests</option>
+                    <option value="Tropical and Subtropical Grasslands, Savannas and Shrublands">Biome is Tropical and
+                        Subtropical Grasslands, Savannas and Shrublands</option>
+                    <option value="Tropical and Subtropical Moist Broadleaf Forests">Biome is Tropical and Subtropical
+                        Moist Broadleaf Forests</option>
                     <option value="Tundra">Biome is Tundra</option>
                 </select>
 
@@ -423,10 +404,12 @@
                 </div>
 
                 <div id="submitButtonContainer">
-                    <input name="as-refreshCache" id="refreshCache-2" type="checkbox" value="true" class="unchecked" aria-label="This will refresh the cache. You probably don't want to do this." data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>
+                    <input name="as-refreshCache" id="refreshCache-2" type="checkbox" value="true" class="unchecked"
+                        aria-label="This will refresh the cache. You probably don't want to do this." data-pop="top"
+                        data-pop-no-shadow data-pop-arrow data-pop-multiline>
                     <button id="as-go" name="as-go" type="submit" class="as-button-primary">search</button>
                 </div>
-                
+
             </div>
 
         </form>
@@ -439,31 +422,39 @@
             <details id="charts-container" class="charts" open>
                 <summary></summary>
                 <div id="charts" class="charts-content">
-                    <div id="yearlyCounts" class="chart"></div> 
-                    <div id="termFreq" class="chart"></div> 
+                    <div id="yearlyCounts" class="chart"></div>
+                    <div id="termFreq" class="chart"></div>
                 </div>
             </details>
 
             <div class="column-2 box">
-                
-                <div id="layout" class="toggle-container hidden"
-                    aria-label="choose grid layout" 
-                    data-pop="top" data-pop-no-shadow data-pop-arrow>
+
+                <div id="layout" class="toggle-container hidden" aria-label="choose grid layout" data-pop="top"
+                    data-pop-no-shadow data-pop-arrow>
                     <label class="toggle toggle-inline">
                         <span class="toggle-label">default</span>
                         <input name="layout-toggle" class="toggle-checkbox" type="checkbox">
                         <div class="toggle-switch toggle-round toggle-small toggle-grey"></div>
                         <span class="toggle-label">photogrid</span>
                     </label>
+
                     <!-- [gemini] Grid size widget to adjust grid image width between 50px and 100px in steps of 25px -->
                     <div id="gridsize-widget" class="noblock" style="margin-left: 20px;">
-                        <button id="gridsize-minus" type="button" class="gridsize-btn" aria-label="decrease image size">-</button>
-                        <span id="gridsize-display" style="font-family: sans-serif; font-size: 10px; margin: 0 5px; vertical-align: middle;">50px</span>
-                        <button id="gridsize-plus" type="button" class="gridsize-btn" aria-label="increase image size">+</button>
+                        <button id="gridsize-minus" type="button" class="gridsize-btn"
+                            aria-label="decrease image size">-</button>
+                        <span id="gridsize-display"
+                            style="font-family: sans-serif; font-size: 10px; margin: 0 5px; vertical-align: middle;">50px</span>
+                        <button id="gridsize-plus" type="button" class="gridsize-btn"
+                            aria-label="increase image size">+</button>
+
+                        <input type="range" name="gridsize" id="gridsize" min="25" max="250" step="25" value="25" />
+                        <output class="gridsize-output" for="gridsize"></output>
                     </div>
+
                     <!-- [gemini] Theme cycling widget to switch between photogrid visual themes -->
                     <div id="theme-widget" class="noblock" style="margin-left: 20px;">
-                        <button id="theme-cycle" type="button" class="gridsize-btn" style="min-width: 120px;" aria-label="cycle visual themes">theme: journal</button>
+                        <button id="theme-cycle" type="button" class="gridsize-btn" style="min-width: 120px;"
+                            aria-label="cycle visual themes">theme: journal</button>
                     </div>
                 </div>
 
@@ -476,48 +467,73 @@
 
         <section id="about" class="modal hidden noblock">
             <a href="#" class="close modalToggle">close</a>
-    
+
             <h1>About</h1>
-        
-            <p>Ocellus is a frontend to the Biodiversity Literature Repository (BLR) on <a href="https://zenodo.org" target="_blank">Zenodo</a>, and taxonomic treatments in <a href="http://treatmentbank.org" target="_blank">TreatmentBank</a>. Ocellus depends on <a href="https://test.zenodeo.org" target="_blank">Zenodeo</a>, a <code>nodejs</code> API that queries, analyzes and aggregates results from these various repositories via a single, unified interface. Start typing in the search field and Ocellus will suggest from > 5100 taxonomic familes, and then retrieve the results for you.</p>
-    
-            <p>Check out our policies on <a href="#privacy" class="modalToggle">privacy</a> and <a href="#ip" class="modalToggle">intellectual property</a>, or <a href="#contact" class="modalToggle">send us feedback</a>.</p>
+
+            <p>Ocellus is a frontend to the Biodiversity Literature Repository (BLR) on <a href="https://zenodo.org"
+                    target="_blank">Zenodo</a>, and taxonomic treatments in <a href="http://treatmentbank.org"
+                    target="_blank">TreatmentBank</a>. Ocellus depends on <a href="https://test.zenodeo.org"
+                    target="_blank">Zenodeo</a>, a <code>nodejs</code> API that queries, analyzes and aggregates results
+                from these various repositories via a single, unified interface. Start typing in the search field and
+                Ocellus will suggest from > 5100 taxonomic familes, and then retrieve the results for you.</p>
+
+            <p>Check out our policies on <a href="#privacy" class="modalToggle">privacy</a> and <a href="#ip"
+                    class="modalToggle">intellectual property</a>, or <a href="#contact" class="modalToggle">send us
+                    feedback</a>.</p>
         </section>
 
         <section id="privacy" class="modal hidden noblock">
             <a href="#" class="close modalToggle">close</a>
 
             <h1>Privacy</h1>
-    
-            <p>We track nothing. What you do with the data here is not our business. Check out our policy on <a href="#ip" class="modalToggle">intellectual property</a> or <a href="#contact" class="modalToggle">give us feedback</a>.</p>
+
+            <p>We track nothing. What you do with the data here is not our business. Check out our policy on <a
+                    href="#ip" class="modalToggle">intellectual property</a> or <a href="#contact"
+                    class="modalToggle">give us feedback</a>.</p>
         </section>
 
         <section id="ip" class="modal hidden noblock">
             <a href="#" class="close modalToggle">close</a>
-    
+
             <h1>Intellectual Property</h1>
-        
-            <p>All information we extract or create is dedicated to the public domain under the <a href="https://creativecommons.org/publicdomain/zero/1.0/legalcode" target="_blank">CC0 Public Domain Dedication</a>. All original content by authors of source article is copyrighted by either the authors or their publishers and is used under its applicable open license. For copyright information in the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your country.</p>
-    
-            <p>If you use are data, please be nice and give us credit by citing us as follows: <cite>Biodiversity Literature Repository. 2013-. A community to share publications related to bio-systematics. Plazi.</cite></p>
-    
-            <p>The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i> (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up" target="_blank">Internet Archive</a> and has no known copyright restrictions.</p>
-    
-            <p>Check out our <a href="#privacy" class="modalToggle">privacy policy</a> or <a href="#contact" class="modalToggle">give us feedback</a>.</p>
+
+            <p>All information we extract or create is dedicated to the public domain under the <a
+                    href="https://creativecommons.org/publicdomain/zero/1.0/legalcode" target="_blank">CC0 Public Domain
+                    Dedication</a>. All original content by authors of source article is copyrighted by either the
+                authors or their publishers and is used under its applicable open license. For copyright information in
+                the images, please consult the original record on Zenodo, BLR policies, and the applicable laws of your
+                country.</p>
+
+            <p>If you use are data, please be nice and give us credit by citing us as follows: <cite>Biodiversity
+                    Literature Repository. 2013-. A community to share publications related to bio-systematics.
+                    Plazi.</cite></p>
+
+            <p>The half-fish in the footer is based on the original of a Blunt-Nosed Minnow, <i>Pimephales notatus</i>
+                (Rafinesque) ♂ from the <a href="https://archive.org/stream/cu31924090292669/#page/n1063/mode/1up"
+                    target="_blank">Internet Archive</a> and has no known copyright restrictions.</p>
+
+            <p>Check out our <a href="#privacy" class="modalToggle">privacy policy</a> or <a href="#contact"
+                    class="modalToggle">give us feedback</a>.</p>
         </section>
 
         <section id="contact" class="modal hidden noblock">
             <a href="#" class="close modalToggle">close</a>
-        
+
             <h1>Contact</h1>
-    
-            <p>Biodiversity Literature Repository (BLR aka BioLitRepo) is a production of Plazi in partnership with Zenodo/CERN, Geneva, and Pensoft Publishers, Sofia, Bulgaria, with generous support from The Arcadia Foundation, UK.</p>
-            
-            <p>Check out our policies on <a href="#privacy" class="modalToggle">privacy</a> and <a href="#ip" class="modalToggle">intellectual property</a>, or contact <a href="mailto:blr@plazi.org">Plazi</a> for more information.</p>
+
+            <p>Biodiversity Literature Repository (BLR aka BioLitRepo) is a production of Plazi in partnership with
+                Zenodo/CERN, Geneva, and Pensoft Publishers, Sofia, Bulgaria, with generous support from The Arcadia
+                Foundation, UK.</p>
+
+            <p>Check out our policies on <a href="#privacy" class="modalToggle">privacy</a> and <a href="#ip"
+                    class="modalToggle">intellectual property</a>, or contact <a href="mailto:blr@plazi.org">Plazi</a>
+                for more information.</p>
         </section>
     </main>
 
-    <footer aria-label="This half-fish is based on the original of a Blunt-Nosed Minnow, Pimephales notatus (Rafinesque) ♂ from the Internet Archive, and has no known copyright restrictions." data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>
+    <footer
+        aria-label="This half-fish is based on the original of a Blunt-Nosed Minnow, Pimephales notatus (Rafinesque) ♂ from the Internet Archive, and has no known copyright restrictions."
+        data-pop="top" data-pop-no-shadow data-pop-arrow data-pop-multiline>
         <img src="img/fish.png">
     </footer>
 
@@ -543,7 +559,7 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
     -->
-    
+
     <script type="module">
         import { init, showTooltip, hideTooltip } from './js/ocellus.js';
         window.showTooltip = showTooltip;
@@ -552,4 +568,5 @@
         window.onload = () => init();
     </script>
 </body>
+
 </html>

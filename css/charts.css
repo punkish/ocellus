@@ -103,3 +103,14 @@ span.crit-val {
 #charts-container.noblock {
     display: none !important;
 }
+
+/* [gemini] Transition rules for smooth fade-out of the charts container */
+#charts-container {
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    opacity: 1;
+}
+
+#charts-container.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}

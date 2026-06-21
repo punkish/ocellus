@@ -15,8 +15,8 @@ const getCountOfResource = async (resource, getYearlyCounts, validGeo) => {
     const segment = validGeo ? `${resource}-geo` : resource;
 
     if (!globals.cache[segment].yearlyCounts) {
-        let url = `${globals.uri.zenodeo}/${resource}?`
-        
+        let url = `${window.Ocellus.uris.zenodeo}/${resource}?`
+
         if (validGeo) {
             url += 'validGeo=true&';
         }
@@ -26,9 +26,9 @@ const getCountOfResource = async (resource, getYearlyCounts, validGeo) => {
         if (getYearlyCounts) {
             url += '&yearlyCounts=true';
         }
-        
+
         const resp = await fetch(url, globals.fetchOpts);
-        
+
         // if HTTP-status is 200-299
         if (resp.ok) {
             const json = await resp.json();
@@ -52,14 +52,14 @@ const getCountOfResource = async (resource, getYearlyCounts, validGeo) => {
                 globals.cache[segment].totals[resource] = response.count;
             }
         }
-    
+
         // throw an error
         else {
             alert("HTTP-Error: " + response.status);
         }
     }
 
-    return globals.cache[segment];    
+    return globals.cache[segment];
 }
 
 const getResource = async (qs) => {
@@ -85,7 +85,7 @@ const getResource = async (qs) => {
     const resource = sp.get('resource');
     sp.delete('resource');
     let term;
-    
+
     if (sp.has('q')) {
         term = sp.get('q');
     }
@@ -104,7 +104,7 @@ const getResource = async (qs) => {
 
         if (validParams.includes(key)) {
 
-            if (!val) { 
+            if (!val) {
 
                 // a qs can look like so
                 //
@@ -112,7 +112,7 @@ const getResource = async (qs) => {
                 //
                 // where 'phylogeny' is a "key" with 
                 // no val, so we will use that as 'q'
-                sp.set('q', key); 
+                sp.set('q', key);
                 sp.delete(key);
                 term = key;
             }
@@ -145,8 +145,8 @@ const getResource = async (qs) => {
     if (!sp.has('treatmentId')) {
         queryString += `&yearlyCounts=true`;
     }
-    
-    const queries = [];    
+
+    const queries = [];
     queries.push(getResults({ resource, queryString, figureSize }));
 
     Promise.all(queries)
@@ -168,8 +168,8 @@ const getResource = async (qs) => {
             // are for images, they can have one or two sources, 
             // Zenodo and/or Zenodeo
             results.forEach(r => {
-                
-                if (typeof(r) != 'undefined') {
+
+                if (typeof (r) != 'undefined') {
                     res.recs.push(...r.recs);
                     res.count += r.count;
                     res.termFreq = r.termFreq;
@@ -185,7 +185,7 @@ const getResource = async (qs) => {
         })
         .then(results => {
             const slides = results.recs.map(rec => makeSlider({
-                resource, 
+                resource,
                 figureSize,
                 rec
             }));
@@ -195,9 +195,9 @@ const getResource = async (qs) => {
                 layout,
                 figureSize,
                 slides,
-                qs, 
-                count: results.count, 
-                prev: results.prev, 
+                qs,
+                count: results.count,
+                prev: results.prev,
                 next: results.next,
                 stored: results.stored,
                 ttl: results.ttl,
@@ -225,7 +225,7 @@ const getResults = async ({ resource, queryString, figureSize }) => {
     - queryString: ${queryString},
     - figureSize: ${figureSize}`);
 
-    const url = `${globals.uri.zenodeo}/${resource}?${queryString}`;
+    const url = `${window.Ocellus.uris.zenodeo}/${resource}?${queryString}`;
     const resp = await fetch(url, globals.fetchOpts);
 
     // if HTTP-status is 200-299
@@ -292,12 +292,12 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                             // record.uri = `${globals.zenodoUri}/${id}/thumb${figureSize}`;
                             // https://zenodo.org/api/iiif/record:6758444:figure.png/full/250,/0/default.png
                             record.uri = `https://zenodo.org/api/iiif/record:${id}:figure.png/full/250,/0/default.jpg`;
-                            record.img = `${globals.uri.zenodo}/${id}/thumb${figureSize}`;
+                            record.img = `${window.Ocellus.uris.zenodo}/${id}/thumb${figureSize}`;
 
                             // record.fullImage = `${globals.zenodoUri}/${id}/thumb1200`;
                             // https://zenodo.org/api/iiif/record:6758444:figure.png/full/1200,/0/default.png
                             record.fullImage = `https://zenodo.org/api/iiif/record:${id}:figure.png/full/^1200,/0/default.jpg`;
-                            record.fullImg = `${globals.uri.zenodo}/${id}/thumb1200`;
+                            record.fullImg = `${window.Ocellus.uris.zenodo}/${id}/thumb1200`;
                         }
                     }
 
@@ -305,8 +305,8 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                     else {
                         record.uri = `${r.httpUri}/singlefigAOF/`;
                         record.fullImage = r.httpUri;
-                    } 
-                    
+                    }
+
                     record.captionText = r.captionText;
                     record.treatmentDOI = r.treatmentDOI;
                     record.articleTitle = r.articleTitle;

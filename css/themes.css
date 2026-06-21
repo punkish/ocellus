@@ -69,3 +69,35 @@
     transform: scale(1.02);
     box-shadow: 0 6px 16px rgba(120, 110, 95, 0.08) !important;
 }
+
+/* [gemini] Ensure photogrid carouselbox uses border-box to account for theme paddings/borders */
+#grid-images.layout-pg .carouselbox {
+    box-sizing: border-box !important;
+}
+
+/* [gemini] Allow figure to fit inside the padded carouselbox viewport */
+#grid-images.layout-pg figure {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* [gemini] Ensure the image fits the figure container and is centered */
+#grid-images.layout-pg figure img {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+}
+
+/* [gemini] When default layout is active, force all figures to the default image size (250px) regardless of their figure-X class */
+#grid-images:not(.layout-pg) figure {
+    width: var(--image-size) !important;
+    margin: 0 auto 20px auto !important;
+}
+
+/* [gemini] When default layout is active, force figcaptions to be visible */
+#grid-images:not(.layout-pg) figcaption {
+    display: block !important;
+    visibility: visible !important;
+}

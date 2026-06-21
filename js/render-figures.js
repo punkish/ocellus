@@ -2,28 +2,28 @@ import { globals } from "./globals.js";
 
 function makeLinks({ figureSize, rec, resource }) {
     const zenodoLink = rec.zenodoDep
-    ? `<img src="img/zenodo-gradient-35.png" width="35" height="14"> <a href="${globals.uri.zenodo}/records/${rec.zenodoDep}" target="_blank">more on Zenodo</a>`
-    : '';
+        ? `<img src="img/zenodo-gradient-35.png" width="35" height="14"> <a href="${window.Ocellus.uris.zenodo}/records/${rec.zenodoDep}" target="_blank">more on Zenodo</a>`
+        : '';
 
-    const treatmentLink = `<img src="img/treatmentBankLogo.png" width="35" height="14"> <a href="${globals.uri.treatmentBank}/${rec.treatmentId}" target="_blank">more on TreatmentBank</a>`;
+    const treatmentLink = `<img src="img/treatmentBankLogo.png" width="35" height="14"> <a href="${window.Ocellus.uris.treatmentBank}/${rec.treatmentId}" target="_blank">more on TreatmentBank</a>`;
 
     const figcaptionClass = figureSize === 250 ? 'visible' : 'noblock';
     const figureClass = `figure-${figureSize} ` + (resource === 'treatment' ? 'tb' : 'img');
 
-    return { 
-        zenodoLink, 
-        treatmentLink, 
-        figcaptionClass, 
-        figureClass 
+    return {
+        zenodoLink,
+        treatmentLink,
+        figcaptionClass,
+        figureClass
     }
 }
 
 const makeTreatment = ({ figureSize, rec }) => {
-    const { 
-        zenodoLink, 
-        treatmentLink, 
-        figcaptionClass, 
-        figureClass 
+    const {
+        zenodoLink,
+        treatmentLink,
+        figcaptionClass,
+        figureClass
     } = makeLinks({ figureSize, rec, resource: 'treatment' });
 
     const treatmentDOI = rec.treatmentDOI
@@ -61,11 +61,11 @@ const makeTreatment = ({ figureSize, rec }) => {
 }
 
 const makeImage = ({ figureSize, rec, target }) => {
-    const { 
-        zenodoLink, 
-        treatmentLink, 
-        figcaptionClass, 
-        figureClass 
+    const {
+        zenodoLink,
+        treatmentLink,
+        figcaptionClass,
+        figureClass
     } = makeLinks({ figureSize, rec, resource: 'image' });
 
     let retryGetImage = `this.onerror=null; setTimeout(() => { this.src='${rec.uri}' }, 1000);`;

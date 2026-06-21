@@ -14,7 +14,22 @@ export const globals = {
         zenodo: 'https://zenodo.org',
         treatmentBank: 'https://tb.plazi.org/GgServer/html'
     },
-    
+
+    env: {
+        'lucknow.local': {
+            zenodeo: 'http://lucknow.local:3010/v3',
+            maps: 'http://lucknow.local:3010/v3/geo'
+        }, // drop :3010 if using Caddy
+        'ocellus.info': {
+            zenodeo: 'https://test.zenodeo.org/v3',
+            maps: 'https://test.zenodeo.org/v3/geo'
+        },
+        'localhost': {
+            zenodeo: 'http://localhost:3010/v3',
+            maps: 'http://localhost:3010/v3/geo'
+        },
+    },
+
     cache: {
         images: {
             yearlyCounts: false,
@@ -33,7 +48,7 @@ export const globals = {
         bins: null
     },
 
-    figureSize:  {
+    figureSize: {
         normal: 250,
         small: 100,
         tiny: 50
@@ -56,11 +71,11 @@ export const globals = {
     // pseudoresources are modals that are already embeddeded 
     // in index.html and are shown or hidden on demand
     // 
-    resources       : ['treatments', 'citations', 'images'],
-    pseudoResources : ['about', 'ip', 'contact', 'privacy'],
+    resources: ['treatments', 'citations', 'images'],
+    pseudoResources: ['about', 'ip', 'contact', 'privacy'],
 
     params: {
-        
+
         // params allowed in queryString but not in the 'q' input field
         notValidQ: ['resource', 'page', 'size', 'grid', 'refreshCache', 'cols'],
 
@@ -144,13 +159,13 @@ export const globals = {
         // the following input params are ignored while creating the 
         // textual version of the search criteria
         // 
-        notValidSearchCriteria : [
-            'resource', 
-            'communities', 
+        notValidSearchCriteria: [
+            'resource',
+            'communities',
             'communitiesChooser',
-            'refreshCache', 
+            'refreshCache',
             'view',
-            'size', 
+            'size',
             'page',
             'reset',
             'submit',
@@ -160,14 +175,14 @@ export const globals = {
     },
 
     cols: {
-        images: [ 
-            'treatmentId', 'treatmentTitle', 'zenodoDep', 'treatmentDOI', 
+        images: [
+            'treatmentId', 'treatmentTitle', 'zenodoDep', 'treatmentDOI',
             'articleTitle', 'articleAuthor', 'httpUri', 'caption', 'latitude',
             'longitude'
         ],
 
-        treatments: [ 
-            'treatmentId', 'treatmentTitle', 'zenodoDep', 'treatmentDOI', 
+        treatments: [
+            'treatmentId', 'treatmentTitle', 'zenodoDep', 'treatmentDOI',
             'articleTitle', 'articleAuthor', 'journalTitle', 'latitude',
             'longitude'
         ]
@@ -177,10 +192,10 @@ export const globals = {
 
     hiddenClasses: ['hidden', 'noblock'],
 
-    closedFigcaptionHeight : '30px',
+    closedFigcaptionHeight: '30px',
 
     // h3 layer colors
-    H3ColorRamp : [
+    H3ColorRamp: [
         '#ffffcc',
         '#ffeda0',
         '#fed976',
@@ -191,7 +206,7 @@ export const globals = {
         '#b10026',
     ],
 
-    markerIcons : {
+    markerIcons: {
         default: L.icon({
             iconUrl: '/img/marker.png',
             iconSize: [24, 38],
@@ -221,8 +236,8 @@ export const globals = {
         })
     },
 
-    months: [ 
-        'January', 'February', 'March', 'April', 'May', 'June', 'July', 
+    months: [
+        'January', 'February', 'March', 'April', 'May', 'June', 'July',
         'August', 'September', 'October', 'November', 'December'
     ],
 
@@ -230,5 +245,5 @@ export const globals = {
         termFreq: null,
         yearlyCounts: null
     }
-    
+
 }

@@ -9,7 +9,7 @@
     <meta name="copyright" content="Puneet Kishor">
     <meta name="license" content="CC0 Public Domain Dedication">
     <meta name="repo" content="https://github.com/punkish/ocellus">
-    <meta name="date" content="Sat Mar 21 2026 23:00:38 GMT+0100 (Central European Standard Time)">
+    <meta name="date" content="Sat Jun 20 2026 18:51:23 GMT+0200 (Central European Summer Time)">
     <meta http-equiv="Cache-Control" content="max-age=604800, public">
 
     <title>ocellus^4 image search</title>
@@ -34,7 +34,7 @@
 
     <link rel="stylesheet" href="./css/libs-combined.css">
 
-    <link rel="stylesheet" href="./css/ocellus-1774130438391.css">
+    <link rel="stylesheet" href="./css/ocellus-1781974283193.css">
 </head>
 <body>
     <header>
@@ -51,11 +51,15 @@
         <form>
             <input class="query" id="page" name="page" type="hidden" value="1">
             <input class="query" id="size" name="size" type="hidden" value="30">
+            <input name="layout" type="hidden" value="normal">
+            <input name="img" type="hidden" value="250">
 
-            <div id="sparkBox" class="sparkBox">
-                <div id="sparkText"></div>
-                <div id="sparkChart"></div>
-                <div id="sparkTip" class="hidden"></div>
+            <div id="topmenu">
+                <div id="sparkBox" class="sparkBox">
+                    <div id="sparkText"></div>
+                    <div id="sparkChart"></div>
+                    <div id="sparkTip" class="hidden"></div>
+                </div>
             </div>
             
             <div id="normalSearch" class="search-container">
@@ -407,8 +411,30 @@
                     <div id="termFreq" class="chart"></div> 
                 </div>
             </details>
-            
+
             <div class="column-2 box">
+                
+                <div id="layout" class="toggle-container hidden"
+                    aria-label="choose grid layout" 
+                    data-pop="top" data-pop-no-shadow data-pop-arrow>
+                    <label class="toggle toggle-inline">
+                        <span class="toggle-label">default</span>
+                        <input name="layout-toggle" class="toggle-checkbox" type="checkbox">
+                        <div class="toggle-switch toggle-round toggle-small toggle-grey"></div>
+                        <span class="toggle-label">photogrid</span>
+                    </label>
+                    <!-- [gemini] Grid size widget to adjust grid image width between 50px and 100px in steps of 25px -->
+                    <div id="gridsize-widget" class="noblock" style="margin-left: 20px;">
+                        <button id="gridsize-minus" type="button" class="gridsize-btn" aria-label="decrease image size">-</button>
+                        <span id="gridsize-display" style="font-family: sans-serif; font-size: 10px; margin: 0 5px; vertical-align: middle;">50px</span>
+                        <button id="gridsize-plus" type="button" class="gridsize-btn" aria-label="increase image size">+</button>
+                    </div>
+                    <!-- [gemini] Theme cycling widget to switch between photogrid visual themes -->
+                    <div id="theme-widget" class="noblock" style="margin-left: 20px;">
+                        <button id="theme-cycle" type="button" class="gridsize-btn" style="min-width: 120px;" aria-label="cycle visual themes">theme: journal</button>
+                    </div>
+                </div>
+
                 <!-- <div id="search-criteria"></div> -->
                 <!-- this is where the images go -->
                 <div id="grid-images"></div>
@@ -476,7 +502,7 @@
     -->
     
     <script type="module">
-        import { init, showTooltip, hideTooltip } from './js/ocellus-1774130438391.js';
+        import { init, showTooltip, hideTooltip } from './js/ocellus-1781974283193.js';
         window.showTooltip = showTooltip;
         window.hideTooltip = hideTooltip;
         const SimpleLightbox = window.SimpleLightbox;

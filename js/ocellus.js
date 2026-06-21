@@ -9,7 +9,19 @@ import { renderYearlyCountsSparkline } from './renderers.js';
 // [gemini] Import globals to access and store the loaded active theme
 import { globals } from './globals.js';
 
+function tweakUrl(hostname = window.location.hostname) {
+    const env = globals.env[hostname] ?? globals.env['localhost'];
+    window.Ocellus = window.Ocellus || {};
+    window.Ocellus.uris = {
+        zenodo: 'https://zenodo.org',
+        treatmentBank: 'https://tb.plazi.org/GgServer/html',
+        ...env,
+    };
+}
+
 function init() {
+    tweakUrl();
+
     const loc = new URL(location);
 
     if (loc.hash) {
@@ -37,6 +49,10 @@ function init() {
         if (theme) {
             globals.results.activeTheme = theme;
         }
+        const themeCycleBtn = $('#theme-cycle');
+        if (themeCycleBtn) {
+            themeCycleBtn.innerText = `theme: ${globals.results.activeTheme}`;
+        }
     }
 
     if (loc.search) {
@@ -58,9 +74,9 @@ function init() {
     initAdvSearch();
 }
 
-export { 
-    init, 
-    showTooltip, 
-    hideTooltip, 
+export {
+    init,
+    showTooltip,
+    hideTooltip,
     initializeMap
 }

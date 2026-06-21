@@ -11,9 +11,9 @@ async function getImages(bounds) {
     const max_lat = bounds.getNorthEast().lat;
     const max_lng = bounds.getNorthEast().lng;
 
-    const url = `${globals.uri.zenodeo}/images?geolocation=within(min_lat:${min_lat},min_lng:${min_lng},max_lat:${max_lat},max_lng:${max_lng})&cols=treatmentId&cols=latitude&cols=longitude&size=5000`;
+    const url = `${window.Ocellus.uris.zenodeo}/images?geolocation=within(min_lat:${min_lat},min_lng:${min_lng},max_lat:${max_lat},max_lng:${max_lng})&cols=treatmentId&cols=latitude&cols=longitude&size=5000`;
     const response = await fetch(url, globals.fetchOpts);
-    
+
     // if HTTP-status is 200-299
     if (response.ok) {
         const json = await response.json();
@@ -35,28 +35,28 @@ async function makeImageMarkers(map, mapLayers) {
     if (images) {
 
         if (!mapLayers.imageMarkerClusters) {
-            mapLayers.imageMarkerClusters = L.markerClusterGroup({ 
-                disableClusteringAtZoom: 10 
+            mapLayers.imageMarkerClusters = L.markerClusterGroup({
+                disableClusteringAtZoom: 10
             });
         }
-        
+
         const clickedMarkers = [];
-        
+
         images.forEach((image) => {
             const images_id = image.images_id;
-            
+
             // We add a marker for the image if the imageMarkers Map() doesn't 
             // already have it
             if (!mapLayers.imageMarkers.has(images_id)) {
                 const treatmentId = image.treatmentId;
-                const markerOpts = { 
+                const markerOpts = {
                     title: treatmentId,
-                    icon:  globals.markerIcons.default
+                    icon: globals.markerIcons.default
                 };
 
                 const latlng = new L.LatLng(image.latitude, image.longitude);
                 const marker = L.marker(latlng, markerOpts);
-            
+
                 marker.on('click', async function (e) {
                     const thisMarker = e.target;
                     thisMarker.setIcon(globals.markerIcons.active);
@@ -76,7 +76,7 @@ async function makeImageMarkers(map, mapLayers) {
                         //parentCluster.zoomToShowLayer(thisMarker, () => console.log('shown'))
                     }
 
-                    const lastClickedMarker = clickedMarkers[ 
+                    const lastClickedMarker = clickedMarkers[
                         clickedMarkers.length - 1
                     ];
 
@@ -85,15 +85,15 @@ async function makeImageMarkers(map, mapLayers) {
                     }
 
                     clickedMarkers.push(thisMarker);
-                    
+
                 });
-        
+
                 // Store the marker in the markers Map() 
                 mapLayers.imageMarkers.set(images_id, marker);
             }
 
-            
-            
+
+
         });
 
         // Bulk add markers to markerCluster layer
@@ -102,10 +102,10 @@ async function makeImageMarkers(map, mapLayers) {
         );
 
         // mapLayers.imageMarkerClusters.on('clusterclick', function (a) {
-		// 	a.layer.zoomToBounds();
-		// });
+        // 	a.layer.zoomToBounds();
+        // });
 
-        
+
         // Add the imageMarkerClusters layer to the map
         if (!map.hasLayer(mapLayers.imageMarkerClusters)) {
             log.info('re-adding existing image marker clusters');
@@ -115,15 +115,15 @@ async function makeImageMarkers(map, mapLayers) {
             log.info('using existing image marker clusters layer');
         }
 
-        
+
     }
 
     throbber.classList.add('nothrob');
-    
+
 }
 
 async function drawImageMarkers(map, mapLayers, treatmentId) {
-    
+
     if ('h3' in mapLayers) {
 
         if (map.hasLayer(mapLayers.h3)) {
@@ -148,7 +148,7 @@ async function drawImageMarkers(map, mapLayers, treatmentId) {
     }
 
     if (treatmentId) {
-        const [ treatments_id, images_id ] = treatmentId.split('-');
+        const [treatments_id, images_id] = treatmentId.split('-');
 
         const marker = mapLayers.imageMarkers.get(Number(images_id));
 
@@ -156,7 +156,7 @@ async function drawImageMarkers(map, mapLayers, treatmentId) {
             mapLayers.imageMarkerClusters.zoomToShowLayer(marker);
             marker.fireEvent('click');
         }
-        
+
     }
 }
 
@@ -191,15 +191,15 @@ function makeSlidebar(map, mapLayers) {
         state: 'closed'
     });
 
-    mapLayers.slidebar.addTo(map); 
+    mapLayers.slidebar.addTo(map);
 }
 
-async function getImageInfo (image) {
+async function getImageInfo(image) {
     throbber.classList.remove('nothrob');
     let content = 'Click on an image marker for more info';
 
     if (image) {
-        const url = `${globals.uri.zenodeo}/images?id=${image.images_id}&cols=treatmentId&cols=treatmentTitle&cols=zenodoDep&cols=httpUri&cols=caption`;
+        const url = `${window.Ocellus.uris.zenodeo}/images?id=${image.images_id}&cols=treatmentId&cols=treatmentTitle&cols=zenodoDep&cols=httpUri&cols=caption`;
         const response = await fetch(url, globals.fetchOpts);
 
         if (response.ok) {
@@ -235,11 +235,11 @@ async function getImageInfo (image) {
                 record.uri = `${r.httpUri}/singlefigAOF/`;
                 record.fullImage = r.httpUri;
             }
-            
-            content = makeImage({ 
-                figureSize: 250, 
-                rec: record, 
-                target: 'slidebar' 
+
+            content = makeImage({
+                figureSize: 250,
+                rec: record,
+                target: 'slidebar'
             });
         }
     }

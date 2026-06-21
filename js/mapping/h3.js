@@ -1,13 +1,13 @@
 import { globals } from "../globals.js";
-import { 
-    cellArea, 
+import {
+    cellArea,
     cellToBoundary,
     UNITS
 } from '../../node_modules/h3-js/dist/h3-js.es.js';
 //'https://cdn.jsdelivr.net/npm/h3-js@4.1.0/+esm'
 
-async function getH3(resolution)  {
-    const url = `${globals.uri.zenodeo}/bins/${resolution}`;
+async function getH3(resolution) {
+    const url = `${window.Ocellus.uris.zenodeo}/bins/${resolution}`;
     const response = await fetch(url, globals.fetchOpts);
 
     // if HTTP-status is 200-299
@@ -26,14 +26,14 @@ async function getH3(resolution)  {
 
             const hexagon = {
                 "type": "Feature",
-                "properties": { 
+                "properties": {
                     numOfTreatments,
                     area,
                     "density": numOfTreatments / area
                 },
                 "geometry": {
                     "type": "Polygon",
-                    "coordinates": [ coordinates ]
+                    "coordinates": [coordinates]
                 }
             }
 
@@ -51,7 +51,7 @@ async function getH3(resolution)  {
 }
 
 async function drawH3(map, mapLayers) {
-    
+
     if ('imageMarkerClusters' in mapLayers) {
 
         if (map.hasLayer(mapLayers.imageMarkerClusters)) {
@@ -69,7 +69,7 @@ async function drawH3(map, mapLayers) {
             map.addLayer(mapLayers.h3);
             mapLayers.h3info.addTo(map);
         }
-        
+
     }
     else {
         log.info('initializing h3 layer');
@@ -78,7 +78,7 @@ async function drawH3(map, mapLayers) {
             feature => feature.properties.density
         );
         //let max = Math.max(...densities);
-        const min = Math.min(...densities); 
+        const min = Math.min(...densities);
 
         // Since densities are very small numbers, and min is less than 1,
         // we scale both min and max to be more than 1
@@ -87,12 +87,12 @@ async function drawH3(map, mapLayers) {
         // min = Math.floor(min * c);
 
         //const classes = getH3Classes(min, max);
-        
-        const classes = binIt({ 
-            data: densities, 
+
+        const classes = binIt({
+            data: densities,
             scaleFactor: c,
-            colorRamp: globals.H3ColorRamp, 
-            typeOfBins: 'equalFreq' 
+            colorRamp: globals.H3ColorRamp,
+            typeOfBins: 'equalFreq'
         });
 
         /*
@@ -108,7 +108,7 @@ async function drawH3(map, mapLayers) {
         ]
         */
 
-        const style = function(feature) {
+        const style = function (feature) {
             let fillColor = '#f5f5f5';
             let fillOpacity = 0;
             const num = feature.properties.density * c;
@@ -117,40 +117,40 @@ async function drawH3(map, mapLayers) {
                 fillColor = getFillColor(num, classes);
                 fillOpacity = 0.7;
             }
-                
-            return { 
+
+            return {
                 fillColor,
                 color: 'grey',
                 weight: 0,
                 fillOpacity
             };
         }
-    
+
         mapLayers.h3 = L.geoJSON(
-            grid, 
+            grid,
             {
-                style, 
+                style,
                 onEachFeature: (feature, layer) => {
                     layer.on({
-                        mouseover: (e) => { 
-                            highlightBin({ mapLayers, bin: e.target }) 
+                        mouseover: (e) => {
+                            highlightBin({ mapLayers, bin: e.target })
                         },
-                        mouseout: (e) => { 
-                            resetBin({ mapLayers, bin: e.target }) 
+                        mouseout: (e) => {
+                            resetBin({ mapLayers, bin: e.target })
                         },
                         //click: zoomToFeature
                     });
                 }
             }
         );
-        
+
         map.addLayer(mapLayers.h3);
         makeH3Info(map, mapLayers);
     }
 
 }
 
-function highlightBin({ mapLayers, bin }) {                        
+function highlightBin({ mapLayers, bin }) {
     bin.setStyle({
         weight: 2,
         color: '#666',
@@ -159,8 +159,8 @@ function highlightBin({ mapLayers, bin }) {
     });
 
     if (
-        !L.Browser.ie && 
-        !L.Browser.opera && 
+        !L.Browser.ie &&
+        !L.Browser.opera &&
         !L.Browser.edge
     ) {
         bin.bringToFront();
@@ -215,9 +215,9 @@ function makeH3Info(map, mapLayers) {
 function makeH3Legend(map, mapLayers, classes) {
     mapLayers.h3legend = L.control({ position: 'bottomright' });
 
-    mapLayers.h3legend.onAdd = function() {
+    mapLayers.h3legend.onAdd = function () {
         const div = L.DomUtil.create('div', 'info legend');
-    
+
         // loop through our density intervals and generate a label with a 
         // colored square for each interval
         div.innerHTML = classes.map((c, i) => {
@@ -226,10 +226,10 @@ function makeH3Legend(map, mapLayers, classes) {
                 <div class="interval_text">${c.from}–${c.to}</div>
             </div>`
         }).join('');
-    
+
         return div;
     };
-    
+
     mapLayers.h3legend.addTo(map);
 }
 
@@ -249,13 +249,13 @@ function getH3Classes(min, max) {
     const interval = range / H3ColorRamp.length;
     let i = 0;
     const classes = [];
-    
+
     for (let from = min; from < max; from = from + interval) {
         const to = from + interval;
         const fillColor = H3ColorRamp[i];
         classes.push({
-            from: Math.round(from), 
-            to: Math.round(to), 
+            from: Math.round(from),
+            to: Math.round(to),
             fillColor
         });
         i++;
@@ -272,17 +272,17 @@ function binIt({ data, scaleFactor, colorRamp, typeOfBins }) {
         const densities = Object.values(data);
         const total = densities.reduce((a, b) => a + b);
         const max = Math.max(...densities) + 1;
-        const min = Math.min(...densities); 
+        const min = Math.min(...densities);
         const range = max - min;
         const interval = range / numOfBins;
         let i = 0;
-    
+
         for (let from = min; from < max; from = from + interval) {
             const to = from + interval;
             const fillColor = colorRamp[i];
             classes.push({
-                from: Math.round(from), 
-                to: Math.round(to), 
+                from: Math.round(from),
+                to: Math.round(to),
                 fillColor,
                 num: 0
             });
@@ -294,7 +294,7 @@ function binIt({ data, scaleFactor, colorRamp, typeOfBins }) {
                 .filter(d => d >= c.from && d < c.to)
                 .length;
         })
-        
+
     }
     else if (typeOfBins === 'equalFreq') {
 
@@ -338,7 +338,7 @@ function binIt({ data, scaleFactor, colorRamp, typeOfBins }) {
             const b = a + numPerClass;
             const tmp = orderedData.slice(a, b);
             const from = tmp[0].num;
-            const to = tmp[ tmp.length - 1 ].num;
+            const to = tmp[tmp.length - 1].num;
             classes[i] = {
                 from,
                 to,
@@ -347,20 +347,20 @@ function binIt({ data, scaleFactor, colorRamp, typeOfBins }) {
             }
         }
     }
-    
+
     //console.log(classes);
     return classes;
 }
 
 function fixTransmeridian(feature) {
-    const {type} = feature;
+    const { type } = feature;
 
     if (type === 'FeatureCollection') {
         feature.features.map(fixTransmeridian);
         return;
     }
 
-    const {type: geometryType, coordinates} = feature.geometry;
+    const { type: geometryType, coordinates } = feature.geometry;
     switch (geometryType) {
         case 'LineString':
             fixTransmeridianLoop(coordinates);
@@ -381,8 +381,8 @@ function fixTransmeridian(feature) {
 
 function fixTransmeridianCoord(coord) {
     const lng = coord[0];
-    coord[0] = lng < 0 
-        ? lng + 360 
+    coord[0] = lng < 0
+        ? lng + 360
         : lng;
 }
 

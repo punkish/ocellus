@@ -9,7 +9,8 @@ import {
     addListenersToPagerLinks,
     addListenersToMapCarouselLink,
     toggleAdvSearch,
-    lightUpTheBox
+    lightUpTheBox,
+    fadeOutChartsContainer
 } from './listeners.js';
 import { makeImage, makeTreatment } from './render-figures.js';
 import { getCountOfResource } from './querier.js';
@@ -93,7 +94,7 @@ const renderPage = ({
     //$('#grid-images').classList.add(`columns-${figureSize}`);
 
     const gridImages = $('#grid-images');
-    gridImages.classList.remove('layout-pg', 'columns-250', 'columns-100', 'columns-50');
+    gridImages.classList.remove('layout-pg', 'columns-250', 'columns-100', 'columns-50', 'theme-journal', 'theme-slate', 'theme-editorial');
     
     const chartsContainer = $('#charts-container');
     
@@ -104,13 +105,26 @@ const renderPage = ({
         gridImages.style.setProperty('--image-size', `${figureSize}px`);
         gridImages.style.setProperty('--column-gap', '2px');
         gridImages.classList.add('layout-pg');
+        // [gemini] Add the active theme class
+        gridImages.classList.add(`theme-${globals.results.activeTheme}`);
+
+        // [gemini] Keep charts container visible while rendering the charts so eCharts can draw them. It will fade out smoothly afterward.
         if (chartsContainer) {
-            chartsContainer.classList.add('noblock');
+            chartsContainer.classList.remove('noblock', 'fade-out');
         }
         // [gemini] Show grid size widget and set display text when photogrid loads
         const sizeWidget = $('#gridsize-widget');
         if (sizeWidget) {
             sizeWidget.classList.remove('noblock');
+        }
+        // [gemini] Show theme cycling widget and update text
+        const themeWidget = $('#theme-widget');
+        if (themeWidget) {
+            themeWidget.classList.remove('noblock');
+        }
+        const themeCycleBtn = $('#theme-cycle');
+        if (themeCycleBtn) {
+            themeCycleBtn.innerText = `theme: ${globals.results.activeTheme}`;
         }
         const sizeDisplay = $('#gridsize-display');
         if (sizeDisplay) {
@@ -123,12 +137,17 @@ const renderPage = ({
         gridImages.style.removeProperty('--column-gap');
         gridImages.classList.add(`columns-${figureSize}`);
         if (chartsContainer) {
-            chartsContainer.classList.remove('noblock');
+            chartsContainer.classList.remove('noblock', 'fade-out');
         }
         // [gemini] Hide grid size widget when default layout is active
         const sizeWidget = $('#gridsize-widget');
         if (sizeWidget) {
             sizeWidget.classList.add('noblock');
+        }
+        // [gemini] Hide theme cycling widget when default layout is active
+        const themeWidget = $('#theme-widget');
+        if (themeWidget) {
+            themeWidget.classList.add('noblock');
         }
         globals.results.photogridLoaded = false;
     }
@@ -193,6 +212,11 @@ const renderPage = ({
 
     if (resource === 'images') {
         lightUpTheBox();
+    }
+
+    // [gemini] Smoothly fade out charts container after rendering is done in photogrid mode
+    if (layout === 'pg') {
+        fadeOutChartsContainer();
     }
 }
 
