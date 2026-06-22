@@ -113,7 +113,6 @@
                                         value="treatments">
                                     <div class="toggle-switch toggle-round toggle-medium toggle-green"></div>
                                 </label>
-
                             </div>
 
                             <input id="q" name="q" type="text" placeholder="search images" class="query ns-val-input">
@@ -131,6 +130,9 @@
 
                         <button id="ns-go" name="go" type="submit" class="ns-button-primary">go</button>
                     </div>
+
+                    <!-- TODO -->
+                    <!-- </div> -->
                 </div>
                 <div id="progress"></div>
             </div>
@@ -429,35 +431,50 @@
 
             <div class="column-2 box">
 
-                <div id="layout" class="toggle-container hidden" 
+                <div id="layout" 
+                    class="toggle-container hidden layout-collapsed" 
                     aria-label="choose grid layout" data-pop="top"
                     data-pop-no-shadow data-pop-arrow>
-                    <label class="toggle toggle-inline">
-                        <span class="toggle-label">default</span>
-                        <input name="layout-toggle" class="toggle-checkbox" type="checkbox">
-                        <div class="toggle-switch toggle-round toggle-small toggle-grey"></div>
-                        <span class="toggle-label">photogrid</span>
-                    </label>
 
-                    <!-- [gemini] Grid size widget to adjust grid image width between 50px and 100px in steps of 25px -->
-                    <div id="gridsize-widget" class="noblock" style="margin-left: 20px;">
-                        <button id="gridsize-minus" type="button" class="gridsize-btn"
-                            aria-label="decrease image size">-</button>
-                        <span id="gridsize-display"
-                            style="font-family: sans-serif; font-size: 10px; margin: 0 5px; vertical-align: middle;">50px</span>
-                        <button id="gridsize-plus" type="button" 
-                            class="gridsize-btn"
-                            aria-label="increase image size">+</button>
+                    <!-- [gemini] Layout settings gear button -->
+                    <button id="layout-settings-toggle" type="button"
+                        class="gridsize-btn">⚙</button>
 
-                        <!-- <input type="range" name="gridsize" id="gridsize" min="25" max="250" step="25" value="25" />
-                        <output class="gridsize-output" for="gridsize"></output> -->
-                    </div>
+                    <!-- [gemini] Layout settings content wrapper -->
+                    <div id="layout-settings-content">
+                        <label class="toggle toggle-inline">
+                            <span class="toggle-label">default</span>
+                            <input name="layout-toggle" class="toggle-checkbox" type="checkbox">
+                            <div class="toggle-switch toggle-round toggle-small toggle-grey"></div>
+                            <span class="toggle-label">photogrid</span>
+                        </label>
 
-                    <!-- [gemini] Theme cycling widget to switch between photogrid visual themes -->
-                    <div id="theme-widget" class="noblock" style="margin-left: 20px;">
-                        <button id="theme-cycle" type="button" 
-                            class="gridsize-btn" style="min-width: 120px;"
-                            aria-label="cycle visual themes">theme: default</button>
+                        <!-- [gemini] Grid size widget to adjust grid image width between 50px and 100px in steps of 25px -->
+                        <div id="gridsize-widget" class="noblock" style="margin-left: 20px;">
+                            <button id="gridsize-minus" type="button" class="gridsize-btn"
+                                aria-label="decrease image size">-</button>
+                            <span id="gridsize-display"
+                                style="font-family: sans-serif; font-size: 10px; margin: 0 5px; vertical-align: middle;">50px</span>
+                            <button id="gridsize-plus" type="button" 
+                                class="gridsize-btn"
+                                aria-label="increase image size">+</button>
+                        </div>
+
+                        <!-- [gemini] Theme cycling widget to switch between photogrid visual themes -->
+                        <div id="theme-widget" class="noblock" style="margin-left: 20px;">
+                            <button id="theme-cycle" type="button" 
+                                class="gridsize-btn" style="min-width: 120px;"
+                                aria-label="cycle visual themes">theme: default</button>
+                        </div>
+
+                        <!-- [gpt] Theme aspect cycling widget -->
+                        <div id="theme-aspect-widget" class="noblock"
+                            style="margin-left: 20px;">
+                            <button id="theme-aspect-cycle" type="button"
+                                class="gridsize-btn">
+                                aspect: default
+                            </button>
+                        </div>
                     </div>
                 </div>
 

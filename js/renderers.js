@@ -94,7 +94,7 @@ const renderPage = ({
     //$('#grid-images').classList.add(`columns-${figureSize}`);
 
     const gridImages = $('#grid-images');
-    gridImages.classList.remove('layout-pg', 'columns-250', 'columns-100', 'columns-50', 'theme-journal', 'theme-slate', 'theme-editorial');
+    gridImages.classList.remove('layout-pg', 'columns-250', 'columns-100', 'columns-50', 'theme-journal', 'theme-slate', 'theme-editorial', 'theme-default');
     
     const chartsContainer = $('#charts-container');
     
@@ -121,6 +121,7 @@ const renderPage = ({
         const themeWidget = $('#theme-widget');
         if (themeWidget) {
             themeWidget.classList.remove('noblock');
+            $('#layout')?.classList.remove('hidden');
         }
         const themeCycleBtn = $('#theme-cycle');
         if (themeCycleBtn) {
@@ -148,6 +149,7 @@ const renderPage = ({
         const themeWidget = $('#theme-widget');
         if (themeWidget) {
             themeWidget.classList.add('noblock');
+            $('#layout')?.classList.add('hidden');
         }
         globals.results.photogridLoaded = false;
     }

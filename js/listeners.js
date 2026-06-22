@@ -35,6 +35,16 @@ const addListeners = () => {
         themeCycleBtn.addEventListener('click', cycleTheme);
     }
 
+    const themeAspectBtn = $('#theme-aspect-cycle');
+    if (themeAspectBtn) {
+        themeAspectBtn.addEventListener('click', cycleThemeAspect);
+    }
+
+    const layoutSettingsBtn = $('#layout-settings-toggle');
+    if (layoutSettingsBtn) {
+        layoutSettingsBtn.addEventListener('click', toggleLayoutMenu);
+    }
+
     $$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
     $$('.example-insert').forEach(
         el => el.addEventListener('click', insertExample)
@@ -282,8 +292,70 @@ const fadeOutChartsContainer = () => {
     chartsContainer.addEventListener('transitionend', handleTransitionEnd);
 }
 
+
+// [gpt] Layout menu auto-close timer handle
+let layoutMenuTimer = null;
+
+// [gpt] Restarts the layout menu inactivity timer
+const resetLayoutMenuTimer = () => {
+    clearTimeout(layoutMenuTimer);
+
+    layoutMenuTimer = setTimeout(
+        toggleLayoutMenu, 
+        globals.layoutMenuAutoCloseMs
+    );
+}
+
+// [gpt] Toggle the layout settings menu visibility
+const toggleLayoutMenu = () => {
+    const layoutEl = $('#layout');
+    if (!layoutEl) return;
+
+    // [gpt] Theme aspect widget shown only when menu is expanded
+    const aspectWidget = $('#theme-aspect-widget');
+    const isCollapsed = layoutEl.classList.contains('layout-collapsed');
+    clearTimeout(layoutMenuTimer);
+
+    if (isCollapsed) {
+        layoutEl.classList.remove('layout-collapsed');
+        if (aspectWidget) aspectWidget.classList.remove('noblock');
+        resetLayoutMenuTimer();
+    }
+    else {
+        layoutEl.classList.add('layout-collapsed');
+        if (aspectWidget) aspectWidget.classList.add('noblock');
+    }
+}
+
+// [gemini] Cycles the theme aspect ratio mode
+const cycleThemeAspect = () => {
+    resetLayoutMenuTimer();
+    globals.results.activeThemeAspect =
+        globals.results.activeThemeAspect === 'default'
+            ? 'square'
+            : 'default';
+
+    const btn = $('#theme-aspect-cycle');
+
+    if (btn) {
+        btn.innerText =
+            `aspect: ${globals.results.activeThemeAspect}`;
+    }
+
+    const gridImages = $('#grid-images');
+
+    if (gridImages) {
+
+        gridImages.classList.toggle(
+            'theme-aspect-square',
+            globals.results.activeThemeAspect === 'square'
+        );
+    }
+}
+
 // [gemini] Cycles the photogrid visual theme 
 const cycleTheme = () => {
+    resetLayoutMenuTimer();
     let currentIndex = globals.themes.indexOf(globals.results.activeTheme);
     if (currentIndex === -1) currentIndex = 0;
 
@@ -300,9 +372,7 @@ const cycleTheme = () => {
     // Update classes on grid-images
     const gridImages = $('#grid-images');
     if (gridImages && gridImages.classList.contains('layout-pg')) {
-        gridImages.classList.remove(
-            globals.themes.map(theme => `theme-${theme}`)
-        );
+        gridImages.classList.remove(...globals.themes.map(theme => `theme-${theme}`));
         gridImages.classList.add(`theme-${nextTheme}`);
     }
 
@@ -327,7 +397,8 @@ const flipLayoutToPg = (imgSize) => {
             'columns-50', 
             'theme-journal', 
             'theme-slate', 
-            'theme-editorial'
+            'theme-editorial',
+            'theme-default'
         );
         gridImages.style.setProperty('--image-size', `${imgSize}px`);
         gridImages.style.setProperty('--column-gap', '2px');
@@ -374,7 +445,8 @@ const flipLayoutToDefault = () => {
             'columns-50', 
             'theme-journal', 
             'theme-slate', 
-            'theme-editorial'
+            'theme-editorial',
+            'theme-default'
         );
         gridImages.style.removeProperty('--image-size');
         gridImages.style.removeProperty('--column-gap');
@@ -407,6 +479,7 @@ const flipLayoutToDefault = () => {
 // [gemini] Adjusts grid image size by delta on client-side 
 // (bounds: 50px - 100px)
 const adjustGridSize = (delta) => {
+    resetLayoutMenuTimer();
     const imgInput = $('input[name=img]');
     let currentSize = imgInput ? parseInt(imgInput.value, 10) || 50 : 50;
 
@@ -430,6 +503,7 @@ const adjustGridSize = (delta) => {
 // [gemini] Toggles layout. Fires submitForm() first time photogrid is 
 // requested, subsequent toggles happen client-side
 const toggleLayout = (e) => {
+    resetLayoutMenuTimer();
     const isChecked = e.target.checked;
 
     if (isChecked) {

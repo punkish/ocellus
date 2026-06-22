@@ -69,6 +69,9 @@ export const globals = {
         'square'
     ],
 
+    // [gpt] Auto-close delay for the layout settings menu
+    layoutMenuAutoCloseMs: 5000,
+
     results: {
         totalCount: 0,
         figures: [],
