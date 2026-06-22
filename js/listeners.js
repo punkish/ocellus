@@ -338,14 +338,12 @@ const cycleThemeAspect = () => {
     const btn = $('#theme-aspect-cycle');
 
     if (btn) {
-        btn.innerText =
-            `aspect: ${globals.results.activeThemeAspect}`;
+        btn.innerText = `aspect: ${globals.results.activeThemeAspect}`;
     }
 
     const gridImages = $('#grid-images');
 
     if (gridImages) {
-
         gridImages.classList.toggle(
             'theme-aspect-square',
             globals.results.activeThemeAspect === 'square'
