@@ -429,7 +429,8 @@
 
             <div class="column-2 box">
 
-                <div id="layout" class="toggle-container hidden" aria-label="choose grid layout" data-pop="top"
+                <div id="layout" class="toggle-container hidden" 
+                    aria-label="choose grid layout" data-pop="top"
                     data-pop-no-shadow data-pop-arrow>
                     <label class="toggle toggle-inline">
                         <span class="toggle-label">default</span>
@@ -444,17 +445,19 @@
                             aria-label="decrease image size">-</button>
                         <span id="gridsize-display"
                             style="font-family: sans-serif; font-size: 10px; margin: 0 5px; vertical-align: middle;">50px</span>
-                        <button id="gridsize-plus" type="button" class="gridsize-btn"
+                        <button id="gridsize-plus" type="button" 
+                            class="gridsize-btn"
                             aria-label="increase image size">+</button>
 
-                        <input type="range" name="gridsize" id="gridsize" min="25" max="250" step="25" value="25" />
-                        <output class="gridsize-output" for="gridsize"></output>
+                        <!-- <input type="range" name="gridsize" id="gridsize" min="25" max="250" step="25" value="25" />
+                        <output class="gridsize-output" for="gridsize"></output> -->
                     </div>
 
                     <!-- [gemini] Theme cycling widget to switch between photogrid visual themes -->
                     <div id="theme-widget" class="noblock" style="margin-left: 20px;">
-                        <button id="theme-cycle" type="button" class="gridsize-btn" style="min-width: 120px;"
-                            aria-label="cycle visual themes">theme: journal</button>
+                        <button id="theme-cycle" type="button" 
+                            class="gridsize-btn" style="min-width: 120px;"
+                            aria-label="cycle visual themes">theme: default</button>
                     </div>
                 </div>
 

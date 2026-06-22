@@ -101,3 +101,41 @@
     display: block !important;
     visibility: visible !important;
 }
+
+/* [gemini] Theme 4: "Default Photogrid" (Default - no frame, 2px gap) */
+#grid-images.layout-pg.theme-default {
+    column-gap: 2px !important;
+    background: transparent;
+    padding: 0 10px !important;
+}
+
+#grid-images.layout-pg.theme-default .carouselbox {
+    border: none !important;
+    background: transparent;
+    box-shadow: none !important;
+    margin-bottom: 2px !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+}
+
+/* [gemini] Theme 5: "Square" (Square clipped images, within a 2px gap frame) */
+#grid-images.layout-pg.theme-square {
+    column-gap: 2px !important;
+    background: transparent;
+    padding: 0 10px !important;
+}
+
+#grid-images.layout-pg.theme-square .carouselbox {
+    border: 1px solid #e1e4e8 !important;
+    background: #fafbfc;
+    border-radius: 4px;
+    margin-bottom: 2px !important;
+    padding: 2px;
+    box-shadow: 0 1px 3px rgba(27, 31, 35, 0.04) !important;
+}
+
+#grid-images.layout-pg.theme-square figure img {
+    aspect-ratio: 1 / 1 !important;
+    object-fit: cover !important;
+    clip-path: inset(0) !important;
+}

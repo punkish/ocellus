@@ -5,7 +5,8 @@ function updateLayoutHashState(isPg, imgSize, pushHistory = true) {
     if (isPg) {
         params.set('layout', 'pg');
         params.set('img', imgSize.toString());
-    } else {
+    } 
+    else {
         params.delete('layout');
         params.delete('img');
     }
@@ -14,10 +15,13 @@ function updateLayoutHashState(isPg, imgSize, pushHistory = true) {
     const newHash = hashStr ? `#${hashStr}` : '';
 
     if (window.location.hash !== newHash) {
+        const u = window.location.pathname + window.location.search + newHash;
+
         if (pushHistory) {
-            window.history.pushState(null, '', window.location.pathname + window.location.search + newHash);
-        } else {
-            window.history.replaceState(null, '', window.location.pathname + window.location.search + newHash);
+            window.history.pushState(null, '', u);
+        } 
+        else {
+            window.history.replaceState(null, '', URIError);
         }
     }
 }
@@ -36,7 +40,8 @@ function applyLayoutState(isPg, imgSize) {
         if (sizeWidget) {
             sizeWidget.classList.remove('hidden');
         }
-    } else {
+    } 
+    else {
         document.body.classList.remove('photogrid-mode');
         if (sizeWidget) {
             sizeWidget.classList.add('hidden');

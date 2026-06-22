@@ -1,6 +1,8 @@
 import { $, $$ } from './base.js';
 import { globals } from './globals.js';
-import { submitForm, updateSearchPlaceHolder, qs2form, form2qs } from './utils.js';
+import { 
+    submitForm, updateSearchPlaceHolder, qs2form, form2qs 
+} from './utils.js';
 import { Accordion } from './accordion.js';
 import { getResource } from './querier.js';
 import { initializeMap } from './mapping/index.js';
@@ -18,22 +20,32 @@ const addListeners = () => {
     $('input[name=searchtype').addEventListener('click', toggleAdvSearch);
     $('input[name=resource').addEventListener('click', toggleResource);
     $('input[name=layout-toggle]').addEventListener('change', toggleLayout);
-    // [gemini] Listeners for the grid size adjust buttons
+    $('select[name="as-publicationDate"]').addEventListener(
+        'change', toggleDateSelector
+    );
+    $('select[name="as-checkinTime"]').addEventListener(
+        'change', toggleDateSelector
+    );
+
+    // [gemini] Listeners for the grid size and theme cycle buttons
     $('#gridsize-plus').addEventListener('click', () => adjustGridSize(25));
     $('#gridsize-minus').addEventListener('click', () => adjustGridSize(-25));
-    // [gemini] Listener for the theme cycle button
     const themeCycleBtn = $('#theme-cycle');
     if (themeCycleBtn) {
         themeCycleBtn.addEventListener('click', cycleTheme);
     }
-    $('select[name="as-publicationDate"]').addEventListener('change', toggleDateSelector);
-    $('select[name="as-checkinTime"]').addEventListener('change', toggleDateSelector);
 
     $$('.modalToggle').forEach(el => el.addEventListener('click', toggleModal));
-    $$('.example-insert').forEach(el => el.addEventListener('click', insertExample));
-    $$('input[type=date').forEach(el => el.addEventListener('change', resetDatePickerWarning));
+    $$('.example-insert').forEach(
+        el => el.addEventListener('click', insertExample)
+    );
+    $$('input[type=date').forEach(
+        el => el.addEventListener('change', resetDatePickerWarning)
+    );
     $$('#charts-container').forEach(el => new Accordion(el));
-    $$('a.quicksearch').forEach((el) => el.addEventListener('click', quickSearch));
+    $$('a.quicksearch').forEach(
+        (el) => el.addEventListener('click', quickSearch)
+    );
 
     document.addEventListener('keydown', focusOnSearch);
 }
@@ -67,15 +79,15 @@ function focusOnSearch(event) {
         if (/^(?:input|textarea|select|button)$/i.test(event.target.tagName)) {
             return;
         }
-        
+
         const searchInput = $('#q');
-        
+
         // Select the text in the input field
         searchInput.setSelectionRange(0, searchInput.value.length);
-        
+
         // Focus on the search input
         searchInput.focus();
-        
+
         // Prevent the default action of the '/' key
         event.preventDefault();
     }
@@ -105,7 +117,7 @@ const toggleWarn = (msg) => {
         $('.warn').innerHTML = msg;
         $('.warn').classList.remove('hidden');
         $('#throbber').classList.add('nothrob');
-        setTimeout(() => { 
+        setTimeout(() => {
             $('.warn').innerHTML = '';
             $('.warn').classList.add('hidden');
         }, 3000);
@@ -136,7 +148,7 @@ const toggleAdvSearch = (e) => {
         $('#refreshCache').disabled = false;
         $('#clear-q').disabled = false;
     }
-    
+
 }
 
 const toggleSearch = (e) => {
@@ -168,7 +180,7 @@ const toggleSearch = (e) => {
             e.target.checked = true;
         }
 
-        const hash = searchType === 'fs' 
+        const hash = searchType === 'fs'
             ? '#fs'
             : window.location.pathname;
 
@@ -183,7 +195,7 @@ const toggleSearch = (e) => {
         // now, let's update the resource switch
         const arr = Array.from($$('input[name=resource]'));
         const checkedResource = arr.filter(i => i.checked)[0];
-        
+
         const uncheckedTwin = arr
             .filter(i => !i.checked && (i.value === checkedResource.value))[0];
 
@@ -216,13 +228,16 @@ const toggleResource = (e) => {
     renderYearlyCountsSparkline(resource);
 }
 
-// [gemini] Helper to sync layout hidden inputs and browser URL search and hash params
+// [gemini] Helper to sync layout hidden inputs and browser URL search and 
+// hash params
 const syncFormInputsAndHash = (isPg, imgSize) => {
     const layoutInput = $('input[name=layout]');
     const imgInput = $('input[name=img]');
+
     if (layoutInput) {
         layoutInput.value = isPg ? 'pg' : 'normal';
     }
+
     if (imgInput) {
         imgInput.value = isPg ? imgSize.toString() : '250';
     }
@@ -230,6 +245,7 @@ const syncFormInputsAndHash = (isPg, imgSize) => {
     const loc = new URL(window.location);
     const searchParams = loc.search;
     let newHash = '';
+
     if (isPg) {
         // [gemini] Include active theme in layout hash state
         newHash = `#layout=pg&img=${imgSize}&theme=${globals.results.activeTheme}`;
@@ -238,14 +254,15 @@ const syncFormInputsAndHash = (isPg, imgSize) => {
     window.history.pushState({}, '', newUrl);
 }
 
-// [gemini] Fades out the charts container and sets it to display: none (noblock) after fade-out
+// [gemini] Fades out the charts container and sets it to 
+// display: none (noblock) after fade-out
 const fadeOutChartsContainer = () => {
     const chartsContainer = $('#charts-container');
     if (!chartsContainer) return;
 
     // Reset any ongoing transition/timeout behaviors
     chartsContainer.classList.remove('noblock');
-    
+
     // Trigger layout reflow to make sure transition works
     void chartsContainer.offsetWidth;
 
@@ -253,23 +270,25 @@ const fadeOutChartsContainer = () => {
     chartsContainer.classList.add('fade-out');
 
     const handleTransitionEnd = (e) => {
+
         // Only run for opacity transition on the container itself
         if (e.propertyName === 'opacity') {
             chartsContainer.classList.add('noblock');
-            chartsContainer.removeEventListener('transitionend', handleTransitionEnd);
+            chartsContainer.removeEventListener(
+                'transitionend', handleTransitionEnd
+            );
         }
     };
     chartsContainer.addEventListener('transitionend', handleTransitionEnd);
 }
 
-// [gemini] Cycles the photogrid visual theme (journal -> slate -> editorial -> journal)
+// [gemini] Cycles the photogrid visual theme 
 const cycleTheme = () => {
-    const themes = ['journal', 'slate', 'editorial'];
-    let currentIndex = themes.indexOf(globals.results.activeTheme);
+    let currentIndex = globals.themes.indexOf(globals.results.activeTheme);
     if (currentIndex === -1) currentIndex = 0;
-    
-    const nextIndex = (currentIndex + 1) % themes.length;
-    const nextTheme = themes[nextIndex];
+
+    const nextIndex = (currentIndex + 1) % globals.themes.length;
+    const nextTheme = globals.themes[nextIndex];
     globals.results.activeTheme = nextTheme;
 
     // Update button text
@@ -281,7 +300,9 @@ const cycleTheme = () => {
     // Update classes on grid-images
     const gridImages = $('#grid-images');
     if (gridImages && gridImages.classList.contains('layout-pg')) {
-        gridImages.classList.remove('theme-journal', 'theme-slate', 'theme-editorial');
+        gridImages.classList.remove(
+            globals.themes.map(theme => `theme-${theme}`)
+        );
         gridImages.classList.add(`theme-${nextTheme}`);
     }
 
@@ -294,9 +315,20 @@ const cycleTheme = () => {
 // [gemini] Flip the image grid layout to photogrid (pg) client-side
 const flipLayoutToPg = (imgSize) => {
     const gridImages = $('#grid-images');
+
     if (gridImages) {
-        // [gemini] Clear theme classes before adding layout-pg and current activeTheme
-        gridImages.classList.remove('layout-pg', 'columns-250', 'columns-100', 'columns-50', 'theme-journal', 'theme-slate', 'theme-editorial');
+
+        // [gemini] Clear theme classes before adding layout-pg and current 
+        // activeTheme
+        gridImages.classList.remove(
+            'layout-pg', 
+            'columns-250', 
+            'columns-100', 
+            'columns-50', 
+            'theme-journal', 
+            'theme-slate', 
+            'theme-editorial'
+        );
         gridImages.style.setProperty('--image-size', `${imgSize}px`);
         gridImages.style.setProperty('--column-gap', '2px');
         gridImages.classList.add('layout-pg');
@@ -331,9 +363,19 @@ const flipLayoutToPg = (imgSize) => {
 // [gemini] Flip the image grid layout to default client-side
 const flipLayoutToDefault = () => {
     const gridImages = $('#grid-images');
+
     if (gridImages) {
+
         // [gemini] Clear photogrid themes when flipping layout back to default
-        gridImages.classList.remove('layout-pg', 'columns-250', 'columns-100', 'columns-50', 'theme-journal', 'theme-slate', 'theme-editorial');
+        gridImages.classList.remove(
+            'layout-pg', 
+            'columns-250', 
+            'columns-100', 
+            'columns-50', 
+            'theme-journal', 
+            'theme-slate', 
+            'theme-editorial'
+        );
         gridImages.style.removeProperty('--image-size');
         gridImages.style.removeProperty('--column-gap');
         gridImages.classList.add('columns-250');
@@ -362,7 +404,8 @@ const flipLayoutToDefault = () => {
     }
 }
 
-// [gemini] Adjusts grid image size by delta on client-side (bounds: 50px - 100px)
+// [gemini] Adjusts grid image size by delta on client-side 
+// (bounds: 50px - 100px)
 const adjustGridSize = (delta) => {
     const imgInput = $('input[name=img]');
     let currentSize = imgInput ? parseInt(imgInput.value, 10) || 50 : 50;
@@ -384,7 +427,8 @@ const adjustGridSize = (delta) => {
     syncFormInputsAndHash(true, newSize);
 }
 
-// [gemini] Toggles layout. Fires submitForm() first time photogrid is requested, subsequent toggles happen client-side
+// [gemini] Toggles layout. Fires submitForm() first time photogrid is 
+// requested, subsequent toggles happen client-side
 const toggleLayout = (e) => {
     const isChecked = e.target.checked;
 
@@ -394,7 +438,8 @@ const toggleLayout = (e) => {
             const imgSize = imgInput ? parseInt(imgInput.value, 10) || 50 : 50;
             flipLayoutToPg(imgSize);
             syncFormInputsAndHash(true, imgSize);
-        } else {
+        } 
+        else {
             const resultCount = globals.results.totalCount || 0;
             const pgSize = Math.min(200, resultCount || 200);
 
@@ -408,11 +453,13 @@ const toggleLayout = (e) => {
 
             submitForm();
         }
-    } else {
+    } 
+    else {
         if (globals.results.photogridLoaded) {
             flipLayoutToDefault();
             syncFormInputsAndHash(false, 50);
-        } else {
+        } 
+        else {
             const layoutInput = $('input[name=layout]');
             const imgInput = $('input[name=img]');
             if (layoutInput) layoutInput.value = 'normal';
@@ -426,14 +473,14 @@ const toggleLayout = (e) => {
 const controlDetails = (e) => {
 
     // Only run if the detail is open
-	if (!e.target.open) return;
+    if (!e.target.open) return;
 
-	// Get all other open dropdowns and close them
-	var details = $$('details[open]');
-	Array.prototype.forEach.call(details, function (detail) {
-		if (detail === e.target) return;
-		detail.removeAttribute('open');
-	});
+    // Get all other open dropdowns and close them
+    var details = $$('details[open]');
+    Array.prototype.forEach.call(details, function (detail) {
+        if (detail === e.target) return;
+        detail.removeAttribute('open');
+    });
 }
 
 const insertExample = (e) => {
@@ -471,7 +518,7 @@ const go = (e) => {
 
         submitForm();
     }
-    
+
     e.stopPropagation();
     e.preventDefault();
 }
@@ -479,7 +526,7 @@ const go = (e) => {
 const asGo = (e) => {
     $('#throbber').classList.remove('nothrob');
     submitForm();
-    
+
     e.stopPropagation();
     e.preventDefault();
 }
@@ -489,7 +536,7 @@ const toggleModal = (e) => {
     const modals = $$('.modal');
 
     if (t.length > 0) {
-        
+
         // first, let's close all open modals
         modals.forEach(m => {
             m.classList.add(...globals.hiddenClasses);
@@ -510,7 +557,7 @@ const promptForSearchTerm = () => {
     $('#q').classList.add('red-placeholder');
 }
 
-const resetPrompt = (e)=> {
+const resetPrompt = (e) => {
     $('#q').placeholder = globals.defaultPlaceholder;
     $('#q').classList.remove('red-placeholder');
     $('#refreshCache').checked = false;
@@ -565,7 +612,7 @@ function carousel(box) {
     let current = items[0];
 
     // add event handlers to buttons
-    toggle.addEventListener('click', function(event) {
+    toggle.addEventListener('click', function (event) {
         const tgt = event.currentTarget;
         const carouselbox = tgt.parentNode.parentNode.parentNode;
         setMapSize(carouselbox);
@@ -589,13 +636,13 @@ function carousel(box) {
 
         // if the previous one was chosen and the counter is less than 0 
         // make the counter the last element, thus looping the carousel
-        if (direction === -1 && counter < 0) { 
-            counter = amount - 1; 
+        if (direction === -1 && counter < 0) {
+            counter = amount - 1;
         }
 
         // if the toggle button was clicked and there is no items element, 
         // set the counter to 0
-        if (direction === 1 && !items[counter]) { 
+        if (direction === 1 && !items[counter]) {
             counter = 0;
         }
 
@@ -635,7 +682,7 @@ function drawMap(event) {
 
         if (tgt.dataset.loc !== 'undefined') {
             const loc = JSON.parse(tgt.dataset.loc);
-            
+
             const points = loc
                 .map(point => [point.latitude, point.longitude]);
 
@@ -644,7 +691,7 @@ function drawMap(event) {
                     centroid = point;
                 }
 
-                L.marker(point, {icon: mcIcon}).addTo(map);
+                L.marker(point, { icon: mcIcon }).addTo(map);
             })
 
             map.setView(centroid, 10);
@@ -652,11 +699,11 @@ function drawMap(event) {
         else if (tgt.dataset.convexhull) {
             const convexhull = JSON.parse(tgt.dataset.convexhull);
             const polygon = L.polygon(
-                convexhull, 
-                { color: '#9BC134', weight: 1} 
+                convexhull,
+                { color: '#9BC134', weight: 1 }
             ).addTo(map);
             convexhull.forEach((point, index) => {
-                L.marker(point, {icon: mcIcon}).addTo(map);
+                L.marker(point, { icon: mcIcon }).addTo(map);
             });
             map.fitBounds(polygon.getBounds());
         }
@@ -676,9 +723,9 @@ function addListenersToMapCarouselLink() {
 
 const toggleDateSelector = (e) => {
     const srcName = e.target.name;
-    
+
     if (e.target.value === 'between') {
-        
+
         //const tos = e.target.parentNode.querySelectorAll('.hidden');
         const tos = $$(`#${srcName}-range .hidden`);
 
@@ -721,10 +768,10 @@ function lightUpTheBox() {
     });
 }
 
-export { 
-    addListeners, 
+export {
+    addListeners,
     addListenersToFigDetails,
-    addListenersToPagerLinks, 
+    addListenersToPagerLinks,
     addListenersToFigureTypes,
     addListenersToMapCarouselLink,
     toggleSearch,

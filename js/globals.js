@@ -56,15 +56,31 @@ export const globals = {
 
     defaultPlaceholder: 'search images',
 
+    // photogrid themes
+    themes: [
+        'default', 
+        'journal', 
+        'slate', 
+        'editorial'
+    ],
+
+    themeAspect: [
+        'default',
+        'square'
+    ],
+
     results: {
         totalCount: 0,
         figures: [],
         page: 1,
         size: 30,
-        // [gemini] Tracks whether photogrid has been loaded from the server during the current query session
+
+        // [gemini] Tracks whether photogrid has been loaded from the server 
+        // during the current query session
         photogridLoaded: false,
-        // [gemini] Tracks the currently active photogrid visual theme (journal, slate, editorial)
-        activeTheme: 'journal'
+
+        // [gemini] Tracks the currently active photogrid visual theme themes 
+        activeTheme: 'default'
     },
 
     // resource are what are fetched from remote and displayed
