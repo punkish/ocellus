@@ -1,32 +1,34 @@
 log.level = log.INFO;
 
+/**
+ * [claude] Application-wide configuration and mutable runtime state.
+ *
+ * URI configuration is intentionally absent here. At startup,
+ * tweakUrl() in ocellus.js reads globals.env and writes the
+ * resolved URIs to window.Ocellus.uris, which all modules use.
+ * The former globals.uri object was dead config — it was never
+ * read after tweakUrl() ran — and has been removed.
+ */
 export const globals = {
-    fetchOpts: {
-        // method: "GET",
-        // headers: new Headers({
-        //     "ngrok-skip-browser-warning": true,
-        // }),
-    },
 
-    uri: {
-        zenodeo: 'http://localhost:3010/v3',
-        maps: 'http://localhost:3010/v3/geo',
-        zenodo: 'https://zenodo.org',
-        treatmentBank: 'https://tb.plazi.org/GgServer/html'
-    },
+    fetchOpts: {},
 
+    /**
+     * [claude] Per-hostname URI overrides consumed by tweakUrl().
+     * Falls back to 'localhost' when the hostname is unrecognised.
+     */
     env: {
         'lucknow.local': {
             zenodeo: 'http://lucknow.local:3010/v3',
-            maps: 'http://lucknow.local:3010/v3/geo'
-        }, // drop :3010 if using Caddy
+            maps:    'http://lucknow.local:3010/v3/geo'
+        },
         'ocellus.info': {
             zenodeo: 'https://test.zenodeo.org/v3',
-            maps: 'https://test.zenodeo.org/v3/geo'
+            maps:    'https://test.zenodeo.org/v3/geo'
         },
         'localhost': {
             zenodeo: 'http://localhost:3010/v3',
-            maps: 'http://localhost:3010/v3/geo'
+            maps:    'http://localhost:3010/v3/geo'
         },
     },
 
@@ -35,7 +37,7 @@ export const globals = {
             yearlyCounts: false,
             totals: false
         },
-        "images-geo": {
+        'images-geo': {
             yearlyCounts: false,
             totals: false
         },
@@ -43,65 +45,97 @@ export const globals = {
             yearlyCounts: false,
             totals: false
         },
-        journals: null,
+        journals:        null,
         collectionCodes: null,
-        bins: null
+        bins:            null
     },
 
+    /**
+     * [claude] Named figure sizes used to drive CSS column classes
+     * (columns-250, columns-100, columns-50) in default layout.
+     * Column class names are derived from these values in layout.js
+     * so there is one source of truth.
+     */
     figureSize: {
         normal: 250,
-        small: 100,
-        tiny: 50
+        small:  100,
+        tiny:   50
     },
 
     defaultPlaceholder: 'search images',
 
-    // photogrid themes
+    /**
+     * [claude] Ordered list of photogrid visual themes.
+     * cycleTheme() in layout.js steps through this array.
+     * Theme CSS class names are derived as `theme-${name}`.
+     */
     themes: [
-        'default', 
-        'journal', 
-        'slate', 
+        'default',
+        'journal',
+        'slate',
         'editorial'
     ],
 
+    /**
+     * [claude] Available aspect ratio modes for the photogrid.
+     * cycleThemeAspect() in layout.js toggles between these.
+     */
     themeAspect: [
         'default',
         'square'
     ],
 
-    // [gpt] Auto-close delay for the layout settings menu
+    /**
+     * [claude] Milliseconds of inactivity before the layout
+     * settings gear-menu auto-closes.
+     */
     layoutMenuAutoCloseMs: 5000,
 
     results: {
-        totalCount: 0,
-        figures: [],
-        page: 1,
-        size: 30,
+        totalCount:        0,
+        figures:           [],
+        page:              1,
+        size:              30,
 
-        // [gemini] Tracks whether photogrid has been loaded from the server 
-        // during the current query session
-        photogridLoaded: false,
+        /**
+         * [claude] True after the first photogrid server-fetch
+         * completes. Subsequent layout toggles flip client-side
+         * without re-fetching.
+         */
+        photogridLoaded:   false,
 
-        // [gemini] Tracks the currently active photogrid visual theme themes 
-        activeTheme: 'default'
+        activeTheme:       'default',
+
+        /**
+         * [claude] Initialised here — was missing from the original,
+         * causing cycleThemeAspect() to compare against undefined
+         * on the first click.
+         */
+        activeThemeAspect: 'default'
     },
 
-    // resource are what are fetched from remote and displayed
-    // pseudoresources are modals that are already embeddeded 
-    // in index.html and are shown or hidden on demand
-    // 
-    resources: ['treatments', 'citations', 'images'],
+    // [claude] 'real' resources fetched from the API
+    resources:      ['treatments', 'citations', 'images'],
+
+    // [claude] Pseudo-resources are modals already in index.html,
+    // shown/hidden on demand rather than fetched
     pseudoResources: ['about', 'ip', 'contact', 'privacy'],
 
     params: {
 
-        // params allowed in queryString but not in the 'q' input field
-        notValidQ: ['resource', 'page', 'size', 'grid', 'refreshCache', 'cols'],
+        /**
+         * [claude] Keys allowed in the query string but excluded
+         * from the free-text 'q' input field.
+         */
+        notValidQ: [
+            'resource', 'page', 'size', 'grid',
+            'refreshCache', 'cols'
+        ],
 
         validImages: [
             'httpUri',
-            'caption', // search against images.captionText
-            'captionText', // search against imagesFts.captionText
+            'caption',
+            'captionText',
             'q',
             'treatmentId',
             'treatmentTitle',
@@ -110,11 +144,9 @@ export const globals = {
             'articleDOI',
             'zenodoDep',
             'authorityName',
-            // 'articleAuthor',
             'collectionCode',
             'status',
             'journalTitle',
-            //'journals_id',
             'journalYear',
             'kingdom',
             'phylum',
@@ -133,7 +165,6 @@ export const globals = {
             'eco_name',
             'biome',
             'biome_id'
-            // 'realm'
         ],
 
         validTreatments: [
@@ -142,7 +173,6 @@ export const globals = {
             'treatmentDOI',
             'zenodoDep',
             'articleTitle',
-            // 'articleAuthor',
             'articleDOI',
             'publicationDate',
             'journalYear',
@@ -175,9 +205,10 @@ export const globals = {
             'groupby'
         ],
 
-        // the following input params are ignored while creating the 
-        // textual version of the search criteria
-        // 
+        /**
+         * [claude] Keys stripped before building the human-readable
+         * search-criteria summary in renderSearchCriteria().
+         */
         notValidSearchCriteria: [
             'resource',
             'communities',
@@ -195,25 +226,37 @@ export const globals = {
 
     cols: {
         images: [
-            'treatmentId', 'treatmentTitle', 'zenodoDep', 'treatmentDOI',
-            'articleTitle', 'articleAuthor', 'httpUri', 'caption', 'latitude',
+            'treatmentId',   'treatmentTitle', 'zenodoDep',
+            'treatmentDOI',  'articleTitle',   'articleAuthor',
+            'httpUri',       'caption',        'latitude',
             'longitude'
         ],
 
         treatments: [
-            'treatmentId', 'treatmentTitle', 'zenodoDep', 'treatmentDOI',
-            'articleTitle', 'articleAuthor', 'journalTitle', 'latitude',
-            'longitude'
+            'treatmentId',  'treatmentTitle', 'zenodoDep',
+            'treatmentDOI', 'articleTitle',   'articleAuthor',
+            'journalTitle', 'latitude',       'longitude'
         ]
     },
 
+    /**
+     * [claude] Keyed by a unique per-figure id; populated lazily
+     * in drawMap() as treatment-location mini-maps are opened.
+     */
     maps: {},
 
+    /**
+     * [claude] CSS classes used to hide elements. Kept as an
+     * array so they can be spread into classList calls.
+     */
     hiddenClasses: ['hidden', 'noblock'],
 
     closedFigcaptionHeight: '30px',
 
-    // h3 layer colors
+    /**
+     * [claude] Sequential colour ramp for H3 hexagonal density
+     * cells on the map. Low density → light yellow; high → dark red.
+     */
     H3ColorRamp: [
         '#ffffcc',
         '#ffeda0',
@@ -225,44 +268,57 @@ export const globals = {
         '#b10026',
     ],
 
-    markerIcons: {
-        default: L.icon({
-            iconUrl: '/img/marker.png',
-            iconSize: [24, 38],
-            iconAnchor: [12, 38],
-            popupAnchor: [0, 0],
-            shadowUrl: '/img/marker-shadow.png',
-            shadowSize: [41, 41],
-            shadowAnchor: [11, 37]
-        }),
-        active: L.icon({
-            iconUrl: '/img/marker-active.png',
-            iconSize: [24, 38],
-            iconAnchor: [12, 38],
-            popupAnchor: [0, 0],
-            shadowUrl: '/img/marker-shadow.png',
-            shadowSize: [41, 41],
-            shadowAnchor: [12, 38]
-        }),
-        clicked: L.icon({
-            iconUrl: '/img/marker-clicked.png',
-            iconSize: [24, 38],
-            iconAnchor: [12, 38],
-            popupAnchor: [0, 0],
-            shadowUrl: '/img/marker-shadow.png',
-            shadowSize: [41, 41],
-            shadowAnchor: [12, 38]
-        })
-    },
-
     months: [
-        'January', 'February', 'March', 'April', 'May', 'June', 'July',
-        'August', 'September', 'October', 'November', 'December'
+        'January',   'February', 'March',    'April',
+        'May',       'June',     'July',     'August',
+        'September', 'October',  'November', 'December'
     ],
 
     charts: {
-        termFreq: null,
+        termFreq:    null,
         yearlyCounts: null
     }
 
+};
+
+/**
+ * [claude] Returns Leaflet marker icon definitions.
+ *
+ * Intentionally a function rather than a property on globals,
+ * because L.icon() must not be called at module-parse time —
+ * Leaflet may not yet be initialised. Call this after init().
+ *
+ * @returns {{ default: L.Icon, active: L.Icon, clicked: L.Icon }}
+ */
+export function getMarkerIcons() {
+
+    const shadow = {
+        shadowUrl:    '/img/marker-shadow.png',
+        shadowSize:   [41, 41],
+    };
+
+    const base = {
+        iconSize:    [24, 38],
+        iconAnchor:  [12, 38],
+        popupAnchor: [0, 0],
+        ...shadow
+    };
+
+    return {
+        default: L.icon({
+            iconUrl:      '/img/marker.png',
+            shadowAnchor: [11, 37],
+            ...base
+        }),
+        active: L.icon({
+            iconUrl:      '/img/marker-active.png',
+            shadowAnchor: [12, 38],
+            ...base
+        }),
+        clicked: L.icon({
+            iconUrl:      '/img/marker-clicked.png',
+            shadowAnchor: [12, 38],
+            ...base
+        })
+    };
 }
