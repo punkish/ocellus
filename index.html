@@ -63,6 +63,7 @@
     <link rel="stylesheet" href="css/close-btn.css">
     <link rel="stylesheet" href="css/treatmentDetails.css">
     <link rel="stylesheet" href="css/sparkline.css">
+    <link rel="stylesheet" href="css/layout-menu.css">
     <link rel="stylesheet" href="css/simpleLightbox.css">
     <link rel="stylesheet" href="css/simpleLightbox-modifiers.css">
     <!-- [gemini] Stylesheets for the photogrid visual themes -->
@@ -293,36 +294,6 @@
 
                 <select name="as-journalYear" id="as-journalYear" class="fullwidth">
                     <option value="">Journal Year…</option>
-                    <option value="1995">Journal year is 1995</option>
-                    <option value="1996">Journal year is 1996</option>
-                    <option value="1997">Journal year is 1997</option>
-                    <option value="1998">Journal year is 1998</option>
-                    <option value="1999">Journal year is 1999</option>
-                    <option value="2000">Journal year is 2000</option>
-                    <option value="2001">Journal year is 2001</option>
-                    <option value="2002">Journal year is 2002</option>
-                    <option value="2003">Journal year is 2003</option>
-                    <option value="2004">Journal year is 2004</option>
-                    <option value="2005">Journal year is 2005</option>
-                    <option value="2006">Journal year is 2006</option>
-                    <option value="2007">Journal year is 2007</option>
-                    <option value="2008">Journal year is 2008</option>
-                    <option value="2009">Journal year is 2009</option>
-                    <option value="2010">Journal year is 2010</option>
-                    <option value="2011">Journal year is 2011</option>
-                    <option value="2012">Journal year is 2012</option>
-                    <option value="2013">Journal year is 2013</option>
-                    <option value="2014">Journal year is 2014</option>
-                    <option value="2015">Journal year is 2015</option>
-                    <option value="2016">Journal year is 2016</option>
-                    <option value="2017">Journal year is 2017</option>
-                    <option value="2018">Journal year is 2018</option>
-                    <option value="2019">Journal year is 2019</option>
-                    <option value="2020">Journal year is 2020</option>
-                    <option value="2021">Journal year is 2021</option>
-                    <option value="2022">Journal year is 2022</option>
-                    <option value="2023">Journal year is 2023</option>
-                    <option value="2024">Journal year is 2024</option>
                 </select>
 
                 <fieldset id="publicationDateContainer">
@@ -402,7 +373,7 @@
                     <label for="as-geolocation">Geolocation</label>
                     <input type="hidden" name="as-geolocation" id="as-geolocation" value="">
                     <div id="mapSearch"></div>
-                    <div id="coords" style="display: block; height: 20px;"></div>
+                    <div id="coords"></div>
                 </div>
 
                 <div id="submitButtonContainer">
@@ -438,7 +409,7 @@
 
                     <!-- [gemini] Layout settings gear button -->
                     <button id="layout-settings-toggle" type="button"
-                        class="gridsize-btn">⚙</button>
+                        class="layout-settings-btn">⚙</button>
 
                     <!-- [gemini] Layout settings content wrapper -->
                     <div id="layout-settings-content">
@@ -450,28 +421,26 @@
                         </label>
 
                         <!-- [gemini] Grid size widget to adjust grid image width between 50px and 100px in steps of 25px -->
-                        <div id="gridsize-widget" class="noblock" style="margin-left: 20px;">
+                        <div id="gridsize-widget" class="noblock">
                             <button id="gridsize-minus" type="button" class="gridsize-btn"
                                 aria-label="decrease image size">-</button>
-                            <span id="gridsize-display"
-                                style="font-family: sans-serif; font-size: 10px; margin: 0 5px; vertical-align: middle;">50px</span>
+                            <span id="gridsize-display">50px</span>
                             <button id="gridsize-plus" type="button" 
                                 class="gridsize-btn"
                                 aria-label="increase image size">+</button>
                         </div>
 
                         <!-- [gemini] Theme cycling widget to switch between photogrid visual themes -->
-                        <div id="theme-widget" class="noblock" style="margin-left: 20px;">
+                        <div id="theme-widget" class="noblock">
                             <button id="theme-cycle" type="button" 
-                                class="gridsize-btn" style="min-width: 120px;"
+                                class="theme-btn"
                                 aria-label="cycle visual themes">theme: default</button>
                         </div>
 
                         <!-- [gpt] Theme aspect cycling widget -->
-                        <div id="theme-aspect-widget" class="noblock"
-                            style="margin-left: 20px;">
+                        <div id="theme-aspect-widget" class="noblock">
                             <button id="theme-aspect-cycle" type="button"
-                                class="gridsize-btn">
+                                class="theme-btn">
                                 aspect: default
                             </button>
                         </div>

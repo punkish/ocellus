@@ -140,35 +140,8 @@
     clip-path: inset(0) !important;
 }
 
-
 /* [gemini] Square aspect mode for any active theme */
 #grid-images.layout-pg.theme-aspect-square figure img {
     aspect-ratio: 1 / 1 !important;
     object-fit: cover !important;
-}
-
-/* [gpt] Collapsible layout settings menu */
-#layout {
-    overflow: hidden;
-}
-
-#layout-settings-content {
-    display: inline-flex;
-    overflow: hidden;
-    white-space: nowrap;
-    max-width: 1000px;
-    opacity: 1;
-    transition: max-width 0.35s ease, opacity 0.35s ease;
-    align-items: center;
-    gap: 10px;
-}
-
-/* [gpt] Prevent layout widgets from shrinking when menu opens */
-#layout-settings-content > div {
-    flex-shrink: 0;
-}
-
-#layout.layout-collapsed #layout-settings-content {
-    max-width: 0;
-    opacity: 0;
 }

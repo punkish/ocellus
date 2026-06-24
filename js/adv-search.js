@@ -5,6 +5,8 @@
  *
  * Changes from the original:
  *  - Dead console.log statement removed from getDataFromZenodeo
+ *  - Added populateYearSelect() function to dynamically generate
+ *    year options, replacing hard-coded HTML list
  */
 
 import { globals } from './globals.js';
@@ -83,6 +85,48 @@ async function getJournalTitles() {
         display:  'journalTitle',
         value:    'journalTitle'
     });
+}
+
+// ---------------------------------------------------------------------------
+// Year select population
+// ---------------------------------------------------------------------------
+
+/**
+ * [claude] Dynamically populates the journalYear select element
+ * with option elements from startYear to the current year.
+ * Eliminates the need for hard-coded year options in HTML.
+ *
+ * This function is called once at init time and ensures that
+ * the select always includes the current year without any
+ * annual maintenance.
+ *
+ * @param {number} [startYear=1995] - First year to include
+ * @returns {void}
+ */
+function populateYearSelect(startYear = 1995) {
+
+    const currentYear = new Date().getFullYear();
+    const select = document.getElementById('as-journalYear');
+
+    if (!select) {
+        console.warn('as-journalYear select not found in DOM');
+        return;
+    }
+
+    // [claude] Generate options from startYear through current year
+    for (let year = startYear; year <= currentYear; year++) {
+
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = `Journal year is ${year}`;
+        select.appendChild(option);
+    }
+
+    log.info(
+        `- populateYearSelect() generated ${
+            currentYear - startYear + 1
+        } options (${startYear}-${currentYear})`
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -215,4 +259,4 @@ function initAdvSearch() {
     });
 }
 
-export { initAdvSearch };
+export { initAdvSearch, populateYearSelect }

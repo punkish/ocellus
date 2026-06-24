@@ -32,8 +32,7 @@ import { syncLayoutState } from './url-manager.js';
 const COLUMN_CLASSES = Object.values(globals.figureSize)
     .map(s => `columns-${s}`);
 
-const THEME_CLASSES = globals.themes
-    .map(t => `theme-${t}`);
+const THEME_CLASSES = globals.themes.map(t => `theme-${t}`);
 
 // [claude] Union of all classes that must be cleared before
 // applying a new layout configuration.
@@ -88,7 +87,7 @@ function resetGridClasses() {
  * action inside the menu (size adjust, theme cycle) calls this
  * to keep the menu open while the user is still engaging with it.
  */
-export function resetLayoutMenuTimer() {
+function resetLayoutMenuTimer() {
     clearTimeout(layoutMenuTimer);
     layoutMenuTimer = setTimeout(
         toggleLayoutMenu,
@@ -101,12 +100,9 @@ export function resetLayoutMenuTimer() {
  * The theme-aspect widget is only shown when the menu is expanded;
  * it is hidden again on collapse (or auto-close).
  */
-export function toggleLayoutMenu() {
-
+function toggleLayoutMenu() {
     const layoutEl    = $('#layout');
-
     if (!layoutEl) return;
-
     const aspectWidget = $('#theme-aspect-widget');
     const isCollapsed  = layoutEl.classList
         .contains('layout-collapsed');
@@ -144,8 +140,7 @@ export function toggleLayoutMenu() {
  * The transitionend listener is added once and self-removes to
  * avoid stacking up handlers across multiple toggle cycles.
  */
-export function fadeOutChartsContainer() {
-
+function fadeOutChartsContainerOld() {
     const chartsContainer = $('#charts-container');
 
     if (!chartsContainer) return;
@@ -158,7 +153,6 @@ export function fadeOutChartsContainer() {
     // 'noblock' and adding 'fade-out' in the same tick can be
     // batched by the browser and the transition won't fire
     void chartsContainer.offsetWidth;
-
     chartsContainer.classList.add('fade-out');
 
     function handleTransitionEnd(e) {
@@ -180,6 +174,18 @@ export function fadeOutChartsContainer() {
     );
 }
 
+/**
+ * [claude] Hides the charts container immediately when switching
+ * to photogrid layout.
+ */
+function fadeOutChartsContainer() {
+    const chartsContainer = $('#charts-container');
+    if (!chartsContainer) return;
+
+    // [claude] Hide immediately for cleaner photogrid view
+    chartsContainer.classList.add('noblock');
+}`fa`
+
 // ---------------------------------------------------------------------------
 // Layout flip helpers (client-side, no re-fetch)
 // ---------------------------------------------------------------------------
@@ -191,7 +197,7 @@ export function fadeOutChartsContainer() {
  * theme class, and shows the photogrid control widgets.
  * @param {number} imgSize - Image size in pixels
  */
-export function flipLayoutToPg(imgSize) {
+function flipLayoutToPg(imgSize) {
 
     const gridImages = resetGridClasses();
 
@@ -239,7 +245,7 @@ export function flipLayoutToPg(imgSize) {
  * classes and custom properties, hides the photogrid widgets,
  * and restores chart visibility.
  */
-export function flipLayoutToDefault() {
+function flipLayoutToDefault() {
 
     const gridImages = resetGridClasses();
 
@@ -277,6 +283,26 @@ export function flipLayoutToDefault() {
     }
 }
 
+// export function flipLayoutToDefault() {
+
+//     const gridImages = resetGridClasses();
+
+//     if (gridImages) {
+//         gridImages.style.removeProperty('--image-size');
+//         gridImages.style.removeProperty('--column-gap');
+//         gridImages.classList.add('columns-250');
+//     }
+
+//     // [claude] Show charts when returning to default layout
+//     const chartsContainer = $('#charts-container');
+
+//     if (chartsContainer) {
+//         chartsContainer.classList.remove('noblock', 'fade-out');
+//     }
+
+//     // ... rest of code
+// }
+
 // ---------------------------------------------------------------------------
 // Grid size and theme
 // ---------------------------------------------------------------------------
@@ -287,16 +313,13 @@ export function flipLayoutToDefault() {
  * and display label immediately without re-fetching results.
  * @param {number} delta - Pixels to add (positive) or subtract
  */
-export function adjustGridSize(delta) {
-
+function adjustGridSize(delta) {
     resetLayoutMenuTimer();
-
     let newSize = getCurrentImgSize() + delta;
 
     // [claude] Clamp to the supported photogrid size range
     if (newSize < 50) newSize = 50;
     if (newSize > 100) newSize = 100;
-
     const gridImages = $('#grid-images');
 
     if (gridImages) {
@@ -319,12 +342,9 @@ export function adjustGridSize(delta) {
  * around at the end. Updates the button label and the CSS class on
  * #grid-images (only when layout-pg is active), then syncs the URL.
  */
-export function cycleTheme() {
-
+function cycleTheme() {
     resetLayoutMenuTimer();
-
-    let currentIndex = globals.themes
-        .indexOf(globals.results.activeTheme);
+    let currentIndex = globals.themes.indexOf(globals.results.activeTheme);
 
     // [claude] Guard: if activeTheme somehow isn't in the list,
     // start from the beginning
@@ -357,8 +377,7 @@ export function cycleTheme() {
  * [claude] Toggles between 'default' and 'square' aspect ratio
  * modes for the photogrid by toggling a CSS class on #grid-images.
  */
-export function cycleThemeAspect() {
-
+function cycleThemeAspect() {
     resetLayoutMenuTimer();
 
     globals.results.activeThemeAspect =
@@ -400,7 +419,7 @@ export function cycleThemeAspect() {
  * @param {string} layout     - 'pg' or 'normal'
  * @param {number} figureSize - Image size in pixels
  */
-export function applyLayoutAfterRender(layout, figureSize) {
+function applyLayoutAfterRender(layout, figureSize) {
 
     const gridImages      = resetGridClasses();
     const chartsContainer = $('#charts-container');
@@ -476,3 +495,5 @@ export function applyLayoutAfterRender(layout, figureSize) {
         globals.results.photogridLoaded = false;
     }
 }
+
+export { resetLayoutMenuTimer, toggleLayoutMenu, fadeOutChartsContainerOld, fadeOutChartsContainer, flipLayoutToPg, flipLayoutToDefault, adjustGridSize, cycleTheme, cycleThemeAspect, applyLayoutAfterRender }

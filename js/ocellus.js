@@ -14,7 +14,7 @@ import { $ } from './base.js';
 import { updateSearchPlaceHolder, qs2form, form2qs } from './utils.js';
 import { getResource } from './querier.js';
 import { addListeners, showTooltip, hideTooltip } from './listeners.js';
-import { initAdvSearch } from './adv-search.js';
+import { initAdvSearch, populateYearSelect } from './adv-search.js';
 import { initializeMap } from './mapping/index.js';
 import { renderYearlyCountsSparkline } from './renderers.js';
 import { globals, getMarkerIcons } from './globals.js';
@@ -119,6 +119,7 @@ function init() {
 
     addListeners();
     initAdvSearch();
+    populateYearSelect();  // [claude] Auto-populate journal year options
 }
 
 // ---------------------------------------------------------------------------

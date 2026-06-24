@@ -469,7 +469,6 @@ const asGo = (e) => {
  * @param {Event} e
  */
 const toggleModal = (e) => {
-
     const t = new URL(e.target.href).hash;
     const modals = $$('.modal');
 
@@ -502,10 +501,8 @@ const toggleModal = (e) => {
  * @param {Event} e
  */
 const insertExample = (e) => {
-
     $('#q').value = e.target.textContent;
     $('#ns-go').classList.add('glowing');
-
     const sources = $$('input[name=source]');
 
     sources.forEach(s => {
@@ -513,6 +510,7 @@ const insertExample = (e) => {
         if (s.value === 'treatments') {
             s.checked = true;
         }
+
     });
 
     toggleExamples();
@@ -530,7 +528,6 @@ const insertExample = (e) => {
  * 'Go' button with an empty search input.
  */
 const promptForSearchTerm = () => {
-
     $('#q').placeholder = "c'mon, type something";
     $('#q').classList.add('red-placeholder');
 };
@@ -541,7 +538,6 @@ const promptForSearchTerm = () => {
  * @param {Event} [e]
  */
 const resetPrompt = (e) => {
-
     $('#q').placeholder = globals.defaultPlaceholder;
     $('#q').classList.remove('red-placeholder');
     $('#refreshCache').checked = false;
@@ -553,7 +549,6 @@ const resetPrompt = (e) => {
  * @param {Event} e
  */
 const toggleRefreshCache = (e) => {
-
     $('#refreshCache').toggleAttribute('data-pop-show');
 };
 
@@ -569,15 +564,11 @@ const toggleRefreshCache = (e) => {
  * @param {Event} e
  */
 const controlDetails = (e) => {
-
     if (!e.target.open) return;
-
     const details = $$('details[open]');
 
     Array.prototype.forEach.call(details, function (detail) {
-
         if (detail === e.target) return;
-
         detail.removeAttribute('open');
     });
 };

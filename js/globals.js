@@ -89,7 +89,7 @@ export const globals = {
      * [claude] Milliseconds of inactivity before the layout
      * settings gear-menu auto-closes.
      */
-    layoutMenuAutoCloseMs: 5000,
+    layoutMenuAutoCloseMs: 5000000,
 
     results: {
         totalCount:        0,

@@ -29,7 +29,7 @@ import {
 } from './listeners.js';
 import { makeImage, makeTreatment } from './render-figures.js';
 import { getCountOfResource } from './querier.js';
-import { applyLayoutAfterRender } from './layout.js';
+import { applyLayoutAfterRender, fadeOutChartsContainer } from './layout.js';
 
 // ---------------------------------------------------------------------------
 // Slider (carousel wrapper with optional map)
@@ -215,6 +215,11 @@ const renderPage = ({
     // [claude] Lightbox images if this is an image search
     if (resource === 'images') {
         lightUpTheBox();
+    }
+
+    // [claude] Hide charts when photogrid layout is active
+    if (layout === 'pg') {
+        fadeOutChartsContainer();
     }
 };
 

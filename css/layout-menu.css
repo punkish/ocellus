@@ -1,0 +1,93 @@
+/* [gemini] Styling to align layout toggle container left-aligned with chart container, keeping items on the same horizontal line */
+#layout {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    /* align-items: center;
+    gap: 5px; */
+    font-size: 10px;
+    font-family: sans-serif;
+    max-width: 960px;
+    padding-left: 20px;
+    margin: 0 auto 10px auto;
+
+    /* [gpt] Collapsible layout settings menu */
+    overflow: hidden;
+}
+
+/* [gemini] Styles for the premium grid size buttons */
+#gridsize-widget {
+    border: 1px solid grey;
+    border-radius: 3px;
+    height: 30px;
+    background-color: #f5f5f5;
+}
+.gridsize-btn {
+/*     background-color: #f5f5f5; */
+    background: none;
+    border: none;
+/*     border-radius: 3px; */
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 2px 8px;
+    margin: 0 2px;
+    transition: background-color 0.2s, border-color 0.2s;
+    user-select: none;
+    outline: none;
+    vertical-align: middle;
+    height: 30px;
+}
+.gridsize-btn:hover {
+    background-color: #e5e5e5;
+    border-color: #999;
+}
+.gridsize-btn:active {
+    background-color: #d5d5d5;
+}
+.theme-btn {
+    height: 30px;
+    background-color: #f5f5f5;
+    border: 1px solid grey;
+    border-radius: 3px;
+}
+
+#layout-settings-content {
+    display: inline-flex;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 1000px;
+    opacity: 1;
+    transition: max-width 0.35s ease, opacity 0.35s ease;
+    align-items: center;
+    gap: 10px;
+}
+
+/* [gpt] Prevent layout widgets from shrinking when menu opens */
+#layout-settings-content > div {
+    flex-shrink: 0;
+}
+
+#layout.layout-collapsed #layout-settings-content {
+    max-width: 0;
+    opacity: 0;
+}
+
+.layout-settings-btn {
+    border: none;
+    background: none;
+    font-size: 40px;
+    color: grey;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.layout-settings-btn:hover {
+    transform: rotate(45deg);
+
+    /* Slow start/end */
+    /* transition: transform 0.3s ease-in-out;   */
+
+    /* Custom curve */
+    /* transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1); */
+}
