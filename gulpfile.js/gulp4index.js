@@ -71,9 +71,9 @@ async function css() {
             `${source}/css/close-btn.css`,
             `${source}/css/treatmentDetails.css`,
             `${source}/css/sparkline.css`,
+            `${source}/css/layout-menu.css`,
             `${source}/css/simpleLightbox.css`,
             `${source}/css/simpleLightbox-modifiers.css`,
-            // [gemini] Add themes.css to the compiled CSS bundle
             `${source}/css/themes.css`
         ])
         .pipe(cleanCSS({compatibility: 'ie8'}))
