@@ -140,7 +140,7 @@ const makeImage = ({ figureSize, rec }) => {
         figureClass
     } = makeLinks({ figureSize, rec, resource: 'image' });
 
-    let figcaptionContent = `
+    const figcaptionContent = `
         <details>
             <summary class="figTitle" `
             + `data-title="${rec.treatmentTitle}">
@@ -152,11 +152,19 @@ const makeImage = ({ figureSize, rec }) => {
         </details>
         `;
 
+    let img = rec.uri;
+    let fullImage = rec.fullImage;
+
+    if (globals.mode === 'airgapped') {
+        img = 'img/i250.jpg';
+        fullImage = 'img/i250.jpg';
+    }
+
     return `
     <figure class="${figureClass}">
-        <a class="zen" href="${rec.fullImage}"><img src="img/bug.gif"
+        <a class="zen" href="${fullImage}"><img src="img/bug.gif"
             width="${rec.figureSize}"
-            data-src="${rec.uri}"
+            data-src="${img}"
             class="lazyload"
             data-recid="${rec.treatmentId}"></a>
         <figcaption class="${figcaptionClass}">

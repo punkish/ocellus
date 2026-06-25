@@ -82,6 +82,9 @@ div.title a,
 .noblock {
     display: none;
 }
+.inline-flex {
+    display: inline-flex;
+}
 .hidden {
     visibility: hidden;
 }
@@ -89,12 +92,10 @@ div.title a,
     display: block;
     visibility: visible;
 }
-
 footer  {
     margin: 100px auto 0 auto;
     /* display: none; */
 }
-
 footer img {
     max-width: 280px;
 }

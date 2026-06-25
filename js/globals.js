@@ -10,6 +10,8 @@ log.level = log.INFO;
  * read after tweakUrl() ran — and has been removed.
  */
 export const globals = {
+    // mode: 'airgapped',
+    mode: 'connected',
 
     fetchOpts: {},
 
@@ -89,7 +91,7 @@ export const globals = {
      * [claude] Milliseconds of inactivity before the layout
      * settings gear-menu auto-closes.
      */
-    layoutMenuAutoCloseMs: 5000000,
+    layoutMenuAutoCloseMs: 10000,
 
     results: {
         totalCount:        0,

@@ -67,7 +67,6 @@ const getCurrentImgSize = () => {
  * @returns {Element|null}
  */
 function resetGridClasses() {
-
     const gridImages = $('#grid-images');
 
     if (gridImages) {
@@ -103,27 +102,28 @@ function resetLayoutMenuTimer() {
 function toggleLayoutMenu() {
     const layoutEl    = $('#layout');
     if (!layoutEl) return;
-    const aspectWidget = $('#theme-aspect-widget');
-    const isCollapsed  = layoutEl.classList
-        .contains('layout-collapsed');
+
+    // const aspectWidget = $('#theme-aspect-widget');
+    
+    const isCollapsed  = layoutEl.classList.contains('layout-collapsed');
 
     clearTimeout(layoutMenuTimer);
 
     if (isCollapsed) {
         layoutEl.classList.remove('layout-collapsed');
 
-        if (aspectWidget) {
-            aspectWidget.classList.remove('noblock');
-        }
+        // if (aspectWidget) {
+        //     aspectWidget.classList.remove('noblock');
+        // }
 
         resetLayoutMenuTimer();
     }
     else {
         layoutEl.classList.add('layout-collapsed');
 
-        if (aspectWidget) {
-            aspectWidget.classList.add('noblock');
-        }
+        // if (aspectWidget) {
+        //     aspectWidget.classList.add('noblock');
+        // }
     }
 }
 
@@ -140,7 +140,7 @@ function toggleLayoutMenu() {
  * The transitionend listener is added once and self-removes to
  * avoid stacking up handlers across multiple toggle cycles.
  */
-function fadeOutChartsContainerOld() {
+function fadeOutChartsContainer() {
     const chartsContainer = $('#charts-container');
 
     if (!chartsContainer) return;
@@ -178,7 +178,7 @@ function fadeOutChartsContainerOld() {
  * [claude] Hides the charts container immediately when switching
  * to photogrid layout.
  */
-function fadeOutChartsContainer() {
+function fadeOutChartsContainerOrig() {
     const chartsContainer = $('#charts-container');
     if (!chartsContainer) return;
 
@@ -198,22 +198,16 @@ function fadeOutChartsContainer() {
  * @param {number} imgSize - Image size in pixels
  */
 function flipLayoutToPg(imgSize) {
-
     const gridImages = resetGridClasses();
 
     if (gridImages) {
-        gridImages.style.setProperty(
-            '--image-size', `${imgSize}px`
-        );
+        gridImages.style.setProperty('--image-size', `${imgSize}px`);
         gridImages.style.setProperty('--column-gap', '2px');
         gridImages.classList.add('layout-pg');
-        gridImages.classList.add(
-            `theme-${globals.results.activeTheme}`
-        );
+        gridImages.classList.add(`theme-${globals.results.activeTheme}`);
     }
 
     fadeOutChartsContainer();
-
     const sizeWidget = $('#gridsize-widget');
 
     if (sizeWidget) {
@@ -496,4 +490,4 @@ function applyLayoutAfterRender(layout, figureSize) {
     }
 }
 
-export { resetLayoutMenuTimer, toggleLayoutMenu, fadeOutChartsContainerOld, fadeOutChartsContainer, flipLayoutToPg, flipLayoutToDefault, adjustGridSize, cycleTheme, cycleThemeAspect, applyLayoutAfterRender }
+export { resetLayoutMenuTimer, toggleLayoutMenu, fadeOutChartsContainer, flipLayoutToPg, flipLayoutToDefault, adjustGridSize, cycleTheme, cycleThemeAspect, applyLayoutAfterRender }

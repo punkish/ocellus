@@ -66,7 +66,6 @@
     <link rel="stylesheet" href="css/layout-menu.css">
     <link rel="stylesheet" href="css/simpleLightbox.css">
     <link rel="stylesheet" href="css/simpleLightbox-modifiers.css">
-    <!-- [gemini] Stylesheets for the photogrid visual themes -->
     <link rel="stylesheet" href="css/themes.css">
     <!-- endbuild -->
 </head>
@@ -187,8 +186,7 @@
             </div>
 
             <div class="examples hidden">
-                <p>Click on the link to try the search<br><em><b>Note:</b> These extended syntax queries are currently
-                        only possible against treatments.</em></p>
+                <p>Click on the link to try the search<br><em><b>Note:</b> These extended syntax queries are currently only possible against treatments.</em></p>
 
                 <!--
                 <details open>
@@ -400,16 +398,16 @@
                 </div>
             </details>
 
-            <div class="column-2 box">
-
+            <div class="layout-wrapper">
                 <div id="layout" 
                     class="toggle-container hidden layout-collapsed" 
                     aria-label="choose grid layout" data-pop="top"
                     data-pop-no-shadow data-pop-arrow>
 
-                    <!-- [gemini] Layout settings gear button -->
                     <button id="layout-settings-toggle" type="button"
-                        class="layout-settings-btn">⚙</button>
+                        class="layout-settings-btn"
+                        aria-label="toggle layout settings"
+                        aria-expanded="false"></button>
 
                     <!-- [gemini] Layout settings content wrapper -->
                     <div id="layout-settings-content">
@@ -420,34 +418,41 @@
                             <span class="toggle-label">photogrid</span>
                         </label>
 
-                        <!-- [gemini] Grid size widget to adjust grid image width between 50px and 100px in steps of 25px -->
-                        <div id="gridsize-widget" class="noblock">
-                            <button id="gridsize-minus" type="button" class="gridsize-btn"
-                                aria-label="decrease image size">-</button>
-                            <span id="gridsize-display">50px</span>
-                            <button id="gridsize-plus" type="button" 
-                                class="gridsize-btn"
-                                aria-label="increase image size">+</button>
-                        </div>
+                        <div id="theme-settings" class="noblock">
 
-                        <!-- [gemini] Theme cycling widget to switch between photogrid visual themes -->
-                        <div id="theme-widget" class="noblock">
-                            <button id="theme-cycle" type="button" 
-                                class="theme-btn"
-                                aria-label="cycle visual themes">theme: default</button>
-                        </div>
+                            <!-- [gemini] Grid size widget to adjust grid image width between 50px and 100px in steps of 25px -->
+                            <div id="gridsize-widget">
+                                <button id="gridsize-minus" type="button" class="gridsize-btn"
+                                aria-label="decrease image size">—</button>
+                                <span id="gridsize-display">50px</span>
+                                <button id="gridsize-plus" type="button" 
+                                    class="gridsize-btn"
+                                    aria-label="increase image size">+</button>
+                            </div>
 
-                        <!-- [gpt] Theme aspect cycling widget -->
-                        <div id="theme-aspect-widget" class="noblock">
-                            <button id="theme-aspect-cycle" type="button"
-                                class="theme-btn">
-                                aspect: default
-                            </button>
+                            <!-- [gemini] Theme cycling widget to switch between photogrid visual themes -->
+                            <div id="theme-widget">
+                                <button id="theme-cycle" type="button" 
+                                    class="theme-btn"
+                                    aria-label="cycle visual themes">
+                                    theme: default
+                                </button>
+                            </div>
+
+                            <!-- [gpt] Theme aspect cycling widget -->
+                            <div id="theme-aspect-widget">
+                                <button id="theme-aspect-cycle" type="button"
+                                    class="theme-btn">
+                                    aspect: default
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- <div id="search-criteria"></div> -->
+            <div class="column-2 box">
+
                 <!-- this is where the images go -->
                 <div id="grid-images"></div>
                 <div id="pager"></div>

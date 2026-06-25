@@ -329,8 +329,13 @@ const toggleLayout = (e) => {
     resetLayoutMenuTimer();
 
     const isChecked = e.target.checked;
+    const themeSettings = $('#theme-settings');
 
     if (isChecked) {
+        if (themeSettings) {
+            themeSettings.classList.remove('noblock');
+            themeSettings.classList.add('inline-flex');
+        }
 
         if (globals.results.photogridLoaded) {
 
@@ -341,9 +346,10 @@ const toggleLayout = (e) => {
 
             flipLayoutToPg(imgSize);
             syncLayoutState(true, imgSize);
+
+            
         }
         else {
-
             const resultCount = globals.results.totalCount || 0;
             const pgSize = Math.min(200, resultCount || 200);
 
@@ -360,13 +366,16 @@ const toggleLayout = (e) => {
     }
     else {
 
-        if (globals.results.photogridLoaded) {
+        if (themeSettings) {
+            themeSettings.classList.add('noblock');
+            themeSettings.classList.remove('inline-flex');
+        }
 
+        if (globals.results.photogridLoaded) {
             flipLayoutToDefault();
             syncLayoutState(false, 50);
         }
         else {
-
             const layoutInput = $('input[name=layout]');
             const imgInput = $('input[name=img]');
 
