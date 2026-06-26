@@ -1,5 +1,5 @@
 /**
- * [claude] Renders a term-frequency chart showing how often a
+ * Renders a term-frequency chart showing how often a
  * search term appears in treatments by year, with and without
  * associated images.
  */
@@ -9,7 +9,7 @@ import { getChartContainer, yAxisFormatter }
 import { globals } from './globals.js';
 
 /**
- * [claude] Initialises and renders a term-frequency line chart
+ * Initialises and renders a term-frequency line chart
  * using eCharts. Two lines: one for all occurrences, one for
  * occurrences with images.
  *

@@ -6,7 +6,7 @@ const concat = require('gulp-concat');
 const { rollup } = require('rollup');
 const { terser } = require('rollup-plugin-terser');
 const replace = require('@rollup/plugin-replace');
-const rm = require('gulp-rm');
+const { deleteAsync } = require('del');
 const wrap = require('gulp-wrap');
 
 const d = new Date();
@@ -17,16 +17,11 @@ const sep = '/*** <%= file.relative %>  ***/';
 
 // remove old css and js
 async function cleanup() {
-    console.log('cleaing up old js and css for index');
-
-    const dest = [
-        `${destination}/js/ocellus-*.js`, 
+    console.log('cleaning up old js and css for index');
+    return deleteAsync([
+        `${destination}/js/ocellus-*.js`,
         `${destination}/css/ocellus-*.css`
-    ];
-
-    const opts = { read: false };
-
-    return src(dest, opts).pipe( rm() );
+    ]);
 }
 
 // generate the html
@@ -112,23 +107,35 @@ async function cssLibs() {
 async function js() {
     console.log('rolling up the JS for new index');
     
-    const bundle = await rollup({
-        input: `${source}/js/ocellus.js`
-    });
-
     const values = {
         'log.INFO':'log.ERROR',
         'http://localhost:3010/v3':'https://test.zenodeo.org/v3',
         'http://localhost:3000':'https://maps.zenodeo.org',
-        //__buildDate__: () => JSON.stringify(new Date()),
-        //__buildVersion: 15
-    }
+    };
+
+    // replace() must be a build-time (input) plugin, not
+    // an output plugin. Previously it was in bundle.write({ plugins })
+    // which triggered Rollup warnings:
+    //   "The 'buildStart' hook used by the output plugin replace is a
+    //    build time hook and will not be run for that plugin."
+    // Moving it here (to rollup({ plugins })) fixes those warnings.
+    const bundle = await rollup({
+        input: `${source}/js/ocellus.js`,
+        plugins: [
+
+            // preventAssignment: true suppresses the
+            // "@rollup/plugin-replace: 'preventAssignment' currently
+            // defaults to false" warning. It prevents the plugin from
+            // replacing left-hand sides of assignment expressions,
+            // which is the safer and now-default behaviour.
+            replace({ values, preventAssignment: true })
+        ]
+    });
 
     return bundle.write({
         file: `${destination}/js/ocellus-${dsecs}.js`,
         format: "esm",
         plugins: [
-            replace({ values }),
             terser({
                 format: {
                     preamble: `/* generated: ${d} */`

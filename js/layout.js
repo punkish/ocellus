@@ -1,5 +1,5 @@
 /**
- * [claude] Layout state manager.
+ * Layout state manager.
  *
  * Consolidates all photogrid layout logic that was previously
  * scattered across listeners.js (flipLayoutToPg, flipLayoutToDefault,
@@ -23,7 +23,7 @@ import { globals }        from './globals.js';
 import { syncLayoutState } from './url-manager.js';
 
 // ---------------------------------------------------------------------------
-// [claude] Derived CSS class lists — built once from globals so the
+// Derived CSS class lists — built once from globals so the
 // arrays in listeners.js / renderers.js are no longer hardcoded.
 // Previously the same eight-item list appeared three times in the
 // codebase; any new theme or size only needs to be added to globals.
@@ -34,7 +34,7 @@ const COLUMN_CLASSES = Object.values(globals.figureSize)
 
 const THEME_CLASSES = globals.themes.map(t => `theme-${t}`);
 
-// [claude] Union of all classes that must be cleared before
+// Union of all classes that must be cleared before
 // applying a new layout configuration.
 const ALL_LAYOUT_CLASSES = [
     'layout-pg',
@@ -42,7 +42,7 @@ const ALL_LAYOUT_CLASSES = [
     ...THEME_CLASSES
 ];
 
-// [claude] Module-level handle for the layout-menu auto-close timer
+// Module-level handle for the layout-menu auto-close timer
 let layoutMenuTimer = null;
 
 // ---------------------------------------------------------------------------
@@ -50,7 +50,7 @@ let layoutMenuTimer = null;
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Reads the current photogrid image size from the hidden
+ * Reads the current photogrid image size from the hidden
  * form input. Falls back to 50 (the minimum) if the element is
  * absent or its value cannot be parsed.
  * @returns {number} Image size in pixels
@@ -61,7 +61,7 @@ const getCurrentImgSize = () => {
 };
 
 /**
- * [claude] Strips all layout and theme classes from #grid-images
+ * Strips all layout and theme classes from #grid-images
  * so a clean class configuration can be applied. Returns the
  * element (or null) for immediate chaining.
  * @returns {Element|null}
@@ -81,7 +81,7 @@ function resetGridClasses() {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Resets and restarts the inactivity timer that will
+ * Resets and restarts the inactivity timer that will
  * auto-close the layout settings gear-menu. Any interactive
  * action inside the menu (size adjust, theme cycle) calls this
  * to keep the menu open while the user is still engaging with it.
@@ -95,7 +95,7 @@ function resetLayoutMenuTimer() {
 }
 
 /**
- * [claude] Toggles the layout settings gear-menu open or closed.
+ * Toggles the layout settings gear-menu open or closed.
  * The theme-aspect widget is only shown when the menu is expanded;
  * it is hidden again on collapse (or auto-close).
  */
@@ -132,7 +132,7 @@ function toggleLayoutMenu() {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Fades out the charts container using a CSS opacity
+ * Fades out the charts container using a CSS opacity
  * transition, then sets it to display:none via the 'noblock'
  * class once the transition completes. Used when switching to
  * photogrid mode, where charts are hidden to save screen space.
@@ -145,11 +145,11 @@ function fadeOutChartsContainer() {
 
     if (!chartsContainer) return;
 
-    // [claude] Ensure the element is visible so the transition
+    // Ensure the element is visible so the transition
     // has a visible start state
     chartsContainer.classList.remove('noblock');
 
-    // [claude] Force a layout reflow; without this, removing
+    // Force a layout reflow; without this, removing
     // 'noblock' and adding 'fade-out' in the same tick can be
     // batched by the browser and the transition won't fire
     void chartsContainer.offsetWidth;
@@ -157,7 +157,7 @@ function fadeOutChartsContainer() {
 
     function handleTransitionEnd(e) {
 
-        // [claude] Guard against sibling/child transitions
+        // Guard against sibling/child transitions
         // bubbling up to this listener
         if (e.propertyName === 'opacity') {
             chartsContainer.classList.add('noblock');
@@ -175,14 +175,14 @@ function fadeOutChartsContainer() {
 }
 
 /**
- * [claude] Hides the charts container immediately when switching
+ * Hides the charts container immediately when switching
  * to photogrid layout.
  */
 function fadeOutChartsContainerOrig() {
     const chartsContainer = $('#charts-container');
     if (!chartsContainer) return;
 
-    // [claude] Hide immediately for cleaner photogrid view
+    // Hide immediately for cleaner photogrid view
     chartsContainer.classList.add('noblock');
 }`fa`
 
@@ -191,7 +191,7 @@ function fadeOutChartsContainerOrig() {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Applies the photogrid layout to #grid-images without
+ * Applies the photogrid layout to #grid-images without
  * triggering a new server request. Sets CSS custom properties
  * for image size and column gap, adds layout-pg and the active
  * theme class, and shows the photogrid control widgets.
@@ -234,7 +234,7 @@ function flipLayoutToPg(imgSize) {
 }
 
 /**
- * [claude] Restores the default column-based grid layout without
+ * Restores the default column-based grid layout without
  * triggering a new server request. Removes photogrid-specific
  * classes and custom properties, hides the photogrid widgets,
  * and restores chart visibility.
@@ -247,7 +247,7 @@ function flipLayoutToDefault() {
         gridImages.style.removeProperty('--image-size');
         gridImages.style.removeProperty('--column-gap');
 
-        // [claude] The default layout uses columns-250 (normal
+        // The default layout uses columns-250 (normal
         // figure size). figureSize.normal === 250.
         gridImages.classList.add('columns-250');
     }
@@ -287,7 +287,7 @@ function flipLayoutToDefault() {
 //         gridImages.classList.add('columns-250');
 //     }
 
-//     // [claude] Show charts when returning to default layout
+//     // Show charts when returning to default layout
 //     const chartsContainer = $('#charts-container');
 
 //     if (chartsContainer) {
@@ -302,7 +302,7 @@ function flipLayoutToDefault() {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Adjusts the photogrid image size by delta pixels,
+ * Adjusts the photogrid image size by delta pixels,
  * clamped between 50 and 100 px. Updates the CSS custom property
  * and display label immediately without re-fetching results.
  * @param {number} delta - Pixels to add (positive) or subtract
@@ -311,7 +311,7 @@ function adjustGridSize(delta) {
     resetLayoutMenuTimer();
     let newSize = getCurrentImgSize() + delta;
 
-    // [claude] Clamp to the supported photogrid size range
+    // Clamp to the supported photogrid size range
     if (newSize < 50) newSize = 50;
     if (newSize > 100) newSize = 100;
     const gridImages = $('#grid-images');
@@ -332,7 +332,7 @@ function adjustGridSize(delta) {
 }
 
 /**
- * [claude] Advances to the next theme in globals.themes, wrapping
+ * Advances to the next theme in globals.themes, wrapping
  * around at the end. Updates the button label and the CSS class on
  * #grid-images (only when layout-pg is active), then syncs the URL.
  */
@@ -340,7 +340,7 @@ function cycleTheme() {
     resetLayoutMenuTimer();
     let currentIndex = globals.themes.indexOf(globals.results.activeTheme);
 
-    // [claude] Guard: if activeTheme somehow isn't in the list,
+    // Guard: if activeTheme somehow isn't in the list,
     // start from the beginning
     if (currentIndex === -1) currentIndex = 0;
 
@@ -368,7 +368,7 @@ function cycleTheme() {
 }
 
 /**
- * [claude] Toggles between 'default' and 'square' aspect ratio
+ * Toggles between 'default' and 'square' aspect ratio
  * modes for the photogrid by toggling a CSS class on #grid-images.
  */
 function cycleThemeAspect() {
@@ -401,7 +401,7 @@ function cycleThemeAspect() {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Applies layout classes and widget visibility after a
+ * Applies layout classes and widget visibility after a
  * server response has been rendered into #grid-images. This
  * replaces the duplicated layout-manipulation code that was
  * previously inline in renderPage() in renderers.js.
@@ -432,7 +432,7 @@ function applyLayoutAfterRender(layout, figureSize) {
             );
         }
 
-        // [claude] eCharts requires the container to be visible
+        // eCharts requires the container to be visible
         // while it initialises the SVG canvas, so we can't hide
         // the charts section until after the charts have rendered
         if (chartsContainer) {

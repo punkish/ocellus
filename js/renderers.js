@@ -1,5 +1,5 @@
 /**
- * [claude] Rendering layer: takes API results and renders them
+ * Rendering layer: takes API results and renders them
  * into page HTML. Also handles charts (term frequency, yearly
  * counts) and search-criteria summary.
  *
@@ -20,15 +20,11 @@ import { renderTermFreq } from './renderer-termFreq.js';
 import {
     niceNumbers, qs2form, formatDate, formatTime
 } from './utils.js';
-import {
-    addListenersToFigDetails,
-    addListenersToFigureTypes,
-    addListenersToMapCarouselLink,
-    toggleAdvSearch,
-    lightUpTheBox
-} from './listeners.js';
 import { makeImage, makeTreatment } from './render-figures.js';
-import { getCountOfResource } from './querier.js';
+// getCountOfResource was removed from this import list.
+// renderYearlyCountsSparkline (its only caller here) now lives
+// in sparkline.js, which imports querier.js directly — breaking
+// the renderers → querier → renderers circular dependency.
 import { applyLayoutAfterRender, fadeOutChartsContainer } from './layout.js';
 
 // ---------------------------------------------------------------------------
@@ -36,7 +32,7 @@ import { applyLayoutAfterRender, fadeOutChartsContainer } from './layout.js';
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Wraps a figure (image or treatment) in a carousel
+ * Wraps a figure (image or treatment) in a carousel
  * container. If the record has geo data, adds a toggle button
  * and a map pane to the carousel.
  *
@@ -101,7 +97,7 @@ function makeSlider({ resource, figureSize, rec }) {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Renders a full results page: populates #grid-images
+ * Renders a full results page: populates #grid-images
  * with figure sliders, updates charts (term frequency and yearly
  * counts), applies layout-specific CSS, and displays the search
  * criteria summary.
@@ -147,21 +143,22 @@ const renderPage = ({
       + `  - cacheHit: ${cacheHit}`
     );
 
-    // [claude] Store total count in globals for access during
+    // Store total count in globals for access during
     // layout toggles (e.g. to estimate initial photogrid size)
     globals.results.totalCount = count;
 
-    // [claude] Apply all layout-specific CSS classes and widget
+    // Apply all layout-specific CSS classes and widget
     // visibility (delegated to layout.js to avoid duplication
     // with layout toggle handlers)
     applyLayoutAfterRender(layout, figureSize);
 
-    // [claude] Render the grid of figure sliders
+    // Render the grid of figure sliders.
+    // Post-render event wiring (addListenersToFigDetails etc.) is
+    // now called by getResource() in querier.js immediately after
+    // renderPage() returns, keeping renderers.js free of listener
+    // imports and breaking the renderers → listeners cycle.
     if (slides.length) {
         $('#grid-images').innerHTML = slides.join('');
-        addListenersToFigDetails();
-        addListenersToFigureTypes();
-        addListenersToMapCarouselLink();
     }
     else {
         $('#grid-images').innerHTML = '';
@@ -170,7 +167,7 @@ const renderPage = ({
     renderPager(qs, prev, next);
     $('#throbber').classList.add('nothrob');
 
-    // [claude] Dispose and render term-frequency chart (if any)
+    // Dispose and render term-frequency chart (if any)
     if (globals.charts.termFreq) {
         globals.charts.termFreq.dispose();
         $('#termFreq').style.visibility = 'hidden';
@@ -183,7 +180,7 @@ const renderPage = ({
 
     renderSearchCriteria(qs, count, stored, ttl, cacheHit);
 
-    // [claude] Dispose and render yearly-counts chart (if any)
+    // Dispose and render yearly-counts chart (if any)
     if (globals.charts.yearlyCounts) {
         globals.charts.yearlyCounts.dispose();
         $('#yearlyCounts').style.visibility = 'hidden';
@@ -202,22 +199,21 @@ const renderPage = ({
         $('#charts').style.visibility = 'visible';
     }
 
-    // [claude] Collapse advanced-search panel if it was active
-    // during the search
+    // Collapse advanced-search panel if it was active
+    // during the search. toggleAdvSearch() is called by querier.js
+    // after renderPage() returns (it was moved there to break the
+    // renderers → listeners import cycle).
     const advSearchIsActive = $('input[name=searchtype]').checked;
 
     if (advSearchIsActive) {
         $('input[name=searchtype]').checked = false;
-        toggleAdvSearch();
         qs2form(qs);
     }
 
-    // [claude] Lightbox images if this is an image search
-    if (resource === 'images') {
-        lightUpTheBox();
-    }
+    // lightUpTheBox() is now called by querier.js after
+    // renderPage() returns, for the same cycle-breaking reason.
 
-    // [claude] Hide charts when photogrid layout is active
+    // Hide charts when photogrid layout is active
     if (layout === 'pg') {
         fadeOutChartsContainer();
     }
@@ -228,7 +224,7 @@ const renderPage = ({
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Renders prev/next pagination links in #pager based on
+ * Renders prev/next pagination links in #pager based on
  * the current query string (with page number stripped).
  *
  * @param {string} qs   - Query string without leading '?'
@@ -259,7 +255,7 @@ const renderPager = (qs, prev, next) => {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Regex to split camelCase identifiers into space-
+ * Regex to split camelCase identifiers into space-
  * separated lowercase words. Used to make filter names human-
  * readable in the criteria summary.
  * https://stackoverflow.com/a/54112355/183692
@@ -276,7 +272,7 @@ function SplitCamelCaseWithAbbreviations(s) {
 }
 
 /**
- * [claude] Renders a human-readable summary of the search query
+ * Renders a human-readable summary of the search query
  * criteria into the details summary for the charts section.
  *
  * Handles dates (eq, since, until, between), text filters, and
@@ -544,146 +540,15 @@ function renderSearchCriteria(qs, count, stored, ttl, cacheHit) {
 }
 
 // ---------------------------------------------------------------------------
-// Sparkline (yearly counts)
+// Sparkline (yearly counts) — MOVED to sparkline.js
 // ---------------------------------------------------------------------------
-
-/**
- * [claude] Generates one bar in the yearly-counts sparkline SVG.
- * @param {number} i              - Bar index (x position)
- * @param {number} height         - Bar height in px
- * @param {number} sparkHeight    - Total sparkline height
- * @param {number} barWidth       - Width of each bar
- * @param {string} tooltipText    - Hover text
- * @returns {string} SVG `<g>` element
- */
-function svgFrag(i, height, sparkHeight, barWidth, tooltipText) {
-
-    return `
-    <g class="sparkBar"
-       transform="translate(${i * barWidth},0)">
-        <rect width="${barWidth}" height="${height}"
-            y="${sparkHeight - height}"
-            onmouseover="showTooltip(evt, '${tooltipText}');"
-            onmouseout="hideTooltip();"></rect>
-    </g>`;
-}
-
-/**
- * [claude] Renders a sparkline (SVG bar chart) showing yearly
- * record counts, plus a text summary. Called on init and when
- * the resource toggle changes.
- *
- * https://css-tricks.com/how-to-make-charts-with-svg/
- *
- * @param {string}  resource      - 'images' or 'treatments'
- * @param {boolean} [validGeo=false] - Filter to geocoded only
- * @param {string}  [context='index'] - Usage context (for labeling)
- */
-async function renderYearlyCountsSparkline(
-    resource,
-    validGeo = false,
-    context = 'index'
-) {
-
-    log.info(
-        `- renderYearlyCountsSparkline()\n`
-      + `  - resource: ${resource}\n`
-      + `  - validGeo: ${validGeo}\n`
-      + `  - context: ${context}`
-    );
-
-    const getYearlyCounts = true;
-
-    const yearlyCounts = await getCountOfResource(
-        resource, getYearlyCounts, validGeo
-    );
-
-    let {
-        images, treatments, species, journals
-    } = yearlyCounts.totals;
-
-    const yc = yearlyCounts.yearlyCounts;
-
-    let totalCount = resource === 'images'
-        ? images
-        : treatments;
-
-    let text = (context === 'maps')
-        ? `<span>~${abbrevNum(totalCount)}</span> `
-        + `geocoded ${resource} `
-        : `<span>~${abbrevNum(totalCount)}</span> `
-        + `${resource} `;
-
-    text += (resource === 'images')
-        ? `from <span>~${abbrevNum(treatments)}</span> `
-        + `treatments `
-        : `<span>~${abbrevNum(images)}</span> images, `;
-
-    // [claude] Only render sparkline on wider screens to avoid
-    // cramping mobile layouts
-    if (document.body.clientWidth > 359) {
-
-        text += `of <span>~${abbrevNum(species)}</span> `
-            + `species in <span>~${abbrevNum(journals)}`
-            + `</span> journals`;
-
-        const barWidth = 3;
-        const numOfRects = yc.length;
-        const sparkWidth = barWidth * numOfRects;
-        const sparkHeight = 40;
-        const heightRatio = sparkHeight / totalCount;
-
-        let svg = `<svg id="svgSpark" version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            class="sparkChart"
-            height="${sparkHeight}"
-            width="${sparkWidth}"
-            aria-labelledby="title"
-            role="img">`;
-
-        for (let i = 0; i < numOfRects; i++) {
-
-            const year = yc[i].year;
-            const count = yc[i][`num_of_${resource}`];
-            const tooltipText =
-                `${count} ${resource} from ${year}`;
-            const height = count * heightRatio;
-
-            svg += svgFrag(
-                i, height, sparkHeight, barWidth, tooltipText
-            );
-        }
-
-        svg += '</svg>';
-
-        const sparkChart = $('#sparkChart');
-        sparkChart.innerHTML = svg;
-    }
-
-    const sparkText = $('#sparkText');
-    sparkText.innerHTML = text;
-}
-
-/**
- * [claude] Abbreviates large numbers with K (thousands) or M
- * (millions) suffix for display in summaries.
- * @param {number} num
- * @returns {string|number}
- */
-function abbrevNum(num) {
-
-    if (num > 999) {
-        num = num < 999999
-            ? `${Math.round(num / 1000, 0)}K`
-            : `${Math.round(num / 1000000, 2)}M`;
-    }
-
-    return num;
-}
+// svgFrag(), renderYearlyCountsSparkline(), and abbrevNum()
+// have been moved to ./sparkline.js so that module can import
+// getCountOfResource() from querier.js without creating a cycle.
+// Callers (listeners.js, ocellus.js, ocellus-maps.js) now import
+// renderYearlyCountsSparkline from './sparkline.js' instead.
 
 export {
     makeSlider,
-    renderPage,
-    renderYearlyCountsSparkline
+    renderPage
 };

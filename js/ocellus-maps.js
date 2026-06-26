@@ -3,7 +3,8 @@ import { $, $$ } from './base.js';
 import { globals } from './globals.js';
 //import { updateSearchPlaceHolder } from './utils.js';
 import { initializeMap } from './mapping/index.js';
-import { renderYearlyCountsSparkline } from './renderers.js';
+// renderYearlyCountsSparkline moved to sparkline.js
+import { renderYearlyCountsSparkline } from './sparkline.js';
 import { showTooltip, hideTooltip } from './listeners.js';
 
 const toggleModal = (e) => {

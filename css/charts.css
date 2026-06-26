@@ -99,12 +99,12 @@ span.crit-val {
     font-weight: 800;
 }
 
-/* [gemini] Hide charts container when layout is toggled to photogrid */
+/* Hide charts container when layout is toggled to photogrid */
 #charts-container.noblock {
     display: none !important;
 }
 
-/* [gemini] Transition rules for smooth fade-out of the charts container */
+/* Transition rules for smooth fade-out of the charts container */
 #charts-container {
     transition: opacity 0.5s ease, visibility 0.5s ease;
     opacity: 1;

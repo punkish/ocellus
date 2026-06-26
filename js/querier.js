@@ -1,5 +1,5 @@
 /**
- * [claude] API layer: fetches data from Zenodeo and hands
+ * API layer: fetches data from Zenodeo and hands
  * structured results to the renderer.
  *
  * Changes from the original:
@@ -15,13 +15,26 @@ import { $ }            from './base.js';
 import { globals }      from './globals.js';
 import { makeSlider, renderPage } from './renderers.js';
 import { toggleWarn }   from './utils.js';
+// Post-render event wiring moved here from renderPage()
+// in renderers.js. These functions are in figure-listeners.js
+// (not listeners.js) specifically to avoid creating a new
+// querier → listeners → querier cycle: listeners.js imports
+// getResource from querier.js, so querier.js cannot import from
+// listeners.js. figure-listeners.js has no dependency on querier.js.
+import {
+    addListenersToFigDetails,
+    addListenersToFigureTypes,
+    addListenersToMapCarouselLink,
+    toggleAdvSearch,
+    lightUpTheBox
+} from './figure-listeners.js';
 
 // ---------------------------------------------------------------------------
 // Internal helpers
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Accumulates per-year record counts from a single
+ * Accumulates per-year record counts from a single
  * yearlyCounts row into a running totals object.
  * Used as the reducer callback in getCountOfResource and
  * getResults.
@@ -46,7 +59,7 @@ function updateTotal(totals, cur) {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Fetches total record counts and optional yearly
+ * Fetches total record counts and optional yearly
  * breakdown for a given resource type. Results are cached in
  * globals.cache[segment] so repeated calls (e.g. on resource
  * toggle) do not re-hit the network.
@@ -107,7 +120,7 @@ const getCountOfResource = async (
             }
         }
         else {
-            // [claude] alert() is legacy behaviour preserved from
+            // alert() is legacy behaviour preserved from
             // the original; future work could use toggleWarn()
             alert('HTTP-Error: ' + response.status);
         }
@@ -117,7 +130,7 @@ const getCountOfResource = async (
 };
 
 /**
- * [claude] Entry point for a search: validates query-string
+ * Entry point for a search: validates query-string
  * parameters against the allowed list for the requested resource,
  * fetches results, maps each record to a slider element, then
  * passes everything to renderPage().
@@ -128,7 +141,7 @@ const getResource = async (qs) => {
 
     log.info('- getResource(qs)');
 
-    // [claude] Start the barber-pole loading indicator
+    // Start the barber-pole loading indicator
     $('#throbber').classList.remove('nothrob');
 
     const sp = new URLSearchParams(qs);
@@ -136,7 +149,7 @@ const getResource = async (qs) => {
     const page   = sp.get('page');
     const size   = sp.get('size');
 
-    // [claude] Read layout state from hidden form inputs rather
+    // Read layout state from hidden form inputs rather
     // than from 'grid' param — the hidden inputs are kept in sync
     // by url-manager.js and layout.js
     const layoutEl  = $('input[name=layout]');
@@ -156,7 +169,7 @@ const getResource = async (qs) => {
         term = sp.get('q');
     }
 
-    // [claude] BUG FIX: the original code wrote
+    // BUG FIX: the original code wrote
     //
     //   const validParams = globals.params.validImages;
     //   validParams.push(...globals.params.validCommon);
@@ -172,7 +185,7 @@ const getResource = async (qs) => {
 
     let allParamsValid = true;
 
-    // [claude] Iterate over a snapshot of sp so we can safely
+    // Iterate over a snapshot of sp so we can safely
     // call sp.set() / sp.delete() inside the loop
     Array.from(sp).forEach(([key, val]) => {
 
@@ -180,7 +193,7 @@ const getResource = async (qs) => {
 
             if (!val) {
 
-                // [claude] A bare key with no value (e.g.
+                // A bare key with no value (e.g.
                 // '?phylogeny&keyword=Plantae') is treated as a
                 // free-text search term rather than a filter
                 sp.set('q', key);
@@ -206,7 +219,7 @@ const getResource = async (qs) => {
         queryString += `&termFreq=true`;
     }
 
-    // [claude] yearlyCounts is expensive; skip it when the query
+    // yearlyCounts is expensive; skip it when the query
     // targets a specific treatment (no aggregation needed)
     if (!sp.has('treatmentId')) {
         queryString += `&yearlyCounts=true`;
@@ -273,12 +286,39 @@ const getResource = async (qs) => {
             }
 
             renderPage(resultsObj);
+
+            // Post-render event wiring — moved here from
+            // renderPage() in renderers.js to break the
+            // renderers → listeners circular dependency.
+            // These calls are semantically correct here: the querier
+            // knows when a fresh page of results has just landed.
+            if (resultsObj.slides && resultsObj.slides.length) {
+                addListenersToFigDetails();
+                addListenersToFigureTypes();
+                addListenersToMapCarouselLink();
+            }
+
+            // Collapse advanced-search panel if it was
+            // open when the search was submitted
+            const advSearchIsActive =
+                $('input[name=searchtype]').checked;
+
+            if (advSearchIsActive) {
+                $('input[name=searchtype]').checked = false;
+                toggleAdvSearch();
+            }
+
+            // Initialise lightbox for image results
+            if (resource === 'images') {
+                lightUpTheBox();
+            }
+
             $('#layout').classList.remove('hidden');
         });
 };
 
 /**
- * [claude] Fetches one page of results for a resource from Zenodeo,
+ * Fetches one page of results for a resource from Zenodeo,
  * normalises the record shape, and returns a plain object ready
  * for makeSlider().
  *
@@ -350,7 +390,7 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                     record.zenodoDep      = r.zenodoDep;
                     record.figureSize     = figureSize;
 
-                    // [claude] Extract the Zenodo record ID from
+                    // Extract the Zenodo record ID from
                     // the httpUri path segment (position 4)
                     const id = r.httpUri.split('/')[4];
 
@@ -358,14 +398,14 @@ const getResults = async ({ resource, queryString, figureSize }) => {
 
                         if (r.httpUri.indexOf('.svg') > -1) {
 
-                            // [claude] SVGs have no usable IIIF
+                            // SVGs have no usable IIIF
                             // thumbnail, so fall back to a placeholder
                             record.uri       = '/img/kein-preview.png';
                             record.fullImage = '/img/kein-preview.png';
                         }
                         else {
 
-                            // [claude] IIIF thumbnail (250px wide)
+                            // IIIF thumbnail (250px wide)
                             // for the grid view
                             record.uri = [
                                 'https://zenodo.org/api/iiif',
@@ -377,7 +417,7 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                                 `${window.Ocellus.uris.zenodo}`
                               + `/${id}/thumb${figureSize}`;
 
-                            // [claude] IIIF large image (1200px
+                            // IIIF large image (1200px
                             // wide) for the lightbox
                             record.fullImage = [
                                 'https://zenodo.org/api/iiif',
@@ -392,7 +432,7 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                     }
                     else {
 
-                        // [claude] Pensoft figures: use the URI
+                        // Pensoft figures: use the URI
                         // directly with the singlefigAOF suffix
                         record.uri       = `${r.httpUri}/singlefigAOF/`;
                         record.fullImage = r.httpUri;
@@ -406,7 +446,7 @@ const getResults = async ({ resource, queryString, figureSize }) => {
                     record.longitude    = r.longitude;
                     record.loc          = r.loc;
 
-                    // [claude] turfjs convexHull uses [lon, lat]
+                    // turfjs convexHull uses [lon, lat]
                     // but Leaflet needs [lat, lon], so flip here
                     record.convexHull = r.convexHull
                         ? r.convexHull[0]

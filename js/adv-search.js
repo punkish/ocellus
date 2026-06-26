@@ -1,5 +1,5 @@
 /**
- * [claude] Advanced-search autocomplete initialization.
+ * Advanced-search autocomplete initialization.
  * Populates dropdown suggestions for journal titles and
  * collection codes as the user types.
  *
@@ -16,7 +16,7 @@ import { globals } from './globals.js';
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Fetches a paginated list from Zenodeo, caches it, and
+ * Fetches a paginated list from Zenodeo, caches it, and
  * returns an array of { display, value } objects ready for
  * autocomplete suggestions.
  *
@@ -54,7 +54,7 @@ async function getDataFromZenodeo({
 }
 
 /**
- * [claude] Fetches the full list of collection codes from
+ * Fetches the full list of collection codes from
  * Zenodeo.
  * @returns {Promise<Array>}
  */
@@ -71,7 +71,7 @@ async function getCollectionCodes() {
 }
 
 /**
- * [claude] Fetches the full list of journal titles from Zenodeo,
+ * Fetches the full list of journal titles from Zenodeo,
  * sorted alphabetically.
  * @returns {Promise<Array>}
  */
@@ -92,7 +92,7 @@ async function getJournalTitles() {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Dynamically populates the journalYear select element
+ * Dynamically populates the journalYear select element
  * with option elements from startYear to the current year.
  * Eliminates the need for hard-coded year options in HTML.
  *
@@ -113,7 +113,7 @@ function populateYearSelect(startYear = 1995) {
         return;
     }
 
-    // [claude] Generate options from startYear through current year
+    // Generate options from startYear through current year
     for (let year = startYear; year <= currentYear; year++) {
 
         const option = document.createElement('option');
@@ -134,7 +134,7 @@ function populateYearSelect(startYear = 1995) {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Initialises an autoComplete widget on an input field.
+ * Initialises an autoComplete widget on an input field.
  * As the user types, matching options from a callback are
  * suggested below the input.
  *
@@ -162,7 +162,7 @@ function makeAutoComplete({
         minChars,
 
         /**
-         * [claude] Fetches the full list of choices via the
+         * Fetches the full list of choices via the
          * callback, filters by the user's term, and returns
          * matching objects.
          * @param {string} term    - User-typed search term
@@ -192,7 +192,7 @@ function makeAutoComplete({
         },
 
         /**
-         * [claude] Renders each suggestion item with the matched
+         * Renders each suggestion item with the matched
          * text bolded.
          * @param {Object} item   - The { display, value } object
          * @param {string} search - The search term
@@ -215,7 +215,7 @@ function makeAutoComplete({
         },
 
         /**
-         * [claude] Populates the input field with the selected
+         * Populates the input field with the selected
          * suggestion's value.
          * @param {Event} e    - The click event
          * @param {string} term - The search term
@@ -234,7 +234,7 @@ function makeAutoComplete({
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Initialises autocomplete on journal-title and
+ * Initialises autocomplete on journal-title and
  * collection-code inputs in the advanced-search form.
  * Called once at init time by ocellus.js.
  */

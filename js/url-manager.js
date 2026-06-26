@@ -1,5 +1,5 @@
 /**
- * [claude] Unified URL and browser-history manager.
+ * Unified URL and browser-history manager.
  *
  * Previously, URL state was written in two places with subtly
  * different hash formats:
@@ -20,7 +20,7 @@ import { $ }       from './base.js';
 import { globals } from './globals.js';
 
 /**
- * [claude] Builds the hash fragment that encodes photogrid layout
+ * Builds the hash fragment that encodes photogrid layout
  * state. Returns an empty string when layout is not 'pg', so the
  * URL is left clean for normal searches.
  * @param {boolean} isPg    - Whether photogrid layout is active
@@ -36,7 +36,7 @@ function buildLayoutHash(isPg, imgSize) {
 }
 
 /**
- * [claude] Keeps the two hidden form inputs (<input name="layout">
+ * Keeps the two hidden form inputs (<input name="layout">
  * and <input name="img">) in sync with the active layout state.
  * These inputs are read by form2qs() when serialising the form,
  * so they must always reflect the current visual state.
@@ -58,7 +58,7 @@ function syncHiddenInputs(isPg, imgSize) {
 }
 
 /**
- * [claude] Pushes a new browser-history entry that combines the
+ * Pushes a new browser-history entry that combines the
  * search query string with the current layout hash. Called after
  * any event that commits a new search (form submission).
  * @param {string}  qs      - Query string without leading '?'
@@ -72,7 +72,7 @@ export function updateUrl(qs, isPg = false, imgSize = 250) {
 }
 
 /**
- * [claude] Updates hidden form inputs and the browser URL to
+ * Updates hidden form inputs and the browser URL to
  * reflect a layout change that happened client-side (no
  * re-fetch). Replaces the former syncFormInputsAndHash() in
  * listeners.js.

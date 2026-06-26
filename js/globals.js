@@ -1,7 +1,7 @@
 log.level = log.INFO;
 
 /**
- * [claude] Application-wide configuration and mutable runtime state.
+ * Application-wide configuration and mutable runtime state.
  *
  * URI configuration is intentionally absent here. At startup,
  * tweakUrl() in ocellus.js reads globals.env and writes the
@@ -16,7 +16,7 @@ export const globals = {
     fetchOpts: {},
 
     /**
-     * [claude] Per-hostname URI overrides consumed by tweakUrl().
+     * Per-hostname URI overrides consumed by tweakUrl().
      * Falls back to 'localhost' when the hostname is unrecognised.
      */
     env: {
@@ -53,7 +53,7 @@ export const globals = {
     },
 
     /**
-     * [claude] Named figure sizes used to drive CSS column classes
+     * Named figure sizes used to drive CSS column classes
      * (columns-250, columns-100, columns-50) in default layout.
      * Column class names are derived from these values in layout.js
      * so there is one source of truth.
@@ -67,7 +67,7 @@ export const globals = {
     defaultPlaceholder: 'search images',
 
     /**
-     * [claude] Ordered list of photogrid visual themes.
+     * Ordered list of photogrid visual themes.
      * cycleTheme() in layout.js steps through this array.
      * Theme CSS class names are derived as `theme-${name}`.
      */
@@ -79,7 +79,7 @@ export const globals = {
     ],
 
     /**
-     * [claude] Available aspect ratio modes for the photogrid.
+     * Available aspect ratio modes for the photogrid.
      * cycleThemeAspect() in layout.js toggles between these.
      */
     themeAspect: [
@@ -88,7 +88,7 @@ export const globals = {
     ],
 
     /**
-     * [claude] Milliseconds of inactivity before the layout
+     * Milliseconds of inactivity before the layout
      * settings gear-menu auto-closes.
      */
     layoutMenuAutoCloseMs: 10000,
@@ -100,7 +100,7 @@ export const globals = {
         size:              30,
 
         /**
-         * [claude] True after the first photogrid server-fetch
+         * True after the first photogrid server-fetch
          * completes. Subsequent layout toggles flip client-side
          * without re-fetching.
          */
@@ -109,24 +109,24 @@ export const globals = {
         activeTheme:       'default',
 
         /**
-         * [claude] Initialised here — was missing from the original,
+         * Initialised here — was missing from the original,
          * causing cycleThemeAspect() to compare against undefined
          * on the first click.
          */
         activeThemeAspect: 'default'
     },
 
-    // [claude] 'real' resources fetched from the API
+    // 'real' resources fetched from the API
     resources:      ['treatments', 'citations', 'images'],
 
-    // [claude] Pseudo-resources are modals already in index.html,
+    // Pseudo-resources are modals already in index.html,
     // shown/hidden on demand rather than fetched
     pseudoResources: ['about', 'ip', 'contact', 'privacy'],
 
     params: {
 
         /**
-         * [claude] Keys allowed in the query string but excluded
+         * Keys allowed in the query string but excluded
          * from the free-text 'q' input field.
          */
         notValidQ: [
@@ -208,7 +208,7 @@ export const globals = {
         ],
 
         /**
-         * [claude] Keys stripped before building the human-readable
+         * Keys stripped before building the human-readable
          * search-criteria summary in renderSearchCriteria().
          */
         notValidSearchCriteria: [
@@ -242,13 +242,13 @@ export const globals = {
     },
 
     /**
-     * [claude] Keyed by a unique per-figure id; populated lazily
+     * Keyed by a unique per-figure id; populated lazily
      * in drawMap() as treatment-location mini-maps are opened.
      */
     maps: {},
 
     /**
-     * [claude] CSS classes used to hide elements. Kept as an
+     * CSS classes used to hide elements. Kept as an
      * array so they can be spread into classList calls.
      */
     hiddenClasses: ['hidden', 'noblock'],
@@ -256,7 +256,7 @@ export const globals = {
     closedFigcaptionHeight: '30px',
 
     /**
-     * [claude] Sequential colour ramp for H3 hexagonal density
+     * Sequential colour ramp for H3 hexagonal density
      * cells on the map. Low density → light yellow; high → dark red.
      */
     H3ColorRamp: [
@@ -284,7 +284,7 @@ export const globals = {
 };
 
 /**
- * [claude] Returns Leaflet marker icon definitions.
+ * Returns Leaflet marker icon definitions.
  *
  * Intentionally a function rather than a property on globals,
  * because L.icon() must not be called at module-parse time —

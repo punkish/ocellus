@@ -9,7 +9,6 @@
     "gulp-git": "^2.10.1",
     "gulp-html-replace": "^1.6.2",
     "gulp-inject-string": "^1.1.2",
-    "gulp-rm": "^2.0.0",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-terser": "^1.2.0",
     "gulp-useref": "^4.0.1",
@@ -20,6 +19,7 @@
     "yargs": "^17.3.1"
   },
   "dependencies": {
+    "del": "^8.0.1",
     "h3-js": "^4.1.0",
     "leaflet": "^1.9.4",
     "leaflet-draw": "^1.0.4",

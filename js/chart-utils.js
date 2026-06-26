@@ -1,12 +1,12 @@
 /**
- * [claude] Chart utility functions.
+ * Chart utility functions.
  *
  * Provides helpers for sizing chart containers responsively and
  * formatting axis labels for eCharts visualizations.
  */
 
 /**
- * [claude] Sizes a chart container to fit within the charts
+ * Sizes a chart container to fit within the charts
  * panel, respecting padding and responsive breakpoints.
  * Sets display, width, and centering styles.
  *
@@ -19,7 +19,7 @@ function getChartContainer(chart) {
     const padding = 50;
     let width = 960;
 
-    // [claude] Responsive: shrink width if container is smaller
+    // Responsive: shrink width if container is smaller
     // than default
     // https://stackoverflow.com/a/4787561/183692
     if (chartContainer.offsetWidth < width) {
@@ -35,7 +35,7 @@ function getChartContainer(chart) {
 }
 
 /**
- * [claude] Formats y-axis values for readability: values under
+ * Formats y-axis values for readability: values under
  * 1K are left as-is, values 1K–1M are shown as K, and values
  * 1M+ are shown as M.
  *

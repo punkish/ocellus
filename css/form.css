@@ -283,7 +283,7 @@ input[disabled] {
 }
 
 /**
- * [claude] CSS additions for form.css
+ * CSS additions for form.css
  * 
  * These styles replace the inline style attributes previously on:
  * - #gridsize-widget
@@ -294,7 +294,7 @@ input[disabled] {
  */
 
 /**
- * [claude] Layout control widgets share common horizontal spacing.
+ * Layout control widgets share common horizontal spacing.
  * Applied to: gridsize-widget, theme-widget, theme-aspect-widget
  */
 #gridsize-widget,
@@ -304,7 +304,7 @@ input[disabled] {
 }
 
 /**
- * [claude] Grid size display label: small, monospaced text with
+ * Grid size display label: small, monospaced text with
  * minimal margin for horizontal alignment with buttons
  */
 #gridsize-display {
@@ -315,7 +315,7 @@ input[disabled] {
 }
 
 /**
- * [claude] Theme cycle button requires wider minimum width than
+ * Theme cycle button requires wider minimum width than
  * other gridsize buttons to accommodate longer labels like
  * "theme: editorial" (20 characters including prefix)
  */
@@ -324,7 +324,7 @@ input[disabled] {
 }
 
 /**
- * [claude] Geolocation coordinates container: minimal height
+ * Geolocation coordinates container: minimal height
  * to reserve vertical space but remain invisible when empty.
  * Used to display lat/lng coordinates during map drawing.
  */

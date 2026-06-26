@@ -1,6 +1,4 @@
 /**
- * [claude] Event listener setup and handlers.
- *
  * Major refactoring from original:
  *  - All layout DOM manipulation (flipLayoutToPg,
  *    flipLayoutToDefault, adjustGridSize, cycleTheme,
@@ -25,8 +23,11 @@ import {
 } from './utils.js';
 import { Accordion }   from './accordion.js';
 import { getResource } from './querier.js';
-import { initializeMap } from './mapping/index.js';
-import { renderYearlyCountsSparkline } from './renderers.js';
+// initializeMap moved to figure-listeners.js (used by
+// toggleAdvSearch there); no longer needed directly in listeners.js
+// renderYearlyCountsSparkline moved to sparkline.js to
+// break the renderers → querier → renderers circular dependency.
+import { renderYearlyCountsSparkline } from './sparkline.js';
 import {
     flipLayoutToPg, flipLayoutToDefault, adjustGridSize,
     cycleTheme, cycleThemeAspect, toggleLayoutMenu,
@@ -39,7 +40,7 @@ import { updateUrl, syncLayoutState } from './url-manager.js';
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Submits the search form: serialises it to a query
+ * Submits the search form: serialises it to a query
  * string, updates the URL, and dispatches getResource() to fetch
  * and render results. Called by the 'Go' button (ns-go, as-go)
  * and the layout toggle.
@@ -53,7 +54,7 @@ function submitForm() {
 
     if (qs === false) return;
 
-    // [claude] Push the query string to history, then fetch
+    // Push the query string to history, then fetch
     updateUrl(qs);
 
     getResource(qs);
@@ -64,7 +65,7 @@ function submitForm() {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Registers all event listeners on the search form,
+ * Registers all event listeners on the search form,
  * layout controls, modals, and global keyboard shortcuts.
  * Called once at init time by ocellus.js.
  */
@@ -99,7 +100,7 @@ const addListeners = () => {
     $('select[name="as-checkinTime"]')
         .addEventListener('change', toggleDateSelector);
 
-    // [claude] Grid-size adjust buttons
+    // Grid-size adjust buttons
     $('#gridsize-plus').addEventListener(
         'click',
         () => adjustGridSize(25)
@@ -109,7 +110,7 @@ const addListeners = () => {
         () => adjustGridSize(-25)
     );
 
-    // [claude] Theme cycle button
+    // Theme cycle button
     const themeCycleBtn = $('#theme-cycle');
 
     if (themeCycleBtn) {
@@ -118,7 +119,7 @@ const addListeners = () => {
         );
     }
 
-    // [claude] Theme aspect-ratio cycle button
+    // Theme aspect-ratio cycle button
     const themeAspectBtn = $('#theme-aspect-cycle');
 
     if (themeAspectBtn) {
@@ -127,7 +128,7 @@ const addListeners = () => {
         );
     }
 
-    // [claude] Layout settings gear-menu toggle
+    // Layout settings gear-menu toggle
     const layoutSettingsBtn = $('#layout-settings-toggle');
 
     if (layoutSettingsBtn) {
@@ -136,7 +137,7 @@ const addListeners = () => {
         );
     }
 
-    // [claude] Modal toggles and other UI elements
+    // Modal toggles and other UI elements
     $$('.modalToggle').forEach(el =>
         el.addEventListener('click', toggleModal)
     );
@@ -153,7 +154,7 @@ const addListeners = () => {
         el.addEventListener('click', quickSearch)
     );
 
-    // [claude] Global keyboard shortcut: '/' focuses the search input
+    // Global keyboard shortcut: '/' focuses the search input
     document.addEventListener('keydown', focusOnSearch);
 };
 
@@ -162,7 +163,7 @@ const addListeners = () => {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Executes a quick-search: populates the search form
+ * Executes a quick-search: populates the search form
  * from a link URL and submits it.
  * @param {Event} event
  */
@@ -194,7 +195,7 @@ function quickSearch(event) {
 }
 
 /**
- * [claude] Global keyboard shortcut handler: '/' focuses the
+ * Global keyboard shortcut handler: '/' focuses the
  * main search input and selects its text.
  * @param {KeyboardEvent} event
  */
@@ -224,7 +225,7 @@ function focusOnSearch(event) {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Toggles the examples/help panel visibility.
+ * Toggles the examples/help panel visibility.
  * @param {Event} e
  */
 const toggleExamples = (e) => {
@@ -240,7 +241,7 @@ const toggleExamples = (e) => {
 };
 
 /**
- * [claude] Clears the 'required' validation class from a date
+ * Clears the 'required' validation class from a date
  * picker when the user changes its value.
  * @param {Event} e
  */
@@ -257,49 +258,20 @@ const resetDatePickerWarning = (e) => {
 // Advanced search
 // ---------------------------------------------------------------------------
 
-/**
- * [claude] Toggles the advanced-search panel visibility and
- * updates form input focus. Also initializes a map for
- * geolocation drawing when advanced search is activated.
- * @param {Event} [e]
- */
-const toggleAdvSearch = (e) => {
-
-    log.info('- toggling advanced search');
-
-    $('#as-container').classList.toggle('noblock');
-
-    const advSearchIsActive =
-        $('input[name=searchtype]').checked;
-
-    if (advSearchIsActive) {
-        $('#q').value = '';
-        $('#q').placeholder = 'use advanced search below';
-        $('#q').disabled = true;
-        $('#refreshCache').disabled = true;
-        $('#clear-q').disabled = true;
-        $('input[name="as-q"]').focus();
-
-        initializeMap({
-            mapContainer: 'mapSearch',
-            baseLayerSource: 'geodeo',
-            drawControl: true
-        });
-    }
-    else {
-        $('#q').placeholder = globals.defaultPlaceholder;
-        $('#q').disabled = false;
-        $('#refreshCache').disabled = false;
-        $('#clear-q').disabled = false;
-    }
-};
+// toggleAdvSearch moved to figure-listeners.js so
+// querier.js can call it without importing from listeners.js
+// (which would create a querier → listeners → querier cycle).
+// Imported here for local use in addListeners(), and re-exported
+// below to preserve the listeners.js public API.
+import { toggleAdvSearch } from './figure-listeners.js';
+export { toggleAdvSearch } from './figure-listeners.js';
 
 // ---------------------------------------------------------------------------
 // Resource toggle
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Updates the placeholder text and yearly-counts chart
+ * Updates the placeholder text and yearly-counts chart
  * when the user toggles between 'images' and 'treatments'.
  * @param {Event} e
  */
@@ -318,7 +290,7 @@ const toggleResource = (e) => {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Toggles between default and photogrid layouts.
+ * Toggles between default and photogrid layouts.
  * On first photogrid request, submits the form to fetch results
  * in photogrid size. On subsequent toggles, flips client-side
  * without re-fetching.
@@ -392,7 +364,7 @@ const toggleLayout = (e) => {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Shows/hides the 'from' and 'to' date inputs when
+ * Shows/hides the 'from' and 'to' date inputs when
  * the user selects 'between' in the date-range selector.
  * @param {Event} e
  */
@@ -428,7 +400,7 @@ const toggleDateSelector = (e) => {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Handles the normal search 'Go' button:
+ * Handles the normal search 'Go' button:
  * validates that a search term was entered, shows an error
  * message if not, otherwise submits the form.
  * @param {Event} e
@@ -454,7 +426,7 @@ const go = (e) => {
 };
 
 /**
- * [claude] Handles the advanced search 'Go' button:
+ * Handles the advanced search 'Go' button:
  * simply submits the form (validation is per-field).
  * @param {Event} e
  */
@@ -472,7 +444,7 @@ const asGo = (e) => {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Toggles modal visibility: closes all open modals
+ * Toggles modal visibility: closes all open modals
  * if a link with href="#modalId" is clicked, or closes all
  * if the close button (empty href) is clicked.
  * @param {Event} e
@@ -483,17 +455,17 @@ const toggleModal = (e) => {
 
     if (t.length > 0) {
 
-        // [claude] Close all modals first
+        // Close all modals first
         modals.forEach(m => {
             m.classList.add(...globals.hiddenClasses);
         });
 
-        // [claude] Open the targeted modal
+        // Open the targeted modal
         $(t).classList.remove(...globals.hiddenClasses);
     }
     else {
 
-        // [claude] Close button: close all
+        // Close button: close all
         modals.forEach(m =>
             m.classList.add(...globals.hiddenClasses)
         );
@@ -505,7 +477,7 @@ const toggleModal = (e) => {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Inserts a clicked example into the search input
+ * Inserts a clicked example into the search input
  * and prepares to submit.
  * @param {Event} e
  */
@@ -533,7 +505,7 @@ const insertExample = (e) => {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Shows a red placeholder when the user clicks the
+ * Shows a red placeholder when the user clicks the
  * 'Go' button with an empty search input.
  */
 const promptForSearchTerm = () => {
@@ -542,7 +514,7 @@ const promptForSearchTerm = () => {
 };
 
 /**
- * [claude] Resets the search input placeholder and clears the
+ * Resets the search input placeholder and clears the
  * 'refresh cache' checkbox.
  * @param {Event} [e]
  */
@@ -553,7 +525,7 @@ const resetPrompt = (e) => {
 };
 
 /**
- * [claude] Toggles the refresh-cache popover when the
+ * Toggles the refresh-cache popover when the
  * checkbox is clicked.
  * @param {Event} e
  */
@@ -566,7 +538,7 @@ const toggleRefreshCache = (e) => {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Allows only one <details> element to be open at a
+ * Allows only one <details> element to be open at a
  * time in the examples panel (mutual-exclusion accordion).
  * https://gomakethings.com/
  * only-allowing-one-open-dropdown-at-a-time-with-the-details-element/
@@ -583,205 +555,30 @@ const controlDetails = (e) => {
 };
 
 // ---------------------------------------------------------------------------
-// Figure and carousel handlers
+// Figure and carousel handlers — delegated to figure-listeners.js
 // ---------------------------------------------------------------------------
-
-/**
- * [claude] Adds toggle handlers to figure captions: expands
- * and truncates the title when toggled.
- */
-const addListenersToFigDetails = () => {
-
-    const figDetails = $$('figcaption > details');
-
-    for (let i = 0, j = figDetails.length; i < j; i++) {
-
-        figDetails[i].addEventListener('toggle', (event) => {
-
-            const summary = event.target.querySelector('summary');
-            const fullText = summary.dataset.title;
-            const summaryText = fullText.length > 30
-                ? `${fullText.substring(0, 30)}…`
-                : fullText;
-
-            summary.innerText = figDetails[i].open
-                ? fullText
-                : summaryText;
-        });
-    }
-};
-
-/**
- * [claude] Adds click handlers to image reveal buttons.
- */
-const addListenersToFigureTypes = () => {
-
-    const figtypes = $$('figure .reveal');
-
-    for (let i = 0, j = figtypes.length; i < j; i++) {
-        figtypes[i].addEventListener('click', reveal);
-    }
-};
-
-/**
- * [claude] Sets up carousel navigation for each figure that
- * has geo data, including map initialisation on toggle.
- */
-function addListenersToMapCarouselLink() {
-
-    $$('.carouselbox').forEach(box => {
-
-        if (!box.querySelector('.buttons')) {
-            return;
-        }
-
-        carousel(box);
-    });
-}
-
-/**
- * [claude] Initialises a carousel within a figure box.
- * @param {Element} box - The carouselbox element
- */
-function carousel(box) {
-
-    const toggle = box.querySelector('.toggle-checkbox');
-
-    let counter = 0;
-    const items = box.querySelectorAll('.slide');
-    const amount = items.length;
-    let current = items[0];
-
-    toggle.addEventListener('click', function (event) {
-
-        const tgt = event.currentTarget;
-        const carouselbox = tgt.parentNode.parentNode.parentNode;
-
-        setMapSize(carouselbox);
-        navigate(1);
-        drawMap(event);
-    });
-
-    navigate(0);
-
-    function navigate(direction) {
-
-        current.classList.remove('current');
-
-        counter = counter + direction;
-
-        if (direction === -1 && counter < 0) {
-            counter = amount - 1;
-        }
-
-        if (direction === 1 && !items[counter]) {
-            counter = 0;
-        }
-
-        current = items[counter];
-        current.classList.add('current');
-    }
-}
-
-/**
- * [claude] Sets the height of a mini-map to match its
- * carousel container.
- * @param {Element} carouselbox
- */
-function setMapSize(carouselbox) {
-
-    const height = carouselbox.clientHeight;
-    const map = carouselbox.querySelector('.map');
-
-    if (!map.style.height) {
-        map.style.height = `${height - 28}px`;
-    }
-}
-
-/**
- * [claude] Initialises and draws a mini-map for a figure's
- * location(s) or convex hull. Called when the user toggles
- * the map slide in a carousel.
- * @param {Event} event
- */
-function drawMap(event) {
-
-    const tgt = event.currentTarget;
-    const id = tgt.dataset.id;
-    const map = globals.maps[id];
-
-    if (!map) {
-
-        const newMap = L.map(`map-${id}`);
-        globals.maps[id] = newMap;
-
-        const mapSource =
-            'http://services.arcgisonline.com/arcgis/rest/'
-          + 'services/Canvas/World_Light_Gray_Base/'
-          + 'MapServer/tile/{z}/{y}/{x}';
-
-        L.tileLayer(mapSource, {
-            maxZoom: 19,
-            attribution:
-                '&copy; <a href="'
-              + 'http://www.openstreetmap.org/copyright">'
-              + 'OpenStreetMap</a>'
-        }).addTo(newMap);
-
-        const mcIcon = L.icon({
-            iconUrl: '../../img/treatment.svg',
-            iconSize: [10, 10],
-            iconAnchor: [5, 5]
-        });
-
-        let centroid;
-
-        if (tgt.dataset.loc !== 'undefined') {
-
-            const loc = JSON.parse(tgt.dataset.loc);
-            const points = loc.map(point =>
-                [point.latitude, point.longitude]
-            );
-
-            points.forEach((point, index) => {
-
-                if (index === 0) {
-                    centroid = point;
-                }
-
-                L.marker(point, { icon: mcIcon })
-                    .addTo(newMap);
-            });
-
-            newMap.setView(centroid, 10);
-        }
-        else if (tgt.dataset.convexhull) {
-
-            const convexhull =
-                JSON.parse(tgt.dataset.convexhull);
-
-            const polygon = L.polygon(
-                convexhull,
-                { color: '#9BC134', weight: 1 }
-            ).addTo(newMap);
-
-            convexhull.forEach((point, index) => {
-                L.marker(point, { icon: mcIcon })
-                    .addTo(newMap);
-            });
-
-            newMap.fitBounds(polygon.getBounds());
-        }
-    }
-}
+// These functions were moved to figure-listeners.js so that
+// querier.js can import them without creating a new
+// querier → listeners → querier cycle (listeners.js imports
+// getResource from querier.js). The implementations live in
+// figure-listeners.js; this re-export keeps the public API of
+// listeners.js unchanged for any existing external callers.
+export {
+    addListenersToFigDetails,
+    addListenersToFigureTypes,
+    addListenersToMapCarouselLink,
+    lightUpTheBox
+} from './figure-listeners.js';
 
 // ---------------------------------------------------------------------------
 // Tooltips
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Shows a tooltip near the mouse position for sparkline
- * bars on hover.
+ * Shows a tooltip near the SVG sparkline bar that triggered the
+ * mouseover event.
+ * Called from inline onmouseover handlers in sparkline.js SVG
+ * markup, so it must be exposed on window via ocellus.js.
  * @param {MouseEvent} evt
  * @param {string}     text
  */
@@ -794,7 +591,9 @@ function showTooltip(evt, text) {
 }
 
 /**
- * [claude] Hides the sparkline tooltip.
+ * Hides the sparkline tooltip.
+ * Also called from inline onmouseout handlers in sparkline.js SVG
+ * markup and must be exposed on window via ocellus.js.
  */
 function hideTooltip() {
 
@@ -804,48 +603,19 @@ function hideTooltip() {
 }
 
 // ---------------------------------------------------------------------------
-// Lightbox
-// ---------------------------------------------------------------------------
-
-/**
- * [claude] Initialises SimpleLightbox for all figures in the
- * search results.
- */
-function lightUpTheBox() {
-
-    new SimpleLightbox({
-        elements: 'figure',
-        loadingCaption: '<img src="../../img/bug.gif">'
-    });
-}
-
-// ---------------------------------------------------------------------------
-// Placeholder reveal (legacy)
-// ---------------------------------------------------------------------------
-
-/**
- * [claude] Placeholder for image reveal logic (currently unused,
- * preserved for backwards compatibility).
- */
-function reveal() {
-    // [claude] Placeholder: no implementation in original
-}
-
-// ---------------------------------------------------------------------------
 // Exports
 // ---------------------------------------------------------------------------
+// addListenersToFigDetails, addListenersToFigureTypes,
+// addListenersToMapCarouselLink, lightUpTheBox, and toggleAdvSearch
+// are re-exported above via named 'export … from' statements.
+// Only symbols with local implementations are listed here.
 
 export {
     addListeners,
-    addListenersToFigDetails,
-    addListenersToFigureTypes,
-    addListenersToMapCarouselLink,
     toggleResource,
     toggleLayout,
-    toggleAdvSearch,
     toggleDateSelector,
     showTooltip,
     hideTooltip,
-    toggleModal,
-    lightUpTheBox
+    toggleModal
 };

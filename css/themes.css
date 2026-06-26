@@ -1,4 +1,4 @@
-/* [gemini] Stylesheets for the three visual themes of the photogrid layout */
+/* Stylesheets for the three visual themes of the photogrid layout */
 
 /* --- Theme 1: "The Journal Monograph" (Default) --- */
 #grid-images.layout-pg.theme-journal {
@@ -70,18 +70,18 @@
     box-shadow: 0 6px 16px rgba(120, 110, 95, 0.08) !important;
 }
 
-/* [gemini] Ensure photogrid carouselbox uses border-box to account for theme paddings/borders */
+/* Ensure photogrid carouselbox uses border-box to account for theme paddings/borders */
 #grid-images.layout-pg .carouselbox {
     box-sizing: border-box !important;
 }
 
-/* [gemini] Allow figure to fit inside the padded carouselbox viewport */
+/* Allow figure to fit inside the padded carouselbox viewport */
 #grid-images.layout-pg figure {
     width: 100% !important;
     box-sizing: border-box !important;
 }
 
-/* [gemini] Ensure the image fits the figure container and is centered */
+/* Ensure the image fits the figure container and is centered */
 #grid-images.layout-pg figure img {
     display: block !important;
     width: 100% !important;
@@ -90,19 +90,19 @@
     box-sizing: border-box !important;
 }
 
-/* [gemini] When default layout is active, force all figures to the default image size (250px) regardless of their figure-X class */
+/* When default layout is active, force all figures to the default image size (250px) regardless of their figure-X class */
 #grid-images:not(.layout-pg) figure {
     width: var(--image-size) !important;
     margin: 0 auto 20px auto !important;
 }
 
-/* [gemini] When default layout is active, force figcaptions to be visible */
+/* When default layout is active, force figcaptions to be visible */
 #grid-images:not(.layout-pg) figcaption {
     display: block !important;
     visibility: visible !important;
 }
 
-/* [gemini] Theme 4: "Default Photogrid" (Default - no frame, 2px gap) */
+/* Theme 4: "Default Photogrid" (Default - no frame, 2px gap) */
 #grid-images.layout-pg.theme-default {
     column-gap: 2px !important;
     background: transparent;
@@ -118,7 +118,7 @@
     border-radius: 0 !important;
 }
 
-/* [gemini] Theme 5: "Square" (Square clipped images, within a 2px gap frame) */
+/* Theme 5: "Square" (Square clipped images, within a 2px gap frame) */
 #grid-images.layout-pg.theme-square {
     column-gap: 2px !important;
     background: transparent;
@@ -140,7 +140,7 @@
     clip-path: inset(0) !important;
 }
 
-/* [gemini] Square aspect mode for any active theme */
+/* Square aspect mode for any active theme */
 #grid-images.layout-pg.theme-aspect-square figure img {
     aspect-ratio: 1 / 1 !important;
     object-fit: cover !important;

@@ -1,5 +1,5 @@
 /**
- * [claude] Application entry point and initialization.
+ * Application entry point and initialization.
  *
  * Changes from the original:
  *  - Import getMarkerIcons function from globals to initialize
@@ -16,7 +16,8 @@ import { getResource } from './querier.js';
 import { addListeners, showTooltip, hideTooltip } from './listeners.js';
 import { initAdvSearch, populateYearSelect } from './adv-search.js';
 import { initializeMap } from './mapping/index.js';
-import { renderYearlyCountsSparkline } from './renderers.js';
+// renderYearlyCountsSparkline moved to sparkline.js
+import { renderYearlyCountsSparkline } from './sparkline.js';
 import { globals, getMarkerIcons } from './globals.js';
 
 // ---------------------------------------------------------------------------
@@ -24,7 +25,7 @@ import { globals, getMarkerIcons } from './globals.js';
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Resolves Zenodeo and map URIs based on the current
+ * Resolves Zenodeo and map URIs based on the current
  * hostname. Falls back to 'localhost' when the hostname is not
  * explicitly configured in globals.env.
  *
@@ -43,7 +44,7 @@ function tweakUrl(hostname = window.location.hostname) {
         ...env
     };
 
-    // [claude] Initialise Leaflet marker icons now that Leaflet
+    // Initialise Leaflet marker icons now that Leaflet
     // is available
     window.Ocellus.markerIcons = getMarkerIcons();
 }
@@ -53,7 +54,7 @@ function tweakUrl(hostname = window.location.hostname) {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Application initialization: reads URL state, restores
+ * Application initialization: reads URL state, restores
  * the search form from query string and layout hash, loads initial
  * data, and registers all event listeners.
  *
@@ -62,14 +63,14 @@ function tweakUrl(hostname = window.location.hostname) {
 function init() {
     tweakUrl();
 
-    // [claude] Expose tooltip functions globally so they can
+    // Expose tooltip functions globally so they can
     // be called from inline event handlers in the sparkline SVG
     window.showTooltip = showTooltip;
     window.hideTooltip = hideTooltip;
 
     const loc = new URL(location);
 
-    // [claude] Parse the hash fragment for layout state
+    // Parse the hash fragment for layout state
     // (layout, image size, theme)
     if (loc.hash) {
         const hashParams = new URLSearchParams(
@@ -103,7 +104,7 @@ function init() {
         }
     }
 
-    // [claude] Parse the query string for search parameters
+    // Parse the query string for search parameters
     if (loc.search) {
 
         log.info(`- locSearch: ${loc.search.substring(1)}`);
@@ -119,7 +120,7 @@ function init() {
 
     addListeners();
     initAdvSearch();
-    populateYearSelect();  // [claude] Auto-populate journal year options
+    populateYearSelect();  // Auto-populate journal year options
 }
 
 // ---------------------------------------------------------------------------

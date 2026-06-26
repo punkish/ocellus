@@ -7,7 +7,8 @@ const concat = require('gulp-concat');
 const { rollup } = require('rollup');
 const { terser } = require('rollup-plugin-terser');
 const replace = require('@rollup/plugin-replace');
-const rm = require('gulp-rm');
+//const rm = require('gulp-rm');
+const { deleteAsync } = require('del');
 const wrap = require('gulp-wrap');
 
 const d = new Date();
@@ -99,10 +100,6 @@ async function cssLibs() {
 // rollup js
 async function js() {
     console.log('rolling up the JS for new maps');
-    
-    const bundle = await rollup({
-        input: `${source}/js/ocellus-maps.js`
-    });
 
     const values = {
         'log.INFO':'log.ERROR',
@@ -114,13 +111,24 @@ async function js() {
         'http://localhost:3000':'https://maps.zenodeo.org',
         //__buildDate__: () => JSON.stringify(new Date()),
         //__buildVersion: 15
-    }
+    };
+
+    // replace() moved from bundle.write({ plugins }) to
+    // rollup({ plugins }) — it uses build-time hooks (buildStart,
+    // transform) that Rollup cannot run during the output phase,
+    // which caused two warnings per build. preventAssignment: true
+    // suppresses the separate "defaults to false" deprecation warning.
+    const bundle = await rollup({
+        input: `${source}/js/ocellus-maps.js`,
+        plugins: [
+            replace({ values, preventAssignment: true })
+        ]
+    });
 
     return bundle.write({
         file: `${destination}/js/ocellus-maps-${dsecs}.js`,
         format: "esm",
         plugins: [
-            replace({ values }),
             terser({
                 format: {
                     preamble: `/* generated: ${d} */`

@@ -1,5 +1,5 @@
 /**
- * [claude] Renders yearly-counts bar chart using eCharts.
+ * Renders yearly-counts bar chart using eCharts.
  *
  * Shows aggregated metrics (treatments, images, species, journals)
  * by year across the entire search result set.
@@ -10,7 +10,7 @@ import { getChartContainer, yAxisFormatter }
 import { globals } from './globals.js';
 
 /**
- * [claude] Renders the yearly-counts bar chart showing how many
+ * Renders the yearly-counts bar chart showing how many
  * treatments, images, species, and journals are represented in
  * each year of data.
  *
@@ -72,7 +72,7 @@ const renderYearlyCounts = ({ yearlyCounts, totals }) => {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Creates a human-readable caption for the yearly-counts
+ * Creates a human-readable caption for the yearly-counts
  * chart. Shows aggregated totals and the number of years spanned
  * by the data.
  *
@@ -107,7 +107,7 @@ function createCaptionStr({
 }
 
 /**
- * [claude] Extracts years and constructs bar-chart series from
+ * Extracts years and constructs bar-chart series from
  * yearlyCounts data. Each series represents treatments, images,
  * species, or journals.
  *
@@ -181,7 +181,7 @@ function createData(resource, yearlyCounts) {
 }
 
 /**
- * [claude] Builds eCharts option object for the yearly-counts
+ * Builds eCharts option object for the yearly-counts
  * bar chart. Includes legend, tooltip, grid, axes, and series
  * configuration.
  *

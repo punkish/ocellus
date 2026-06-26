@@ -1,5 +1,5 @@
 /**
- * [claude] Renders individual figure (image or treatment) elements
+ * Renders individual figure (image or treatment) elements
  * as `<figure>` HTML. Each figure may be standalone or wrapped in
  * a carousel with an optional mini-map.
  *
@@ -20,7 +20,7 @@ import { globals } from './globals.js';
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Constructs external links (Zenodo, TreatmentBank)
+ * Constructs external links (Zenodo, TreatmentBank)
  * that appear in the figure caption, along with CSS classes
  * for layout.
  *
@@ -44,7 +44,7 @@ function makeLinks({ figureSize, rec, resource }) {
         + `/${rec.treatmentId}" target="_blank">`
         + `more on TreatmentBank</a>`;
 
-    // [claude] Only show full caption when normal figure size
+    // Only show full caption when normal figure size
     // (250px); hide it for smaller sizes (100px, 50px) to save
     // space in the photogrid
     const figcaptionClass =
@@ -66,7 +66,7 @@ function makeLinks({ figureSize, rec, resource }) {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Renders a treatment record as a `<figure>` element
+ * Renders a treatment record as a `<figure>` element
  * containing the treatment title, citation metadata, and links to
  * external resources.
  *
@@ -121,7 +121,7 @@ const makeTreatment = ({ figureSize, rec }) => {
 };
 
 /**
- * [claude] Renders an image record as a `<figure>` element with
+ * Renders an image record as a `<figure>` element with
  * a lazy-loaded <img>, fallback for network errors, and optional
  * caption details. Uses SimpleLightbox for image expansion.
  *

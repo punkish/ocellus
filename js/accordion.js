@@ -1,5 +1,5 @@
 /**
- * [claude] Animated accordion (collapsible details element).
+ * Animated accordion (collapsible details element).
  *
  * Uses the Web Animations API to smoothly expand and collapse
  * <details> elements with a sliding height animation.
@@ -7,7 +7,7 @@
  */
 
 /**
- * [claude] Manages smooth open/close animations for a single
+ * Manages smooth open/close animations for a single
  * <details> element. Animates the element's height between its
  * collapsed (summary-only) and expanded (summary + content)
  * states.
@@ -19,28 +19,28 @@ class Accordion {
 
     constructor(el) {
 
-        // [claude] The <details> container
+        // The <details> container
         this.el = el;
 
-        // [claude] The <summary> (always visible header)
+        // The <summary> (always visible header)
         this.summary = el.querySelector('summary');
 
-        // [claude] The collapsible content wrapper
+        // The collapsible content wrapper
         this.content = el.querySelector('#charts');
 
-        // [claude] Handle to the currently-running animation
+        // Handle to the currently-running animation
         this.animation = null;
 
-        // [claude] Flags to track animation state
+        // Flags to track animation state
         this.isClosing = false;
         this.isExpanding = false;
 
-        // [claude] Detect user interaction
+        // Detect user interaction
         this.summary.addEventListener('click', (e) => this.onClick(e));
     }
 
     /**
-     * [claude] Click handler: toggle between open and closed
+     * Click handler: toggle between open and closed
      * states.
      * @param {MouseEvent} e
      */
@@ -58,7 +58,7 @@ class Accordion {
     }
 
     /**
-     * [claude] Shrinks the details element from expanded to
+     * Shrinks the details element from expanded to
      * collapsed height.
      */
     shrink() {
@@ -79,7 +79,7 @@ class Accordion {
     }
 
     /**
-     * [claude] Expands the details element from collapsed to
+     * Expands the details element from collapsed to
      * expanded height. Schedules the height calculation to occur
      * after the [open] attribute is set.
      */
@@ -90,7 +90,7 @@ class Accordion {
     }
 
     /**
-     * [claude] Calculates and animates to the full expanded height
+     * Calculates and animates to the full expanded height
      * (summary + content).
      */
     expand() {
@@ -116,7 +116,7 @@ class Accordion {
     }
 
     /**
-     * [claude] Cleanup after animation completes: removes fixed
+     * Cleanup after animation completes: removes fixed
      * height and overflow styles, resets animation tracking.
      * @param {boolean} open - Final state of the element
      */

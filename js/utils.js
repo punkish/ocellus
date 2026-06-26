@@ -1,5 +1,5 @@
 /**
- * [claude] General-purpose utilities: form serialisation, URL
+ * General-purpose utilities: form serialisation, URL
  * updates, display helpers, and the warn banner.
  *
  * Changes from the original:
@@ -25,7 +25,7 @@ import { updateUrl }     from './url-manager.js';
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Formats a log message with indentation matching the
+ * Formats a log message with indentation matching the
  * given nesting level. Used to make the log output readable when
  * functions call each other several levels deep.
  * @param {string} msg   - Message text
@@ -45,7 +45,7 @@ function formatLog(msg, level) {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Displays a transient warning banner for 3 seconds.
+ * Displays a transient warning banner for 3 seconds.
  * Moved here from listeners.js so that querier.js can import it
  * without creating a querier → listeners circular dependency.
  * Only shows if the banner is currently hidden (prevents stacking).
@@ -72,7 +72,7 @@ export function toggleWarn(msg) {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Populates the search form from a URL query string.
+ * Populates the search form from a URL query string.
  * Fills the plain-text 'q' input with all params that aren't
  * routing/pagination params (notValidQ), and sets the resource
  * toggle and hidden inputs for params that are.
@@ -88,7 +88,7 @@ export function qs2form(qs) {
 
     const sp = new URLSearchParams(qs);
 
-    // [claude] Never re-trigger a cache refresh from a bookmark
+    // Never re-trigger a cache refresh from a bookmark
     sp.delete('refreshCache');
 
     const q = [];
@@ -129,7 +129,7 @@ export function qs2form(qs) {
         else {
             log.info(formatLog(`building value of "q"`, 3));
 
-            // [claude] Default is to use the key itself as the
+            // Default is to use the key itself as the
             // token when there is no value (e.g. bare 'phylogeny')
             let value = key;
 
@@ -147,7 +147,7 @@ export function qs2form(qs) {
 }
 
 /**
- * [claude] Serialises the search form into a URL query string.
+ * Serialises the search form into a URL query string.
  * Handles three input categories differently:
  *   1. Simple search ('ss'): reads input.query elements + the 'q'
  *      text field, auto-detecting DOI patterns
@@ -168,7 +168,7 @@ export function form2qs() {
     const searchtypeToggle = $('input[name=searchtype');
     const typeOfSearch = searchtypeToggle.checked ? 'as' : 'ss';
 
-    // [claude] Outer flag: set to false by processSelectInputs()
+    // Outer flag: set to false by processSelectInputs()
     // when required date fields are empty. Declared once here;
     // the original code had an inner re-declaration inside
     // processSelectInputs that shadowed this variable, making the
@@ -186,7 +186,7 @@ export function form2qs() {
 
                 if (key === 'q') {
 
-                    // [claude] ' & ' (with spaces) appears in
+                    // ' & ' (with spaces) appears in
                     // natural-language boolean queries and must be
                     // encoded before URLSearchParams parses them,
                     // otherwise it is treated as a key separator.
@@ -200,7 +200,7 @@ export function form2qs() {
 
                         if (v === '') {
 
-                            // [claude] A bare key with no value
+                            // A bare key with no value
                             // could be a DOI — detect and remap
                             const match = val.match(
                                 /(^10\.[0-9]{4,}.*)/
@@ -229,7 +229,7 @@ export function form2qs() {
 
                         if (i.name === 'resource') {
 
-                            // [claude] Resource is always emitted;
+                            // Resource is always emitted;
                             // unchecked means 'images' (the default)
                             if (i.checked || i.checked === 'true') {
                                 sp.append(key, val);
@@ -254,7 +254,7 @@ export function form2qs() {
     else if (typeOfSearch === 'as') {
         log.info(formatLog('advanced search', 3));
 
-        // [claude] Common params are handled the same way in both
+        // Common params are handled the same way in both
         // search modes; read them from the normal-search hidden
         // inputs rather than from the 'as-*' prefixed ones
         const commonInputs = [
@@ -291,7 +291,7 @@ export function form2qs() {
 
             if (fld.value) {
 
-                // [claude] eq() forces an exact SQL match rather
+                // eq() forces an exact SQL match rather
                 // than the default LIKE/FTS behaviour
                 sp.append(fldName, `eq(${fld.value})`);
             }
@@ -320,7 +320,7 @@ export function form2qs() {
         ];
 
         /**
-         * [claude] Reads one select input and appends the
+         * Reads one select input and appends the
          * corresponding Zenodeo filter expression to sp.
          * Returns false when required date fields are empty
          * (setting submitFlag to false in the outer scope), or
@@ -359,7 +359,7 @@ export function form2qs() {
                     return true;
                 }
 
-                // [claude] Mark empty required fields and block
+                // Mark empty required fields and block
                 // submission by setting the outer submitFlag
                 if (!valFrom) fromEl.classList.add('required');
                 if (!valTo)   toEl.classList.add('required');
@@ -367,7 +367,7 @@ export function form2qs() {
                 return false;
             }
 
-            // [claude] Handles eq, since, until operators
+            // Handles eq, since, until operators
             const inp = $(`input[name="as-${fldName}From`);
             const val = inp.value;
 
@@ -403,7 +403,7 @@ export function form2qs() {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Updates the placeholder text of the main 'q' input to
+ * Updates the placeholder text of the main 'q' input to
  * reflect the currently selected resource type.
  * @param {string} resource - 'images' or 'treatments'
  */
@@ -422,7 +422,7 @@ export function updateSearchPlaceHolder(resource) {
 // ---------------------------------------------------------------------------
 
 /**
- * [claude] Appends the correct English ordinal suffix to an integer
+ * Appends the correct English ordinal suffix to an integer
  * (1st, 2nd, 3rd, 4th…). Returns the value unchanged if it is not
  * a whole number. https://stackoverflow.com/a/15810761
  * @param {number} n
@@ -447,7 +447,7 @@ export function nth(n) {
 }
 
 /**
- * [claude] Spells out single-digit numbers in lower-case English
+ * Spells out single-digit numbers in lower-case English
  * (1 → 'one', 9 → 'nine'). Returns the number itself for 10+.
  * @param {number} n
  * @returns {string|number}
@@ -465,7 +465,7 @@ export function niceNumbers(n) {
 }
 
 /**
- * [claude] Converts milliseconds to a human-readable string in the
+ * Converts milliseconds to a human-readable string in the
  * form "D days HH hours MM mins". https://stackoverflow.com/a/8528531
  * @param {number} ms - Duration in milliseconds
  * @returns {string}
@@ -491,7 +491,7 @@ export function formatTime(ms) {
 }
 
 /**
- * [claude] Formats a Date object as "DD Month YYYY HH:MM:SS".
+ * Formats a Date object as "DD Month YYYY HH:MM:SS".
  * @param {Date} d
  * @returns {string}
  */
